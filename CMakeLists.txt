@@ -65,6 +65,8 @@ if(WITH_PROFILING)
 endif()
 
 if(APPLE)
+  list(APPEND CMAKE_PREFIX_PATH "/opt/homebrew/opt/bison")
+  list(APPEND CMAKE_PREFIX_PATH "/opt/homebrew/opt/flex")
   list(APPEND CMAKE_PREFIX_PATH "/usr/local/opt/bison")
   list(APPEND CMAKE_PREFIX_PATH "/usr/local/opt/flex")
 endif()
@@ -244,6 +246,7 @@ set(
   "${PROJECT_SOURCE_DIR}/engines/interp_seq_mc.cpp"
   "${PROJECT_SOURCE_DIR}/engines/kinduction.cpp"
   "${PROJECT_SOURCE_DIR}/engines/kliveness.cpp"
+  "${PROJECT_SOURCE_DIR}/engines/llm_generalizer.cpp"
   "${PROJECT_SOURCE_DIR}/engines/mbic3.cpp"
   "${PROJECT_SOURCE_DIR}/engines/syguspdr.cpp"
   "${PROJECT_SOURCE_DIR}/frontends/btor2_encoder.cpp"

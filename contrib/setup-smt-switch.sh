@@ -90,6 +90,14 @@ fi
 cd smt-switch
 git checkout -f "$smt_switch_version" || echo "warning: smt-switch folder is not a git repo"
 
+# macOS: fix GMP gmpxx.h deprecated literal operator (operator"" _mpf)
+# This breaks with -Werror on C++17 / AppleClang 21+
+if [[ "$(uname)" == Darwin ]]; then
+  if ! grep -q "Wno-deprecated-literal-operator" CMakeLists.txt; then
+    sed -i.bak 's/add_subdirectory(cvc5)/set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-deprecated-literal-operator")\n  add_subdirectory(cvc5)/' CMakeLists.txt
+  fi
+fi
+
 # Build dependencies
 ./contrib/setup-bitwuzla.sh
 if [[ $cvc5_home == default ]]; then
@@ -106,7 +114,16 @@ fi
 if [[ -d build ]]; then
   echo "$(pwd)/build already exists, please remove it manually if you want to reconfigure smt-switch"
 else
-  ./configure.sh --prefix=local --static --smtlib-reader --bitwuzla --cvc5 ${conf_opts[@]+"${conf_opts[@]}"}
+  # macOS: specify Homebrew bison/flex since the system ones are too old
+  if [[ "$(uname)" == Darwin ]]; then
+    if [[ -d /opt/homebrew/opt/bison ]]; then
+      extra_opts="--bison-dir=/opt/homebrew/opt/bison"
+    fi
+    if [[ -d /opt/homebrew/opt/flex ]]; then
+      extra_opts="$extra_opts --flex-dir=/opt/homebrew/opt/flex"
+    fi
+  fi
+  ./configure.sh --prefix=local --static --smtlib-reader --bitwuzla --cvc5 $extra_opts ${conf_opts[@]+"${conf_opts[@]}"}
 fi
 cd build
 cmake --build . -j

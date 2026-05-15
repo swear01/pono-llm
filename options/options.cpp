@@ -121,6 +121,13 @@ enum optionIndex
   KLIVE_COUNTER_ENC,
   KLIVE_NO_CHECK_LASSO_IN_CEX,
   KLIVE_NO_LOCKSTEP_BMC,
+  LLM_GEN_MODE,
+  LLM_CANDIDATE_LANGUAGE,
+  LLM_ACCEPTED_BUDGET,
+  LLM_MODEL,
+  LLM_LOG_PATH,
+  LLM_REQUEST_PATH,
+  LLM_RESPONSE_PATH,
 };
 
 struct Arg : public option::Arg
@@ -771,6 +778,51 @@ const option::Descriptor usage[] = {
     Arg::None,
     "  --no-klive-lockstep-bmc \tDo no perform BMC in lock-step in "
     "k-liveness" },
+  { LLM_GEN_MODE,
+    0,
+    "",
+    "llm-gen-mode",
+    Arg::NonEmpty,
+    "  --llm-gen-mode \tLLM generalization mode: none (default), seed-only, "
+    "async-cti" },
+  { LLM_CANDIDATE_LANGUAGE,
+    0,
+    "",
+    "llm-candidate-language",
+    Arg::NonEmpty,
+    "  --llm-candidate-language \tLLM output restriction level: cube-subset "
+    "(default), qf-smt, predicate-relation" },
+  { LLM_ACCEPTED_BUDGET,
+    0,
+    "",
+    "llm-accepted-budget",
+    Arg::Numeric,
+    "  --llm-accepted-budget \tMax accepted LLM lemmas per benchmark (default: "
+    "50)" },
+  { LLM_MODEL,
+    0,
+    "",
+    "llm-model",
+    Arg::NonEmpty,
+    "  --llm-model \tLLM backend model name (e.g. deepseek-v4-pro)" },
+  { LLM_LOG_PATH,
+    0,
+    "",
+    "llm-log",
+    Arg::NonEmpty,
+    "  --llm-log \tPath for LLM interaction log (JSONL)" },
+  { LLM_REQUEST_PATH,
+    0,
+    "",
+    "llm-req-path",
+    Arg::NonEmpty,
+    "  --llm-req-path \tPath for JSONL CTI request output" },
+  { LLM_RESPONSE_PATH,
+    0,
+    "",
+    "llm-resp-path",
+    Arg::NonEmpty,
+    "  --llm-resp-path \tPath for JSONL candidate response input" },
   { 0, 0, 0, 0, 0, 0 }
 };
 /*********************************** end Option Handling setup
@@ -950,8 +1002,8 @@ ProverResult PonoOptions::parse_and_set_options(int argc,
           break;
         case IC3_FUNCTIONAL_PREIMAGE: ic3_functional_preimage_ = true; break;
         case NO_IC3_UNSATCORE_GEN: ic3_unsatcore_gen_ = false; break;
-        case NO_IC3IA_REDUCE_PREDS: ic3ia_reduce_preds_ = false;
-        case NO_IC3IA_TRACK_IMPORTANT_VARS: ic3ia_track_important_vars_ = false;
+        case NO_IC3IA_REDUCE_PREDS: ic3ia_reduce_preds_ = false; break;
+        case NO_IC3IA_TRACK_IMPORTANT_VARS: ic3ia_track_important_vars_ = false; break;
         case NO_IC3IA_SIM_CEX: ic3ia_sim_cex_ = false; break;
         case NO_IC3SA_FUNC_REFINE: ic3sa_func_refine_ = false; break;
         case PROFILING_LOG_FILENAME:
@@ -1103,6 +1155,33 @@ ProverResult PonoOptions::parse_and_set_options(int argc,
           klive_check_lasso_in_cex_ = false;
           break;
         case KLIVE_NO_LOCKSTEP_BMC: klive_lockstep_bmc_ = false; break;
+        case LLM_GEN_MODE: {
+          auto it = str2llmgenmode.find(opt.arg);
+          if (it != str2llmgenmode.end()) {
+            llm_gen_mode_ = it->second;
+          } else {
+            throw PonoException("Unknown --llm-gen-mode option: "
+                                + std::string(opt.arg));
+          }
+          break;
+        }
+        case LLM_CANDIDATE_LANGUAGE: {
+          auto it = str2llmcandidatelanguage.find(opt.arg);
+          if (it != str2llmcandidatelanguage.end()) {
+            llm_candidate_language_ = it->second;
+          } else {
+            throw PonoException("Unknown --llm-candidate-language option: "
+                                + std::string(opt.arg));
+          }
+          break;
+        }
+        case LLM_ACCEPTED_BUDGET:
+          llm_accepted_budget_ = std::stoul(opt.arg);
+          break;
+        case LLM_MODEL: llm_model_ = opt.arg; break;
+        case LLM_LOG_PATH: llm_log_path_ = opt.arg; break;
+        case LLM_REQUEST_PATH: llm_request_path_ = opt.arg; break;
+        case LLM_RESPONSE_PATH: llm_response_path_ = opt.arg; break;
         case UNKNOWN_OPTION:
           // not possible because Arg::Unknown returns ARG_ILLEGAL
           // which aborts the parse with an error

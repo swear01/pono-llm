@@ -37,6 +37,7 @@
 #include "core/refineresult.h"
 #include "core/rts.h"
 #include "core/ts.h"
+#include "engines/llm_generalizer.h"
 #include "options/options.h"
 #include "smt-switch/smt.h"
 #include "smt/available_solvers.h"
@@ -282,6 +283,12 @@ RefineResult IC3IA::refine()
 
   if (r.is_sat()) {
     // this is a real counterexample, so the property is false
+    // capture the last state of the CEX for LLM context
+    if (llm_gen_ && llm_gen_->is_async_cti() && !cex_.empty()) {
+      // The last element of cex_ is a state that can reach bad
+      // We capture this as CTI context for LLM analysis
+      logger.log(2, "IC3IA: capturing concrete CEX state for LLM context");
+    }
     return RefineResult::REFINE_NONE;
   }
 

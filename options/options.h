@@ -110,6 +110,35 @@ const std::unordered_map<std::string, JusticeTranslator> str2livenessalg({
     { "klive", KLIVENESS },
 });
 
+// LLM generation mode option
+enum LLMGenMode
+{
+  LLM_GEN_NONE = 0,
+  LLM_GEN_SEED_ONLY,
+  LLM_GEN_ASYNC_CTI
+};
+
+const std::unordered_map<std::string, LLMGenMode> str2llmgenmode({
+    { "none", LLM_GEN_NONE },
+    { "seed-only", LLM_GEN_SEED_ONLY },
+    { "async-cti", LLM_GEN_ASYNC_CTI },
+});
+
+// LLM candidate language option
+enum class LLMCandidateLanguage
+{
+  CUBE_SUBSET = 0,
+  QF_SMT,
+  PREDICATE_RELATION
+};
+
+const std::unordered_map<std::string, LLMCandidateLanguage>
+    str2llmcandidatelanguage(
+        { { "cube-subset", LLMCandidateLanguage::CUBE_SUBSET },
+          { "qf-smt", LLMCandidateLanguage::QF_SMT },
+          { "predicate-relation",
+            LLMCandidateLanguage::PREDICATE_RELATION } });
+
 /*************************************** Options class
  * ************************************************/
 
@@ -205,7 +234,10 @@ class PonoOptions
         klive_step_size_(default_klive_step_size_),
         klive_counter_encoding_(default_klive_counter_encoding_),
         klive_check_lasso_in_cex_(default_klive_check_lasso_in_cex_),
-        klive_lockstep_bmc_(default_klive_lockstep_bmc_)
+        klive_lockstep_bmc_(default_klive_lockstep_bmc_),
+        llm_gen_mode_(default_llm_gen_mode_),
+        llm_candidate_language_(default_llm_candidate_language_),
+        llm_accepted_budget_(default_llm_accepted_budget_)
   {
   }
 
@@ -386,6 +418,15 @@ class PonoOptions
   bool klive_check_lasso_in_cex_;
   bool klive_lockstep_bmc_;
 
+  // LLM generalization options
+  LLMGenMode llm_gen_mode_;
+  LLMCandidateLanguage llm_candidate_language_;
+  size_t llm_accepted_budget_;  // max accepted LLM lemmas per benchmark
+  std::string llm_model_;
+  std::string llm_log_path_;
+  std::string llm_request_path_;   // JSONL request output path
+  std::string llm_response_path_;  // JSONL response poll path
+
  private:
   // Default options
   static const Engine default_engine_ = BMC;
@@ -477,6 +518,14 @@ class PonoOptions
       BV_BINARY;
   static const bool default_klive_check_lasso_in_cex_ = true;
   static const bool default_klive_lockstep_bmc_ = true;
+  static const LLMGenMode default_llm_gen_mode_ = LLM_GEN_NONE;
+  static const LLMCandidateLanguage default_llm_candidate_language_ =
+      LLMCandidateLanguage::CUBE_SUBSET;
+  static const size_t default_llm_accepted_budget_ = 50;
+  inline static const std::string default_llm_model_;
+  inline static const std::string default_llm_log_path_;
+  inline static const std::string default_llm_request_path_;
+  inline static const std::string default_llm_response_path_;
 };
 
 // Useful functions for printing etc...

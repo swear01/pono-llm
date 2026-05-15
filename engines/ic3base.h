@@ -65,12 +65,14 @@
 
 #include <algorithm>
 #include <cstddef>
+#include <memory>
 #include <queue>
 #include <vector>
 
 #include "core/proverresult.h"
 #include "core/refineresult.h"
 #include "core/ts.h"
+#include "engines/llm_generalizer.h"
 #include "engines/prover.h"
 #include "options/options.h"
 #include "smt-switch/smt.h"
@@ -183,6 +185,10 @@ class IC3Base : public SafetyProver
   bool witness(std::vector<smt::UnorderedTermMap> & out) override;
 
   size_t witness_length() const override;
+
+  void set_llm_generalizer(std::shared_ptr<LLMGeneralizer> gen);
+
+  std::shared_ptr<LLMGeneralizer> llm_gen_;
 
  protected:
   bool compute_witness() override;
@@ -607,6 +613,39 @@ class IC3Base : public SafetyProver
    ** or applying Not if the term is not already negated.
    */
   smt::Term smart_not(const smt::Term & t) const;
+
+  // LLM-guided generalization methods
+
+  /** Process any available LLM candidate lemmas (non-blocking)
+   *  Called at sync points in the IC3 main loop
+   */
+  void process_llm_candidates();
+
+  /** Capture a CTI context for LLM generalization
+   *  @param frame_idx the frame index
+   *  @param cube the CTI cube (conjunction of literals)
+   */
+  void capture_cti_context(size_t frame_idx, const IC3Formula & cube);
+
+  /** Validate a single LLM candidate lemma and insert if it passes
+   *  @param cand the candidate lemma
+   *  @return validation result
+   */
+  LLMValidationResult validate_llm_candidate(const LLMCandidate & cand);
+
+  /** Collect literals from a current-state IC3Formula
+   *  @param cube the IC3Formula (must be conjunction)
+   *  @return vector of CTILiteral
+   */
+  std::vector<CTILiteral> collect_cti_literals(const IC3Formula & cube) const;
+
+  /** Convert a cube-subset candidate to a blocking IC3Formula
+   *  @param cube the original CTI cube
+   *  @param cand the candidate with keep/drop lists
+   *  @return the blocking IC3Formula (disjunction)
+   */
+  IC3Formula cube_subset_to_blocking(const IC3Formula & cube,
+                                     const LLMCandidate & cand) const;
 };
 
 }  // namespace pono

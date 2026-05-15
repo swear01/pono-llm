@@ -19,12 +19,14 @@
 
 #include <cassert>
 #include <cstddef>
+#include <set>
 #include <vector>
 
 #include "core/prop.h"
 #include "core/proverresult.h"
 #include "core/refineresult.h"
 #include "core/ts.h"
+#include "engines/llm_generalizer.h"
 #include "options/options.h"
 #include "smt-switch/smt.h"
 #include "smt/available_solvers.h"
@@ -172,6 +174,8 @@ ProverResult IC3Base::check_until(int k)
   int i = reached_k_ + 1;
   assert(reached_k_ + 1 >= 0);
   while (i <= k) {
+    process_llm_candidates();  // non-blocking poll for LLM candidates
+
     res = step(i);
 
     if (res == ProverResult::FALSE) {
@@ -405,6 +409,9 @@ bool IC3Base::reaches_bad(IC3Formula & out)
     assert(out.children.size());
     assert(ic3formula_check_valid(out));
 
+    // CTI capture for LLM generalization (works for all IC3 variants)
+    capture_cti_context(frontier_idx(), out);
+
     if (options_.ic3_pregen_) {
       // try to generalize if predecessor generalization enabled
       predecessor_generalization_and_fix(frames_.size(), bad_, out);
@@ -442,6 +449,8 @@ ProverResult IC3Base::step(int i)
     // counter-example
     return ProverResult::FALSE;
   }
+
+  process_llm_candidates();  // poll for LLM candidates after blocking phase
 
   logger.log(1, "Propagation phase at frame {}", i);
   // propagation phase
@@ -1135,6 +1144,229 @@ smt::Term IC3Base::smart_not(const Term & t) const
     return children[0];
   } else {
     return solver_->make_term(Not, t);
+  }
+}
+
+// LLM-guided generalization methods
+
+void IC3Base::set_llm_generalizer(std::shared_ptr<LLMGeneralizer> gen)
+{
+  llm_gen_ = gen;
+}
+
+std::vector<CTILiteral> IC3Base::collect_cti_literals(
+    const IC3Formula & cube) const
+{
+  std::vector<CTILiteral> lits;
+  assert(!cube.disjunction);
+  for (const auto & child : cube.children) {
+    CTILiteral lit;
+    lit.term = child;
+    lit.varname = ts_.get_name(child);
+    lit.value = "true";
+    lits.push_back(lit);
+  }
+  return lits;
+}
+
+void IC3Base::capture_cti_context(size_t frame_idx, const IC3Formula & cube)
+{
+  if (!llm_gen_ || !llm_gen_->is_async_cti()) return;
+
+  CTIContext ctx;
+  ctx.frame_idx = frame_idx;
+  ctx.property_name = ts_.get_name(bad_);
+  ctx.literals = collect_cti_literals(cube);
+
+  // Store the cube children for later candidate pairing
+  llm_gen_->store_last_cti_cube(cube.children);
+
+  llm_gen_->write_cti_context(ctx);
+}
+
+IC3Formula IC3Base::cube_subset_to_blocking(const IC3Formula & cube,
+                                            const LLMCandidate & cand) const
+{
+  std::set<std::string> keep_set(cand.keep_literals.begin(),
+                                 cand.keep_literals.end());
+  TermVec block_children;
+  for (const auto & child : cube.children) {
+    std::string name = ts_.get_name(child);
+    if (keep_set.find(name) != keep_set.end()) {
+      block_children.push_back(smart_not(child));
+    }
+  }
+  return ic3formula_disjunction(block_children);
+}
+
+LLMValidationResult IC3Base::validate_llm_candidate(const LLMCandidate & cand)
+{
+  LLMValidationResult res;
+  res.schema_ok = true;
+  res.parse_ok = false;
+  res.vocab_ok = false;
+  res.init_ok = false;
+  res.induction_ok = false;
+  res.subsumption_ok = false;
+  res.budget_ok = true;
+  res.legal_frame = 0;
+
+  // budget check
+  if (llm_gen_->stats().accepted_budget
+      >= options_.llm_accepted_budget_) {
+    res.budget_ok = false;
+    res.error_msg = "Accepted budget exceeded";
+    return res;
+  }
+
+  if (cand.type == LLMCandidate::CUBE_SUBSET) {
+    // For cube-subset, we don't parse a formula; the keep/drop lists
+    // are used to construct the blocking clause directly.
+    // Schema check: must have keep_literals or drop_literals
+    if (cand.keep_literals.empty() && cand.drop_literals.empty()) {
+      res.schema_ok = false;
+      res.error_msg = "cube-subset candidate has no keep_literals or drop_literals";
+      return res;
+    }
+    res.parse_ok = true;
+    res.vocab_ok = true;  // vocabulary checked during conversion
+  } else if (cand.type == LLMCandidate::QF_SMT) {
+    if (cand.formula.empty()) {
+      res.schema_ok = false;
+      res.error_msg = "qf-smt candidate has no formula";
+      return res;
+    }
+    // Parse would use solver_->make_term() from string -- not directly supported
+    // by smt-switch. For now, mark as parse failure for qf-smt mode
+    // (qf-smt will be implemented in Phase 2)
+    res.parse_ok = false;
+    res.error_msg = "qf-smt parsing not yet implemented";
+    return res;
+  } else {
+    // predicate-relation: Phase 3
+    res.parse_ok = false;
+    res.error_msg = "predicate-relation not yet implemented";
+    return res;
+  }
+
+  // vocabulary check: verify all symbols exist in the transition system
+  for (const auto & sym : cand.used_symbols) {
+    try {
+      ts_.lookup(sym);
+    } catch (...) {
+      res.vocab_ok = false;
+      res.error_msg = "Unknown symbol: " + sym;
+      return res;
+    }
+  }
+
+  res.vocab_ok = true;
+  return res;
+}
+
+void IC3Base::process_llm_candidates()
+{
+  if (!llm_gen_ || !llm_gen_->enabled()) return;
+
+  auto candidates = llm_gen_->poll_candidates();
+  if (candidates.empty()) return;
+
+  // Use the stored last CTI cube for cube-subset conversion
+  const TermVec & last_cube = llm_gen_->last_cti_cube();
+
+  for (auto & cand : candidates) {
+    LLMValidationResult vres = validate_llm_candidate(cand);
+
+    if (!vres.schema_ok) {
+      llm_gen_->stats_.num_schema_fail++;
+      logger.log(1, "LLM candidate schema fail: {}", vres.error_msg);
+      continue;
+    }
+    if (!vres.parse_ok) {
+      llm_gen_->stats_.num_parse_fail++;
+      logger.log(1, "LLM candidate parse fail: {}", vres.error_msg);
+      continue;
+    }
+    if (!vres.vocab_ok) {
+      llm_gen_->stats_.num_vocab_fail++;
+      logger.log(1, "LLM candidate vocab fail: {}", vres.error_msg);
+      continue;
+    }
+    if (!vres.budget_ok) {
+      llm_gen_->stats_.num_budget_skip++;
+      logger.log(1, "LLM candidate budget skip: {}", vres.error_msg);
+      continue;
+    }
+
+    // For cube-subset: convert candidate to blocking clause using stored CTI
+    if (cand.type == LLMCandidate::CUBE_SUBSET && !last_cube.empty()) {
+      // Reconstruct the CTI cube from stored children
+      IC3Formula cti_cube = ic3formula_conjunction(last_cube);
+      IC3Formula blocking = cube_subset_to_blocking(cti_cube, cand);
+
+      // Check that the blocking clause actually blocks the CTI
+      // e.g. it's not trivial (should have at least one literal)
+      if (blocking.children.empty()) {
+        logger.log(1, "LLM candidate: empty blocking clause, skipping");
+        continue;
+      }
+
+      // Try to find the highest legal frame for this lemma
+      // Start from the candidate's frame_hint or the current frontier
+      size_t target_frame = cand.frame_hint;
+      if (target_frame == 0 || target_frame >= frames_.size()) {
+        target_frame = frontier_idx();
+      }
+      // Clamp to valid range
+      if (target_frame >= frames_.size()) {
+        target_frame = frames_.size() - 1;
+      }
+      if (target_frame == 0) {
+        target_frame = 1;
+      }
+
+      // Check relative inductiveness for this blocking clause
+      // The blocking clause is a disjunction; we need to check it as
+      // a frame constraint. Convert to a conjunction for rel_ind_check.
+      IC3Formula check_cube = ic3formula_negate(blocking);
+
+      // Check if it's already covered by initial states
+      if (check_intersects_initial(check_cube.term)) {
+        logger.log(1, "LLM candidate: blocks initial states, skipping");
+        continue;
+      }
+
+      // Check relative inductiveness
+      IC3Formula out;
+      bool inductive = rel_ind_check(target_frame, check_cube, out, false);
+      if (!inductive) {
+        llm_gen_->stats_.num_induction_fail++;
+        logger.log(1,
+                   "LLM candidate: failed relative induction at frame {}",
+                   target_frame);
+        continue;
+      }
+
+      vres.induction_ok = true;
+      vres.legal_frame = target_frame;
+
+      // Insert into frame
+      constrain_frame(target_frame, blocking, true);
+
+      llm_gen_->stats_.num_accepted++;
+      llm_gen_->stats_.accepted_budget++;
+
+      logger.log(1,
+                 "LLM candidate ACCEPTED: inserted blocking clause at frame {} "
+                 "(size={})",
+                 target_frame,
+                 blocking.children.size());
+      logger.log(1, "  Rationale: {}", cand.rationale);
+    } else if (cand.type != LLMCandidate::CUBE_SUBSET) {
+      logger.log(1, "LLM candidate: qf-smt/predicate-relation not yet supported");
+    } else {
+      logger.log(1, "LLM candidate: no stored CTI cube for conversion");
+    }
   }
 }
 

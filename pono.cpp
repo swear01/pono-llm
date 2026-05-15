@@ -23,7 +23,9 @@
 #endif
 
 #include "core/fts.h"
+#include "engines/ic3base.h"
 #include "engines/kliveness.h"
+#include "engines/llm_generalizer.h"
 #include "frontends/btor2_encoder.h"
 #include "frontends/smv_encoder.h"
 #include "frontends/vmt_encoder.h"
@@ -145,6 +147,27 @@ ProverResult check_prop(PonoOptions pono_options,
   }
   assert(prover);
 
+  // Initialize LLM generalizer for IC3-based engines
+  if (pono_options.llm_gen_mode_ != LLM_GEN_NONE) {
+    auto it = ic3_variants().find(eng);
+    if (it != ic3_variants().end() || eng == IC3IA_ENGINE
+        || eng == IC3SA_ENGINE || eng == SYGUS_PDR || eng == MSAT_IC3IA) {
+      auto ic3base = std::dynamic_pointer_cast<IC3Base>(prover);
+      if (ic3base) {
+        auto llm_gen =
+            std::make_shared<LLMGeneralizer>(pono_options, s);
+        ic3base->set_llm_generalizer(llm_gen);
+        logger.log(
+            1, "LLM generalizer initialized for engine {}", to_string(eng));
+      } else {
+        logger.log(0,
+                   "Warning: --llm-gen-mode specified but engine {} is not "
+                   "IC3-based",
+                   to_string(eng));
+      }
+    }
+  }
+
   // TODO: handle this in a more elegant way in the future
   //       consider calling prover for CegProphecyArrays (so that underlying
   //       model checker runs prove unbounded) or possibly, have a command line
@@ -200,6 +223,16 @@ ProverResult check_prop(PonoOptions pono_options,
       throw PonoException("Invariant Check FAILED");
     }
   }
+
+  // Log LLM generalization statistics if enabled
+  if (pono_options.llm_gen_mode_ != LLM_GEN_NONE
+      && !pono_options.llm_log_path_.empty()) {
+    auto ic3base = std::dynamic_pointer_cast<IC3Base>(prover);
+    if (ic3base && ic3base->llm_gen_) {
+      ic3base->llm_gen_->log_stats();
+    }
+  }
+
   return r;
 }
 

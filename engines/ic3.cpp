@@ -16,6 +16,7 @@
 
 #include <cassert>
 
+#include "engines/llm_generalizer.h"
 #include "utils/exceptions.h"
 
 using namespace smt;
@@ -93,11 +94,14 @@ void IC3::predecessor_generalization(size_t i,
 
   Term formula = make_and(input_lits);
   if (ts_.is_deterministic()) {
-    // NOTE: need to use full trans, not just trans_label_ here
-    //       because we are passing it to the reducer_
-    formula = solver_->make_term(And, formula, ts_.trans());
-    formula =
-        solver_->make_term(And, formula, solver_->make_term(Not, ts_.next(c)));
+  // NOTE: need to use full trans, not just trans_label_ here
+  //       because we are passing it to the reducer_
+  formula = solver_->make_term(And, formula, ts_.trans());
+  formula =
+      solver_->make_term(And, formula, solver_->make_term(Not, ts_.next(c)));
+
+  // CTI capture for LLM generalization
+  capture_cti_context(i, pred);
   } else {
     formula = solver_->make_term(And, formula, make_and(next_lits));
 
