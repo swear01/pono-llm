@@ -134,7 +134,7 @@ class DeepSeekClient:
                     {"role": "user", "content": prompt},
                 ],
                 temperature=0.3,
-                max_tokens=4096,
+                max_tokens=8192,
                 **extra,
             )
         except Exception as e:
@@ -144,7 +144,11 @@ class DeepSeekClient:
         elapsed = (time.time() - start) * 1000
 
         choice = response.choices[0]
-        text = choice.message.content
+        text = choice.message.content or ""
+        # DeepSeek V4 reasoning models may leave content empty; fallback to reasoning_content
+        reasoning = getattr(choice.message, 'reasoning_content', None)
+        if not text.strip() and reasoning:
+            text = reasoning
         token_count = response.usage.total_tokens if response.usage else 0
 
         # OpenRouter returns finish_reason, check for errors
@@ -167,7 +171,7 @@ class DeepSeekClient:
                 {"role": "user", "content": prompt},
             ],
             "temperature": 0.3,
-            "max_tokens": 4096,
+            "max_tokens": 8192,
         }).encode()
 
         headers = {
@@ -192,7 +196,12 @@ class DeepSeekClient:
                     f"API error: {data['error']}")
 
             choice = data["choices"][0]
-            text = choice["message"]["content"]
+            text = choice["message"].get("content", "") or ""
+            # DeepSeek V4 reasoning models: fallback to reasoning_content if content empty
+            if not text.strip():
+                reasoning = choice["message"].get("reasoning_content", "")
+                if reasoning:
+                    text = reasoning
             token_count = data.get("usage", {}).get("total_tokens", 0)
 
             finish = choice.get("finish_reason", "stop")
@@ -212,13 +221,50 @@ class DeepSeekClient:
 
 
 def extract_json(text: str) -> str:
-    """Extract JSON object from LLM response. Strips markdown fencing."""
+    """Extract JSON object from LLM response. Strips markdown fencing.
+    Searches for a JSON object containing expected candidate fields."""
     text = text.strip()
+    # Strip markdown code fences
     if text.startswith("```"):
         lines = text.split("\n")
         if lines[0].startswith("```"):
             lines = lines[1:]
         if lines and lines[-1].strip() == "```":
             lines = lines[:-1]
-        text = "\n".join(lines)
-    return text.strip()
+        text = "\n".join(lines).strip()
+
+    # If text starts with '{', try it directly
+    if text.startswith("{") and text.endswith("}"):
+        return text
+
+    # Search for a JSON object containing candidate keys
+    for marker in ('"keep_literals"', '"drop_literals"', '"type"'):
+        idx = text.find(marker)
+        if idx == -1:
+            continue
+        # Find the enclosing '{' before this marker
+        depth = 0
+        start = idx
+        while start > 0:
+            start -= 1
+            if text[start] == '}':
+                depth += 1
+            elif text[start] == '{':
+                if depth == 0:
+                    break
+                depth -= 1
+        # Find the matching '}'
+        depth = 0
+        end = start
+        for i in range(start, len(text)):
+            if text[i] == '{':
+                depth += 1
+            elif text[i] == '}':
+                depth -= 1
+                if depth == 0:
+                    end = i + 1
+                    break
+        if start < end:
+            return text[start:end]
+
+    return text
