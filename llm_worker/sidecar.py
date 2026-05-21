@@ -76,6 +76,7 @@ def process_request(
     ctx: CTIContext,
     candidate_language: str,
     prompt_dir: str,
+    default_model: str = "",
 ) -> LLMCandidate:
     """Process a single CTI context through the LLM."""
     if candidate_language == "cube-subset":
@@ -87,7 +88,8 @@ def process_request(
     else:
         raise ValueError(f"Unknown candidate language: {candidate_language}")
 
-    response_text, token_count, latency_ms = client.call(prompt)
+    model_name = ctx.get("model", "") or default_model or None
+    response_text, token_count, latency_ms = client.call(prompt, model_name=model_name)
 
     try:
         candidate = json.loads(response_text)
@@ -150,6 +152,11 @@ def main():
         default=0,
         help="Maximum number of requests to process (0 = unlimited)",
     )
+    parser.add_argument(
+        "--model",
+        default="",
+        help="Model name override (default: use model from request or deepseek-v4-pro)",
+    )
     args = parser.parse_args()
 
     api_key = os.environ.get("DEEPSEEK_API_KEY") or os.environ.get("OPENROUTER_API_KEY")
@@ -157,7 +164,7 @@ def main():
         print("[sidecar] ERROR: DEEPSEEK_API_KEY or OPENROUTER_API_KEY environment variable not set")
         return 1
 
-    client = DeepSeekClient(api_key)
+    client = DeepSeekClient(api_key, model_name=args.model or None)
 
     print(f"[sidecar] Started, polling {args.req_path}")
     print(f"[sidecar] Writing responses to {args.resp_path}")
@@ -192,6 +199,7 @@ def main():
                     request,
                     args.candidate_language,
                     args.prompt_dir,
+                    default_model=args.model,
                 )
 
                 write_response(args.resp_path, candidate)

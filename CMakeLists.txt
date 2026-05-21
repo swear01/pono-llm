@@ -305,7 +305,7 @@ if(WITH_MSAT_IC3IA)
   set(SOURCES "${SOURCES}" "${PROJECT_SOURCE_DIR}/engines/msat_ic3ia.cpp")
 endif()
 
-add_library(pono-lib "${PONO_LIB_TYPE}" ${SOURCES})
+add_library(pono-lib "${PONO_LIB_TYPE}" ${SOURCES} "${PROJECT_SOURCE_DIR}/compat_shim.cpp")
 set_target_properties(pono-lib PROPERTIES OUTPUT_NAME pono)
 target_compile_definitions(pono-lib PRIVATE "-DPONO_VERSION=\"${PONO_VERSION}\"")
 

@@ -202,6 +202,11 @@ def parse_args() -> argparse.Namespace:
         help="Max LLM requests per sidecar (0 = unlimited)",
     )
     p.add_argument(
+        "--llm-model",
+        default="deepseek-v4-pro",
+        help="LLM model name (passed to sidecar)",
+    )
+    p.add_argument(
         "--no-llm",
         action="store_true",
         help="Even if baseline is medium/slow/timeout, skip +llm phase",
@@ -905,6 +910,7 @@ def _run_one_llm(job_data: dict) -> RunResult:
     resp_path = os.path.join(tmpdir, "responses.jsonl")
     log_path = os.path.join(tmpdir, "llm_log.jsonl")
     sidecar_stderr = os.path.join(tmpdir, "sidecar_stderr.log")
+    llm_model = job_data.get("llm_model", "deepseek-v4-pro")
 
     # Start sidecar
     env = os.environ.copy()
@@ -918,6 +924,7 @@ def _run_one_llm(job_data: dict) -> RunResult:
             "--prompt-dir", prompt_dir,
             "--poll-interval", "0.5",
             "--max-requests", str(job_data.get("llm_max_requests", 50)),
+            "--model", llm_model,
         ],
         stdout=subprocess.DEVNULL,
         stderr=open(sidecar_stderr, "w"),
@@ -1020,6 +1027,7 @@ def run_phase_llm(
             sidecar_path=str(sidecar_path),
             prompt_dir=str(prompt_dir),
             llm_max_requests=args.llm_max_requests,
+            llm_model=args.llm_model,
         ))
 
     log(f"Starting {args.parallel} workers (each with own sidecar) ...")

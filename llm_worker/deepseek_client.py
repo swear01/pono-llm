@@ -98,12 +98,13 @@ class DeepSeekClient:
               f"base_url={self.base_url} "
               f"model={self.model_name}")
 
-    def call(self, prompt: str, system_prompt: str = None):
+    def call(self, prompt: str, system_prompt: str = None, model_name: str = None):
         """Call LLM API with a prompt.
 
         Returns:
             tuple: (response_json_text, token_count, latency_ms)
         """
+        model = model_name or self.model_name
         if system_prompt is None:
             system_prompt = (
                 "You are a hardware verification assistant specializing in "
@@ -111,11 +112,11 @@ class DeepSeekClient:
                 "Respond ONLY with valid JSON, no other text.")
 
         if self._client is not None:
-            return self._call_openai(prompt, system_prompt)
+            return self._call_openai(prompt, system_prompt, model)
         else:
-            return self._call_direct(prompt, system_prompt)
+            return self._call_direct(prompt, system_prompt, model)
 
-    def _call_openai(self, prompt: str, system_prompt: str):
+    def _call_openai(self, prompt: str, system_prompt: str, model_name: str):
         """Use OpenAI-compatible client."""
         start = time.time()
         extra = {}
@@ -127,7 +128,7 @@ class DeepSeekClient:
 
         try:
             response = self._client.chat.completions.create(
-                model=self.model_name,
+                model=model_name,
                 messages=[
                     {"role": "system", "content": system_prompt},
                     {"role": "user", "content": prompt},
@@ -154,13 +155,13 @@ class DeepSeekClient:
 
         return extract_json(text), token_count, elapsed
 
-    def _call_direct(self, prompt: str, system_prompt: str):
+    def _call_direct(self, prompt: str, system_prompt: str, model_name: str):
         """Direct HTTP call when openai package is not available."""
         import urllib.request
         import urllib.error
 
         body = json.dumps({
-            "model": self.model_name,
+            "model": model_name,
             "messages": [
                 {"role": "system", "content": system_prompt},
                 {"role": "user", "content": prompt},

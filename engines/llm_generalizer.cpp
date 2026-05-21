@@ -89,6 +89,10 @@ void LLMGeneralizer::write_cti_context(const CTIContext & ctx)
                : (opts_.llm_candidate_language_ == LLMCandidateLanguage::QF_SMT
                       ? "qf-smt"
                       : "predicate-relation"))
+       << "\",";
+  json << "\"model\":\""
+       << escape_json(opts_.llm_model_.empty() ? "deepseek-v4-pro"
+                                               : opts_.llm_model_)
        << "\"";
   json << "}";
   json << "\n";
