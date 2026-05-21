@@ -635,12 +635,20 @@ bool IC3Base::block_all()
   assert(!solver_context_);
   ProofGoalQueue proof_goals;
   IC3Formula goal;
+  size_t inner_iters = 0;
   while (reaches_bad(goal)) {
     assert(goal.term);            // expecting non-null
     assert(proof_goals.empty());  // bad should be the first goal each iteration
     proof_goals.new_proof_goal(goal, frontier_idx(), nullptr);
 
+    // Poll for LLM candidates after capturing CTI contexts
+    process_llm_candidates();
+
     while (!proof_goals.empty()) {
+      // Periodically poll for LLM candidates during blocking
+      if (++inner_iters % 50 == 0) {
+        process_llm_candidates();
+      }
       const ProofGoal * pg = proof_goals.top();
 
       if (!pg->idx) {
@@ -1162,8 +1170,15 @@ std::vector<CTILiteral> IC3Base::collect_cti_literals(
   for (const auto & child : cube.children) {
     CTILiteral lit;
     lit.term = child;
-    lit.varname = ts_.get_name(child);
-    lit.value = "true";
+    // Detect negated literals: (not var) means the literal is false
+    if (child->get_op() == smt::Not) {
+      smt::Term inner = *(child->begin());
+      lit.varname = ts_.get_name(inner);
+      lit.value = "false";
+    } else {
+      lit.varname = ts_.get_name(child);
+      lit.value = "true";
+    }
     lits.push_back(lit);
   }
   return lits;
@@ -1187,12 +1202,26 @@ void IC3Base::capture_cti_context(size_t frame_idx, const IC3Formula & cube)
 IC3Formula IC3Base::cube_subset_to_blocking(const IC3Formula & cube,
                                             const LLMCandidate & cand) const
 {
-  std::set<std::string> keep_set(cand.keep_literals.begin(),
-                                 cand.keep_literals.end());
+  // Extract variable names from "varname = value" keep_literals
+  std::set<std::string> keep_varnames;
+  for (const auto & lit_str : cand.keep_literals) {
+    size_t eq_pos = lit_str.find(" = ");
+    if (eq_pos != std::string::npos) {
+      keep_varnames.insert(lit_str.substr(0, eq_pos));
+    } else {
+      keep_varnames.insert(lit_str);
+    }
+  }
   TermVec block_children;
   for (const auto & child : cube.children) {
-    std::string name = ts_.get_name(child);
-    if (keep_set.find(name) != keep_set.end()) {
+    std::string name;
+    if (child->get_op() == smt::Not) {
+      smt::Term inner = *(child->begin());
+      name = ts_.get_name(inner);
+    } else {
+      name = ts_.get_name(child);
+    }
+    if (keep_varnames.find(name) != keep_varnames.end()) {
       block_children.push_back(smart_not(child));
     }
   }

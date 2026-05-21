@@ -25,7 +25,7 @@ except ImportError:
 #   deepseek/deepseek-v4-flash:free — DeepSeek V4 Flash (free)
 DEFAULT_MODEL = "deepseek/deepseek-v4-pro"
 # Fallback: direct DeepSeek model name
-DEEPSEEK_DIRECT_MODEL = "deepseek-chat"
+DEEPSEEK_DIRECT_MODEL = "deepseek-v4-pro"
 
 
 def get_api_key():

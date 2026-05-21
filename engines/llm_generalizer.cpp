@@ -8,6 +8,7 @@
 #include <cassert>
 #include <fstream>
 #include <sstream>
+#include <stdexcept>
 
 #include "utils/logger.h"
 
@@ -117,6 +118,7 @@ vector<LLMCandidate> LLMGeneralizer::poll_candidates()
   while (getline(fin, line)) {
     if (line.empty() || line[0] != '{') continue;
 
+    try {
     LLMCandidate cand;
     cand.type = LLMCandidate::CUBE_SUBSET;
     cand.frame_hint = 0;
@@ -147,7 +149,11 @@ vector<LLMCandidate> LLMGeneralizer::poll_candidates()
     if (pos != string::npos) {
       pos = line.find(":", pos);
       if (pos != string::npos) {
-        cand.frame_hint = stoul(line.substr(pos + 1));
+        try {
+          cand.frame_hint = stoul(line.substr(pos + 1));
+        } catch (...) {
+          cand.frame_hint = 0;
+        }
       }
     }
 
@@ -229,6 +235,13 @@ vector<LLMCandidate> LLMGeneralizer::poll_candidates()
     }
 
     candidates.push_back(cand);
+    } catch (const std::exception & e) {
+      logger.log(1,
+                 "LLMGeneralizer: error parsing candidate: {}",
+                 e.what());
+    } catch (...) {
+      logger.log(1, "LLMGeneralizer: unknown error parsing candidate");
+    }
   }
 
   last_response_pos_ = fin.tellg();
@@ -258,6 +271,25 @@ void LLMGeneralizer::log_stats() const
   logger.log(0, "  Budget skips:        {}", stats_.num_budget_skip);
   logger.log(0, "  Total tokens:        {}", stats_.total_tokens);
   logger.log(0, "  Accepted budget:     {}", stats_.accepted_budget);
+  logger.log(0,
+             "LLM_STATS accepted={} rejected={} errors={} "
+             "requests={} candidates={} "
+             "schema_fail={} parse_fail={} vocab_fail={} "
+             "induction_fail={} subsumption_fail={} budget_skip={}",
+             stats_.num_accepted,
+             stats_.num_schema_fail + stats_.num_parse_fail
+                 + stats_.num_vocab_fail + stats_.num_induction_fail
+                 + stats_.num_subsumption_fail + stats_.num_budget_skip,
+             stats_.num_schema_fail + stats_.num_parse_fail
+                 + stats_.num_vocab_fail,
+             stats_.num_requests,
+             stats_.num_candidates,
+             stats_.num_schema_fail,
+             stats_.num_parse_fail,
+             stats_.num_vocab_fail,
+             stats_.num_induction_fail,
+             stats_.num_subsumption_fail,
+             stats_.num_budget_skip);
 }
 
 void LLMGeneralizer::store_last_cti_cube(const TermVec & cube_children)

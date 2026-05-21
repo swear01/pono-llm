@@ -46,4 +46,7 @@ __pycache__
 compile_commands.json
 
 # IDE settings
-.vscode
+.vscode/
+
+# Benchmark output
+bench_results/
