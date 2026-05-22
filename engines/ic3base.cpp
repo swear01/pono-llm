@@ -1305,9 +1305,9 @@ IC3Formula IC3Base::cube_subset_to_blocking(const IC3Formula & cube,
     std::string name;
     if (child->get_op() == smt::Not) {
       smt::Term inner = *(child->begin());
-      name = ts_.get_name(inner);
+      name = simplify_cti_literal(inner);
     } else {
-      name = ts_.get_name(child);
+      name = simplify_cti_literal(child);
     }
     if (keep_varnames.find(name) != keep_varnames.end()) {
       block_children.push_back(smart_not(child));
