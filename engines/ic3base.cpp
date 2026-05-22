@@ -1157,6 +1157,89 @@ smt::Term IC3Base::smart_not(const Term & t) const
 
 // LLM-guided generalization methods
 
+static std::string simplify_cti_literal(const smt::Term & term)
+{
+  smt::Op op = term->get_op();
+  smt::PrimOp po = op.prim_op;
+
+  // Leaf: symbol/variable/constant
+  if (term->is_symbol() || term->is_symbolic_const()) {
+    return term->to_string();
+  }
+
+  // Constants (bitvector values like #b0000, #b1)
+  if (po == smt::PrimOp::NUM_OPS_AND_NULL && term->is_value()) {
+    return term->to_string();
+  }
+
+  // Recurse children
+  std::vector<std::string> args;
+  for (auto it = term->begin(); it != term->end(); ++it) {
+    args.push_back(simplify_cti_literal(*it));
+  }
+
+  auto unary = [&](const std::string & sym) {
+    return sym + (args.size() > 0 ? args[0] : "?");
+  };
+  auto binary = [&](const std::string & sym) {
+    return "(" + (args.size() > 0 ? args[0] : "?") + " " + sym + " "
+           + (args.size() > 1 ? args[1] : "?") + ")";
+  };
+
+  switch (po) {
+    case smt::Not:        return "~" + (args.size() > 0 ? args[0] : "?");
+    case smt::And:        return binary("∧");
+    case smt::Or:         return binary("∨");
+    case smt::Xor:        return binary("⊕");
+    case smt::Implies:    return binary("→");
+    case smt::Equal:      return binary("=");
+    case smt::Distinct:   return binary("≠");
+    case smt::Ite:
+      return "ite(" + (args.size() > 0 ? args[0] : "?") + ", "
+             + (args.size() > 1 ? args[1] : "?") + ", "
+             + (args.size() > 2 ? args[2] : "?") + ")";
+    case smt::BVNot:      return "~" + (args.size() > 0 ? args[0] : "?");
+    case smt::BVNeg:      return "-" + (args.size() > 0 ? args[0] : "?");
+    case smt::BVAnd:      return binary("&");
+    case smt::BVOr:       return binary("|");
+    case smt::BVXor:      return binary("^");
+    case smt::BVAdd:      return binary("+");
+    case smt::BVSub:      return binary("-");
+    case smt::BVMul:      return binary("*");
+    case smt::BVUgt:      return binary(">");
+    case smt::BVUge:      return binary("≥");
+    case smt::BVUlt:      return binary("<");
+    case smt::BVUle:      return binary("≤");
+    case smt::BVSgt:      return binary(">ₛ");
+    case smt::BVSge:      return binary("≥ₛ");
+    case smt::BVSlt:      return binary("<ₛ");
+    case smt::BVSle:      return binary("≤ₛ");
+    case smt::BVSdiv:     return binary("/ₛ");
+    case smt::BVUdiv:     return binary("/");
+    case smt::BVShl:      return binary("<<");
+    case smt::BVAshr:     return binary(">>ₐ");
+    case smt::BVLshr:     return binary(">>");
+    case smt::BVComp:     return binary("==ₓ");
+    case smt::Concat:     return binary("++");
+    case smt::Extract: {
+      std::string inner = args.size() > 0 ? args[0] : "?";
+      return inner + "[" + std::to_string(op.idx0) + ":"
+             + std::to_string(op.idx1) + "]";
+    }
+    case smt::Zero_Extend:
+      return "zero_ext(" + (args.size() > 0 ? args[0] : "?") + ")";
+    case smt::Sign_Extend:
+      return "sign_ext(" + (args.size() > 0 ? args[0] : "?") + ")";
+    case smt::Select:
+      return (args.size() > 0 ? args[0] : "?") + "["
+             + (args.size() > 1 ? args[1] : "?") + "]";
+    case smt::BVUrem:
+      return binary("%");
+    default:
+      return term->to_string();
+  }
+}
+
 void IC3Base::set_llm_generalizer(std::shared_ptr<LLMGeneralizer> gen)
 {
   llm_gen_ = gen;
@@ -1170,14 +1253,17 @@ std::vector<CTILiteral> IC3Base::collect_cti_literals(
   for (const auto & child : cube.children) {
     CTILiteral lit;
     lit.term = child;
-    // Detect negated literals: (not var) means the literal is false
     if (child->get_op() == smt::Not) {
       smt::Term inner = *(child->begin());
-      lit.varname = ts_.get_name(inner);
+      lit.varname = simplify_cti_literal(inner);
       lit.value = "false";
     } else {
-      lit.varname = ts_.get_name(child);
+      lit.varname = simplify_cti_literal(child);
       lit.value = "true";
+    }
+    // Truncate very long simplified strings
+    if (lit.varname.size() > 200) {
+      lit.varname = lit.varname.substr(0, 197) + "...";
     }
     lits.push_back(lit);
   }
@@ -1190,7 +1276,9 @@ void IC3Base::capture_cti_context(size_t frame_idx, const IC3Formula & cube)
 
   CTIContext ctx;
   ctx.frame_idx = frame_idx;
-  ctx.property_name = ts_.get_name(bad_);
+  std::string raw_prop = simplify_cti_literal(bad_);
+  ctx.property_name = raw_prop.size() > 200 ? raw_prop.substr(0, 197) + "..."
+                                            : raw_prop;
   ctx.literals = collect_cti_literals(cube);
 
   // Store the cube children for later candidate pairing

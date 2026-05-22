@@ -14,6 +14,7 @@
 #include <cstddef>
 #include <fstream>
 #include <string>
+#include <unordered_set>
 #include <vector>
 
 #include "options/options.h"
@@ -138,6 +139,9 @@ class LLMGeneralizer
 
   // Stored CTI cube children for candidate pairing
   smt::TermVec last_cti_cube_;
+
+  // Dedup set to avoid sending duplicate CTI contexts
+  std::unordered_set<std::string> sent_ctx_hashes_;
 };
 
 }  // namespace pono

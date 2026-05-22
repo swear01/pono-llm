@@ -66,6 +66,21 @@ string LLMGeneralizer::escape_json(const string & s) const
 
 void LLMGeneralizer::write_cti_context(const CTIContext & ctx)
 {
+  // Cap: don't send more than 50 CTI contexts per benchmark
+  if (stats_.num_requests >= 50) {
+    return;
+  }
+
+  // Dedup: skip duplicate CTI contexts (same literals with same values)
+  std::string ctx_hash;
+  for (const auto & lit : ctx.literals) {
+    ctx_hash += lit.varname + lit.value;
+  }
+  if (sent_ctx_hashes_.count(ctx_hash)) {
+    return;
+  }
+  sent_ctx_hashes_.insert(ctx_hash);
+
   ofstream fout(request_path_, ios::app);
   if (!fout.is_open()) {
     logger.log(0, "LLMGeneralizer: cannot open request file {}", request_path_);

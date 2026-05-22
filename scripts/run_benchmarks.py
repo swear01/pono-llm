@@ -228,6 +228,17 @@ def parse_args() -> argparse.Namespace:
         action="store_true",
         help="List what would be done without executing",
     )
+    p.add_argument(
+        "--find-solvable",
+        action="store_true",
+        help="Find IC3IA-solvable non-fast benchmarks that have refinement cycles",
+    )
+    p.add_argument(
+        "--find-max",
+        type=int,
+        default=30,
+        help="Max benchmarks to test in find-solvable phase",
+    )
     return p.parse_args()
 
 
@@ -1310,6 +1321,71 @@ def _resolve_prompt_dir(args: argparse.Namespace) -> pathlib.Path:
     return p
 
 
+# ── Phase: find-solvable ──────────────────────────────────────────────────
+
+
+def run_find_solvable(args: argparse.Namespace) -> list[dict]:
+    """Find IC3IA-solvable non-fast benchmarks that have refinement cycles."""
+    log("=== Phase: find-solvable ===")
+    years = [int(y.strip()) for y in args.hwmcc_years.split(",")]
+    comp_map = load_competition_classification(args.hwmcc_dir)
+    entries = collect_benchmarks(args.hwmcc_dir, years)
+
+    # Filter: pono solved in competition, medium or slow (not fast)
+    targets = []
+    for e in entries:
+        ce = match_entry_to_competition(e, comp_map)
+        if not ce:
+            continue
+        if ce.category in ("medium",):
+            targets.append((e, ce))
+    targets = targets[:args.find_max]
+
+    log(f"Testing {len(targets)} candidates (medium category in competition)...")
+    pono_bin = str(_resolve_pono(args))
+    results = []
+
+    for e, ce in targets:
+        name = pathlib.Path(e.path).name
+        log(f"  testing: {name} (comp: {ce.result} {ce.wall_time:.0f}s {ce.category})")
+        cmd = [pono_bin, "-v", "2", "-e", args.engine, "-k", str(args.bound), e.path]
+        try:
+            proc = subprocess.run(
+                cmd, capture_output=True, text=True,
+                timeout=min(args.timeout, 300),
+            )
+            stdout_text = (proc.stdout or "").strip().lower()
+            stderr_text = proc.stderr or ""
+            if stdout_text in ("sat", "unsat"):
+                blocking_phases = len([l for l in stderr_text.splitlines()
+                                      if "Blocking phase at frame" in l])
+                if blocking_phases > 0:
+                    results.append({
+                        "name": name,
+                        "path": e.path,
+                        "expected": e.expected,
+                        "blocking_phases": blocking_phases,
+                        "comp_category": ce.category,
+                    })
+                    log(f"    ✅ solved, {blocking_phases} blocking phases")
+                else:
+                    log(f"    ✅ solved but 0 blocking phases (too simple)")
+            else:
+                log(f"    ❌ result={stdout_text[:20]}")
+        except subprocess.TimeoutExpired:
+            log(f"    ⏱ timeout")
+        except Exception as exc:
+            log(f"    ❌ error: {exc}")
+
+    if results:
+        results.sort(key=lambda r: r["blocking_phases"], reverse=True)
+        log(f"\nFound {len(results)} solvable benchmarks with refinement cycles:")
+        for r in results[:15]:
+            log(f"  {r['name']:55s} {r['expected']:5s} {r['blocking_phases']:4d} blocking phases  ({r['comp_category']})")
+
+    return results
+
+
 # ── main ─────────────────────────────────────────────────────────────────
 
 
@@ -1320,15 +1396,25 @@ def main() -> int:
         args.phase = "all"
 
     phases = ["test", "download", "baseline", "llm", "report"]
-    if args.phase == "all":
+    if args.find_solvable:
+        todo = ["find-solvable"]
+    elif args.phase == "all":
         todo = phases[:]
     elif args.phase == "hwmcc":
         todo = ["download", "baseline", "llm", "report"]
+    elif args.phase == "find-solvable" or args.find_solvable:
+        todo = ["find-solvable"]
     else:
         todo = [args.phase]
 
     if args.dry_run:
         log(f"Dry run. Phases: {todo}")
+        return 0
+
+    # ── phase: find-solvable ──
+    if "find-solvable" in todo:
+        run_phase_download(args)  # need CSVs for competition data
+        run_find_solvable(args)
         return 0
 
     # ── phase: test ──
