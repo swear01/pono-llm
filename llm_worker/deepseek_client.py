@@ -134,7 +134,7 @@ class DeepSeekClient:
                     {"role": "user", "content": prompt},
                 ],
                 temperature=0.3,
-                max_tokens=8192,
+                max_tokens=32768,
                 **extra,
             )
         except Exception as e:
@@ -171,7 +171,7 @@ class DeepSeekClient:
                 {"role": "user", "content": prompt},
             ],
             "temperature": 0.3,
-            "max_tokens": 8192,
+            "max_tokens": 32768,
         }).encode()
 
         headers = {
