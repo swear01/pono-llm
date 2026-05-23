@@ -12,6 +12,7 @@
 #pragma once
 
 #include <cstddef>
+#include <deque>
 #include <fstream>
 #include <string>
 #include <unordered_map>
@@ -175,6 +176,9 @@ class LLMGeneralizer
   void store_last_cti_cube(const smt::TermVec & cube_children);
   const smt::TermVec & last_cti_cube() const { return last_cti_cube_; }
 
+  // Retrieve next matched CTI cube for candidate pairing (FIFO)
+  smt::TermVec pop_next_cti_cube();
+
   GeneralizationStats stats_;
 
  private:
@@ -193,6 +197,10 @@ class LLMGeneralizer
 
   // Stored CTI cube children for candidate pairing
   smt::TermVec last_cti_cube_;
+
+  // Recent CTI cubes for matching late-arriving LLM candidates
+  std::deque<smt::TermVec> stored_cti_cubes_;
+  static const size_t kMaxStoredCubes = 20;
 
   // Dedup set to avoid sending duplicate CTI contexts
   std::unordered_set<std::string> sent_ctx_hashes_;

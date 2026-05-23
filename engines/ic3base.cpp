@@ -1696,10 +1696,12 @@ void IC3Base::process_llm_candidates()
       continue;
     }
 
-    // For cube-subset: convert candidate to blocking clause using stored CTI
-    if (cand.type == LLMCandidate::CUBE_SUBSET && !last_cube.empty()) {
-      // Reconstruct the CTI cube from stored children
-      IC3Formula cti_cube = ic3formula_conjunction(last_cube);
+    // For cube-subset: convert candidate using FIFO CTI cube queue
+    TermVec cube_vec = last_cube.empty()
+                           ? llm_gen_->pop_next_cti_cube()
+                           : last_cube;
+    if (cand.type == LLMCandidate::CUBE_SUBSET && !cube_vec.empty()) {
+      IC3Formula cti_cube = ic3formula_conjunction(cube_vec);
       IC3Formula blocking = cube_subset_to_blocking(cti_cube, cand);
 
       // Check that the blocking clause actually blocks the CTI

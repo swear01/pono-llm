@@ -587,6 +587,20 @@ void LLMGeneralizer::log_stats() const
 void LLMGeneralizer::store_last_cti_cube(const TermVec & cube_children)
 {
   last_cti_cube_ = cube_children;
+  stored_cti_cubes_.push_back(cube_children);
+  if (stored_cti_cubes_.size() > kMaxStoredCubes) {
+    stored_cti_cubes_.pop_front();
+  }
+}
+
+TermVec LLMGeneralizer::pop_next_cti_cube()
+{
+  if (!stored_cti_cubes_.empty()) {
+    TermVec cube = stored_cti_cubes_.front();
+    stored_cti_cubes_.pop_front();
+    return cube;
+  }
+  return last_cti_cube_;
 }
 
 }  // namespace pono
