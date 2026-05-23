@@ -1507,6 +1507,65 @@ void IC3Base::process_offline_llm_for_cti(const CTIContext & ctx,
   if (!diffs.empty()) {
     llm_gen_->write_repair_request(ctx, proposal, diffs);
   }
+
+  LLMIdCandidate repair;
+  if (!llm_gen_->get_repair(ctx.cti_id, repair)) return;
+
+  std::set<size_t> repaired_keep(proposal.keep_ids.begin(),
+                                 proposal.keep_ids.end());
+  for (size_t id : repair.add_back_ids) {
+    repaired_keep.insert(id);
+  }
+  std::vector<size_t> repaired_keep_ids(repaired_keep.begin(),
+                                        repaired_keep.end());
+
+  IC3Formula repaired_cube = cube_from_keep_ids(cube, repaired_keep_ids);
+  IC3Formula repaired_blocking = blocking_from_keep_ids(cube, repaired_keep_ids);
+  if (repaired_cube.children.empty() || repaired_blocking.children.empty()) {
+    llm_gen_->write_replay_result(ctx.cti_id,
+                                  "repair_rejected_schema",
+                                  ctx.frame_idx,
+                                  cube.children.size(),
+                                  0,
+                                  "empty repaired candidate cube");
+    return;
+  }
+  if (check_intersects_initial(repaired_cube.term)) {
+    llm_gen_->write_replay_result(ctx.cti_id,
+                                  "repair_rejected_initial",
+                                  ctx.frame_idx,
+                                  cube.children.size(),
+                                  repaired_cube.children.size(),
+                                  "repaired candidate intersects initial states");
+    return;
+  }
+
+  std::vector<size_t> remaining_drop;
+  for (size_t id : proposal.drop_ids) {
+    if (!repaired_keep.count(id)) remaining_drop.push_back(id);
+  }
+
+  std::vector<LLMWitnessDiff> repair_diffs;
+  bool repair_ok = check_llm_candidate_with_witness(
+      ctx.frame_idx, repaired_cube, ctx, remaining_drop, repair_diffs);
+  if (repair_ok) {
+    constrain_frame(ctx.frame_idx, repaired_blocking, true);
+    llm_gen_->stats_.num_accepted++;
+    llm_gen_->write_replay_result(ctx.cti_id,
+                                  "repair_accepted",
+                                  ctx.frame_idx,
+                                  cube.children.size(),
+                                  repaired_cube.children.size(),
+                                  repair.short_reason);
+  } else {
+    llm_gen_->write_replay_result(
+        ctx.cti_id,
+        "repair_sat_failed",
+        ctx.frame_idx,
+        cube.children.size(),
+        repaired_cube.children.size(),
+        "repair still includes a reachable successor");
+  }
 }
 
 IC3Formula IC3Base::cube_subset_to_blocking(const IC3Formula & cube,
