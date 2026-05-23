@@ -261,6 +261,66 @@ void LLMGeneralizer::write_static_context(
   fout << "}\n";
 }
 
+void LLMGeneralizer::write_replay_result(const std::string & cti_id,
+                                         const std::string & status,
+                                         size_t frame_idx,
+                                         size_t original_size,
+                                         size_t candidate_size,
+                                         const std::string & reason)
+{
+  ensure_dir_exists(replay_dir_);
+  const bool repair_status = status.find("repair_") == 0;
+  const std::string out_path =
+      replay_dir_
+      + (repair_status ? "/repair_replay_results.jsonl"
+                       : "/proposal_replay_results.jsonl");
+  std::ofstream fout(out_path, std::ios::app);
+  if (!fout.is_open()) return;
+
+  fout << "{\"schema_version\":1,";
+  fout << "\"cti_id\":\"" << escape_json(cti_id) << "\",";
+  fout << "\"status\":\"" << escape_json(status) << "\",";
+  fout << "\"frame\":" << frame_idx << ",";
+  fout << "\"original_size\":" << original_size << ",";
+  fout << "\"candidate_size\":" << candidate_size << ",";
+  fout << "\"reason\":\"" << escape_json(reason) << "\"}\n";
+}
+
+void LLMGeneralizer::write_repair_request(
+    const CTIContext & ctx,
+    const LLMIdCandidate & failed,
+    const std::vector<LLMWitnessDiff> & diffs)
+{
+  ensure_dir_exists(replay_dir_);
+  std::ofstream fout(replay_dir_ + "/repair_requests.jsonl", std::ios::app);
+  if (!fout.is_open()) return;
+
+  fout << "{\"schema_version\":1,";
+  fout << "\"cti_id\":\"" << escape_json(ctx.cti_id) << "\",";
+  fout << "\"frame\":" << ctx.frame_idx << ",";
+  fout << "\"failed_keep_ids\":[";
+  for (size_t i = 0; i < failed.keep_ids.size(); ++i) {
+    if (i) fout << ",";
+    fout << failed.keep_ids[i];
+  }
+  fout << "],\"failed_drop_ids\":[";
+  for (size_t i = 0; i < failed.drop_ids.size(); ++i) {
+    if (i) fout << ",";
+    fout << failed.drop_ids[i];
+  }
+  fout << "],\"sat_witness_diff\":[";
+  for (size_t i = 0; i < diffs.size(); ++i) {
+    if (i) fout << ",";
+    fout << "{\"literal_id\":" << diffs[i].literal_id << ",";
+    fout << "\"cti_literal\":\"" << escape_json(diffs[i].cti_literal)
+         << "\",";
+    fout << "\"witness_value\":\"" << escape_json(diffs[i].witness_value)
+         << "\",";
+    fout << "\"effect\":\"" << escape_json(diffs[i].effect) << "\"}";
+  }
+  fout << "]}\n";
+}
+
 string LLMGeneralizer::escape_json(const string & s) const
 {
   ostringstream out;

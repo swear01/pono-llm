@@ -629,6 +629,17 @@ class IC3Base : public SafetyProver
   void write_llm_static_context_once();
   void process_offline_llm_for_cti(const CTIContext & ctx,
                                    const IC3Formula & cube);
+  void process_pending_offline_llm_cti();
+  IC3Formula cube_from_keep_ids(const IC3Formula & cube,
+                                const std::vector<size_t> & keep_ids) const;
+  IC3Formula blocking_from_keep_ids(
+      const IC3Formula & cube, const std::vector<size_t> & keep_ids) const;
+  bool check_llm_candidate_with_witness(
+      size_t frame_idx,
+      const IC3Formula & candidate_cube,
+      const CTIContext & ctx,
+      const std::vector<size_t> & dropped_ids,
+      std::vector<LLMWitnessDiff> & witness_diffs);
 
   /** Validate a single LLM candidate lemma and insert if it passes
    *  @param cand the candidate lemma
@@ -651,6 +662,9 @@ class IC3Base : public SafetyProver
                                      const LLMCandidate & cand) const;
 
   bool llm_static_context_written_ = false;
+  bool pending_offline_cti_ = false;
+  CTIContext pending_offline_ctx_;
+  IC3Formula pending_offline_cube_;
 };
 
 }  // namespace pono
