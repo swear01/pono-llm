@@ -115,13 +115,17 @@ enum LLMGenMode
 {
   LLM_GEN_NONE = 0,
   LLM_GEN_SEED_ONLY,
-  LLM_GEN_ASYNC_CTI
+  LLM_GEN_ASYNC_CTI,
+  LLM_GEN_OFFLINE_DUMP,
+  LLM_GEN_OFFLINE_CHECK
 };
 
 const std::unordered_map<std::string, LLMGenMode> str2llmgenmode({
     { "none", LLM_GEN_NONE },
     { "seed-only", LLM_GEN_SEED_ONLY },
     { "async-cti", LLM_GEN_ASYNC_CTI },
+    { "offline-dump", LLM_GEN_OFFLINE_DUMP },
+    { "offline-check", LLM_GEN_OFFLINE_CHECK },
 });
 
 // LLM candidate language option
@@ -237,7 +241,12 @@ class PonoOptions
         klive_lockstep_bmc_(default_klive_lockstep_bmc_),
         llm_gen_mode_(default_llm_gen_mode_),
         llm_candidate_language_(default_llm_candidate_language_),
-        llm_accepted_budget_(default_llm_accepted_budget_)
+        llm_accepted_budget_(default_llm_accepted_budget_),
+        llm_model_(default_llm_model_),
+        llm_log_path_(default_llm_log_path_),
+        llm_request_path_(default_llm_request_path_),
+        llm_response_path_(default_llm_response_path_),
+        llm_replay_dir_(default_llm_replay_dir_)
   {
   }
 
@@ -426,6 +435,7 @@ class PonoOptions
   std::string llm_log_path_;
   std::string llm_request_path_;   // JSONL request output path
   std::string llm_response_path_;  // JSONL response poll path
+  std::string llm_replay_dir_;     // directory for offline replay artifacts
 
  private:
   // Default options
@@ -526,6 +536,7 @@ class PonoOptions
   inline static const std::string default_llm_log_path_;
   inline static const std::string default_llm_request_path_;
   inline static const std::string default_llm_response_path_;
+  inline static const std::string default_llm_replay_dir_;
 };
 
 // Useful functions for printing etc...

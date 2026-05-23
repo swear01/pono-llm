@@ -128,6 +128,7 @@ enum optionIndex
   LLM_LOG_PATH,
   LLM_REQUEST_PATH,
   LLM_RESPONSE_PATH,
+  LLM_REPLAY_DIR,
 };
 
 struct Arg : public option::Arg
@@ -784,7 +785,7 @@ const option::Descriptor usage[] = {
     "llm-gen-mode",
     Arg::NonEmpty,
     "  --llm-gen-mode \tLLM generalization mode: none (default), seed-only, "
-    "async-cti" },
+    "async-cti, offline-dump, offline-check" },
   { LLM_CANDIDATE_LANGUAGE,
     0,
     "",
@@ -823,6 +824,12 @@ const option::Descriptor usage[] = {
     "llm-resp-path",
     Arg::NonEmpty,
     "  --llm-resp-path \tPath for JSONL candidate response input" },
+  { LLM_REPLAY_DIR,
+    0,
+    "",
+    "llm-replay-dir",
+    Arg::NonEmpty,
+    "  --llm-replay-dir \tDirectory for offline LLM replay artifacts" },
   { 0, 0, 0, 0, 0, 0 }
 };
 /*********************************** end Option Handling setup
@@ -1182,6 +1189,7 @@ ProverResult PonoOptions::parse_and_set_options(int argc,
         case LLM_LOG_PATH: llm_log_path_ = opt.arg; break;
         case LLM_REQUEST_PATH: llm_request_path_ = opt.arg; break;
         case LLM_RESPONSE_PATH: llm_response_path_ = opt.arg; break;
+        case LLM_REPLAY_DIR: llm_replay_dir_ = opt.arg; break;
         case UNKNOWN_OPTION:
           // not possible because Arg::Unknown returns ARG_ILLEGAL
           // which aborts the parse with an error
