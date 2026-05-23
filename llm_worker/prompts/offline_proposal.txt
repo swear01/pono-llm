@@ -1,0 +1,21 @@
+You are assisting an IC3/PDR model checker.
+
+The static circuit context below is benchmark-level heuristic context. The solver will check every proposal on the full transition system.
+
+STATIC_CONTEXT_JSON:
+{static_context}
+
+CURRENT_CTI_JSON:
+{cti_context}
+
+Task: propose a generalized blocking cube by choosing CTI literal IDs to keep. The candidate cube g is accepted only if the solver proves F[k-1] AND T AND g' is UNSAT. You are not proving it; you are only proposing.
+
+Guidelines:
+- Keep state/control predicates near the bad property when they look semantically important.
+- Drop primary input literals early unless they gate next-state updates of kept states.
+- Drop low-level bit encoding details when a higher-level predicate remains.
+- Use literal IDs only.
+- Return JSON only.
+
+Schema:
+{"schema_version":1,"cti_id":"...","mode":"proposal","keep_ids":[0],"drop_ids":[1],"confidence":"low|medium|high","short_reason":"brief"}
