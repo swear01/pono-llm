@@ -183,3 +183,45 @@ LLM_STATS accepted=3 rejected=12 errors=0 requests=47 candidates=15 schema_fail=
 ```
 
 benchmark runner 解析此行填入 CSV。
+
+## Offline LLM Repair Replay
+
+Offline replay is the experimental path for testing whether LLM proposals can become solver-accepted IC3/PDR lemmas without blocking the live IC3 loop on LLM latency.
+
+Workflow:
+
+```text
+1. Pono offline-dump
+   -> static_context.json
+   -> cti_contexts.jsonl
+
+2. Python propose
+   -> proposals.jsonl
+
+3. Pono offline-check
+   -> proposal_replay_results.jsonl
+   -> repair_requests.jsonl
+
+4. Python repair
+   -> repairs.jsonl
+
+5. Pono offline-check
+   -> repair_replay_results.jsonl
+
+6. Python summarize
+   -> summary.json
+```
+
+The static context is heuristic prompt input only. Every accepted lemma is checked by Pono with the full transition relation and the live PDR frame sequence.
+
+Example:
+
+```bash
+REPLAY=llm_replay/foo
+build/pono -e ic3ia --llm-gen-mode offline-dump --llm-replay-dir "$REPLAY" foo.btor2
+python3 llm_worker/offline_repair_driver.py propose --replay-dir "$REPLAY" --model deepseek/deepseek-v4-pro
+build/pono -e ic3ia --llm-gen-mode offline-check --llm-replay-dir "$REPLAY" foo.btor2
+python3 llm_worker/offline_repair_driver.py repair --replay-dir "$REPLAY" --model deepseek/deepseek-v4-pro
+build/pono -e ic3ia --llm-gen-mode offline-check --llm-replay-dir "$REPLAY" foo.btor2
+python3 llm_worker/offline_repair_driver.py summarize --replay-dir "$REPLAY"
+```
