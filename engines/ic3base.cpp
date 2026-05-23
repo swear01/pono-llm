@@ -1252,27 +1252,84 @@ std::vector<CTILiteral> IC3Base::collect_cti_literals(
   assert(!cube.disjunction);
   for (const auto & child : cube.children) {
     CTILiteral lit;
+    lit.id = lits.size();
     lit.term = child;
     if (child->get_op() == smt::Not) {
       smt::Term inner = *(child->begin());
       lit.varname = simplify_cti_literal(inner);
+      lit.expr = lit.varname + " = false";
       lit.value = "false";
     } else {
       lit.varname = simplify_cti_literal(child);
+      lit.expr = lit.varname + " = true";
       lit.value = "true";
     }
     // Truncate very long simplified strings
     if (lit.varname.size() > 200) {
       lit.varname = lit.varname.substr(0, 197) + "...";
     }
+    if (lit.expr.size() > 260) {
+      lit.expr = lit.expr.substr(0, 257) + "...";
+    }
+    lit.kind = "unknown";
+    lit.signals.push_back(lit.varname);
     lits.push_back(lit);
   }
   return lits;
 }
 
+void IC3Base::write_llm_static_context_once()
+{
+  if (!llm_gen_ || llm_static_context_written_) return;
+  if (!llm_gen_->is_offline_dump() && !llm_gen_->is_offline_check()) return;
+
+  std::vector<CTILiteral> states;
+  std::vector<CTILiteral> inputs;
+
+  for (const auto & sv : ts_.statevars()) {
+    CTILiteral lit;
+    lit.id = states.size();
+    lit.varname = simplify_cti_literal(sv);
+    lit.expr = lit.varname;
+    lit.kind = "state";
+    lit.signals.push_back(lit.varname);
+    lit.term = sv;
+    states.push_back(lit);
+  }
+
+  for (const auto & iv : ts_.inputvars()) {
+    CTILiteral lit;
+    lit.id = inputs.size();
+    lit.varname = simplify_cti_literal(iv);
+    lit.expr = lit.varname;
+    lit.kind = "input";
+    lit.signals.push_back(lit.varname);
+    lit.term = iv;
+    inputs.push_back(lit);
+  }
+
+  std::vector<std::string> updates;
+  for (const auto & kv : ts_.state_updates()) {
+    updates.push_back(simplify_cti_literal(kv.first) + "' = "
+                      + simplify_cti_literal(kv.second));
+    if (updates.size() >= 200) break;
+  }
+
+  std::string bad_expr = simplify_cti_literal(bad_);
+  llm_gen_->write_static_context(
+      "pono-benchmark", bad_expr, states, inputs, updates);
+  llm_static_context_written_ = true;
+}
+
 void IC3Base::capture_cti_context(size_t frame_idx, const IC3Formula & cube)
 {
-  if (!llm_gen_ || !llm_gen_->is_async_cti()) return;
+  if (!llm_gen_) return;
+  if (!llm_gen_->is_async_cti() && !llm_gen_->is_offline_dump()
+      && !llm_gen_->is_offline_check()) {
+    return;
+  }
+
+  write_llm_static_context_once();
 
   CTIContext ctx;
   ctx.frame_idx = frame_idx;
@@ -1280,11 +1337,26 @@ void IC3Base::capture_cti_context(size_t frame_idx, const IC3Formula & cube)
   ctx.property_name = raw_prop.size() > 200 ? raw_prop.substr(0, 197) + "..."
                                             : raw_prop;
   ctx.literals = collect_cti_literals(cube);
+  ctx.cti_id = llm_gen_->make_cti_id(frame_idx, ctx.literals);
 
   // Store the cube children for later candidate pairing
   llm_gen_->store_last_cti_cube(cube.children);
 
-  llm_gen_->write_cti_context(ctx);
+  if (llm_gen_->is_async_cti()) {
+    llm_gen_->write_cti_context(ctx);
+  } else if (llm_gen_->is_offline_dump()) {
+    llm_gen_->write_offline_cti_context(ctx);
+  } else if (llm_gen_->is_offline_check()) {
+    llm_gen_->write_offline_cti_context(ctx);
+    process_offline_llm_for_cti(ctx, cube);
+  }
+}
+
+void IC3Base::process_offline_llm_for_cti(const CTIContext & ctx,
+                                          const IC3Formula & cube)
+{
+  (void)ctx;
+  (void)cube;
 }
 
 IC3Formula IC3Base::cube_subset_to_blocking(const IC3Formula & cube,

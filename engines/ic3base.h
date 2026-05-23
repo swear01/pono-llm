@@ -626,6 +626,9 @@ class IC3Base : public SafetyProver
    *  @param cube the CTI cube (conjunction of literals)
    */
   void capture_cti_context(size_t frame_idx, const IC3Formula & cube);
+  void write_llm_static_context_once();
+  void process_offline_llm_for_cti(const CTIContext & ctx,
+                                   const IC3Formula & cube);
 
   /** Validate a single LLM candidate lemma and insert if it passes
    *  @param cand the candidate lemma
@@ -646,6 +649,8 @@ class IC3Base : public SafetyProver
    */
   IC3Formula cube_subset_to_blocking(const IC3Formula & cube,
                                      const LLMCandidate & cand) const;
+
+  bool llm_static_context_written_ = false;
 };
 
 }  // namespace pono

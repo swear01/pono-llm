@@ -10,6 +10,8 @@
 #include <iomanip>
 #include <sstream>
 #include <stdexcept>
+#include <sys/stat.h>
+#include <sys/types.h>
 
 #include "utils/logger.h"
 
@@ -53,6 +55,19 @@ static std::string parse_string_field(const std::string & line,
   size_t end = line.find("\"", pos + 1);
   if (end == std::string::npos) return "";
   return line.substr(pos + 1, end - pos - 1);
+}
+
+static void ensure_dir_exists(const std::string & path)
+{
+  if (path.empty()) return;
+  std::string cur;
+  for (char c : path) {
+    cur.push_back(c);
+    if (c == '/') {
+      if (cur.size() > 1) mkdir(cur.c_str(), 0775);
+    }
+  }
+  mkdir(path.c_str(), 0775);
 }
 
 LLMGeneralizer::LLMGeneralizer(PonoOptions opts, const SmtSolver & solver)
@@ -165,6 +180,85 @@ bool LLMGeneralizer::get_repair(const std::string & cti_id,
   if (it == repairs_.end()) return false;
   out = it->second;
   return true;
+}
+
+void LLMGeneralizer::write_offline_cti_context(const CTIContext & ctx)
+{
+  ensure_dir_exists(replay_dir_);
+  std::ofstream fout(replay_dir_ + "/cti_contexts.jsonl", std::ios::app);
+  if (!fout.is_open()) {
+    logger.log(
+        0, "LLMGeneralizer: cannot write offline CTI contexts in {}", replay_dir_);
+    return;
+  }
+
+  fout << "{\"schema_version\":1,";
+  fout << "\"cti_id\":\"" << escape_json(ctx.cti_id) << "\",";
+  fout << "\"frame\":" << ctx.frame_idx << ",";
+  fout << "\"property\":\"" << escape_json(ctx.property_name) << "\",";
+  fout << "\"literals\":[";
+  for (size_t i = 0; i < ctx.literals.size(); ++i) {
+    const auto & lit = ctx.literals[i];
+    if (i) fout << ",";
+    fout << "{\"id\":" << lit.id << ",";
+    fout << "\"expr\":\"" << escape_json(lit.expr) << "\",";
+    fout << "\"varname\":\"" << escape_json(lit.varname) << "\",";
+    fout << "\"value\":\"" << escape_json(lit.value) << "\",";
+    fout << "\"kind\":\"" << escape_json(lit.kind) << "\",";
+    fout << "\"signals\":[";
+    for (size_t j = 0; j < lit.signals.size(); ++j) {
+      if (j) fout << ",";
+      fout << "\"" << escape_json(lit.signals[j]) << "\"";
+    }
+    fout << "]}";
+  }
+  fout << "]}\n";
+  stats_.num_requests++;
+}
+
+void LLMGeneralizer::write_static_context(
+    const std::string & benchmark_name,
+    const std::string & bad_expr,
+    const std::vector<CTILiteral> & states,
+    const std::vector<CTILiteral> & inputs,
+    const std::vector<std::string> & state_updates)
+{
+  ensure_dir_exists(replay_dir_);
+  std::ofstream fout(replay_dir_ + "/static_context.json");
+  if (!fout.is_open()) {
+    logger.log(
+        0, "LLMGeneralizer: cannot write static context in {}", replay_dir_);
+    return;
+  }
+
+  fout << "{\n";
+  fout << "  \"schema_version\": 1,\n";
+  fout << "  \"benchmark\": \"" << escape_json(benchmark_name) << "\",\n";
+  fout << "  \"property\": {\"bad_expr\": \"" << escape_json(bad_expr)
+       << "\"},\n";
+
+  auto emit_lits = [&](const char * name,
+                       const std::vector<CTILiteral> & vars) {
+    fout << "  \"" << name << "\": [";
+    for (size_t i = 0; i < vars.size(); ++i) {
+      if (i) fout << ",";
+      fout << "{\"name\":\"" << escape_json(vars[i].varname)
+           << "\",\"width\":1}";
+    }
+    fout << "],\n";
+  };
+
+  emit_lits("states", states);
+  emit_lits("inputs", inputs);
+  fout << "  \"state_updates\": [";
+  for (size_t i = 0; i < state_updates.size(); ++i) {
+    if (i) fout << ",";
+    fout << "\"" << escape_json(state_updates[i]) << "\"";
+  }
+  fout << "],\n";
+  fout << "  \"notes\": [\"All LLM candidates are checked on the full "
+          "transition system.\"]\n";
+  fout << "}\n";
 }
 
 string LLMGeneralizer::escape_json(const string & s) const
