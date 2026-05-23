@@ -14,6 +14,7 @@
 #include <cstddef>
 #include <fstream>
 #include <string>
+#include <unordered_map>
 #include <unordered_set>
 #include <vector>
 
@@ -24,13 +25,18 @@ namespace pono {
 
 struct CTILiteral
 {
+  size_t id = 0;
   std::string varname;
+  std::string expr;
   std::string value;
+  std::string kind;
+  std::vector<std::string> signals;
   smt::Term term;
 };
 
 struct CTIContext
 {
+  std::string cti_id;
   size_t frame_idx;
   std::vector<CTILiteral> literals;
   std::string property_name;
@@ -56,6 +62,25 @@ struct LLMCandidate
 
   // parsed SMT term (if applicable)
   smt::Term parsed_term;
+};
+
+struct LLMIdCandidate
+{
+  std::string cti_id;
+  std::vector<size_t> keep_ids;
+  std::vector<size_t> drop_ids;
+  std::vector<size_t> add_back_ids;
+  std::string mode;
+  std::string confidence;
+  std::string short_reason;
+};
+
+struct LLMWitnessDiff
+{
+  size_t literal_id;
+  std::string cti_literal;
+  std::string witness_value;
+  std::string effect;
 };
 
 struct LLMValidationResult
@@ -115,6 +140,33 @@ class LLMGeneralizer
   bool enabled() const;
   bool is_async_cti() const;
   bool is_seed_only() const;
+  bool is_offline_dump() const;
+  bool is_offline_check() const;
+
+  std::string replay_dir() const { return replay_dir_; }
+  std::string make_cti_id(size_t frame_idx,
+                          const std::vector<CTILiteral> & literals) const;
+
+  void write_static_context(const std::string & benchmark_name,
+                            const std::string & bad_expr,
+                            const std::vector<CTILiteral> & states,
+                            const std::vector<CTILiteral> & inputs,
+                            const std::vector<std::string> & state_updates);
+  void write_offline_cti_context(const CTIContext & ctx);
+
+  void load_offline_records();
+  bool get_proposal(const std::string & cti_id, LLMIdCandidate & out) const;
+  bool get_repair(const std::string & cti_id, LLMIdCandidate & out) const;
+
+  void write_replay_result(const std::string & cti_id,
+                           const std::string & status,
+                           size_t frame_idx,
+                           size_t original_size,
+                           size_t candidate_size,
+                           const std::string & reason);
+  void write_repair_request(const CTIContext & ctx,
+                            const LLMIdCandidate & failed,
+                            const std::vector<LLMWitnessDiff> & diffs);
 
   const GeneralizationStats & stats() const { return stats_; }
   void log_stats() const;
@@ -135,13 +187,18 @@ class LLMGeneralizer
   std::string request_path_;
   std::string response_path_;
   std::string log_path_;
+  std::string replay_dir_;
   std::streampos last_response_pos_;
+  bool offline_records_loaded_;
 
   // Stored CTI cube children for candidate pairing
   smt::TermVec last_cti_cube_;
 
   // Dedup set to avoid sending duplicate CTI contexts
   std::unordered_set<std::string> sent_ctx_hashes_;
+
+  std::unordered_map<std::string, LLMIdCandidate> proposals_;
+  std::unordered_map<std::string, LLMIdCandidate> repairs_;
 };
 
 }  // namespace pono

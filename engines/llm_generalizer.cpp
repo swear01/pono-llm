@@ -7,6 +7,7 @@
 
 #include <cassert>
 #include <fstream>
+#include <iomanip>
 #include <sstream>
 #include <stdexcept>
 
@@ -17,10 +18,48 @@ using namespace std;
 
 namespace pono {
 
+static std::vector<size_t> parse_size_array_field(const std::string & line,
+                                                  const std::string & field)
+{
+  std::vector<size_t> out;
+  size_t pos = line.find("\"" + field + "\"");
+  if (pos == std::string::npos) return out;
+  pos = line.find("[", pos);
+  if (pos == std::string::npos) return out;
+  size_t end = line.find("]", pos);
+  if (end == std::string::npos) return out;
+  std::string arr = line.substr(pos + 1, end - pos - 1);
+  std::stringstream ss(arr);
+  std::string item;
+  while (std::getline(ss, item, ',')) {
+    size_t first = item.find_first_of("0123456789");
+    if (first == std::string::npos) continue;
+    size_t last = item.find_last_of("0123456789");
+    out.push_back(
+        static_cast<size_t>(std::stoul(item.substr(first, last - first + 1))));
+  }
+  return out;
+}
+
+static std::string parse_string_field(const std::string & line,
+                                      const std::string & field)
+{
+  size_t pos = line.find("\"" + field + "\"");
+  if (pos == std::string::npos) return "";
+  pos = line.find(":", pos);
+  if (pos == std::string::npos) return "";
+  pos = line.find("\"", pos);
+  if (pos == std::string::npos) return "";
+  size_t end = line.find("\"", pos + 1);
+  if (end == std::string::npos) return "";
+  return line.substr(pos + 1, end - pos - 1);
+}
+
 LLMGeneralizer::LLMGeneralizer(PonoOptions opts, const SmtSolver & solver)
-    : opts_(opts),
+      : opts_(opts),
       solver_(solver),
-      last_response_pos_(0)
+      last_response_pos_(0),
+      offline_records_loaded_(false)
 {
   request_path_ = opts_.llm_request_path_.empty()
                       ? "/tmp/pono_llm_requests.jsonl"
@@ -30,6 +69,8 @@ LLMGeneralizer::LLMGeneralizer(PonoOptions opts, const SmtSolver & solver)
                        : opts_.llm_response_path_;
   log_path_ = opts_.llm_log_path_.empty() ? "/tmp/pono_llm_log.jsonl"
                                           : opts_.llm_log_path_;
+  replay_dir_ = opts_.llm_replay_dir_.empty() ? "llm_replay/default"
+                                              : opts_.llm_replay_dir_;
   stats_.reset();
 }
 
@@ -46,6 +87,84 @@ bool LLMGeneralizer::is_async_cti() const
 bool LLMGeneralizer::is_seed_only() const
 {
   return opts_.llm_gen_mode_ == LLM_GEN_SEED_ONLY;
+}
+
+bool LLMGeneralizer::is_offline_dump() const
+{
+  return opts_.llm_gen_mode_ == LLM_GEN_OFFLINE_DUMP;
+}
+
+bool LLMGeneralizer::is_offline_check() const
+{
+  return opts_.llm_gen_mode_ == LLM_GEN_OFFLINE_CHECK;
+}
+
+std::string LLMGeneralizer::make_cti_id(
+    size_t frame_idx, const std::vector<CTILiteral> & literals) const
+{
+  std::string raw = "frame" + std::to_string(frame_idx) + ":";
+  for (const auto & lit : literals) {
+    raw += std::to_string(lit.id) + "=" + lit.varname + "=" + lit.value + ";";
+  }
+
+  uint64_t hash = 1469598103934665603ULL;  // FNV-1a
+  for (unsigned char c : raw) {
+    hash ^= static_cast<uint64_t>(c);
+    hash *= 1099511628211ULL;
+  }
+
+  std::ostringstream out;
+  out << "frame" << frame_idx << ":" << std::hex << hash;
+  return out.str();
+}
+
+void LLMGeneralizer::load_offline_records()
+{
+  if (offline_records_loaded_) return;
+  offline_records_loaded_ = true;
+
+  auto load_file = [&](const std::string & path,
+                       std::unordered_map<std::string, LLMIdCandidate> & dst) {
+    std::ifstream fin(path);
+    if (!fin.is_open()) return;
+    std::string line;
+    while (std::getline(fin, line)) {
+      if (line.empty() || line[0] != '{') continue;
+      LLMIdCandidate cand;
+      cand.cti_id = parse_string_field(line, "cti_id");
+      cand.mode = parse_string_field(line, "mode");
+      cand.confidence = parse_string_field(line, "confidence");
+      cand.short_reason = parse_string_field(line, "short_reason");
+      cand.keep_ids = parse_size_array_field(line, "keep_ids");
+      if (cand.keep_ids.empty()) {
+        cand.keep_ids = parse_size_array_field(line, "base_keep_ids");
+      }
+      cand.drop_ids = parse_size_array_field(line, "drop_ids");
+      cand.add_back_ids = parse_size_array_field(line, "add_back_ids");
+      if (!cand.cti_id.empty()) dst[cand.cti_id] = cand;
+    }
+  };
+
+  load_file(replay_dir_ + "/proposals.jsonl", proposals_);
+  load_file(replay_dir_ + "/repairs.jsonl", repairs_);
+}
+
+bool LLMGeneralizer::get_proposal(const std::string & cti_id,
+                                  LLMIdCandidate & out) const
+{
+  auto it = proposals_.find(cti_id);
+  if (it == proposals_.end()) return false;
+  out = it->second;
+  return true;
+}
+
+bool LLMGeneralizer::get_repair(const std::string & cti_id,
+                                LLMIdCandidate & out) const
+{
+  auto it = repairs_.find(cti_id);
+  if (it == repairs_.end()) return false;
+  out = it->second;
+  return true;
 }
 
 string LLMGeneralizer::escape_json(const string & s) const
