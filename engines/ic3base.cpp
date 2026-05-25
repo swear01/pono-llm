@@ -1594,8 +1594,12 @@ IC3Formula IC3Base::cube_subset_to_blocking(
 {
   // Extract variable names from "varname = value" keep_literals
   std::set<std::string> keep_varnames;
+  logger.log(0, "LLM diagnostic: cand.keep_literals size={}", cand.keep_literals.size());
+  for (size_t li = 0; li < cand.keep_literals.size() && li < 3; ++li) {
+    logger.log(0, "  raw keep[{}]: [{}]", li, cand.keep_literals[li].substr(0, 120));
+  }
   for (const auto & lit_str : cand.keep_literals) {
-    size_t eq_pos = lit_str.find(" = ");
+    size_t eq_pos = lit_str.rfind(" = ");
     if (eq_pos != std::string::npos) {
       keep_varnames.insert(lit_str.substr(0, eq_pos));
     } else {
@@ -1624,7 +1628,30 @@ IC3Formula IC3Base::cube_subset_to_blocking(
     }
   }
   if (block_children.empty()) {
-    return IC3Formula();  // null — caught by caller
+    // Diagnostic: show what was compared
+    logger.log(0, "LLM candidate: no keep_literals matched cube children");
+    logger.log(0, "  keep_varnames ({} items):", keep_varnames.size());
+    for (const auto & kv : keep_varnames) {
+      logger.log(0, "    KEEP: [{}]", kv.substr(0, 150));
+    }
+    logger.log(0, "  cube names (first 3 of {}):", cube.children.size());
+    size_t shown = 0;
+    for (size_t i = 0; i < cube.children.size() && shown < 3; ++i) {
+      std::string n;
+      if (use_precomputed) {
+        n = precomputed_names[i];
+      } else {
+        const auto & child = cube.children[i];
+        if (child->get_op() == smt::Not) {
+          n = simplify_cti_literal(*(child->begin()));
+        } else {
+          n = simplify_cti_literal(child);
+        }
+      }
+      logger.log(0, "    CUBE[{}]: [{}]", i, n.substr(0, 150));
+      ++shown;
+    }
+    return IC3Formula();
   }
   return ic3formula_disjunction(block_children);
 }

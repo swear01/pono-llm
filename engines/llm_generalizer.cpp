@@ -395,6 +395,25 @@ void LLMGeneralizer::write_cti_context(const CTIContext & ctx)
              ctx.literals.size());
 }
 
+// Find matching ] for array parsing, skipping brackets inside string literals
+static size_t find_matching_bracket(const string & line, size_t open_pos)
+{
+  int depth = 0;
+  bool in_string = false;
+  for (size_t i = open_pos; i < line.size(); ++i) {
+    if (line[i] == '"') {
+      in_string = !in_string;
+    } else if (!in_string) {
+      if (line[i] == '[') depth++;
+      else if (line[i] == ']') {
+        depth--;
+        if (depth == 0) return i;
+      }
+    }
+  }
+  return string::npos;
+}
+
 vector<LLMCandidate> LLMGeneralizer::poll_candidates()
 {
   vector<LLMCandidate> candidates;
@@ -449,21 +468,23 @@ vector<LLMCandidate> LLMGeneralizer::poll_candidates()
       }
     }
 
-    // parse keep_literals array
+    // parse keep_literals array (with proper bracket counting for nested [])
     pos = line.find("\"keep_literals\"");
     if (pos != string::npos) {
       pos = line.find("[", pos);
       if (pos != string::npos) {
-        size_t end = line.find("]", pos);
-        string arr = line.substr(pos + 1, end - pos - 1);
-        size_t start = 0;
-        while (true) {
-          start = arr.find("\"", start);
-          if (start == string::npos) break;
-          size_t e = arr.find("\"", start + 1);
-          if (e == string::npos) break;
-          cand.keep_literals.push_back(arr.substr(start + 1, e - start - 1));
-          start = e + 1;
+        size_t end = find_matching_bracket(line, pos);
+        if (end != string::npos) {
+          string arr = line.substr(pos + 1, end - pos - 1);
+          size_t start = 0;
+          while (true) {
+            start = arr.find("\"", start);
+            if (start == string::npos) break;
+            size_t e = arr.find("\"", start + 1);
+            if (e == string::npos) break;
+            cand.keep_literals.push_back(arr.substr(start + 1, e - start - 1));
+            start = e + 1;
+          }
         }
       }
     }
@@ -473,16 +494,18 @@ vector<LLMCandidate> LLMGeneralizer::poll_candidates()
     if (pos != string::npos) {
       pos = line.find("[", pos);
       if (pos != string::npos) {
-        size_t end = line.find("]", pos);
-        string arr = line.substr(pos + 1, end - pos - 1);
-        size_t start = 0;
-        while (true) {
-          start = arr.find("\"", start);
-          if (start == string::npos) break;
-          size_t e = arr.find("\"", start + 1);
-          if (e == string::npos) break;
-          cand.drop_literals.push_back(arr.substr(start + 1, e - start - 1));
-          start = e + 1;
+        size_t end = find_matching_bracket(line, pos);
+        if (end != string::npos) {
+          string arr = line.substr(pos + 1, end - pos - 1);
+          size_t start = 0;
+          while (true) {
+            start = arr.find("\"", start);
+            if (start == string::npos) break;
+            size_t e = arr.find("\"", start + 1);
+            if (e == string::npos) break;
+            cand.drop_literals.push_back(arr.substr(start + 1, e - start - 1));
+            start = e + 1;
+          }
         }
       }
     }
