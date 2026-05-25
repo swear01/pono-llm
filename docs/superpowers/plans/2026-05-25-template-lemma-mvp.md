@@ -21,13 +21,16 @@
 - [x] Task 6: `run_mvp.py` — MVP driver (context dump + LLM call + validation)
 
 ### Remaining
-- [ ] Task 7: Fix import paths, run E2E with V4 Pro, inspect candidates
-- [ ] Task 8: Record results in candidate report format
-- [ ] Task 9: Manual rel_ind_check on top candidates
+- [x] Task 7: Fix import paths, run E2E with V4 Pro → DONE (1057f86)
+- [x] Task 8: Record results → DONE (candidate: `input10 = state434`, equality schema, but is CTI literal)
+- [x] Task 9: Manual rel_ind_check → SKIPPED (candidate was CTI literal, not novel lemma)
+- [ ] Task 10: Add design context to prompt — extract IC3IA initial predicates as design relationships
+- [ ] Task 11: Improve clause cluster quality — add semantic signal annotation
+- [ ] Task 12: Re-run with enriched context, compare lemma quality
 
-### Blocked by
-- `template_prompt.py` has `from llm_worker.lemma_schema` (wrong import path — fixed to `from lemma_schema` but needs verification)
-- `run_mvp.py` sidecar subprocess may not inherit Python path correctly
+### Key Finding (Task 7)
+Without transition slice, LLM defaults to finding common CTI literals.
+Need to add design-level context (initial predicates, signal relationships).
 
 ---
 ## File Structure (Actual)
