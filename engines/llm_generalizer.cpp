@@ -603,4 +603,82 @@ TermVec LLMGeneralizer::pop_next_cti_cube()
   return last_cti_cube_;
 }
 
+void LLMGeneralizer::buffer_cti_context(size_t frame_idx,
+                                         const CTIContext & ctx)
+{
+  BufferedCTI bcti;
+  bcti.ctx = ctx;
+  bcti.cube_children = last_cti_cube_;
+  frame_cti_buffer_[frame_idx].push_back(bcti);
+}
+
+bool LLMGeneralizer::has_buffered_cti(size_t frame_idx) const
+{
+  auto it = frame_cti_buffer_.find(frame_idx);
+  return it != frame_cti_buffer_.end() && !it->second.empty();
+}
+
+void LLMGeneralizer::flush_frame_batch(size_t frame_idx)
+{
+  auto it = frame_cti_buffer_.find(frame_idx);
+  if (it == frame_cti_buffer_.end() || it->second.empty()) return;
+
+  const auto & ctis = it->second;
+  stats_.num_requests++;
+
+  ofstream fout(request_path_, ios::app);
+  if (!fout.is_open()) {
+    logger.log(0, "LLMGeneralizer: cannot open request file {}", request_path_);
+    return;
+  }
+
+  ostringstream json;
+  json << "{";
+  json << "\"frame_idx\":" << frame_idx << ",";
+  json << "\"batch_size\":" << ctis.size() << ",";
+  json << "\"model\":\""
+       << escape_json(opts_.llm_model_.empty() ? "deepseek-v4-pro"
+                                               : opts_.llm_model_)
+       << "\",";
+  json << "\"candidate_language\":\""
+       << (opts_.llm_candidate_language_ == LLMCandidateLanguage::CUBE_SUBSET
+               ? "cube-subset"
+               : (opts_.llm_candidate_language_ == LLMCandidateLanguage::QF_SMT
+                      ? "qf-smt"
+                      : "predicate-relation"))
+       << "\",";
+  json << "\"cti_contexts\":[";
+  for (size_t j = 0; j < ctis.size(); ++j) {
+    if (j > 0) json << ",";
+    const auto & ctx = ctis[j].ctx;
+    json << "{";
+    json << "\"property\":\""
+         << escape_json(ctx.property_name.size() > 200
+                            ? ctx.property_name.substr(0, 197) + "..."
+                            : ctx.property_name)
+         << "\",";
+    json << "\"literals\":[";
+    for (size_t k = 0; k < ctx.literals.size(); ++k) {
+      if (k > 0) json << ",";
+      json << "{\"varname\":\"" << escape_json(ctx.literals[k].varname)
+           << "\",";
+      json << "\"value\":\"" << escape_json(ctx.literals[k].value) << "\"}";
+    }
+    json << "]}";
+  }
+  json << "]";
+  json << "}";
+  json << "\n";
+
+  fout << json.str();
+  fout.close();
+
+  frame_cti_buffer_.erase(it);
+
+  logger.log(1,
+             "LLMGeneralizer: flushed frame {} batch ({} CTIs)",
+             frame_idx,
+             ctis.size());
+}
+
 }  // namespace pono

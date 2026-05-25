@@ -450,6 +450,12 @@ ProverResult IC3Base::step(int i)
     return ProverResult::FALSE;
   }
 
+  // Flush batched CTI contexts for this frame to LLM
+  if (llm_gen_ && llm_gen_->is_async_cti()
+      && llm_gen_->has_buffered_cti(frontier_idx())) {
+    llm_gen_->flush_frame_batch(frontier_idx());
+  }
+
   process_llm_candidates();  // poll for LLM candidates after blocking phase
 
   logger.log(1, "Propagation phase at frame {}", i);
@@ -1347,7 +1353,8 @@ void IC3Base::capture_cti_context(size_t frame_idx, const IC3Formula & cube)
   llm_gen_->store_last_cti_cube(cube.children);
 
   if (llm_gen_->is_async_cti()) {
-    llm_gen_->write_cti_context(ctx);
+    // Buffer CTI context per frame for multi-CTI batching
+    llm_gen_->buffer_cti_context(frame_idx, ctx);
   } else if (llm_gen_->is_offline_dump()) {
     llm_gen_->write_offline_cti_context(ctx);
   } else if (llm_gen_->is_offline_check()) {
@@ -1672,7 +1679,7 @@ void IC3Base::process_llm_candidates()
   // Use the stored last CTI cube for cube-subset conversion
   const TermVec & last_cube = llm_gen_->last_cti_cube();
 
-  for (auto & cand : candidates) {
+    for (auto & cand : candidates) {
     LLMValidationResult vres = validate_llm_candidate(cand);
 
     if (!vres.schema_ok) {
@@ -1700,6 +1707,11 @@ void IC3Base::process_llm_candidates()
     TermVec cube_vec = last_cube.empty()
                            ? llm_gen_->pop_next_cti_cube()
                            : last_cube;
+    logger.log(0,
+               "LLM candidate: last_cube_empty={} cube_vec_empty={} type={}",
+               last_cube.empty(),
+               cube_vec.empty(),
+               (int)cand.type);
     if (cand.type == LLMCandidate::CUBE_SUBSET && !cube_vec.empty()) {
       IC3Formula cti_cube = ic3formula_conjunction(cube_vec);
       IC3Formula blocking = cube_subset_to_blocking(cti_cube, cand);
@@ -1707,7 +1719,7 @@ void IC3Base::process_llm_candidates()
       // Check that the blocking clause actually blocks the CTI
       // e.g. it's not trivial (should have at least one literal)
       if (blocking.children.empty()) {
-        logger.log(1, "LLM candidate: empty blocking clause, skipping");
+        logger.log(0, "LLM candidate: empty blocking clause, skipping");
         continue;
       }
 
@@ -1763,9 +1775,9 @@ void IC3Base::process_llm_candidates()
                  blocking.children.size());
       logger.log(1, "  Rationale: {}", cand.rationale);
     } else if (cand.type != LLMCandidate::CUBE_SUBSET) {
-      logger.log(1, "LLM candidate: qf-smt/predicate-relation not yet supported");
+      logger.log(0, "LLM candidate: qf-smt/predicate-relation not yet supported");
     } else {
-      logger.log(1, "LLM candidate: no stored CTI cube for conversion");
+      logger.log(0, "LLM candidate: no stored CTI cube for conversion");
     }
   }
 }

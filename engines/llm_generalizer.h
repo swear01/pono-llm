@@ -14,6 +14,7 @@
 #include <cstddef>
 #include <deque>
 #include <fstream>
+#include <map>
 #include <string>
 #include <unordered_map>
 #include <unordered_set>
@@ -179,6 +180,11 @@ class LLMGeneralizer
   // Retrieve next matched CTI cube for candidate pairing (FIFO)
   smt::TermVec pop_next_cti_cube();
 
+  // Multi-CTI batching: buffer CTIs per frame, flush as one LLM request
+  void buffer_cti_context(size_t frame_idx, const CTIContext & ctx);
+  void flush_frame_batch(size_t frame_idx);
+  bool has_buffered_cti(size_t frame_idx) const;
+
   GeneralizationStats stats_;
 
  private:
@@ -197,6 +203,13 @@ class LLMGeneralizer
 
   // Stored CTI cube children for candidate pairing
   smt::TermVec last_cti_cube_;
+
+  // Multi-CTI batching: buffer CTIs per frame before sending to LLM
+  struct BufferedCTI {
+    CTIContext ctx;
+    smt::TermVec cube_children;
+  };
+  std::map<size_t, std::vector<BufferedCTI>> frame_cti_buffer_;
 
   // Recent CTI cubes for matching late-arriving LLM candidates
   std::deque<smt::TermVec> stored_cti_cubes_;

@@ -71,6 +71,44 @@ Respond with a JSON object:
 }}"""
 
 
+def build_multi_cti_prompt(ctx: CTIContext) -> str:
+    """Build a prompt for multi-CTI batch generalization.
+    The request has cti_contexts array with multiple CTI cubes from the same frame."""
+    frame_idx = ctx.get("frame_idx", 0)
+    batch_size = ctx.get("batch_size", len(ctx.get("cti_contexts", [])))
+    cti_contexts = ctx.get("cti_contexts", [])
+
+    cti_blocks = []
+    for i, cti in enumerate(cti_contexts, 1):
+        lit_lines = [f"    {l['varname']} = {l['value']}" for l in cti["literals"]]
+        cti_blocks.append(
+            f"CTI #{i} ({len(cti['literals'])} literals):\n" + "\n".join(lit_lines)
+        )
+    cti_text = "\n\n".join(cti_blocks)
+
+    return f"""You are a hardware verification assistant. Below are {batch_size} counterexample-to-induction (CTI) cubes from frame {frame_idx} of a PDR/IC3 model checker. All CTIs come from the same frame and violate the same property.
+
+Your task: identify the COMMON CORE literals that appear across all CTIs. These common literals likely represent the essential unreachable condition. Drop literals that differ across CTIs or are incidental details.
+
+CTI cubes:
+{cti_text}
+
+Guidelines:
+- Literals present in ALL CTIs with identical values: likely CORE → KEEP
+- Literals present in some CTIs but not others: incidental → DROP
+- Literals with different values across CTIs: data-dependent → DROP
+- Primary input literals: usually DROP unless they gate critical state transitions
+
+Respond with a JSON object containing keep_literals and drop_literals in the EXACT format shown in the CTIs:
+{{
+  "type": "cube_subset",
+  "frame_hint": {frame_idx},
+  "keep_literals": ["varname = value", ...],
+  "drop_literals": ["varname = value", ...],
+  "rationale": "Brief explanation of which patterns are core vs incidental"
+}}"""
+
+
 def process_request(
     client: DeepSeekClient,
     ctx: CTIContext,
@@ -79,7 +117,10 @@ def process_request(
     default_model: str = "",
 ) -> LLMCandidate:
     """Process a single CTI context through the LLM."""
-    if candidate_language == "cube-subset":
+    # Detect multi-CTI batch requests
+    if "cti_contexts" in ctx:
+        prompt = build_multi_cti_prompt(ctx)
+    elif candidate_language == "cube-subset":
         template = load_prompt("cube_subset", prompt_dir)
         prompt = build_cube_subset_prompt(ctx, template)
     elif candidate_language == "qf-smt":
