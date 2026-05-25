@@ -117,6 +117,28 @@ def process_request(
     default_model: str = "",
 ) -> LLMCandidate:
     """Process a single CTI context through the LLM."""
+    # Template-guided mode: expects a full context bundle
+    if candidate_language == "template-guided":
+        from template_prompt import build_template_prompt
+        prompt = build_template_prompt(ctx)
+        response_text, token_count, latency_ms = client.call(
+            prompt, model_name=default_model or None
+        )
+        try:
+            result = json.loads(response_text)
+            candidates = result.get("candidates", [])
+            # Return first candidate as the response; multi-candidate support deferred
+            candidate = candidates[0] if candidates else {}
+            candidate.setdefault("type", "template_lemma")
+        except (json.JSONDecodeError, KeyError, IndexError):
+            candidate = {
+                "type": "template_lemma",
+                "lemma": "",
+                "schema": "unknown",
+                "rationale": "LLM response was not valid JSON",
+            }
+        return candidate, token_count, latency_ms
+
     # Detect multi-CTI batch requests
     if "cti_contexts" in ctx:
         prompt = build_multi_cti_prompt(ctx)
@@ -173,7 +195,7 @@ def main():
     parser.add_argument(
         "--candidate-language",
         default="cube-subset",
-        choices=["cube-subset", "qf-smt", "predicate-relation"],
+        choices=["cube-subset", "qf-smt", "predicate-relation", "template-guided"],
         help="LLM output restriction level",
     )
     parser.add_argument(
