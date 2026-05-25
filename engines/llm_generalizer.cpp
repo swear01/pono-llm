@@ -584,20 +584,31 @@ void LLMGeneralizer::log_stats() const
              stats_.num_budget_skip);
 }
 
-void LLMGeneralizer::store_last_cti_cube(const TermVec & cube_children)
+void LLMGeneralizer::store_last_cti_cube(
+    const TermVec & cube_children,
+    const std::vector<std::string> & names)
 {
   last_cti_cube_ = cube_children;
   stored_cti_cubes_.push_back(cube_children);
+  stored_cti_names_.push_back(names);
   if (stored_cti_cubes_.size() > kMaxStoredCubes) {
     stored_cti_cubes_.pop_front();
+    stored_cti_names_.pop_front();
   }
 }
 
-TermVec LLMGeneralizer::pop_next_cti_cube()
+TermVec LLMGeneralizer::pop_next_cti_cube(
+    std::vector<std::string> * out_names)
 {
   if (!stored_cti_cubes_.empty()) {
     TermVec cube = stored_cti_cubes_.front();
     stored_cti_cubes_.pop_front();
+    if (out_names && !stored_cti_names_.empty()) {
+      *out_names = stored_cti_names_.front();
+      stored_cti_names_.pop_front();
+    } else if (!stored_cti_names_.empty()) {
+      stored_cti_names_.pop_front();
+    }
     return cube;
   }
   return last_cti_cube_;

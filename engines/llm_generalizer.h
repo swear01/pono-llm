@@ -173,12 +173,14 @@ class LLMGeneralizer
   const GeneralizationStats & stats() const { return stats_; }
   void log_stats() const;
 
-  // Store the last CTI cube for candidate pairing (cube-subset mode)
-  void store_last_cti_cube(const smt::TermVec & cube_children);
+  // Store the last CTI cube + simplified names for candidate pairing
+  void store_last_cti_cube(const smt::TermVec & cube_children,
+                           const std::vector<std::string> & names);
   const smt::TermVec & last_cti_cube() const { return last_cti_cube_; }
 
-  // Retrieve next matched CTI cube for candidate pairing (FIFO)
-  smt::TermVec pop_next_cti_cube();
+  // Retrieve next matched CTI cube (FIFO), optionally return precomputed names
+  smt::TermVec pop_next_cti_cube(
+      std::vector<std::string> * out_names = nullptr);
 
   // Multi-CTI batching: buffer CTIs per frame, flush as one LLM request
   void buffer_cti_context(size_t frame_idx, const CTIContext & ctx);
@@ -213,7 +215,8 @@ class LLMGeneralizer
 
   // Recent CTI cubes for matching late-arriving LLM candidates
   std::deque<smt::TermVec> stored_cti_cubes_;
-  static const size_t kMaxStoredCubes = 20;
+  std::deque<std::vector<std::string>> stored_cti_names_;
+  static const size_t kMaxStoredCubes = 50;
 
   // Dedup set to avoid sending duplicate CTI contexts
   std::unordered_set<std::string> sent_ctx_hashes_;

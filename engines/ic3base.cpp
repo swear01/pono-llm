@@ -1349,8 +1349,13 @@ void IC3Base::capture_cti_context(size_t frame_idx, const IC3Formula & cube)
   ctx.literals = collect_cti_literals(cube);
   ctx.cti_id = llm_gen_->make_cti_id(frame_idx, ctx.literals);
 
-  // Store the cube children for later candidate pairing
-  llm_gen_->store_last_cti_cube(cube.children);
+  // Store the cube children + simplified names for later candidate pairing
+  std::vector<std::string> names;
+  names.reserve(ctx.literals.size());
+  for (const auto & lit : ctx.literals) {
+    names.push_back(lit.varname);
+  }
+  llm_gen_->store_last_cti_cube(cube.children, names);
 
   if (llm_gen_->is_async_cti()) {
     // Buffer CTI context per frame for multi-CTI batching
@@ -1578,6 +1583,14 @@ void IC3Base::process_offline_llm_for_cti(const CTIContext & ctx,
 IC3Formula IC3Base::cube_subset_to_blocking(const IC3Formula & cube,
                                             const LLMCandidate & cand) const
 {
+  return cube_subset_to_blocking(cube, cand, {});
+}
+
+IC3Formula IC3Base::cube_subset_to_blocking(
+    const IC3Formula & cube,
+    const LLMCandidate & cand,
+    const std::vector<std::string> & precomputed_names) const
+{
   // Extract variable names from "varname = value" keep_literals
   std::set<std::string> keep_varnames;
   for (const auto & lit_str : cand.keep_literals) {
@@ -1589,16 +1602,24 @@ IC3Formula IC3Base::cube_subset_to_blocking(const IC3Formula & cube,
     }
   }
   TermVec block_children;
-  for (const auto & child : cube.children) {
+  bool use_precomputed =
+      !precomputed_names.empty()
+      && precomputed_names.size() == cube.children.size();
+  for (size_t i = 0; i < cube.children.size(); ++i) {
     std::string name;
-    if (child->get_op() == smt::Not) {
-      smt::Term inner = *(child->begin());
-      name = simplify_cti_literal(inner);
+    if (use_precomputed) {
+      name = precomputed_names[i];
     } else {
-      name = simplify_cti_literal(child);
+      const auto & child = cube.children[i];
+      if (child->get_op() == smt::Not) {
+        smt::Term inner = *(child->begin());
+        name = simplify_cti_literal(inner);
+      } else {
+        name = simplify_cti_literal(child);
+      }
     }
     if (keep_varnames.find(name) != keep_varnames.end()) {
-      block_children.push_back(smart_not(child));
+      block_children.push_back(smart_not(cube.children[i]));
     }
   }
   return ic3formula_disjunction(block_children);
@@ -1676,10 +1697,7 @@ void IC3Base::process_llm_candidates()
   auto candidates = llm_gen_->poll_candidates();
   if (candidates.empty()) return;
 
-  // Use the stored last CTI cube for cube-subset conversion
-  const TermVec & last_cube = llm_gen_->last_cti_cube();
-
-    for (auto & cand : candidates) {
+  for (auto & cand : candidates) {
     LLMValidationResult vres = validate_llm_candidate(cand);
 
     if (!vres.schema_ok) {
@@ -1703,18 +1721,15 @@ void IC3Base::process_llm_candidates()
       continue;
     }
 
-    // For cube-subset: convert candidate using FIFO CTI cube queue
-    TermVec cube_vec = last_cube.empty()
-                           ? llm_gen_->pop_next_cti_cube()
-                           : last_cube;
-    logger.log(0,
-               "LLM candidate: last_cube_empty={} cube_vec_empty={} type={}",
-               last_cube.empty(),
-               cube_vec.empty(),
-               (int)cand.type);
+    // For cube-subset: pop next CTI cube from FIFO queue
+    std::vector<std::string> precomp_names;
+    TermVec cube_vec = llm_gen_->pop_next_cti_cube(&precomp_names);
     if (cand.type == LLMCandidate::CUBE_SUBSET && !cube_vec.empty()) {
       IC3Formula cti_cube = ic3formula_conjunction(cube_vec);
-      IC3Formula blocking = cube_subset_to_blocking(cti_cube, cand);
+      IC3Formula blocking =
+          precomp_names.empty()
+              ? cube_subset_to_blocking(cti_cube, cand)
+              : cube_subset_to_blocking(cti_cube, cand, precomp_names);
 
       // Check that the blocking clause actually blocks the CTI
       // e.g. it's not trivial (should have at least one literal)
@@ -1775,9 +1790,9 @@ void IC3Base::process_llm_candidates()
                  blocking.children.size());
       logger.log(1, "  Rationale: {}", cand.rationale);
     } else if (cand.type != LLMCandidate::CUBE_SUBSET) {
-      logger.log(0, "LLM candidate: qf-smt/predicate-relation not yet supported");
+      logger.log(1, "LLM candidate: qf-smt/predicate-relation not yet supported");
     } else {
-      logger.log(0, "LLM candidate: no stored CTI cube for conversion");
+      logger.log(1, "LLM candidate: no stored CTI cube for conversion");
     }
   }
 }

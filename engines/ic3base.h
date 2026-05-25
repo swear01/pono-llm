@@ -660,6 +660,10 @@ class IC3Base : public SafetyProver
    */
   IC3Formula cube_subset_to_blocking(const IC3Formula & cube,
                                      const LLMCandidate & cand) const;
+  IC3Formula cube_subset_to_blocking(
+      const IC3Formula & cube,
+      const LLMCandidate & cand,
+      const std::vector<std::string> & precomputed_names) const;
 
   bool llm_static_context_written_ = false;
   bool pending_offline_cti_ = false;
