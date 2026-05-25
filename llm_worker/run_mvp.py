@@ -24,7 +24,7 @@ from pathlib import Path
 from typing import Dict, List, Optional
 
 
-def build_context_bundle(req_path: str) -> Dict:
+def build_context_bundle(req_path: str, pono_stderr: str = "") -> Dict:
     """Read CTI contexts from JSONL and build a context bundle."""
     with open(req_path) as f:
         lines = [json.loads(line) for line in f if line.strip()]
@@ -43,6 +43,7 @@ def build_context_bundle(req_path: str) -> Dict:
         extract_hot_variables,
         format_variable_list,
         summarize_cti_batch,
+        extract_design_context,
     )
 
     all_lits = []
@@ -73,7 +74,14 @@ def build_context_bundle(req_path: str) -> Dict:
     clusters = cluster_clauses(clauses, min_shared=1) if clauses else []
     clusters_text = format_all_clusters_for_prompt(clusters)
 
+    # Design context from pono stderr
+    design_ctx = {}
+    if pono_stderr and os.path.exists(pono_stderr):
+        with open(pono_stderr) as f:
+            design_ctx = extract_design_context(f.read())
+
     return {
+        "design_context": design_ctx,
         "target_property": first.get("property", "(unknown)")[:500],
         "hot_variables": format_variable_list(hot_vars),
         "transition_slice": "(transition slice extraction deferred — "
@@ -153,6 +161,7 @@ def validate_candidates(resp_path: str, cti_lits: List[dict]) -> List[dict]:
 def main():
     parser = argparse.ArgumentParser(description="MVP: template-guided lemma generation")
     parser.add_argument("--req-path", help="Path to JSONL CTI context file from pono")
+    parser.add_argument("--pono-stderr", default="", help="Path to pono stderr log (for design context)")
     parser.add_argument("--output", default="/tmp/mvp_report.json", help="Output report path")
     parser.add_argument("--model", default="deepseek-v4-pro", help="LLM model")
     parser.add_argument("--timeout", type=int, default=600, help="Sidecar timeout (seconds)")
@@ -164,7 +173,7 @@ def main():
 
     # Step 1: Build context bundle
     print("=== Step 1: Building context bundle ===")
-    ctx = build_context_bundle(args.req_path)
+    ctx = build_context_bundle(args.req_path, args.pono_stderr)
     print(f"  Hot variables: {ctx['hot_variables'].count(chr(10))} variables")
     print(f"  CTI batch: {len(ctx['cti_batch'])} chars")
     print(f"  Clusters: {ctx['clause_clusters'][:100]}...")

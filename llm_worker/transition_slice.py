@@ -53,6 +53,29 @@ def format_variable_list(hot_vars: List[str]) -> str:
     return "\n".join(f"  - {v}" for v in hot_vars)
 
 
+def extract_design_context(stderr_log: str) -> dict:
+    """Extract design-level proof context from pono IC3IA verbose output.
+    Returns structured dict with property, signal counts, initial predicates.
+    """
+    import re
+
+    blocking_pos = stderr_log.find("Blocking phase")
+    init_section = stderr_log[:blocking_pos] if blocking_pos > 0 else stderr_log
+
+    preds_raw = re.findall(r"adding predicate (.+?)(?:\n|$)", init_section)
+    prop_match = re.search(r"Solving property: (.+?)(?:\n|$)", stderr_log)
+    states = sorted(set(re.findall(r"\b(state\d+)\b", init_section)))
+    inputs = sorted(set(re.findall(r"\b(input\d+)\b", init_section)))
+
+    return {
+        "property": prop_match.group(1)[:500] if prop_match else "(unknown)",
+        "num_state_vars": len(states),
+        "num_input_vars": len(inputs),
+        "num_init_predicates": len(preds_raw),
+        "initial_predicates": preds_raw[:10],
+    }
+
+
 def summarize_cti_batch(
     ctis: List[dict],
     max_ctis: int = 10,

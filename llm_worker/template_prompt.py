@@ -52,6 +52,17 @@ def build_template_prompt(context: Dict) -> str:
         target = target[:497] + "..."
     parts.append(f"TARGET PROPERTY (to prove unreachable):\n{target}")
 
+    # ── Design context (global proof information) ──
+    dc = context.get("design_context", {})
+    if dc:
+        parts.append(
+            "DESIGN CONTEXT (global proof information):\n"
+            f"  State variables: {dc.get('num_state_vars', '?')}\n"
+            f"  Input variables: {dc.get('num_input_vars', '?')}\n"
+            f"  Initial predicates: {dc.get('num_init_predicates', '?')}\n"
+            f"  Property summary: {dc.get('property', '?')[:200]}"
+        )
+
     # ── Hot variables ──
     parts.append(
         "HOT VARIABLES (relevant state/input signals):\n"
