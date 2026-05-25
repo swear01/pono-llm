@@ -72,13 +72,18 @@ def build_context_bundle(req_path: str, pono_stderr: str = "") -> Dict:
                 clauses.append(tokens)
 
     clusters = cluster_clauses(clauses, min_shared=1) if clauses else []
-    clusters_text = format_all_clusters_for_prompt(clusters)
 
     # Design context from pono stderr
     design_ctx = {}
     if pono_stderr and os.path.exists(pono_stderr):
         with open(pono_stderr) as f:
             design_ctx = extract_design_context(f.read())
+
+    clusters_text = format_all_clusters_for_prompt(
+        clusters,
+        property_text=design_ctx.get("property", ""),
+        init_preds=design_ctx.get("initial_predicates", []),
+    )
 
     return {
         "design_context": design_ctx,
