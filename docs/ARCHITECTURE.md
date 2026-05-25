@@ -225,3 +225,83 @@ python3 llm_worker/offline_repair_driver.py repair --replay-dir "$REPLAY" --mode
 build/pono -e ic3ia --llm-gen-mode offline-check --llm-replay-dir "$REPLAY" foo.btor2
 python3 llm_worker/offline_repair_driver.py summarize --replay-dir "$REPLAY"
 ```
+
+---
+
+# Phase 2: Template-Guided Semantic Lemma Generation (Design)
+
+## 方向轉變
+
+Phase 1 的 cube-subset approach（LLM 從單一 CTI cube 挑 subset）已證明瓶頸：
+LLM 做的是 correlation（找共通 literal），不是 causality（找 inductive invariant）。
+所有 candidate 在 `rel_ind_check` 失敗。
+
+Phase 2 改為 **template-guided semantic lemma generation**：
+LLM 不再挑 CTI subset，而是依照固定 lemma schema 生成全新的 semantic lemma，
+目標是一次 subsume 多個 frame clause，減少 clause 數量、加速 IC3 收斂。
+
+## Lemma Schema（LLM 允許的語法）
+
+```
+1. Range:          lo <= x <= hi
+2. Equality:       x = y, x != y
+3. Offset:         x = y + c, x <= y + c
+4. Bit-slice:      x[hi:lo] = c, x[hi:lo] = y[hi:lo]
+5. Mutual exclusion:  !(a && b), at_most_one(a, b, c)
+6. Mode implication:  mode = M => constraint
+7. Guarded invariant: guard => relation
+8. Counter summary:   enable => next(x) = x + 1
+```
+
+禁止：quantifiers, arrays, memory select/store, arbitrary nested BV。
+
+## LLM Context Bundle
+
+不再只給 CTI cube。Prompt 包含：
+
+| Component | Purpose |
+|-----------|---------|
+| Target property | 要證明什麼 |
+| Hot variables | CTI 相關信號及其語意含義 |
+| Transition slice (pseudo-code) | relevant next-state logic |
+| CTI batch | 多個 CTI，標注 common/varying literals |
+| Frame clause clusters | 可被 subsume 的 clause 群組 |
+| Lemma memory | 過去 accepted/rejected 的 candidate |
+
+## 三層 Validation Gate
+
+```
+LLM candidate
+  → syntax/type check
+  → BMC shallow check (Init ∧ T^0..d ∧ ¬lemma, d=3-5)
+  → relative induction check (F_k ∧ lemma ∧ T ∧ ¬lemma')
+  → subsumption check (count clauses replaced)
+```
+
+## Clause Clustering 前處理
+
+把 frame 中共享 predicate label 的 clause 分群，找 common core vs varying details。
+送到 LLM 時不只給 raw clause，而是給 cluster summary：
+「這些 clause 都在約束 mode=BUSY 且 req=1 的 state，差異只在 cnt 的 bound 不同」
+
+## LLM Output Format
+
+```json
+{
+  "candidates": [{
+    "lemma": "(=> (= mode IDLE) (= valid 0))",
+    "lemma_type": "mode implication",
+    "intuition": "valid is only raised when request is accepted; IDLE clears it",
+    "expected_subsumed_cluster": "cluster_3",
+    "variables_used": ["mode", "valid"],
+    "risk_level": "medium"
+  }]
+}
+```
+
+## MVP 計畫
+
+1. 挑一個 benchmark，手動 dump context bundle
+2. 讓 LLM 產生 5-10 個 candidate lemma
+3. 跑 formal gate（parse → BMC → induction → subsumption）
+4. 記錄成功/失敗統計
