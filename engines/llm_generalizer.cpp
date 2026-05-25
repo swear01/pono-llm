@@ -584,34 +584,56 @@ void LLMGeneralizer::log_stats() const
              stats_.num_budget_skip);
 }
 
-void LLMGeneralizer::store_last_cti_cube(
+void LLMGeneralizer::store_cti_cube_for_frame(
+    size_t frame_idx,
     const TermVec & cube_children,
     const std::vector<std::string> & names)
 {
   last_cti_cube_ = cube_children;
-  stored_cti_cubes_.push_back(cube_children);
-  stored_cti_names_.push_back(names);
-  if (stored_cti_cubes_.size() > kMaxStoredCubes) {
-    stored_cti_cubes_.pop_front();
-    stored_cti_names_.pop_front();
-  }
+  frame_stored_cubes_[frame_idx].push_back(cube_children);
+  frame_stored_names_[frame_idx].push_back(names);
 }
 
-TermVec LLMGeneralizer::pop_next_cti_cube(
+TermVec LLMGeneralizer::find_cti_cube_by_frame(
+    size_t frame_idx,
     std::vector<std::string> * out_names)
 {
-  if (!stored_cti_cubes_.empty()) {
-    TermVec cube = stored_cti_cubes_.front();
-    stored_cti_cubes_.pop_front();
-    if (out_names && !stored_cti_names_.empty()) {
-      *out_names = stored_cti_names_.front();
-      stored_cti_names_.pop_front();
-    } else if (!stored_cti_names_.empty()) {
-      stored_cti_names_.pop_front();
+  auto it = frame_stored_cubes_.find(frame_idx);
+  if (it != frame_stored_cubes_.end() && !it->second.empty()) {
+    TermVec cube = it->second.front();
+    it->second.erase(it->second.begin());
+    if (out_names) {
+      auto nit = frame_stored_names_.find(frame_idx);
+      if (nit != frame_stored_names_.end() && !nit->second.empty()) {
+        *out_names = nit->second.front();
+        nit->second.erase(nit->second.begin());
+      }
     }
     return cube;
   }
   return last_cti_cube_;
+}
+
+void LLMGeneralizer::retry_pending_candidates()
+{
+  // IC3Base::process_llm_candidates handles this via drain_pending_candidates
+}
+
+void LLMGeneralizer::store_pending_candidate(const LLMCandidate & cand)
+{
+  pending_llm_candidates_.push_back(cand);
+}
+
+std::vector<LLMCandidate> LLMGeneralizer::drain_pending_candidates()
+{
+  std::vector<LLMCandidate> ret;
+  ret.swap(pending_llm_candidates_);
+  return ret;
+}
+
+bool LLMGeneralizer::has_pending_candidates() const
+{
+  return !pending_llm_candidates_.empty();
 }
 
 void LLMGeneralizer::buffer_cti_context(size_t frame_idx,

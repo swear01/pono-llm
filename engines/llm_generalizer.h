@@ -12,7 +12,6 @@
 #pragma once
 
 #include <cstddef>
-#include <deque>
 #include <fstream>
 #include <map>
 #include <string>
@@ -173,14 +172,24 @@ class LLMGeneralizer
   const GeneralizationStats & stats() const { return stats_; }
   void log_stats() const;
 
-  // Store the last CTI cube + simplified names for candidate pairing
-  void store_last_cti_cube(const smt::TermVec & cube_children,
-                           const std::vector<std::string> & names);
+  // Store CTI cube + simplified names per frame for candidate lookup
+  void store_cti_cube_for_frame(size_t frame_idx,
+                                const smt::TermVec & cube_children,
+                                const std::vector<std::string> & names);
   const smt::TermVec & last_cti_cube() const { return last_cti_cube_; }
 
-  // Retrieve next matched CTI cube (FIFO), optionally return precomputed names
-  smt::TermVec pop_next_cti_cube(
+  // Lookup a CTI cube by frame index (returns first, removes from store)
+  smt::TermVec find_cti_cube_by_frame(
+      size_t frame_idx,
       std::vector<std::string> * out_names = nullptr);
+
+  // Retry pending candidates that previously couldn't be matched
+  void retry_pending_candidates();
+
+  // Pending candidate queue for unmatched LLM candidates (Bug fix: retry)
+  void store_pending_candidate(const LLMCandidate & cand);
+  std::vector<LLMCandidate> drain_pending_candidates();
+  bool has_pending_candidates() const;
 
   // Multi-CTI batching: buffer CTIs per frame, flush as one LLM request
   void buffer_cti_context(size_t frame_idx, const CTIContext & ctx);
@@ -213,10 +222,12 @@ class LLMGeneralizer
   };
   std::map<size_t, std::vector<BufferedCTI>> frame_cti_buffer_;
 
-  // Recent CTI cubes for matching late-arriving LLM candidates
-  std::deque<smt::TermVec> stored_cti_cubes_;
-  std::deque<std::vector<std::string>> stored_cti_names_;
-  static const size_t kMaxStoredCubes = 50;
+  // Per-frame CTI cube storage for candidate matching (Bug fix: no eviction)
+  std::map<size_t, std::vector<smt::TermVec>> frame_stored_cubes_;
+  std::map<size_t, std::vector<std::vector<std::string>>> frame_stored_names_;
+
+  // Pending candidates that couldn't be matched yet (Bug fix: retry later)
+  std::vector<LLMCandidate> pending_llm_candidates_;
 
   // Dedup set to avoid sending duplicate CTI contexts
   std::unordered_set<std::string> sent_ctx_hashes_;

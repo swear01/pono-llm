@@ -20,6 +20,7 @@
 #include <cassert>
 #include <cstddef>
 #include <set>
+#include <stdexcept>
 #include <vector>
 
 #include "core/prop.h"
@@ -1355,7 +1356,7 @@ void IC3Base::capture_cti_context(size_t frame_idx, const IC3Formula & cube)
   for (const auto & lit : ctx.literals) {
     names.push_back(lit.varname);
   }
-  llm_gen_->store_last_cti_cube(cube.children, names);
+  llm_gen_->store_cti_cube_for_frame(frame_idx, cube.children, names);
 
   if (llm_gen_->is_async_cti()) {
     // Buffer CTI context per frame for multi-CTI batching
@@ -1622,6 +1623,9 @@ IC3Formula IC3Base::cube_subset_to_blocking(
       block_children.push_back(smart_not(cube.children[i]));
     }
   }
+  if (block_children.empty()) {
+    return IC3Formula();  // null — caught by caller
+  }
   return ic3formula_disjunction(block_children);
 }
 
@@ -1695,56 +1699,70 @@ void IC3Base::process_llm_candidates()
   if (!llm_gen_ || !llm_gen_->enabled()) return;
 
   auto candidates = llm_gen_->poll_candidates();
+
+  // Merge pending candidates from previous attempts
+  auto pending = llm_gen_->drain_pending_candidates();
+  candidates.insert(candidates.end(), pending.begin(), pending.end());
+
   if (candidates.empty()) return;
 
   for (auto & cand : candidates) {
-    LLMValidationResult vres = validate_llm_candidate(cand);
+    try {
+      LLMValidationResult vres = validate_llm_candidate(cand);
 
-    if (!vres.schema_ok) {
-      llm_gen_->stats_.num_schema_fail++;
-      logger.log(1, "LLM candidate schema fail: {}", vres.error_msg);
-      continue;
-    }
-    if (!vres.parse_ok) {
-      llm_gen_->stats_.num_parse_fail++;
-      logger.log(1, "LLM candidate parse fail: {}", vres.error_msg);
-      continue;
-    }
-    if (!vres.vocab_ok) {
-      llm_gen_->stats_.num_vocab_fail++;
-      logger.log(1, "LLM candidate vocab fail: {}", vres.error_msg);
-      continue;
-    }
-    if (!vres.budget_ok) {
-      llm_gen_->stats_.num_budget_skip++;
-      logger.log(1, "LLM candidate budget skip: {}", vres.error_msg);
-      continue;
-    }
+      if (!vres.schema_ok) {
+        llm_gen_->stats_.num_schema_fail++;
+        logger.log(1, "LLM candidate schema fail: {}", vres.error_msg);
+        continue;
+      }
+      if (!vres.parse_ok) {
+        llm_gen_->stats_.num_parse_fail++;
+        logger.log(1, "LLM candidate parse fail: {}", vres.error_msg);
+        continue;
+      }
+      if (!vres.vocab_ok) {
+        llm_gen_->stats_.num_vocab_fail++;
+        logger.log(1, "LLM candidate vocab fail: {}", vres.error_msg);
+        continue;
+      }
+      if (!vres.budget_ok) {
+        llm_gen_->stats_.num_budget_skip++;
+        logger.log(1, "LLM candidate budget skip: {}", vres.error_msg);
+        continue;
+      }
 
-    // For cube-subset: pop next CTI cube from FIFO queue
-    std::vector<std::string> precomp_names;
-    TermVec cube_vec = llm_gen_->pop_next_cti_cube(&precomp_names);
-    if (cand.type == LLMCandidate::CUBE_SUBSET && !cube_vec.empty()) {
+      // Lookup CTI cube by candidate's frame_hint (per-frame map, no eviction)
+      std::vector<std::string> precomp_names;
+      TermVec cube_vec =
+          llm_gen_->find_cti_cube_by_frame(cand.frame_hint, &precomp_names);
+
+      if (cand.type != LLMCandidate::CUBE_SUBSET) {
+        logger.log(1,
+                   "LLM candidate: qf-smt/predicate-relation not yet supported");
+        continue;
+      }
+
+      if (cube_vec.empty()) {
+        // No matching CTI cube yet — store in pending queue, retry next time
+        llm_gen_->store_pending_candidate(cand);
+        continue;
+      }
+
       IC3Formula cti_cube = ic3formula_conjunction(cube_vec);
       IC3Formula blocking =
           precomp_names.empty()
               ? cube_subset_to_blocking(cti_cube, cand)
               : cube_subset_to_blocking(cti_cube, cand, precomp_names);
 
-      // Check that the blocking clause actually blocks the CTI
-      // e.g. it's not trivial (should have at least one literal)
       if (blocking.children.empty()) {
-        logger.log(0, "LLM candidate: empty blocking clause, skipping");
+        logger.log(1, "LLM candidate: empty blocking clause, skipping");
         continue;
       }
 
-      // Try to find the highest legal frame for this lemma
-      // Start from the candidate's frame_hint or the current frontier
       size_t target_frame = cand.frame_hint;
       if (target_frame == 0 || target_frame >= frames_.size()) {
         target_frame = frontier_idx();
       }
-      // Clamp to valid range
       if (target_frame >= frames_.size()) {
         target_frame = frames_.size() - 1;
       }
@@ -1752,18 +1770,13 @@ void IC3Base::process_llm_candidates()
         target_frame = 1;
       }
 
-      // Check relative inductiveness for this blocking clause
-      // The blocking clause is a disjunction; we need to check it as
-      // a frame constraint. Convert to a conjunction for rel_ind_check.
       IC3Formula check_cube = ic3formula_negate(blocking);
 
-      // Check if it's already covered by initial states
       if (check_intersects_initial(check_cube.term)) {
         logger.log(1, "LLM candidate: blocks initial states, skipping");
         continue;
       }
 
-      // Check relative inductiveness
       IC3Formula out;
       bool inductive = rel_ind_check(target_frame, check_cube, out, false);
       if (!inductive) {
@@ -1777,7 +1790,6 @@ void IC3Base::process_llm_candidates()
       vres.induction_ok = true;
       vres.legal_frame = target_frame;
 
-      // Insert into frame
       constrain_frame(target_frame, blocking, true);
 
       llm_gen_->stats_.num_accepted++;
@@ -1789,10 +1801,10 @@ void IC3Base::process_llm_candidates()
                  target_frame,
                  blocking.children.size());
       logger.log(1, "  Rationale: {}", cand.rationale);
-    } else if (cand.type != LLMCandidate::CUBE_SUBSET) {
-      logger.log(1, "LLM candidate: qf-smt/predicate-relation not yet supported");
-    } else {
-      logger.log(1, "LLM candidate: no stored CTI cube for conversion");
+    } catch (const std::exception & e) {
+      logger.log(0, "LLM candidate: exception: {}", e.what());
+    } catch (...) {
+      logger.log(0, "LLM candidate: unknown exception");
     }
   }
 }
