@@ -1,13 +1,46 @@
-# Template-Guided Semantic Lemma Generation — Implementation Plan (MVP)
+# Template-Guided Semantic Lemma Generation — MVP v0 + v0.5
 
-> **For agentic workers:** Use `subagent-driven-development` or `executing-plans` to implement this plan task-by-task.
+> **Goal:** Prove LLM can generate nontrivial, schema-valid, semantically plausible lemma candidates that are NOT merely CTI cube subsets.
 
-**Goal:** Prove LLM can generate a semantic lemma that passes induction AND subsumes multiple existing frame clauses.
+> **Scope:** context dump → prompt → LLM candidates → cheap validation → manual inspection.
+> NO automated BMC/induction gate yet. NO IC3IA loop integration yet.
 
-**Architecture:** Offline MVP — dump context from a single IC3IA run, feed to LLM via sidecar, validate candidates through three-layer gate (syntax → BMC → induction), measure subsumption. No online IC3 integration yet.
+**Architecture:** Offline MVP — Python scripts for context extraction, prompt building, candidate collection; LLM call via existing sidecar; manual evaluation.
 
-**Tech Stack:** Python 3, DeepSeek V4 Pro API, Pono IC3IA engine, SMT-Switch
+**Tech Stack:** Python 3, DeepSeek V4 Pro API, Pono IC3IA engine
 
+---
+## Execution Status (2026-05-25)
+
+### Completed
+- [x] Task 1: `lemma_schema.py` — 8 lemma families, syntax/triviality/cube-subset validation
+- [x] Task 2: `transition_slice.py` — hot variable extraction, CTI batch summarizer
+- [x] Task 3: `clause_cluster.py` — predicate-label-based clause clustering
+- [x] Task 4: `template_prompt.py` — full context bundle prompt builder
+- [x] Task 5: `sidecar.py` — added `template-guided` candidate language mode
+- [x] Task 6: `run_mvp.py` — MVP driver (context dump + LLM call + validation)
+
+### Remaining
+- [ ] Task 7: Fix import paths, run E2E with V4 Pro, inspect candidates
+- [ ] Task 8: Record results in candidate report format
+- [ ] Task 9: Manual rel_ind_check on top candidates
+
+### Blocked by
+- `template_prompt.py` has `from llm_worker.lemma_schema` (wrong import path — fixed to `from lemma_schema` but needs verification)
+- `run_mvp.py` sidecar subprocess may not inherit Python path correctly
+
+---
+## File Structure (Actual)
+
+```
+llm_worker/
+  lemma_schema.py       ← NEW+COMPLETED: 8 lemma family definitions + validation
+  transition_slice.py   ← NEW+COMPLETED: hot variable extraction + CTI summary
+  clause_cluster.py     ← NEW+COMPLETED: predicate-label-based clause clustering
+  template_prompt.py    ← NEW+COMPLETED: full context bundle prompt builder
+  run_mvp.py            ← NEW+COMPLETED: MVP driver (context → LLM → validate → report)
+  sidecar.py            ← MODIFIED: added template-guided mode
+```
 ---
 
 ## File Structure
