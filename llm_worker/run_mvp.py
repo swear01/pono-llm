@@ -201,9 +201,23 @@ def main():
 
     # Step 4: Validate
     print("\n=== Step 3: Validating candidates ===")
+
+    # Save raw response for debugging
+    if os.path.exists(resp_file):
+        with open(resp_file) as f:
+            raw = f.read()
+        raw_path = args.output.replace('.json', '_raw_response.json')
+        with open(raw_path, 'w') as f:
+            f.write(raw)
+        print(f"  Raw response: {raw_path} ({len(raw)} chars)")
+        print(f"  Raw first 500: {raw[:500]}")
+
     report = validate_candidates(resp_file, cti_literals)
 
     for r in report:
+        if "error" in r:
+            print(f"  ERROR: {r['error']}")
+            continue
         print(f"\n  Candidate: {r['id']}")
         print(f"    Lemma:      {r['lemma'][:120]}")
         print(f"    Schema:     {r['schema']} (valid={r['schema_valid']})")

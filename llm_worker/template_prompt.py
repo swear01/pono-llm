@@ -6,7 +6,7 @@ transition slice, CTI batch, clause clusters, lemma memory, allowed schemas.
 
 import json
 from typing import List, Dict, Optional
-from llm_worker.lemma_schema import get_schema_list_for_prompt, get_schema_names
+from lemma_schema import get_schema_list_for_prompt, get_schema_names
 
 
 def build_template_prompt(context: Dict) -> str:
