@@ -28,15 +28,24 @@
 - [x] Task 11: Predicate role tags → DONE (c9b5524) — input/state/equality/bound classification
 - [x] Task 12: E2E enriched → DONE (53fd7db) — lemma improved to state-only disequality
 
-### Next: MVP v1 — Transition Slice + Manual rel_ind_check
-- [ ] Task 13: Extract real transition slice from IC3IA SMT (pseudo-code next-state equations)
-- [ ] Task 14: Manual rel_ind_check on best candidate from Task 12
-- [ ] Task 15: Repair loop prototype: induction fail → witness → LLM add-back
+### Next: MVP v1 — Manual rel_ind_check first → Transition slice → Repair loop
 
-### Key Findings
-- Without transition slice, LLM defaults to common CTI literals (Task 7)
-- With design_context + predicate tags, LLM shifts to state-only lemmas (Task 12: `(not (= state434 #b1))`)
-- Transition slice is the missing link from correlation → causality
+Task 14 should come FIRST because it tells us whether the enriched-context lemma
+is a real signal or just a better-looking guess. Task 13 should be minimal (hot-variable
+dependency, not full SMT decompiler). Task 15 only if Task 14 gives meaningful failure.
+
+- [ ] **Task 14** (DO FIRST): Manual rel_ind_check on `(not (= state434 #b1))`
+  - Check: initial-state? frame consistency? rel_ind_check?
+  - Record: PASS / FAIL-trivial / FAIL-with-meaningful-CTI
+- [ ] **Task 13** (MINIMAL): Hot-variable next-state dependency extraction
+  - Only for `state434` and its dependencies in the witness
+  - Output: `{var, next_var, depends_on, raw_next_expr_simplified}`
+  - Do NOT build full SMT-to-pseudocode decompiler
+- [ ] **Task 15** (CONDITIONAL): Repair loop — only if Task 14 fails with meaningful witness
+  - Feed witness + failed lemma back to LLM
+  - Ask LLM for guarded version, weaker version, or alternative state-only lemma
+
+### Priority order: 14 → 13 → 15
 
 ---
 ## File Structure (Actual)
@@ -1173,3 +1182,192 @@ for metric, desc in [
 - [ ] **Step 4: Record results and commit**
 
 Compare quantitative metrics, note whether LLM produced state-only or state-dominant lemma (not just `input10 = state434`).
+
+
+---
+
+### Task 14: Manual rel_ind_check on Task 12 Candidate (DO FIRST)
+
+**Goal:** Determine if `(not (= state434 #b1))` is truly inductive or just a better guess.
+
+**Files:** None (manual testing)
+
+- [ ] **Step 1: Check initial states**
+
+```bash
+# Verify lemma doesn't conflict with init
+# Run pono on the benchmark, capture init state, check if lemma holds
+./build/pono -e ic3ia -k 100000 --llm-gen-mode none $BENCH 2>&1 | head -30
+# Check: does any initial predicate conflict with state434 != 1?
+```
+
+Manual check: Is `state434 = 1` reachable? Is `state434 != 1` in the initial state?
+
+- [ ] **Step 2: Convert lemma to SMT query**
+
+Convert `(not (= state434 #b1))` to an SMT assertion and check against the transition system.
+Since we can't directly inject a lemma into pono's induction check without IC3 integration,
+run a standalone SMT query:
+
+```bash
+# Check: F[0] ∧ T ∧ lemma' — is this UNSAT? (induction check)
+# This requires pono's SMT solver context, which isn't easily scriptable.
+# Alternative: run pono with the lemma manually supplied as an extra constraint.
+```
+
+- [ ] **Step 3: Classify result**
+
+| Result | Meaning | Next step |
+|--------|---------|-----------|
+| PASS | Very strong MVP signal | Do subsumption check |
+| FAIL: initial violation | LLM doesn't understand init | Need init context |
+| FAIL: induction fail with meaningful witness | Valuable for repair | Task 15 |
+| FAIL: trivial (type error, bitwidth) | Schema/encoding issue | Fix schema |
+
+- [ ] **Step 4: Record**
+
+```bash
+echo "Task 14 results: $(date)" >> docs/superpowers/plans/mvp_results.md
+# Record: lemma, result, witness (if any), classification
+```
+
+---
+
+### Task 13: Minimal Hot-Variable Transition Slice
+
+**Goal:** Extract next-state dependency info for `state434` only (not full SMT decompiler).
+
+**Files:**
+- Modify: `llm_worker/transition_slice.py` — add `extract_hot_transition()`
+- Modify: `llm_worker/run_mvp.py` — pass hot-variable transitions to context
+
+- [ ] **Step 1: Extract next-state dependencies from pono stderr**
+
+```python
+def extract_hot_transition(stderr_log: str, hot_vars: list) -> dict:
+    """Extract next-state dependency info for hot variables.
+    
+    Scans IC3IA output for 'adding predicate' lines that mention next-state relationships.
+    """
+    import re
+    result = {}
+    for var in hot_vars:
+        # Find lines mentioning this state variable in next-state context
+        pattern = rf'next\({var}\)|= {var}\.next|{var}_next'
+        matches = re.findall(rf'adding predicate .*{re.escape(var)}.*', stderr_log)
+        deps = set()
+        for m in matches:
+            for other in re.findall(r'\b(state\d+|input\d+)\b', m):
+                if other != var:
+                    deps.add(other)
+        result[var] = {
+            "next_state_var": f"{var}_next",
+            "depends_on": sorted(deps),
+            "appears_in_predicates": len(matches),
+        }
+    return result
+```
+
+- [ ] **Step 2: Format for LLM prompt**
+
+```python
+def format_hot_transition(transitions: dict) -> str:
+    """Format hot-variable transitions for LLM."""
+    lines = []
+    for var, info in transitions.items():
+        deps = ", ".join(info["depends_on"]) if info["depends_on"] else "unknown"
+        lines.append(f"  {var}: next({var}) depends on [{deps}]")
+    return "\n".join(lines) if lines else "(no transition info extracted)"
+```
+
+- [ ] **Step 3: Integrate into context bundle**
+
+In `run_mvp.py`, add to `build_context_bundle`:
+```python
+    transitions = {}
+    if pono_stderr and os.path.exists(pono_stderr):
+        with open(pono_stderr) as f:
+            stderr = f.read()
+            design_ctx = extract_design_context(stderr)
+            transitions = extract_hot_transition(stderr, hot_vars)
+
+    return {
+        ...
+        "transition_slice": format_hot_transition(transitions),
+        ...
+    }
+```
+
+- [ ] **Step 4: Test**
+
+```bash
+python3 -c "from transition_slice import extract_hot_transition; ..."
+```
+
+- [ ] **Step 5: Re-run E2E with transition info**
+
+```bash
+python3 llm_worker/run_mvp.py --req-path /tmp/mvp_final/req.jsonl \
+  --pono-stderr /tmp/mvp_final/stderr.log --output /tmp/mvp_final/report_v13.json \
+  --model deepseek-v4-pro --timeout 600
+```
+
+Compare: does lemma improve beyond `(not (= state434 #b1))`?
+
+---
+
+### Task 15: Repair Loop (Conditional on Task 14 Failure)
+
+**Goal:** If Task 14 induction fails with meaningful witness, feed it back to LLM for repair.
+
+**Files:**
+- Modify: `llm_worker/template_prompt.py` — add `build_repair_prompt()`
+- Modify: `llm_worker/run_mvp.py` — add `--repair` mode
+
+- [ ] **Step 1: Capture induction failure witness**
+
+From Task 14 manual check, record:
+- Current state values
+- Input values
+- Next state values (where lemma is violated)
+
+- [ ] **Step 2: Build repair prompt**
+
+```python
+def build_repair_prompt(failed_lemma: str, witness: dict, context: dict) -> str:
+    """Build prompt asking LLM to repair a failed lemma."""
+    return f"""Your previous lemma failed relative induction:
+
+FAILED LEMMA: {failed_lemma}
+
+WITNESS (a state where the lemma holds but its next-state version fails):
+  Current state: {witness.get('current_state', {})}
+  Input: {witness.get('input', {})}
+  Next state (violates lemma): {witness.get('next_state', {})}
+
+DIAGNOSIS: lemma is not inductive — it holds now but fails after one transition.
+
+TASK: Repair the lemma by:
+  1. Adding a guard condition from the current state
+  2. Weakening the consequent
+  3. Finding a missing precondition
+  4. Or proposing an alternative state-only lemma
+
+Allowed schemas: {get_schema_list_for_prompt()}
+Return JSON: {{"candidates": [{{"lemma": "...", "schema": "...", "intuition": "..."}}]}}
+"""
+```
+
+- [ ] **Step 3: Run repair**
+
+```bash
+export DEEPSEEK_API_KEY="sk-..."
+python3 llm_worker/run_mvp.py --repair \
+  --failed-lemma "(not (= state434 #b1))" \
+  --witness-file /tmp/mvp_final/witness.json \
+  --output /tmp/mvp_final/repair_report.json
+```
+
+- [ ] **Step 4: Compare repaired lemma**
+
+Check if repaired lemma is weaker (adds guard), different schema, or state-only.
