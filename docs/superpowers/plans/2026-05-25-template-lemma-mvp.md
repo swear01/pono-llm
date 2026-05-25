@@ -913,3 +913,207 @@ EOF
 git add docs/superpowers/plans/mvp_results.md
 git commit -m "docs: MVP test results placeholder"
 ```
+
+---
+
+### Task 10: Add Design Context from Pono Stderr
+
+**Goal:** Extract initial IC3IA predicates from pono verbose output and add to context bundle as "design context", giving LLM structural understanding of the design.
+
+**Files:**
+- Modify: `llm_worker/transition_slice.py` — add `extract_design_context()`
+- Modify: `llm_worker/run_mvp.py` — add `--pono-stderr` argument, pass to bundle
+
+- [ ] **Step 1: Add extract_design_context() to transition_slice.py**
+
+Append to `llm_worker/transition_slice.py`:
+
+```python
+def extract_design_context(stderr_log: str) -> str:
+    """Extract design-level context from pono IC3IA verbose output.
+    Captures initial predicates, property, and signal counts."""
+    import re
+    lines_out = []
+
+    blocking_pos = stderr_log.find("Blocking phase")
+    init_section = stderr_log[:blocking_pos] if blocking_pos > 0 else stderr_log
+    init_preds = re.findall(r'adding predicate (.+?)(?:\n|$)', init_section)
+
+    if init_preds:
+        lines_out.append("Initial design predicates (extracted from IC3IA init):")
+        for p in init_preds[:12]:
+            if len(p) > 180:
+                p = p[:177] + "..."
+            lines_out.append(f"  {p}")
+
+    prop_match = re.search(r'Solving property: (.+?)(?:\n|$)', stderr_log)
+    if prop_match:
+        prop = prop_match.group(1)
+        if len(prop) > 300:
+            prop = prop[:297] + "..."
+        lines_out.append(f"\nProperty to prove: {prop}")
+
+    states = set(re.findall(r'\b(state\d+)\b', init_section))
+    inputs = set(re.findall(r'\b(input\d+)\b', init_section))
+    if states or inputs:
+        lines_out.append(
+            f"\nDesign has {len(states)} state variables, {len(inputs)} input variables."
+        )
+
+    return "\n".join(lines_out) if lines_out else "(no design context extracted)"
+```
+
+- [ ] **Step 2: Add --pono-stderr to run_mvp.py**
+
+Modify `build_context_bundle` signature and the `main()` function:
+
+```python
+# In build_context_bundle:
+def build_context_bundle(req_path: str, pono_stderr: str = "") -> Dict:
+    ...
+    from transition_slice import (
+        extract_hot_variables,
+        format_variable_list,
+        summarize_cti_batch,
+        extract_design_context,
+    )
+    ...
+
+    # Design context from pono stderr (or fallback)
+    design_ctx = "(no design context available)"
+    if pono_stderr and os.path.exists(pono_stderr):
+        with open(pono_stderr) as f:
+            design_ctx = extract_design_context(f.read())
+            if not design_ctx:
+                design_ctx = "(no design context extracted from log)"
+
+    return {
+        ...
+        "transition_slice": design_ctx,
+        ...
+    }
+
+# In argparse:
+parser.add_argument("--pono-stderr", default="", help="Path to pono stderr log (for design context)")
+
+# In main():
+ctx = build_context_bundle(args.req_path, args.pono_stderr)
+```
+
+- [ ] **Step 3: Test design context extraction**
+
+```bash
+# Capture pono stderr
+timeout 10 ./build/pono -v 2 -e ic3ia -k 100000 \
+  ~/hwmcc_benchmarks/2024/btor2/2019/mann/.../arbitrated_top_n2_w32_d32_e0.btor2 \
+  2>/tmp/test_stderr.log >/dev/null &
+sleep 8; kill %1 2>/dev/null
+
+# Run MVP with design context
+python3 llm_worker/run_mvp.py --req-path /tmp/mvp_test/req.jsonl \
+  --pono-stderr /tmp/test_stderr.log --no-llm
+```
+
+Expected: "Initial design predicates..." section appears in output.
+
+- [ ] **Step 4: Commit**
+
+```bash
+git add llm_worker/transition_slice.py llm_worker/run_mvp.py
+git commit -m "feat: extract design context from pono stderr for LLM prompt"
+```
+
+---
+
+### Task 11: Improve Clause Cluster Quality
+
+**Goal:** Add semantic signal annotation to clause clusters so LLM can understand WHAT signals mean, not just their names.
+
+**Files:**
+- Modify: `llm_worker/clause_cluster.py` — add `annotate_predicates()`
+- Modify: `llm_worker/run_mvp.py` — pass design context to annotator
+
+- [ ] **Step 1: Add predicate annotation to clause_cluster.py**
+
+```python
+def annotate_predicates(
+    predicates: List[str],
+    design_context: str,
+) -> str:
+    """Add semantic hints to predicate names based on design context.
+    
+    Heuristic: if a predicate appears in the property or initial predicates,
+    it's likely a semantically meaningful signal.
+    """
+    # Simple heuristic: mark which predicates appear in design context
+    annotated = []
+    for p in predicates:
+        if p in design_context:
+            annotated.append(f"{p} (appears in design property/init predicates)")
+        else:
+            annotated.append(p)
+    return ", ".join(annotated) if len(annotated) <= 5 else (
+        ", ".join(annotated[:5]) + f", ... ({len(annotated)} total)"
+    )
+```
+
+- [ ] **Step 2: Use annotation in cluster formatting**
+
+Modify `format_cluster_for_prompt` to accept design context and annotate predicates.
+
+- [ ] **Step 3: Test and commit**
+
+```bash
+git add llm_worker/clause_cluster.py
+git commit -m "feat: add semantic annotation to clause cluster predicates"
+```
+
+---
+
+### Task 12: Re-run E2E with Enriched Context
+
+**Goal:** Run full MVP pipeline with design context + annotated clusters, compare lemma quality.
+
+- [ ] **Step 1: Capture pono stderr and CTI requests simultaneously**
+
+```bash
+export DEEPSEEK_API_KEY="sk-..."
+BENCH=~/hwmcc_benchmarks/2024/btor2/2019/mann/data-integrity/unsafe/arbitrated_top_n2_w32_d32_e0.btor2
+
+# Capture CTIs
+timeout 15 ./build/pono -e ic3ia -k 100000 \
+  --llm-gen-mode async-cti --llm-candidate-language cube-subset \
+  --llm-model deepseek-v4-pro \
+  --llm-req-path /tmp/mvp_final/req.jsonl \
+  --llm-resp-path /tmp/mvp_final/dummy.jsonl \
+  "$BENCH" 2>/tmp/mvp_final/stderr.log >/dev/null &
+sleep 12; kill %1 2>/dev/null
+```
+
+- [ ] **Step 2: Run MVP with enriched context**
+
+```bash
+python3 llm_worker/run_mvp.py \
+  --req-path /tmp/mvp_final/req.jsonl \
+  --pono-stderr /tmp/mvp_final/stderr.log \
+  --output /tmp/mvp_final/report.json \
+  --model deepseek-v4-pro --timeout 600
+```
+
+- [ ] **Step 3: Compare lemma quality vs Task 7 results**
+
+Check: does LLM produce non-CTI-literal lemmas? Does it use schema types beyond equality? Does it reference specific design predicates?
+
+- [ ] **Step 4: Record results and commit**
+
+```bash
+echo "Task 12 results: $(date)" >> docs/superpowers/plans/mvp_results.md
+cat >> docs/superpowers/plans/mvp_results.md << 'EOF'
+## Task 12: Enriched Context Results
+- Design context added: initial predicates, property, signal counts
+- Compare with Task 7 (no context): candidate was CTI literal 'input10 = state434'
+- New results: (to be filled)
+EOF
+git add docs/superpowers/plans/mvp_results.md
+git commit -m "docs: record Task 12 E2E results"
+```
