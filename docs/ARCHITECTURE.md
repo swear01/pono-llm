@@ -275,8 +275,32 @@ LLM candidate
   → syntax/type check
   → BMC shallow check (Init ∧ T^0..d ∧ ¬lemma, d=3-5)
   → relative induction check (F_k ∧ lemma ∧ T ∧ ¬lemma')
-  → subsumption check (count clauses replaced)
+   → subsumption check (count clauses replaced)
 ```
+
+---
+
+# Phase 2 Progress (2026-05-25)
+
+## MVP v0.5 Results
+
+**Pipeline**: context dump → template-guided prompt → LLM candidates → cheap validation → manual inspection.
+
+**Key finding**: Enriched context (design_context + predicate role tags) shifts LLM behavior:
+
+| Context | LLM Lemma | Schema | Variables | Type |
+|---------|-----------|--------|-----------|------|
+| None (Task 7) | `input10 = state434` | equality | input+state | CTI literal |
+| Enriched (Task 12) | `(not (= state434 #b1))` | disequality | state-only | State predicate |
+
+**New files**:
+- `llm_worker/run_mvp.py` — MVP driver (context dump → LLM → validate → report)
+- `llm_worker/lemma_schema.py` — 8 allowed lemma families
+- `llm_worker/template_prompt.py` — context bundle prompt builder
+- `llm_worker/clause_cluster.py` — predicate clustering with role tags
+- `llm_worker/transition_slice.py` — hot variable extraction + design context
+
+**Next**: Transition slice extraction from IC3IA SMT, manual rel_ind_check, repair loop.
 
 ## Clause Clustering 前處理
 

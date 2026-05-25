@@ -21,16 +21,22 @@
 - [x] Task 6: `run_mvp.py` — MVP driver (context dump + LLM call + validation)
 
 ### Remaining
-- [x] Task 7: Fix import paths, run E2E with V4 Pro → DONE (1057f86)
-- [x] Task 8: Record results → DONE (candidate: `input10 = state434`, equality schema, but is CTI literal)
-- [x] Task 9: Manual rel_ind_check → SKIPPED (candidate was CTI literal, not novel lemma)
-- [ ] Task 10: Add design context to prompt — extract IC3IA initial predicates as design relationships
-- [ ] Task 11: Improve clause cluster quality — add semantic signal annotation
-- [ ] Task 12: Re-run with enriched context, compare lemma quality
+- [x] Task 7: Fix import paths, run E2E → DONE (1057f86)
+- [x] Task 8: Record results → DONE (candidate: `input10 = state434`)
+- [x] Task 9: Manual rel_ind_check → SKIPPED (CTI literal)
+- [x] Task 10: Design context → DONE (ef92909) — adds IC3IA init preds, property, signal stats
+- [x] Task 11: Predicate role tags → DONE (c9b5524) — input/state/equality/bound classification
+- [x] Task 12: E2E enriched → DONE (53fd7db) — lemma improved to state-only disequality
 
-### Key Finding (Task 7)
-Without transition slice, LLM defaults to finding common CTI literals.
-Need to add design-level context (initial predicates, signal relationships).
+### Next: MVP v1 — Transition Slice + Manual rel_ind_check
+- [ ] Task 13: Extract real transition slice from IC3IA SMT (pseudo-code next-state equations)
+- [ ] Task 14: Manual rel_ind_check on best candidate from Task 12
+- [ ] Task 15: Repair loop prototype: induction fail → witness → LLM add-back
+
+### Key Findings
+- Without transition slice, LLM defaults to common CTI literals (Task 7)
+- With design_context + predicate tags, LLM shifts to state-only lemmas (Task 12: `(not (= state434 #b1))`)
+- Transition slice is the missing link from correlation → causality
 
 ---
 ## File Structure (Actual)
