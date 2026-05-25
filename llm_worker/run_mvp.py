@@ -24,7 +24,7 @@ from pathlib import Path
 from typing import Dict, List, Optional
 
 
-def build_context_bundle(req_path: str, pono_stderr: str = "") -> Dict:
+def build_context_bundle(req_path: str, pono_stderr: str = "", btor2_path: str = "") -> Dict:
     """Read CTI contexts from JSONL and build a context bundle."""
     with open(req_path) as f:
         lines = [json.loads(line) for line in f if line.strip()]
@@ -44,6 +44,8 @@ def build_context_bundle(req_path: str, pono_stderr: str = "") -> Dict:
         format_variable_list,
         summarize_cti_batch,
         extract_design_context,
+        extract_btor_transition,
+        format_btor_transition,
     )
 
     all_lits = []
@@ -79,6 +81,14 @@ def build_context_bundle(req_path: str, pono_stderr: str = "") -> Dict:
         with open(pono_stderr) as f:
             design_ctx = extract_design_context(f.read())
 
+    # BTOR2 transition info for hot state variables
+    btor_transition = {}
+    if btor2_path and os.path.exists(btor2_path):
+        btor_transition = extract_btor_transition(btor2_path, hot_vars)
+    trans_text = format_btor_transition(btor_transition)
+    if not trans_text.strip():
+        trans_text = "(no BTOR2 transition info extracted — provide --btor2-path)"
+
     clusters_text = format_all_clusters_for_prompt(
         clusters,
         property_text=design_ctx.get("property", ""),
@@ -89,11 +99,14 @@ def build_context_bundle(req_path: str, pono_stderr: str = "") -> Dict:
         "design_context": design_ctx,
         "target_property": first.get("property", "(unknown)")[:500],
         "hot_variables": format_variable_list(hot_vars),
-        "transition_slice": "(transition slice extraction deferred — "
-        "use pono simplified SMT output as reference)",
+        "transition_slice": trans_text,
         "cti_batch": summarize_cti_batch(ctis, max_ctis=10, max_lits_per_cti=10),
         "clause_clusters": clusters_text,
         "lemma_memory": {},
+        "previous_failure": {
+            "cti_literal": "(state434 = #b1) = false",
+            "candidate": "(not (= state434 #b1))",
+        },
         "candidate_language": "template-guided",
         "model": first.get("model", "deepseek-v4-pro"),
         "frame_idx": first.get("frame_idx", 1),
@@ -167,6 +180,7 @@ def main():
     parser = argparse.ArgumentParser(description="MVP: template-guided lemma generation")
     parser.add_argument("--req-path", help="Path to JSONL CTI context file from pono")
     parser.add_argument("--pono-stderr", default="", help="Path to pono stderr log (for design context)")
+    parser.add_argument("--btor2-path", default="", help="Path to BTOR2 file (for transition extraction)")
     parser.add_argument("--output", default="/tmp/mvp_report.json", help="Output report path")
     parser.add_argument("--model", default="deepseek-v4-pro", help="LLM model")
     parser.add_argument("--timeout", type=int, default=600, help="Sidecar timeout (seconds)")
@@ -178,7 +192,7 @@ def main():
 
     # Step 1: Build context bundle
     print("=== Step 1: Building context bundle ===")
-    ctx = build_context_bundle(args.req_path, args.pono_stderr)
+    ctx = build_context_bundle(args.req_path, args.pono_stderr, args.btor2_path)
     print(f"  Hot variables: {ctx['hot_variables'].count(chr(10))} variables")
     print(f"  CTI batch: {len(ctx['cti_batch'])} chars")
     print(f"  Clusters: {ctx['clause_clusters'][:100]}...")

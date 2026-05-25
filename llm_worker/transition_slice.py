@@ -109,3 +109,109 @@ def summarize_cti_batch(
         lines.append("")
 
     return "\n".join(lines)
+
+
+def extract_btor_transition(btor_path: str, hot_vars: list) -> dict:
+    """Parse BTOR2 to get next-state equations for hot variables."""
+    import os, re as _re
+
+    if not btor_path or not os.path.exists(btor_path):
+        return {}
+
+    btor = {}
+    for line in open(btor_path):
+        parts = line.strip().split()
+        if not parts or parts[0][0] == ";":
+            continue
+        lid = parts[0]
+        try:
+            int(lid)
+        except ValueError:
+            continue
+        btor[lid] = parts[1:]
+
+    next_map = {}
+    init_map = {}
+    for lid, p in btor.items():
+        if p[0] == "next" and len(p) >= 4:
+            next_map[p[2]] = p[3]
+        if p[0] == "init" and len(p) >= 4:
+            init_map[p[2]] = p[3]
+
+    def _get_const(lid):
+        if lid and lid in btor and btor[lid][0] == "const":
+            return btor[lid][2] if len(btor[lid]) > 2 else "?"
+        if lid and lid in btor and btor[lid][0] == "zero":
+            return "0"
+        return "<L{}>".format(lid)
+
+    def _get_deps(lid, visited=None):
+        if visited is None:
+            visited = set()
+        if lid in visited or lid not in btor:
+            return set()
+        visited.add(lid)
+        p = btor[lid]
+        if p[0] == "state":
+            return {"state{}".format(lid)}
+        if p[0] == "input":
+            return {p[2] if len(p) > 2 else "input{}".format(lid)}
+        if p[0] in ("const", "zero", "ones", "sort", "bitvec"):
+            return set()
+        deps = set()
+        for arg in p[1:]:
+            try:
+                deps |= _get_deps(arg, visited)
+            except Exception:
+                pass
+        return deps
+
+    result = {}
+    for var in hot_vars:
+        m = _re.match(r"state(\d+)", var)
+        if not m:
+            continue
+        sid = m.group(1)
+        if sid not in btor or btor[sid][0] != "state":
+            continue
+
+        next_id = next_map.get(sid, "")
+        init_id = init_map.get(sid, "")
+        next_val = _get_const(next_id) if next_id else "?"
+        init_val = _get_const(init_id) if init_id else "?"
+        next_is_const = bool(next_id and next_id in btor and btor[next_id][0] == "const")
+        deps = _get_deps(next_id) if next_id else set()
+
+        result[var] = {
+            "name": var,
+            "width": int(btor[sid][1]) if len(btor[sid]) > 1 else 1,
+            "init_val": init_val,
+            "next_val": next_val,
+            "next_is_const": next_is_const,
+            "dependencies": sorted(deps),
+        }
+
+    return result
+
+
+def format_btor_transition(transitions: dict) -> str:
+    """Format BTOR2 transition info for LLM prompt."""
+    if not transitions:
+        return "(no BTOR2 transition info extracted)"
+
+    lines = []
+    for var, info in sorted(transitions.items()):
+        deps = info["dependencies"]
+        dep_str = ", ".join(deps) if deps else "NONE (constant after init)"
+        lines.append("  {}: {}' = {}".format(var, var, info["next_val"]))
+        lines.append("    init = {}".format(info["init_val"]))
+        lines.append("    width = {} bit".format(info["width"]))
+        lines.append("    depends on: {}".format(dep_str))
+        if info.get("next_is_const"):
+            lines.append(
+                "    KEY: next value is CONSTANT {}. "
+                "This variable never changes after init.".format(info["next_val"])
+            )
+        lines.append("")
+
+    return "\n".join(lines)

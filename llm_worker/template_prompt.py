@@ -46,6 +46,19 @@ def build_template_prompt(context: Dict) -> str:
         "- Return JSON only, no markdown, no explanation outside JSON."
     )
 
+    # ── Previous failure context ──
+    pf = context.get("previous_failure", {})
+    if pf.get("cti_literal"):
+        parts.append(
+            "PREVIOUS FAILURE:\n"
+            "  The last candidate was rejected as non-novel — it was logically equivalent\n"
+            "  to an existing CTI literal, just reformatted in a different schema.\n"
+            f"  CTI literal: {pf['cti_literal']}\n"
+            f"  Candidate:    {pf['candidate']}\n"
+            "  Do NOT produce direct rewrites of CTI literals.\n"
+            "  Use the TRANSITION SLICE to propose a GUARDED or RELATIONAL lemma."
+        )
+
     # ── Target property ──
     target = context.get("target_property", "(unknown)")
     if len(target) > 500:
