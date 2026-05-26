@@ -1,18 +1,19 @@
 #!/usr/bin/env python3
-"""Standalone SMT formal checker using BTOR2 transition system.
+"""SMT formal checker using Bitwuzla Python bindings.
 
-Generates SMT queries for:
-  - Init check: Init(s) ∧ ¬L(s)
-  - One-step:   T(s,i,s') ∧ ¬L(s')
-  - Inductive:  L(s) ∧ T(s,i,s') ∧ ¬L(s')
-
-Uses BTOR2 structure to build the transition formula.
+Supports: init check, one-step check, inductive check.
+Translates BTOR2 transition + candidate lemma into SMT queries.
 """
 
-import json, re, os, subprocess, tempfile, time
-from dataclasses import dataclass, field, asdict
+import json, re, os, time
 from typing import List, Dict, Optional, Tuple
 from collections import defaultdict
+
+try:
+    import bitwuzla as bz
+    HAS_BITWUZLA = True
+except ImportError:
+    HAS_BITWUZLA = False
 
 
 def parse_btor2(path: str) -> dict:
@@ -20,282 +21,238 @@ def parse_btor2(path: str) -> dict:
     for line in open(path):
         parts = line.strip().split()
         if not parts or parts[0][0] == ";": continue
-        lid = parts[0]
-        try: int(lid)
+        try: int(parts[0])
         except: continue
-        btor[lid] = parts[1:]
+        btor[parts[0]] = parts[1:]
     return btor
 
 
-def extract_state_info(btor: dict) -> dict:
-    """Extract state var info: name, width, init value, next expr."""
-    info = {}
-    for lid, p in btor.items():
-        if p[0] != "state" or len(p) < 2: continue
-        info[lid] = {"name": f"state{lid}", "width": int(p[1]), "init": None, "next": None}
+class BTOR2SMT:
+    """Translates BTOR2 expressions to Bitwuzla Terms."""
 
-    for lid, p in btor.items():
-        if p[0] == "init" and len(p) >= 4 and p[2] in info:
-            info[p[2]]["init"] = p[3]
-        if p[0] == "next" and len(p) >= 4 and p[2] in info:
-            info[p[2]]["next"] = p[3]
-    return info
+    def __init__(self, btor: dict):
+        self.btor = btor
+        self.tm = bz.TermManager()
+        self.cache = {}  # lid → Term
+        self.state_sorts = {}  # var_name → BitVecSort
+        self.state_vars = {}  # var_name → Term (current)
+        self.next_vars = {}   # var_name → Term (next-state)
+        self.init_values = {} # var_name → init value (0/1)
+        self.input_vars = {}  # input_name → Term
+
+        # Register state variables
+        for lid, p in btor.items():
+            if p[0] == "state" and len(p) >= 2:
+                w = int(p[1])
+                name = f"state{lid}"
+                sort = self.tm.mk_bv_sort(w)
+                self.state_sorts[name] = sort
+                self.state_vars[name] = self.tm.mk_const(sort, name)
+                self.next_vars[name] = self.tm.mk_const(sort, name + "_next")
+
+        # Find init values
+        for lid, p in btor.items():
+            if p[0] == "init" and len(p) >= 4 and p[2] in self.state_sorts:
+                sid = p[2]
+                name = f"state{sid}"
+                init_expr = p[3]
+                if init_expr in btor and btor[init_expr][0] == "const":
+                    val = int(btor[init_expr][2]) if len(btor[init_expr]) > 2 else 0
+                    w = self.state_sorts[name].bv_size()
+                    self.init_values[name] = val
+
+        # Find inputs
+        for lid, p in btor.items():
+            if p[0] == "input":
+                name = p[2] if len(p) > 2 else f"input{lid}"
+                sort = self.tm.mk_bv_sort(1)
+                self.input_vars[name] = self.tm.mk_const(sort, name)
+
+    def _translate(self, lid: str, suffix: str = "", depth: int = 0) -> Optional[bz.Term]:
+        """Translate a BTOR2 expression to Bitwuzla Term. Returns None for unsupported ops."""
+        if depth > 20: return None  # prevent infinite recursion
+        cache_key = lid + suffix
+        if cache_key in self.cache: return self.cache[cache_key]
+        if lid not in self.btor: return None
+
+        p = self.btor[lid]
+        op = p[0]
+
+        if op == "const":
+            w = int(p[1]) if len(p) > 1 else 1
+            val = int(p[2]) if len(p) > 2 else 0
+            return self.tm.mk_bv_value(self.tm.mk_bv_sort(w), val)
+
+        if op == "state":
+            name = f"state{lid}"
+            return self.next_vars.get(name) if suffix == "_next" else self.state_vars.get(name)
+
+        if op == "input":
+            name = p[2] if len(p) > 2 else f"input{lid}"
+            return self.input_vars.get(name)
+
+        if op == "zero":
+            w = int(p[1]) if len(p) > 1 else 1
+            return self.tm.mk_bv_value(self.tm.mk_bv_sort(w), 0)
+
+        def t(a):
+            return self._translate(a, suffix, depth + 1)
+
+        if op == "not" and len(p) >= 3:
+            a = t(p[2])
+            return self.tm.mk_term(bz.Kind.BV_NOT, [a]) if a is not None else None
+
+        if op == "and" and len(p) >= 4:
+            a, b = t(p[2]), t(p[3])
+            return self.tm.mk_term(bz.Kind.BV_AND, [a, b]) if a is not None and b is not None else None
+
+        if op == "or" and len(p) >= 4:
+            a, b = t(p[2]), t(p[3])
+            return self.tm.mk_term(bz.Kind.BV_OR, [a, b]) if a is not None and b is not None else None
+
+        if op == "eq" and len(p) >= 4:
+            a, b = t(p[2]), t(p[3])
+            return self.tm.mk_term(bz.Kind.EQUAL, [a, b]) if a is not None and b is not None else None
+
+        if op == "ite" and len(p) >= 5:
+            a, b, c = t(p[2]), t(p[3]), t(p[4])
+            return self.tm.mk_term(bz.Kind.ITE, [a, b, c]) if all(x is not None for x in [a, b, c]) else None
+
+        if op == "uext" and len(p) >= 3:
+            a = t(p[2])
+            return a  # simplified: treating uext as passthrough for same-width
+
+        return None  # unsupported op
+
+    def get_init_constraints(self) -> List[bz.Term]:
+        """Return init constraints for all state vars."""
+        constraints = []
+        for name, val in self.init_values.items():
+            var = self.state_vars.get(name)
+            if var is None: continue
+            sort = var.sort()
+            c = self.tm.mk_term(bz.Kind.EQUAL, [var, self.tm.mk_bv_value(sort, val)])
+            constraints.append(c)
+        return constraints
+
+    def get_transition_constraints(self) -> List[bz.Term]:
+        """Return next-state constraints. Returns empty list if any op is unsupported."""
+        constraints = []
+        for lid, p in self.btor.items():
+            if p[0] == "next" and len(p) >= 4:
+                sid = p[2]
+                name = f"state{sid}"
+                next_term = self._translate(p[3], "_next")
+                if next_term is None: return []  # bail on unsupported
+                var = self.next_vars.get(name)
+                if var is None: return []
+                constraints.append(self.tm.mk_term(bz.Kind.EQUAL, [var, next_term]))
+        return constraints
 
 
-def btor_to_smt_decl(btor: dict, lid: str, suffix: str = "") -> str:
-    """Convert a BTOR2 expression to SMT-LIB (simplified)."""
-    if lid not in btor: return f"<L{lid}>"
-    p = btor[lid]
-    op = p[0]
+def lemma_to_smt(lemma: str, vars_dict: Dict[str, bz.Term],
+                tm: bz.TermManager) -> Optional[bz.Term]:
+    """Convert a lemma string to a Bitwuzla Boolean term."""
+    if not vars_dict: return None
 
-    if op == "const":
-        w = int(p[1]) if len(p) > 1 else 1
-        v = p[2] if len(p) > 2 else "0"
-        return f"(_ bv{v} {w})"
-
-    if op == "state":
-        return f"state{lid}{suffix}"
-
-    if op == "input":
-        name = p[2] if len(p) > 2 else f"input{lid}"
-        return name
-
-    if op in ("zero", "ones"):
-        return "error: need width"
-
-    def rec(a): return btor_to_smt_decl(btor, a, suffix) if a in btor else f"<L{a}>"
-
-    if op == "not":
-        return f"(bvnot {rec(p[2])})" if len(p) >= 3 else "?"
-    if op == "and" and len(p) >= 4:
-        return f"(bvand {rec(p[2])} {rec(p[3])})"
-    if op == "or" and len(p) >= 4:
-        return f"(bvor {rec(p[2])} {rec(p[3])})"
-    if op == "eq" and len(p) >= 4:
-        return f"(= {rec(p[2])} {rec(p[3])})"
-    if op == "neq" and len(p) >= 4:
-        return f"(distinct {rec(p[2])} {rec(p[3])})"
-    if op == "add" and len(p) >= 4:
-        return f"(bvadd {rec(p[2])} {rec(p[3])})"
-    if op == "sub" and len(p) >= 4:
-        return f"(bvsub {rec(p[2])} {rec(p[3])})"
-    if op == "ult" and len(p) >= 4:
-        return f"(bvult {rec(p[2])} {rec(p[3])})"
-    if op == "ule" and len(p) >= 4:
-        return f"(bvule {rec(p[2])} {rec(p[3])})"
-    if op == "ugt" and len(p) >= 4:
-        return f"(bvugt {rec(p[2])} {rec(p[3])})"
-    if op == "uge" and len(p) >= 4:
-        return f"(bvuge {rec(p[2])} {rec(p[3])})"
-    if op == "ite" and len(p) >= 5:
-        return f"(ite {rec(p[2])} {rec(p[3])} {rec(p[4])})"
-    if op == "concat" and len(p) >= 4:
-        return f"(concat {rec(p[2])} {rec(p[3])})"
-    if op == "slice" and len(p) >= 5:
-        return f"((_ extract {p[3]} {p[4]}) {rec(p[2])})"
-    if op == "uext":
-        return f"((_ zero_extend {p[1]}) {rec(p[2])})" if len(p) >= 3 else "?"
-
-    return f"<{op}_{lid}>"
-
-
-def candidate_to_smt(lemma: str) -> str:
-    """Convert a lemma string to an SMT assertion.
-    Handles common patterns; returns raw string for complex cases.
-    """
     lemma = lemma.strip().replace(" ", "")
 
     # Mutual exclusion: !(x && y)
     m = re.match(r"!\(\s*state(\d+)\s*&&\s*state(\d+)\s*\)", lemma)
     if m:
-        x, y = f"state{m.group(1)}", f"state{m.group(2)}"
-        return f"(not (and (= {x} #b1) (= {y} #b1)))"
-
-    # Equality: (= stateX value)
-    m = re.match(r"\(\s*=\s*state(\d+)\s+(.+)\s*\)", lemma)
-    if m:
-        x, v = f"state{m.group(1)}", m.group(2)
-        v_clean = v.replace("#b", "").replace("'d", "")
-        return f"(= state{m.group(1)} #b{v_clean})"
-
-    # Disequality
-    m = re.match(r"\(\s*distinct\s+state(\d+)\[(\d):(\d)\]\s+(.+)\s*\)", lemma)
-    if m:
-        var, hi, lo, val = m.group(1), m.group(2), m.group(3), m.group(4)
-        v = val.replace("2'd", "").replace("'d", "").replace("#b", "")
-        return f"(not (= ((_ extract {hi} {lo}) state{var}) #b{v}))"
-
-    # Guarded implication
-    m = re.match(r"\(\s*=>\s+\((.+)\)\s+\((.+)\)\s*\)", lemma)
-    if m:
-        guard, cons = m.group(1), m.group(2)
-        return f"(=> ({candidate_to_smt(f'({guard})')}) ({candidate_to_smt(f'(= {cons})')}))"
-
-    return lemma  # return raw for unsupported
-
-
-def build_smt_check(btor: dict, lemma: str, check_type: str) -> Optional[str]:
-    """Build an SMT-LIB query for formal check.
-
-    check_type: 'init', 'one_step', 'inductive'
-    """
-    state_info = extract_state_info(btor)
-    if not state_info: return None
-
-    # Declare state variables
-    decls = []
-    for lid, info in state_info.items():
-        w = info["width"]
-        decls.append(f"(declare-fun state{lid} () (_ BitVec {w}))")
-        if check_type in ("one_step", "inductive"):
-            decls.append(f"(declare-fun state{lid}_next () (_ BitVec {w}))")
-
-    # Declare input variables (one_step/inductive only)
-    inputs = set()
-    for lid, p in btor.items():
-        if p[0] == "input":
-            name = p[2] if len(p) > 2 else f"input{lid}"
-            inputs.add(name)
-    for inp in sorted(inputs):
-        decls.append(f"(declare-fun {inp} () (_ BitVec 1))")
-
-    # Init constraint (for init check)
-    init_constraints = []
-    for lid, info in state_info.items():
-        if info["init"]:
-            init_val_smt = btor_to_smt_decl(btor, info["init"])
-            init_constraints.append(f"(assert (= state{lid} {init_val_smt}))")
-
-    # Transition constraints
-    trans_constraints = []
-    for lid, info in state_info.items():
-        if info["next"]:
-            next_smt = btor_to_smt_decl(btor, info["next"], "_next")
-            trans_constraints.append(
-                f"(assert (= state{lid}_next {next_smt}))"
-            )
-
-    # Lemma negation  
-    lemma_smt = candidate_to_smt(lemma)
-    lemma_neg = f"(assert (not {lemma_smt}))"
-
-    # Assemble query
-    parts = ["(set-logic QF_BV)"]
-    parts.extend(decls)
-
-    if check_type == "init":
-        parts.extend(init_constraints)
-        parts.append(lemma_neg)
-        parts.append("(check-sat)")
-        parts.append("(get-model)")
-    elif check_type == "one_step":
-        parts.extend(trans_constraints)
-        lemma_next = candidate_to_smt(lemma).replace(
-            "state", "state"
-        )  # use next-state version
-        # Replace state vars with next-state vars in lemma
-        for lid in state_info:
-            lemma_next = lemma_next.replace(f"state{lid})", f"state{lid}_next)")
-            lemma_next = lemma_next.replace(f"state{lid} ", f"state{lid}_next ")
-        parts.append(f"(assert (not {lemma_next}))")
-        parts.append("(check-sat)")
-        parts.append("(get-model)")
-    elif check_type == "inductive":
-        # Assert lemma in current state
-        parts.append(f"(assert {lemma_smt})")
-        parts.extend(trans_constraints)
-        lemma_next = lemma_smt
-        for lid in state_info:
-            lemma_next = lemma_next.replace(f"state{lid})", f"state{lid}_next)")
-            lemma_next = lemma_next.replace(f"state{lid} ", f"state{lid}_next ")
-        parts.append(f"(assert (not {lemma_next}))")
-        parts.append("(check-sat)")
-
-    return "\n".join(parts)
-
-
-def run_smt_check(query: str, timeout_ms: int = 5000) -> dict:
-    """Run an SMT query using Bitwuzla or Boolector."""
-    solver_bin = None
-    for cand in ["bitwuzla", "boolector"]:
-        p = subprocess.run(["which", cand], capture_output=True)
-        if p.returncode == 0:
-            solver_bin = cand
-            break
-
-    if not solver_bin:
-        # Try build/deps path
-        for cand in [
-            "build/deps/bitwuzla-install/bin/bitwuzla",
-            "build/deps/boolector-install/bin/boolector",
-        ]:
-            if os.path.exists(cand):
-                solver_bin = cand
-                break
-
-    if not solver_bin:
-        return {"result": "no_solver", "detail": "no SMT solver found"}
-
-    with tempfile.NamedTemporaryFile(mode="w", suffix=".smt2", delete=False) as f:
-        f.write(query)
-        smt_file = f.name
-
-    try:
-        start = time.time()
-        proc = subprocess.run(
-            [solver_bin, smt_file],
-            capture_output=True, text=True, timeout=timeout_ms / 1000 + 2,
+        x = vars_dict.get(f"state{m.group(1)}")
+        y = vars_dict.get(f"state{m.group(2)}")
+        if x is None or y is None: return None
+        zero = tm.mk_bv_value(x.sort(), 0)
+        return tm.mk_term(
+            bz.Kind.EQUAL,
+            [tm.mk_term(bz.Kind.BV_AND, [x, y]), zero]
         )
-        elapsed_ms = int((time.time() - start) * 1000)
-        output = (proc.stdout + proc.stderr).strip()
 
-        if "unsat" in output.lower():
-            result = "pass"
-        elif "sat" in output.lower():
-            result = "fail"
+    # Equality: (= stateX const)
+    m = re.match(r"\(\s*=\s*state(\d+)\s+(\S+)\s*\)", lemma)
+    if m:
+        x = vars_dict.get(f"state{m.group(1)}")
+        if x is None: return None
+        val_raw = m.group(2).replace("#b", "").replace("'d", "")
+        val = int(val_raw, 2 if "#b" in m.group(2) or val_raw.isdigit() else 10)
+        return tm.mk_term(bz.Kind.EQUAL, [x, tm.mk_bv_value(x.sort(), val)])
+
+    return None
+
+
+def run_check(btor_smt: BTOR2SMT, lemma: str) -> dict:
+    """Run init + one-step + inductive checks on a lemma."""
+    tm = btor_smt.tm
+    vars_dict = btor_smt.state_vars
+    lemma_term = lemma_to_smt(lemma, vars_dict, tm)
+
+    results = {}
+
+    # Init check
+    if lemma_term is not None and btor_smt.init_values:
+        solver = bz.Bitwuzla(tm)
+        for c in btor_smt.get_init_constraints():
+            solver.assert_formula(c)
+        solver.assert_formula(tm.mk_term(bz.Kind.NOT, [lemma_term]))
+        t0 = time.time()
+        r = solver.check_sat()
+        results["init"] = {"result": str(r), "time_ms": int((time.time() - t0) * 1000)}
+    else:
+        results["init"] = {"result": "not_supported"}
+
+    # One-step check: T ⇒ lemma'
+    if lemma_term is not None and btor_smt.get_transition_constraints():
+        solver = bz.Bitwuzla(tm)
+        for c in btor_smt.get_transition_constraints():
+            solver.assert_formula(c)
+        lemma_next = lemma_to_smt(lemma, btor_smt.next_vars, tm)
+        if lemma_next is not None:
+            solver.assert_formula(tm.mk_term(bz.Kind.NOT, [lemma_next]))
+            t0 = time.time()
+            r = solver.check_sat()
+            results["one_step"] = {"result": str(r), "time_ms": int((time.time() - t0) * 1000)}
         else:
-            result = "unknown"
+            results["one_step"] = {"result": "not_supported"}
+    else:
+        results["one_step"] = {"result": "no_transition"}
 
-        return {
-            "result": result,
-            "smt_output": output[:500],
-            "time_ms": elapsed_ms,
-            "query_file": smt_file,
-        }
-    except subprocess.TimeoutExpired:
-        return {"result": "timeout", "time_ms": timeout_ms}
-    except Exception as e:
-        return {"result": "error", "detail": str(e)}
+    # Inductive check: lemma ∧ T ⇒ lemma'
+    if lemma_term is not None and btor_smt.get_transition_constraints():
+        solver = bz.Bitwuzla(tm)
+        solver.assert_formula(lemma_term)
+        for c in btor_smt.get_transition_constraints():
+            solver.assert_formula(c)
+        lemma_next = lemma_to_smt(lemma, btor_smt.next_vars, tm)
+        if lemma_next is not None:
+            solver.assert_formula(tm.mk_term(bz.Kind.NOT, [lemma_next]))
+            t0 = time.time()
+            r = solver.check_sat()
+            results["inductive"] = {"result": str(r), "time_ms": int((time.time() - t0) * 1000)}
+        else:
+            results["inductive"] = {"result": "not_supported"}
+    else:
+        results["inductive"] = {"result": "no_transition"}
+
+    return results
 
 
-def run_formal_checks_smt(candidates: List[dict], btor_path: str,
-                          checks: List[str] = None) -> List[dict]:
-    """Run SMT formal checks on candidates."""
-    if checks is None: checks = ["init", "one_step"]
+def run_batch_checks(candidates: List[dict], btor_path: str) -> List[dict]:
+    """Run formal checks on a batch of candidates."""
     btor = parse_btor2(btor_path)
-    results = []
+    btor_smt = BTOR2SMT(btor)
 
+    results = []
     for cand in candidates:
         lemma = cand.get("lemma", "")
-        if not lemma: continue
-
         record = {
             "candidate_id": cand.get("id", "?"),
             "lemma": lemma[:150],
             "schema": cand.get("schema", "unknown"),
         }
-
-        for check in checks:
-            query = build_smt_check(btor, lemma, check)
-            if not query:
-                record[f"{check}_result"] = "not_supported"
-                continue
-            smt_result = run_smt_check(query)
-            record[f"{check}_result"] = smt_result.get("result", "?")
-            record[f"{check}_time_ms"] = smt_result.get("time_ms", 0)
-
+        if lemma:
+            record["checks"] = run_check(btor_smt, lemma)
         results.append(record)
-
     return results
 
 
@@ -307,8 +264,8 @@ if __name__ == "__main__":
     )
     samples = [
         {"id": "c1", "lemma": "!(state1359 && state1361)", "schema": "mutual_exclusion"},
-        {"id": "c2", "lemma": "(= state434 0)", "schema": "equality"},
+        {"id": "c2", "lemma": "(= state1359 0)", "schema": "equality"},
     ]
-    results = run_formal_checks_smt(samples, btor)
+    results = run_batch_checks(samples, btor)
     for r in results:
         print(json.dumps(r, indent=2))
