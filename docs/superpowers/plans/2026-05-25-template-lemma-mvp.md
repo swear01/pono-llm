@@ -28,24 +28,15 @@
 - [x] Task 11: Predicate role tags → DONE (c9b5524) — input/state/equality/bound classification
 - [x] Task 12: E2E enriched → DONE (53fd7db) — lemma improved to state-only disequality
 
-### Next: MVP v1 — Manual rel_ind_check first → Transition slice → Repair loop
+- [x] Task 15b: Repair E2E — state-only but trivial (benchmark too simple)
+- [x] Task 16: Pilot conclusion recorded in docs + gist
 
-Task 14 should come FIRST because it tells us whether the enriched-context lemma
-is a real signal or just a better-looking guess. Task 13 should be minimal (hot-variable
-dependency, not full SMT decompiler). Task 15 only if Task 14 gives meaningful failure.
-
-- [ ] **Task 14** (DO FIRST): Manual rel_ind_check on `(not (= state434 #b1))`
-  - Check: initial-state? frame consistency? rel_ind_check?
-  - Record: PASS / FAIL-trivial / FAIL-with-meaningful-CTI
-- [ ] **Task 13** (MINIMAL): Hot-variable next-state dependency extraction
-  - Only for `state434` and its dependencies in the witness
-  - Output: `{var, next_var, depends_on, raw_next_expr_simplified}`
-  - Do NOT build full SMT-to-pseudocode decompiler
-- [ ] **Task 15** (CONDITIONAL): Repair loop — only if Task 14 fails with meaningful witness
-  - Feed witness + failed lemma back to LLM
-  - Ask LLM for guarded version, weaker version, or alternative state-only lemma
-
-### Priority order: 14 → 13 → 15
+### Phase 3: Benchmark Selection & Nontrivial Lemma Test
+- [ ] Task 17: Benchmark suitability scanner (scoring heuristic)
+- [ ] Task 17.5: Manual inspect top 3 reports
+- [ ] Task 18: Select top 2 benchmarks
+- [ ] Task 19: Rerun transition-aware E2E
+- [ ] Task 20: Manual rel_ind_check top candidates
 
 ---
 ## File Structure (Actual)

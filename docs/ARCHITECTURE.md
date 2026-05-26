@@ -282,25 +282,23 @@ LLM candidate
 
 # Phase 2 Progress (2026-05-25)
 
-## MVP v0.5 Results
+## Pilot Results on arbitrated_top (4-stage ablation)
 
-**Pipeline**: context dump → template-guided prompt → LLM candidates → cheap validation → manual inspection.
+| Stage | Context | LLM Lemma | Assessment |
+|-------|---------|-----------|------------|
+| 1 | None | `input10 = state434` | CTI literal |
+| 2 | +design_context +predicate tags | `(not (= state434 #b1))` | CTI literal reformatted |
+| 3 | +BTOR2 transition slice | `(=> (= state434 0) (= input10 0))` | Transition-aware, but input-constrained |
+| 4 | +repair prompt | `(= state434 0)` | State-only, but trivial |
 
-**Key finding**: Enriched context (design_context + predicate role tags) shifts LLM behavior:
+**Conclusion**: Pipeline works as a context-ablation experiment — richer context moves
+LLM from CTI-literal rewriting toward transition-aware lemma sketches. However,
+`arbitrated_top` is structurally too simple (state434 is a reset-clear flag: init=1,
+next=const 0). The benchmark lacks causal state-machine structure for nontrivial
+lemma generalization.
 
-| Context | LLM Lemma | Schema | Variables | Type |
-|---------|-----------|--------|-----------|------|
-| None (Task 7) | `input10 = state434` | equality | input+state | CTI literal |
-| Enriched (Task 12) | `(not (= state434 #b1))` | disequality | state-only | State predicate |
-
-**New files**:
-- `llm_worker/run_mvp.py` — MVP driver (context dump → LLM → validate → report)
-- `llm_worker/lemma_schema.py` — 8 allowed lemma families
-- `llm_worker/template_prompt.py` — context bundle prompt builder
-- `llm_worker/clause_cluster.py` — predicate clustering with role tags
-- `llm_worker/transition_slice.py` — hot variable extraction + design context
-
-**Next**: Transition slice extraction from IC3IA SMT, manual rel_ind_check, repair loop.
+**Next**: Benchmark suitability scanner → select FSM/counter/handshake benchmarks
+→ rerun E2E targeting multi-state relational lemmas.
 
 ## Clause Clustering 前處理
 
