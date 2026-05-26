@@ -32,11 +32,22 @@
 - [x] Task 16: Pilot conclusion recorded in docs + gist
 
 ### Phase 3: Benchmark Selection & Nontrivial Lemma Test
-- [ ] Task 17: Benchmark suitability scanner (scoring heuristic)
-- [ ] Task 17.5: Manual inspect top 3 reports
-- [ ] Task 18: Select top 2 benchmarks
-- [ ] Task 19: Rerun transition-aware E2E
-- [ ] Task 20: Manual rel_ind_check top candidates
+- [x] Task 17: Benchmark suitability scanner (found analog_estimation_convergence)
+- [x] Task 17.5: Manual inspect — analog has richer structure (state5 has 3 state deps)
+- [x] Task 18: Selected analog_estimation_convergence
+- [x] Task 19: E2E on analog — still trivial lemma (`state5 = 1`)
+- [x] Task 20: Bottleneck identified — BTOR2 expressions show as `<L141>` not readable form
+
+### Phase 4: BTOR2 Expression Explainer & Retest
+- [ ] Task 21: Bounded recursive BTOR2 expression explainer (ite/and/or/eq → pseudo-Verilog)
+- [ ] Task 22: Rerun E2E on analog with READABLE transition context
+- [ ] Task 23: Compare lemma quality (raw dep list vs readable pseudo-code)
+- [ ] Task 24: Manual rel_ind_check on top candidate
+
+### Key Finding (Task 19)
+analog_estimation_convergence is structurally better than arbitrated_top (state5
+depends on 3 state vars), but BTOR2 expressions are still opaque. LLM needs
+readable causal structure, not just variable dependency lists.
 
 ---
 ## File Structure (Actual)

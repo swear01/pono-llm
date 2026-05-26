@@ -327,3 +327,16 @@ lemma generalization.
 2. 讓 LLM 產生 5-10 個 candidate lemma
 3. 跑 formal gate（parse → BMC → induction → subsumption）
 4. 記錄成功/失敗統計
+
+## Phase 3: Benchmark Selection (2026-05-25)
+
+### Scanner Result
+- `arbitrated_top_n2_w32_d32_e0`: state434 is reset-clear flag (trivial)
+- `analog_estimation_convergence`: state5 has 3 state dependencies, richer structure
+- Selected `analog_estimation_convergence` for nontrivial test
+
+### Bottleneck
+BTOR2 transition expressions expand to opaque `<L141>` references instead of
+readable pseudo-Verilog. LLM needs causal control structure, not just dependency
+lists. Next: bounded recursive BTOR2 expression explainer.
+
