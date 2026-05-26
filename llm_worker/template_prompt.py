@@ -58,6 +58,29 @@ def build_template_prompt(context: Dict) -> str:
             "  Do NOT produce direct rewrites of CTI literals.\n"
             "  Use the TRANSITION SLICE to propose a GUARDED or RELATIONAL lemma."
         )
+    elif pf.get("input_constrained"):
+        parts.append(
+            "PREVIOUS FAILURE (input-constrained):\n"
+            f"  Candidate: {pf['candidate']}\n"
+            f"  Issue: {pf['issue']}\n"
+            "  This candidate used transition context correctly but constrains a\n"
+            "  primary input variable, which cannot be an invariant lemma.\n"
+            "\n"
+            "  REPAIR TASK:\n"
+            "  Convert this into a STATE-ONLY or STATE-DOMINANT lemma:\n"
+            "  1. Find state variables from the transition slice that determine\n"
+            "     the constrained input (driver/cause, not the input itself).\n"
+            "  2. Use those state variables in a guarded implication:\n"
+            "     guard(state vars) => consequence(state vars)\n"
+            "  3. If input condition is truly necessary, output it separately\n"
+            "     with kind='environment_assumption_candidate'.\n"
+            "  4. Do NOT output input10 = state434 (CTI literal).\n"
+            "  5. Do NOT output state434 != 1 or state434 = 0 alone unless\n"
+            "     justified by a guard from the transition dependencies.\n"
+            "  6. Prefer: guard(transition_cause) => effect(state_var)\n"
+            "  7. Use the TRANSITION SLICE dependency info to find what\n"
+            "     state variables CAUSE state434 or input10 to change."
+        )
 
     # ── Target property ──
     target = context.get("target_property", "(unknown)")

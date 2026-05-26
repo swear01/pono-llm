@@ -96,6 +96,7 @@ def build_context_bundle(req_path: str, pono_stderr: str = "", btor2_path: str =
     )
 
     return {
+        "_hot_vars": hot_vars,
         "design_context": design_ctx,
         "target_property": first.get("property", "(unknown)")[:500],
         "hot_variables": format_variable_list(hot_vars),
@@ -104,8 +105,10 @@ def build_context_bundle(req_path: str, pono_stderr: str = "", btor2_path: str =
         "clause_clusters": clusters_text,
         "lemma_memory": {},
         "previous_failure": {
-            "cti_literal": "(state434 = #b1) = false",
-            "candidate": "(not (= state434 #b1))",
+            "cti_literal": "",
+            "candidate": "(=> (= state434 0) (= input10 0))",
+            "input_constrained": True,
+            "issue": "candidate constrains primary input 'input10' in consequent — needs repair to state-only form",
         },
         "candidate_language": "template-guided",
         "model": first.get("model", "deepseek-v4-pro"),
@@ -143,14 +146,43 @@ def validate_candidates(
     design_input_vars: list = None,
 ) -> List[dict]:
     """Run cheap validation on LLM candidates."""
-    ...
+    from lemma_schema import (
+        validate_lemma_syntax,
+        check_triviality,
+        detect_cube_subset,
+        get_schema_names,
+        check_input_constraint,
+    )
+
+    results = []
+    try:
+        with open(resp_path) as f:
+            candidate = json.loads(f.readline())
+    except (FileNotFoundError, json.JSONDecodeError):
+        return [{"error": "no valid response"}]
+
+    lemma = candidate.get("lemma", "")
+    schema = candidate.get("schema", candidate.get("lemma_type", "unknown"))
+    schema_valid = schema in get_schema_names()
+
     results.append({
-        ...
+        "id": candidate.get("id", "cand_000"),
+        "lemma": lemma,
+        "schema": schema,
+        "schema_valid": schema_valid,
+        "syntax_valid": validate_lemma_syntax(lemma) if lemma else False,
+        "trivial": check_triviality(lemma) if lemma else "empty lemma",
+        "nontrivial": check_triviality(lemma) is None if lemma else False,
+        "cube_subset_like": detect_cube_subset(lemma, cti_lits) if lemma else False,
+        "target_clusters": candidate.get("target_clusters", []),
+        "variables_used": candidate.get("variables_used", []),
+        "intuition": candidate.get("intuition", ""),
+        "risk_level": candidate.get("risk_level", "unknown"),
+        "raw_type": candidate.get("type", "?"),
         "input_constrained": check_input_constraint(
             lemma, candidate.get("variables_used", []),
             design_state_vars, design_input_vars,
         ) if lemma else None,
-        ...
     })
 
     return results
@@ -220,11 +252,8 @@ def main():
         print(f"  Raw response: {raw_path} ({len(raw)} chars)")
         print(f"  Raw first 500: {raw[:500]}")
 
-    report = validate_candidates(
-        resp_file, cti_literals,
-        design_state_vars=hot_vars,
-        design_input_vars=[v for v in hot_vars if v.startswith("input")],
-    )
+    design_input = [v for v in ctx["_hot_vars"] if v.startswith("input")]
+    report = validate_candidates(resp_file, cti_literals, ctx["_hot_vars"], design_input)
 
     for r in report:
         if "error" in r:
