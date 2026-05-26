@@ -46,6 +46,7 @@ def build_context_bundle(req_path: str, pono_stderr: str = "", btor2_path: str =
         extract_design_context,
         extract_btor_transition,
         format_btor_transition,
+        explain_transition_slice,
     )
 
     all_lits = []
@@ -83,11 +84,22 @@ def build_context_bundle(req_path: str, pono_stderr: str = "", btor2_path: str =
 
     # BTOR2 transition info for hot state variables
     btor_transition = {}
+    trans_text = "(no BTOR2 transition info extracted — provide --btor2-path)"
     if btor2_path and os.path.exists(btor2_path):
+        import json as _json
         btor_transition = extract_btor_transition(btor2_path, hot_vars)
-    trans_text = format_btor_transition(btor_transition)
-    if not trans_text.strip():
-        trans_text = "(no BTOR2 transition info extracted — provide --btor2-path)"
+        # Parse BTOR2 for expression expansion
+        btor_data = {}
+        for line in open(btor2_path):
+            parts = line.strip().split()
+            if not parts or parts[0][0] == ";": continue
+            lid = parts[0]
+            try: int(lid)
+            except: continue
+            btor_data[lid] = parts[1:]
+        trans_text = explain_transition_slice(btor_transition, btor_data)
+        if not trans_text.strip():
+            trans_text = "(BTOR2 expressions could not be expanded)"
 
     clusters_text = format_all_clusters_for_prompt(
         clusters,

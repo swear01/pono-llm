@@ -215,3 +215,122 @@ def format_btor_transition(transitions: dict) -> str:
         lines.append("")
 
     return "\n".join(lines)
+
+
+def explain_btor_expr(btor: dict, expr_id: str, depth: int = 0) -> str:
+    """Recursively expand a BTOR2 expression into pseudo-Verilog.
+    
+    Handles: ite, eq, and, or, not, concat, slice, bvadd, bvsub,
+    bvult/bvule/bvugt/bvuge, const, state, input.
+    Returns <Lid> for unsupported/unresolved ops.
+    """
+    if depth > 10:
+        return "<L{}>".format(expr_id)
+    if expr_id not in btor:
+        return "<L{}>".format(expr_id)
+
+    p = btor[expr_id]
+    op = p[0]
+
+    if op == "const":
+        width = int(p[1]) if len(p) > 1 else 1
+        val = p[2] if len(p) > 2 else "?"
+        if width == 1:
+            return val  # binary 0/1
+        return "{}'d{}".format(width, val)
+
+    if op == "state":
+        return "state{}".format(expr_id)
+
+    if op == "input":
+        return p[2] if len(p) > 2 else "input{}".format(expr_id)
+
+    if op in ("zero", "ones"):
+        return "0" if op == "zero" else "~0"
+
+    # Collect args (skip p[1] which is always width in BTOR2)
+    args = []
+    for a in p[2:]:
+        args.append(explain_btor_expr(btor, a, depth + 1))
+
+    if not args:
+        return "<L{}>".format(expr_id)
+
+    if op == "ite" and len(args) >= 2:
+        cond = explain_btor_expr(btor, args[0], depth + 1)
+        true_br = explain_btor_expr(btor, args[1], depth + 1)
+        false_br = explain_btor_expr(btor, args[2], depth + 1) if len(args) > 2 else "?"
+        return "({} ? {} : {})".format(cond, true_br, false_br)
+
+    if op == "not":
+        return "~{}".format(args[0])
+
+    op_map = {
+        "eq": "==", "neq": "!=",
+        "and": "&", "or": "|", "xor": "^",
+        "add": "+", "bvadd": "+", "sub": "-", "bvsub": "-",
+        "mul": "*", "bvmul": "*",
+        "ult": "<", "bvult": "<", "ule": "<=", "bvule": "<=",
+        "ugt": ">", "bvugt": ">", "uge": ">=", "bvuge": ">=",
+        "sll": "<<", "srl": ">>",
+        "concat": "++",
+    }
+
+    if op in op_map and len(args) >= 2:
+        return "({} {} {})".format(args[0], op_map[op], args[1])
+
+    if op == "slice" and len(args) >= 1:
+        # BTOR2: slice <width> <expr> <hi> <lo>
+        raw = p[2:]  # skip op and width
+        try:
+            hi = int(raw[1]) if len(raw) > 1 else "?"
+            lo = int(raw[2]) if len(raw) > 2 else "?"
+        except (ValueError, IndexError):
+            return "{}[?:?]".format(args[0])
+        return "{}[{}:{}]".format(args[0], hi, lo)
+
+    if op == "uext" or op == "sext":
+        return "ext({})".format(args[0]) if args else "ext(?)"
+
+    # Unsupported: return opaque reference
+    return "<L{} op={}>".format(expr_id, op)
+
+
+def explain_transition_slice(transitions: dict, btor: dict) -> str:
+    """Build human-readable transition slice using recursive expression expansion.
+
+    Args:
+        transitions: from extract_btor_transition()
+        btor: parsed BTOR2 dict
+
+    Returns:
+        Multi-line transition slice text for LLM prompt
+    """
+    if not transitions:
+        return "(no transition info)"
+
+    lines = []
+    for var, info in sorted(transitions.items()):
+        lines.append("{}: {}' = ???".format(var, var))
+
+        # Find next-state expression ID
+        sid = var.replace("state", "")
+        next_id = None
+        for lid, p in btor.items():
+            if p[0] == "next" and len(p) >= 4 and p[2] == sid:
+                next_id = p[3]
+                break
+
+        if next_id:
+            expanded = explain_btor_expr(btor, next_id)
+            deps_list = ", ".join(info.get("dependencies", []))
+            lines.append("  next-state expr: {}".format(expanded))
+            lines.append("  dependencies: {}".format(deps_list if deps_list else "NONE"))
+        else:
+            lines.append("  next-state: (not found)")
+
+        if info.get("next_is_const"):
+            lines.append("  NOTE: next value is CONSTANT")
+        lines.append("")
+
+    return "\n".join(lines)
