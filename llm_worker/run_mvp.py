@@ -137,40 +137,20 @@ def run_sidecar(req_path: str, resp_path: str, model: str, timeout: int = 600) -
     return proc.returncode == 0 and os.path.exists(resp_path)
 
 
-def validate_candidates(resp_path: str, cti_lits: List[dict]) -> List[dict]:
+def validate_candidates(
+    resp_path: str, cti_lits: List[dict],
+    design_state_vars: list = None,
+    design_input_vars: list = None,
+) -> List[dict]:
     """Run cheap validation on LLM candidates."""
-    from lemma_schema import (
-        validate_lemma_syntax,
-        check_triviality,
-        detect_cube_subset,
-        get_schema_names,
-    )
-
-    results = []
-    try:
-        with open(resp_path) as f:
-            candidate = json.loads(f.readline())
-    except (FileNotFoundError, json.JSONDecodeError):
-        return [{"error": "no valid response"}]
-
-    lemma = candidate.get("lemma", "")
-    schema = candidate.get("schema", candidate.get("lemma_type", "unknown"))
-    schema_valid = schema in get_schema_names()
-
+    ...
     results.append({
-        "id": candidate.get("id", "cand_000"),
-        "lemma": lemma,
-        "schema": schema,
-        "schema_valid": schema_valid,
-        "syntax_valid": validate_lemma_syntax(lemma) if lemma else False,
-        "trivial": check_triviality(lemma) if lemma else "empty lemma",
-        "nontrivial": check_triviality(lemma) is None if lemma else False,
-        "cube_subset_like": detect_cube_subset(lemma, cti_lits) if lemma else False,
-        "target_clusters": candidate.get("target_clusters", []),
-        "variables_used": candidate.get("variables_used", []),
-        "intuition": candidate.get("intuition", ""),
-        "risk_level": candidate.get("risk_level", "unknown"),
-        "raw_type": candidate.get("type", "?"),
+        ...
+        "input_constrained": check_input_constraint(
+            lemma, candidate.get("variables_used", []),
+            design_state_vars, design_input_vars,
+        ) if lemma else None,
+        ...
     })
 
     return results
@@ -240,7 +220,11 @@ def main():
         print(f"  Raw response: {raw_path} ({len(raw)} chars)")
         print(f"  Raw first 500: {raw[:500]}")
 
-    report = validate_candidates(resp_file, cti_literals)
+    report = validate_candidates(
+        resp_file, cti_literals,
+        design_state_vars=hot_vars,
+        design_input_vars=[v for v in hot_vars if v.startswith("input")],
+    )
 
     for r in report:
         if "error" in r:

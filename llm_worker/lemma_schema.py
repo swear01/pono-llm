@@ -130,3 +130,44 @@ def check_triviality(lemma: str) -> Optional[str]:
             return reason
     
     return None
+
+
+def check_input_constraint(
+    lemma: str,
+    variables_used: List[str],
+    design_state_vars: List[str] = None,
+    design_input_vars: List[str] = None,
+) -> Optional[str]:
+    """Check if lemma constrains unconstrained primary inputs.
+    
+    Returns reason string if lemma is input-constrained, None if safe.
+    """
+    if not design_input_vars:
+        return None
+    
+    input_vars_used = [v for v in variables_used if v in design_input_vars]
+    
+    if not input_vars_used:
+        return None
+    
+    # Check if inputs appear in consequent (guarded implication: guard => consequent)
+    # Simple heuristic: inputs on right side of => or in consequent position
+    has_implication = "=>" in lemma
+    if has_implication:
+        # Everything after => should not contain input vars
+        imp_idx = lemma.rfind("=>")
+        consequent = lemma[imp_idx + 2:].strip()
+        for iv in input_vars_used:
+            if iv in consequent:
+                return (
+                    "input_constrained: lemma constrains primary input '{}' "
+                    "in consequent — use state-only or guarded-state form".format(iv)
+                )
+    
+    # For non-implication lemmas with input vars
+    return (
+        "input_constrained: lemma contains primary input(s) {} "
+        "— consider guard-only position or state-only form".format(
+            ", ".join(input_vars_used)
+        )
+    )
