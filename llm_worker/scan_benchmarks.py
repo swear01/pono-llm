@@ -310,3 +310,34 @@ def main():
 if __name__ == "__main__":
     import sys
     sys.exit(main())
+
+
+def score_readability(btor: dict, state_ids: list) -> tuple:
+    """Score how readable BTOR2 transitions are for LLM.
+    Returns (score, reasons, opaque_count, total_count)."""
+    from transition_slice import explain_btor_expr
+    opaque = 0
+    total = 0
+    reasons = []
+    for sid in state_ids[:30]:
+        next_id = None
+        for lid, p in btor.items():
+            if p[0] == "next" and len(p) >= 4 and p[2] == sid:
+                next_id = p[3]
+                break
+        if not next_id:
+            continue
+        total += 1
+        expanded = explain_btor_expr(btor, next_id, 0)
+        oc = expanded.count("op=")
+        if oc > 0:
+            opaque += 1
+        if len(expanded) > 300:
+            opaque += 1
+    score = 10
+    if total > 0:
+        ratio = opaque / total
+        if ratio > 0.5: score -= 6
+        elif ratio > 0.2: score -= 3
+        elif ratio > 0: score -= 1
+    return score, reasons, opaque, total
