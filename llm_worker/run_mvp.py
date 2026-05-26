@@ -200,6 +200,104 @@ def validate_candidates(
     return results
 
 
+def run_batch_mode(args):
+    """Batch generation: cluster pool → diversify → schedule → LLM."""
+    from cluster_pool import build_cluster_pool, diversify_pool
+    from batch_scheduler import schedule_batches, build_batch_prompt
+    import tempfile, subprocess
+
+    if not args.req_path or not os.path.exists(args.req_path):
+        print("ERROR: --req-path required for batch mode")
+        return 1
+
+    print("=== Batch mode ===")
+    print(f"  Clusters per batch: {args.clusters_per_batch}")
+    print(f"  Candidates per cluster: {args.candidates_per_cluster}")
+
+    pool = build_cluster_pool(args.req_path, min_cov=0.03, max_pool=30)
+    print(f"  Pool: {len(pool)} clusters")
+    diverse = diversify_pool(pool, target=min(8, len(pool)))
+    print(f"  Diverse: {len(diverse)} clusters")
+    if not diverse: return 1
+
+    with open(args.req_path) as f:
+        first = json.loads(f.readline())
+    ctx = {
+        "target_property": first.get("property", "(unknown)")[:300],
+        "hot_variables": "see cluster sections",
+        "transition_slice": "(from BTOR2 explainer — add --btor2-path for BTOR2 transition)",
+    }
+    if args.btor2_path and os.path.exists(args.btor2_path):
+        from transition_slice import extract_btor_transition, explain_transition_slice
+        all_vars = set()
+        for c in diverse: all_vars.update(c.vars)
+        btor = {}
+        for line in open(args.btor2_path):
+            parts = line.strip().split()
+            if not parts or parts[0][0] == ";": continue
+            lid = parts[0]
+            try: int(lid)
+            except: continue
+            btor[lid] = parts[1:]
+        trans = extract_btor_transition(args.btor2_path, list(all_vars)[:30])
+        ctx["transition_slice"] = explain_transition_slice(trans, btor)[:2000]
+
+    batches = schedule_batches(diverse, args.clusters_per_batch, args.candidates_per_cluster)
+    print(f"  Batches: {len(batches)}")
+    batch = batches[0]
+    prompt = build_batch_prompt(batch, ctx)
+    print(f"  Running {batch.batch_id}: {len(prompt)} chars, {batch.candidate_budget} candidates")
+
+    tmpdir = tempfile.mkdtemp(prefix="batch_")
+    req_file = os.path.join(tmpdir, "batch_req.jsonl")
+    resp_file = os.path.join(tmpdir, "batch_resp.jsonl")
+
+    batch_ctx = {
+        "target_property": ctx["target_property"],
+        "hot_variables": ctx["hot_variables"],
+        "transition_slice": ctx["transition_slice"],
+        "cti_batch": "Clusters: {}".format(", ".join(c.cluster_id for c in batch.clusters)),
+        "clause_clusters": "\n".join(
+            "Cluster {}: vars={}, cov={:.0%}, size={}".format(c.cluster_id, c.vars, c.coverage, c.cluster_size)
+            for c in batch.clusters
+        ),
+        "candidate_language": "template-guided",
+        "model": args.model,
+        "batch_id": batch.batch_id,
+        "candidate_budget": batch.candidate_budget,
+        "clusters": [
+            {"id": c.cluster_id, "vars": c.vars, "coverage": c.coverage,
+             "cluster_size": c.cluster_size}
+            for c in batch.clusters
+        ],
+    }
+    with open(req_file, "w") as f:
+        json.dump(batch_ctx, f)
+        f.write("\n")
+
+    sidecar = os.path.join(os.path.dirname(os.path.abspath(__file__)), "sidecar.py")
+    proc = subprocess.run(
+        [sys.executable, "-u", sidecar,
+         "--req-path", req_file, "--resp-path", resp_file,
+         "--candidate-language", "template-guided",
+         "--max-requests", "1", "--poll-interval", "0.5",
+         "--model", args.model],
+        capture_output=True, text=True, timeout=args.timeout,
+    )
+    print("  Sidecar: {}".format((proc.stdout or "")[-200:]))
+
+    if os.path.exists(resp_file):
+        with open(resp_file) as f:
+            candidate = json.loads(f.readline())
+        print("  Lemma: {}".format(candidate.get("lemma", "")[:120]))
+        print("  Schema: {}".format(candidate.get("schema", "")))
+        print("  Intuition: {}".format(candidate.get("intuition", "")[:200]))
+    else:
+        print("  No response — LLM call failed")
+
+    import shutil
+    shutil.rmtree(tmpdir, ignore_errors=True)
+    return 0
 def main():
     parser = argparse.ArgumentParser(description="MVP: template-guided lemma generation")
     parser.add_argument("--req-path", help="Path to JSONL CTI context file from pono")
@@ -209,10 +307,16 @@ def main():
     parser.add_argument("--model", default="deepseek-v4-pro", help="LLM model")
     parser.add_argument("--timeout", type=int, default=600, help="Sidecar timeout (seconds)")
     parser.add_argument("--no-llm", action="store_true", help="Skip LLM, just build context")
+    parser.add_argument("--batch", action="store_true", help="Batch mode: cluster pool → diversify → batch LLM")
+    parser.add_argument("--clusters-per-batch", type=int, default=2, help="Clusters per LLM batch")
+    parser.add_argument("--candidates-per-cluster", type=int, default=15, help="Candidates per cluster")
     args = parser.parse_args()
 
     if not args.req_path:
         parser.error("--req-path is required")
+
+    if args.batch:
+        return run_batch_mode(args)
 
     # Step 1: Build context bundle
     print("=== Step 1: Building context bundle ===")
@@ -305,3 +409,5 @@ def main():
 
 if __name__ == "__main__":
     sys.exit(main())
+
+
