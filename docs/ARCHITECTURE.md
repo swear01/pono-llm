@@ -340,3 +340,31 @@ BTOR2 transition expressions expand to opaque `<L141>` references instead of
 readable pseudo-Verilog. LLM needs causal control structure, not just dependency
 lists. Next: bounded recursive BTOR2 expression explainer.
 
+
+## First Closed-Loop Case Study: qspiflash_divfive-p040
+
+### Lemma Generation Pipeline
+```
+Context: CTI batch + BTOR2 transition + design_context + predicate tags
+  ↓
+LLM: (= state1361 (bvnot state1359))   [complement equality, transition-causal]
+  ↓ Formal init check
+FAIL: init state both 0, bvnot(0)=1 ≠ 0
+  ↓ Repair prompt (init witness + transition structure)
+LLM: !(state1359 && state1361)         [mutual exclusion, init-safe]
+  ↓ Analytical verification
+✅ Init:  !(0 && 0) = 1
+✅ Trans: state1361' = NOT(state1359') ⇒ !(1 && 0) = 1
+✅ Inductive: lemma is invariant (cannot both be 1)
+```
+
+### Repair Taxonomy
+| Failure | Repair Operation | Example |
+|---------|-----------------|---------|
+| init fail | schema change + semantic weakening | equality → mutual exclusion |
+
+### Significance
+LLM did not simply add a syntactic guard — it reformulated the lemma from
+complement equality to mutual exclusion, preserving the core semantic relation
+while fixing the init violation. This is formal-feedback-guided semantic lemma repair.
+
