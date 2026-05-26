@@ -8,8 +8,71 @@ Measures:
 """
 
 import json, os, re, sys
-from pathlib import Path
 from collections import defaultdict
+
+RESET_PATTERNS = [
+    "reset", "rst", "init_done", "clear", "clr",
+    "startup", "boot", "por",
+]
+TRIVIAL_VARNAME_PATTERNS = [
+    r"= #b0\b", r"= #b1\b", r"= 0\b", r"= 1\b",
+    r"!= #b0\b", r"!= #b1\b", r"= const\b",
+]
+
+
+def compute_group_filters(ctis, group_vars):
+    """Compute false-positive filter metrics for a variable group."""
+    result = {
+        "reset_flag_ratio": 0.0,
+        "dominant_var_ratio": 0.0,
+        "non_reset_var_count": 0,
+        "trivial_literal_ratio": 0.0,
+    }
+
+    var_counts = defaultdict(int)
+    total_group_lits = 0
+    reset_lits = 0
+    trivial_lits = 0
+    non_reset_vars = set()
+
+    for cti in ctis:
+        for lit in cti.get("literals", []):
+            vn = lit.get("varname", "")
+            val = lit.get("value", "")
+
+            # Check if this literal involves group vars
+            involved = [v for v in group_vars if v in vn]
+            if not involved:
+                continue
+
+            total_group_lits += 1
+            for v in involved:
+                var_counts[v] += 1
+
+            # Trivial literal check: varname contains simple constant comparison
+            is_trivial = any(re.search(pat, vn) for pat in TRIVIAL_VARNAME_PATTERNS)
+            if is_trivial:
+                trivial_lits += 1
+
+            # Reset-like check
+            is_reset = any(rp in vn.lower() for rp in RESET_PATTERNS)
+            if is_reset:
+                reset_lits += 1
+            else:
+                for v in involved:
+                    if not any(rp in v.lower() for rp in RESET_PATTERNS):
+                        non_reset_vars.add(v)
+
+    if total_group_lits > 0:
+        result["reset_flag_ratio"] = round(reset_lits / total_group_lits, 3)
+        result["dominant_var_ratio"] = round(
+            max(var_counts.values()) / total_group_lits, 3
+        ) if var_counts else 0
+        result["trivial_literal_ratio"] = round(trivial_lits / total_group_lits, 3)
+
+    result["non_reset_var_count"] = len(non_reset_vars)
+
+    return result
 
 
 def analyze_case(req_path, stderr_path="", btor_path=""):
@@ -114,36 +177,43 @@ def analyze_case(req_path, stderr_path="", btor_path=""):
         result["transition_lines"] = trans_text.count("\n")
         result["transition_opaque"] = trans_text.count("op=")
 
-    # 4. Suitability score
-    score = 0
+    # 4-7. False-positive filters
+    filters = compute_group_filters(ctis, best_group)
+    result.update(filters)
+
+    # 8. Suitability score (with false-positive penalties)
+    score = 0.0
     reasons = []
+
+    score += 2.0 * result["coverage"]
+    score += 1.5 * min(1.0, result["max_cluster_size"] / 10.0)
+    score += 1.0 * (1.0 if len(best_group) >= 2 else 0.5)
+    score -= 2.0 * result["reset_flag_ratio"]
+    score -= 1.5 * result["dominant_var_ratio"]
+    score -= 1.0 * result["trivial_literal_ratio"]
+
     if result["coverage"] >= 0.15:
-        score += 3
         reasons.append("high coverage")
     elif result["coverage"] >= 0.08:
-        score += 1
         reasons.append("medium coverage")
-    else:
-        reasons.append("low coverage (like qspiflash: lemma correct but small)")
 
     if result["max_cluster_size"] >= 8:
-        score += 3
         reasons.append("large cluster")
     elif result["max_cluster_size"] >= 3:
-        score += 1
         reasons.append("medium cluster")
-    else:
-        reasons.append("small cluster")
 
-    if len(best_group) >= 2:
-        score += 1
-        reasons.append("multi-var group")
+    if result["reset_flag_ratio"] > 0.30:
+        reasons.append(f"reset-dominated ({result['reset_flag_ratio']:.0%})")
+    if result["dominant_var_ratio"] > 0.65:
+        reasons.append(f"single-var dominant ({result['dominant_var_ratio']:.0%})")
+    if result["trivial_literal_ratio"] > 0.70:
+        reasons.append(f"trivial-literal heavy ({result['trivial_literal_ratio']:.0%})")
 
-    result["suitability_score"] = score
+    result["suitability_score"] = round(score, 2)
     result["suitability_reasons"] = reasons
     result["suitability"] = (
-        "promising" if score >= 4
-        else "maybe" if score >= 2
+        "promising" if score >= 3.0
+        else "maybe" if score >= 1.5
         else "low-impact"
     )
 
