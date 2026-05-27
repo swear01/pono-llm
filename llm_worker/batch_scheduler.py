@@ -97,28 +97,58 @@ def build_batch_prompt(batch: BatchDef, benchmark_context: dict) -> str:
             f"  Non-reset vars: {c.non_reset_var_count}"
         )
 
-    # ≡≡≡ Output format ≡≡≡
-    parts.append(
-        "OUTPUT FORMAT (JSON only):\n"
+    # ≡≡≡ Output contract — STRICT ≡≡≡
+    per_cluster = batch.candidate_budget // len(batch.clusters)
+    cluster_ids = [c.cluster_id for c in batch.clusters]
+    cluster_req = "; ".join("exactly " + str(per_cluster) + " for " + cid for cid in cluster_ids)
+    first_cid = cluster_ids[0] if cluster_ids else "C000"
+    total = batch.candidate_budget
+
+    contract = (
+        "OUTPUT CONTRACT — YOU MUST FOLLOW EXACTLY\n"
+        "Return exactly one JSON object. Nothing else.\n"
+        "No markdown. No explanation outside JSON.\n"
+        "No text before or after the JSON object.\n\n"
+        'The top-level JSON object MUST have this shape:\n'
         '{\n'
         '  "batch_id": "' + batch.batch_id + '",\n'
         '  "candidates": [\n'
         '    {\n'
-        '      "id": "cand_001",\n'
-        '      "cluster_id": "C000",\n'
+        '      "candidate_id": "' + batch.batch_id + '_' + first_cid + '_001",\n'
+        '      "cluster_id": "' + first_cid + '",\n'
         '      "lemma": "(=> (= mode RUN) (< cnt limit))",\n'
         '      "schema": "guarded_implication",\n'
         '      "variables_used": ["mode", "cnt"],\n'
-        '      "diversity_group": "implication_basic",\n'
         '      "intuition": "brief reasoning",\n'
+        '      "risk_level": "low|medium|high"\n'
+        '    },\n'
+        '    {\n'
+        '      "candidate_id": "' + batch.batch_id + '_' + first_cid + '_002",\n'
+        '      "cluster_id": "' + first_cid + '",\n'
+        '      "lemma": "...",\n'
+        '      "schema": "...",\n'
+        '      "variables_used": ["..."],\n'
+        '      "intuition": "...",\n'
         '      "risk_level": "low|medium|high"\n'
         '    }\n'
         '  ]\n'
         '}\n\n'
-        f"Generate {batch.candidate_budget} diverse candidates total "
-        f"({len(batch.clusters)} clusters × ~{batch.candidate_budget // len(batch.clusters)} each).\n"
-        "Include at least 3 different lemma schema families."
+        "REQUIREMENTS:\n"
+        '- The top-level key "candidates" IS MANDATORY.\n'
+        '- "candidates" MUST be an array, not a single object.\n'
+        "- Generate exactly " + str(total) + " candidates total (" + cluster_req + ").\n"
+        "- Use exactly the schemas listed above.\n"
+        "- Vary risk levels and lemma families.\n\n"
+        "INVALID — DO NOT DO THIS:\n"
+        '{\n'
+        '  "candidate_id": "...",\n'
+        '  "lemma": "..."\n'
+        '}\n'
+        'This is invalid because "candidates" array is MISSING.\n\n'
+        "Generate now: only the JSON object, nothing else."
     )
+
+    parts.append(contract)
 
     return "\n\n".join(parts)
 

@@ -127,9 +127,19 @@ def process_request(
         try:
             result = json.loads(response_text)
             candidates = result.get("candidates", [])
-            # Return first candidate as the response; multi-candidate support deferred
+            # Fallback: if LLM returned a single object (non-compliant), wrap it
+            if not candidates and "lemma" in result:
+                candidates = [result]
+            # Write ALL candidates (one per line)
+            for cand in candidates:
+                cand.setdefault("type", "template_lemma")
+                write_response(args.resp_path, cand)
             candidate = candidates[0] if candidates else {}
             candidate.setdefault("type", "template_lemma")
+            # Process all candidates for logging too
+            for ci, cand in enumerate(candidates):
+                if ci > 0:  # already wrote first one above
+                    pass  # write_response already handles each
         except (json.JSONDecodeError, KeyError, IndexError):
             candidate = {
                 "type": "template_lemma",

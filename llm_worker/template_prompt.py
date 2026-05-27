@@ -138,24 +138,44 @@ def build_template_prompt(context: Dict) -> str:
     # ── Allowed schemas ──
     parts.append(f"ALLOWED LEMMA SCHEMAS (use only these):\n{get_schema_list_for_prompt()}")
 
-    # ── Output format ──
+    # ── Output CONTRACT — STRICT ──
     parts.append(
-        'OUTPUT FORMAT (JSON only):\n'
-        '{\n'
+        "OUTPUT CONTRACT — YOU MUST FOLLOW EXACTLY\n\n"
+        "Return exactly one JSON object. Nothing else.\n"
+        "No markdown. No explanation outside JSON.\n"
+        "No text before or after the JSON object.\n\n"
+        "The top-level JSON object MUST have key \"candidates\".\n"
+        "\"candidates\" MUST be an array, never a single object.\n\n"
+        "REQUIRED SHAPE:\n"
+        "{\n"
         '  "candidates": [\n'
-        '    {\n'
-        '      "id": "cand_001",\n'
+        "    {\n"
+        '      "candidate_id": "cand_001",\n'
+        '      "cluster_id": "C000",\n'
         '      "lemma": "(=> (= mode IDLE) (= valid 0))",\n'
-        '      "schema": "mode_implication",\n'
-        '      "target_clusters": ["cluster_00"],\n'
+        '      "schema": "guarded_implication",\n'
         '      "variables_used": ["mode", "valid"],\n'
-        '      "intuition": "brief reasoning: why this might be invariant",\n'
+        '      "intuition": "brief reasoning",\n'
         '      "risk_level": "low|medium|high"\n'
-        '    }\n'
-        '  ]\n'
-        '}\n'
-        f'Allowed schema values: {", ".join(get_schema_names())}\n'
-        'Return ONLY the JSON object, no other text.'
+        "    },\n"
+        "    {\n"
+        '      "candidate_id": "cand_002",\n'
+        '      "cluster_id": "C000",\n'
+        '      "lemma": "", "schema": "", "variables_used": [""],\n'
+        '      "intuition": "", "risk_level": "low"\n'
+        "    }\n"
+        "  ]\n"
+        "}\n\n"
+        "INVALID — DO NOT DO THIS (single object):\n"
+        "{\n"
+        '  "candidate_id": "...",\n'
+        '  "lemma": "...",\n'
+        '  "schema": "..."\n'
+        "}\n"
+        "This is INVALID because the top-level key \"candidates\" is missing.\n"
+        "You MUST wrap candidates in a \"candidates\" array.\n\n"
+        "Generate 10 diverse candidates now.\n"
+        "Return ONLY the JSON object, no other text."
     )
 
     return "\n\n".join(parts)
