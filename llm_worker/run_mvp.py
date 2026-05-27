@@ -157,7 +157,7 @@ def validate_candidates(
     design_state_vars: list = None,
     design_input_vars: list = None,
 ) -> List[dict]:
-    """Run cheap validation on LLM candidates."""
+    """Run cheap validation on LLM candidates (all lines from resp_path)."""
     from lemma_schema import (
         validate_lemma_syntax,
         check_triviality,
@@ -166,36 +166,47 @@ def validate_candidates(
         check_input_constraint,
     )
 
-    results = []
+    raw_candidates = []
     try:
         with open(resp_path) as f:
-            candidate = json.loads(f.readline())
-    except (FileNotFoundError, json.JSONDecodeError):
+            for line in f:
+                line = line.strip()
+                if line:
+                    try:
+                        raw_candidates.append(json.loads(line))
+                    except json.JSONDecodeError:
+                        pass
+    except FileNotFoundError:
         return [{"error": "no valid response"}]
 
-    lemma = candidate.get("lemma", "")
-    schema = candidate.get("schema", candidate.get("lemma_type", "unknown"))
-    schema_valid = schema in get_schema_names()
+    if not raw_candidates:
+        return [{"error": "no valid response"}]
 
-    results.append({
-        "id": candidate.get("id", "cand_000"),
-        "lemma": lemma,
-        "schema": schema,
-        "schema_valid": schema_valid,
-        "syntax_valid": validate_lemma_syntax(lemma) if lemma else False,
-        "trivial": check_triviality(lemma) if lemma else "empty lemma",
-        "nontrivial": check_triviality(lemma) is None if lemma else False,
-        "cube_subset_like": detect_cube_subset(lemma, cti_lits) if lemma else False,
-        "target_clusters": candidate.get("target_clusters", []),
-        "variables_used": candidate.get("variables_used", []),
-        "intuition": candidate.get("intuition", ""),
-        "risk_level": candidate.get("risk_level", "unknown"),
-        "raw_type": candidate.get("type", "?"),
-        "input_constrained": check_input_constraint(
-            lemma, candidate.get("variables_used", []),
-            design_state_vars, design_input_vars,
-        ) if lemma else None,
-    })
+    results = []
+    for idx, candidate in enumerate(raw_candidates):
+        lemma = candidate.get("lemma", "")
+        schema = candidate.get("schema", candidate.get("lemma_type", "unknown"))
+        schema_valid = schema in get_schema_names()
+
+        results.append({
+            "id": candidate.get("id", f"cand_{idx:03d}"),
+            "lemma": lemma,
+            "schema": schema,
+            "schema_valid": schema_valid,
+            "syntax_valid": validate_lemma_syntax(lemma) if lemma else False,
+            "trivial": check_triviality(lemma) if lemma else "empty lemma",
+            "nontrivial": check_triviality(lemma) is None if lemma else False,
+            "cube_subset_like": detect_cube_subset(lemma, cti_lits) if lemma else False,
+            "target_clusters": candidate.get("target_clusters", []),
+            "variables_used": candidate.get("variables_used", []),
+            "intuition": candidate.get("intuition", ""),
+            "risk_level": candidate.get("risk_level", "unknown"),
+            "raw_type": candidate.get("type", "?"),
+            "input_constrained": check_input_constraint(
+                lemma, candidate.get("variables_used", []),
+                design_state_vars, design_input_vars,
+            ) if lemma else None,
+        })
 
     return results
 
@@ -246,57 +257,72 @@ def run_batch_mode(args):
     print(f"  Batches: {len(batches)}")
     batch = batches[0]
     prompt = build_batch_prompt(batch, ctx)
-    print(f"  Running {batch.batch_id}: {len(prompt)} chars, {batch.candidate_budget} candidates")
+    print(f"  Running {batch.batch_id}: {len(prompt)} chars, "
+          f"budget={batch.candidate_budget} candidates")
 
-    tmpdir = tempfile.mkdtemp(prefix="batch_")
-    req_file = os.path.join(tmpdir, "batch_req.jsonl")
-    resp_file = os.path.join(tmpdir, "batch_resp.jsonl")
+    # Call LLM directly with the batch scheduler prompt (avoids sidecar subprocess
+    # and ensures build_batch_prompt output is actually sent to the model).
+    sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+    from deepseek_client import DeepSeekClient, get_api_key
+    api_key = get_api_key()
+    if not api_key:
+        print("  ERROR: No API key — set DEEPSEEK_API_KEY or OPENROUTER_API_KEY")
+        return 1
 
-    batch_ctx = {
-        "target_property": ctx["target_property"],
-        "hot_variables": ctx["hot_variables"],
-        "transition_slice": ctx["transition_slice"],
-        "cti_batch": "Clusters: {}".format(", ".join(c.cluster_id for c in batch.clusters)),
-        "clause_clusters": "\n".join(
-            "Cluster {}: vars={}, cov={:.0%}, size={}".format(c.cluster_id, c.vars, c.coverage, c.cluster_size)
-            for c in batch.clusters
-        ),
-        "candidate_language": "template-guided",
-        "model": args.model,
-        "batch_id": batch.batch_id,
-        "candidate_budget": batch.candidate_budget,
-        "clusters": [
-            {"id": c.cluster_id, "vars": c.vars, "coverage": c.coverage,
-             "cluster_size": c.cluster_size}
-            for c in batch.clusters
-        ],
-    }
-    with open(req_file, "w") as f:
-        json.dump(batch_ctx, f)
-        f.write("\n")
+    client = DeepSeekClient(api_key, model_name=args.model)
+    try:
+        response_text, tokens, latency_ms = client.call(prompt)
+        print(f"  LLM: {tokens} tokens, {latency_ms:.0f}ms")
+    except Exception as e:
+        print(f"  LLM error: {e}")
+        return 1
 
-    sidecar = os.path.join(os.path.dirname(os.path.abspath(__file__)), "sidecar.py")
-    proc = subprocess.run(
-        [sys.executable, "-u", sidecar,
-         "--req-path", req_file, "--resp-path", resp_file,
-         "--candidate-language", "template-guided",
-         "--max-requests", "1", "--poll-interval", "0.5",
-         "--model", args.model],
-        capture_output=True, text=True, timeout=args.timeout,
-    )
-    print("  Sidecar: {}".format((proc.stdout or "")[-200:]))
+    # Parse response
+    candidates = []
+    try:
+        result = json.loads(response_text)
+        candidates = result.get("candidates", [])
+        if not candidates and "lemma" in result:
+            candidates = [result]
+    except json.JSONDecodeError:
+        print(f"  Parse error. Raw (first 500): {response_text[:500]}")
+        return 1
 
-    if os.path.exists(resp_file):
-        with open(resp_file) as f:
-            candidate = json.loads(f.readline())
-        print("  Lemma: {}".format(candidate.get("lemma", "")[:120]))
-        print("  Schema: {}".format(candidate.get("schema", "")))
-        print("  Intuition: {}".format(candidate.get("intuition", "")[:200]))
-    else:
-        print("  No response — LLM call failed")
+    requested = batch.candidate_budget
+    print(f"  Candidates received: {len(candidates)} / {requested} requested "
+          f"({'OK' if len(candidates) >= requested * 0.8 else 'LOW'})")
 
-    import shutil
-    shutil.rmtree(tmpdir, ignore_errors=True)
+    # Save to output directory
+    out_dir = getattr(args, 'output_dir', None) or os.path.dirname(args.output) or "/tmp"
+    out_file = os.path.join(out_dir, f"{batch.batch_id}_candidates.jsonl")
+    with open(out_file, "w") as f:
+        for cand in candidates:
+            f.write(json.dumps(cand, ensure_ascii=False) + "\n")
+    print(f"  Saved: {out_file}")
+
+    for i, cand in enumerate(candidates[:5]):
+        print(f"  [{i+1}] lemma={cand.get('lemma','')[:80]}"
+              f"  schema={cand.get('schema','')}"
+              f"  risk={cand.get('risk_level','')}")
+    if len(candidates) > 5:
+        print(f"  ... and {len(candidates) - 5} more")
+
+    # Gate
+    from candidate_gate import gate_batch
+    _, summary = gate_batch(candidates)
+    print(f"  Gate: parse_ok={summary['parse_ok']}/{summary['total']} "
+          f"unique={summary['unique']} candidates={summary['candidates']}")
+
+    # Batch yield table
+    print("\n  === Batch Yield Table ===")
+    print(f"  {'metric':<28} {'value'}")
+    print(f"  {'requested_candidates':<28} {requested}")
+    print(f"  {'actual_candidates':<28} {len(candidates)}")
+    print(f"  {'format_compliant':<28} {len(candidates) > 0}")
+    print(f"  {'recovered_single_object':<28} {1 if not result.get('candidates') and candidates else 0}")
+    print(f"  {'parse_valid_count':<28} {summary['parse_ok']}")
+    print(f"  {'unique_count':<28} {summary['unique']}")
+
     return 0
 def main():
     parser = argparse.ArgumentParser(description="MVP: template-guided lemma generation")

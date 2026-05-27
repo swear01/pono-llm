@@ -238,7 +238,7 @@ def extract_json(text: str) -> str:
         return text
 
     # Search for a JSON object containing candidate keys
-    for marker in ('"keep_literals"', '"drop_literals"', '"type"'):
+    for marker in ('"candidates"', '"batch_id"', '"keep_literals"', '"drop_literals"', '"type"'):
         idx = text.find(marker)
         if idx == -1:
             continue

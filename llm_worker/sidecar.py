@@ -115,8 +115,13 @@ def process_request(
     candidate_language: str,
     prompt_dir: str,
     default_model: str = "",
-) -> LLMCandidate:
-    """Process a single CTI context through the LLM."""
+) -> tuple:
+    """Process a single CTI context through the LLM.
+
+    Returns:
+        (candidates_list, token_count, latency_ms)
+        candidates_list is always a list (possibly of one element).
+    """
     # Template-guided mode: expects a full context bundle
     if candidate_language == "template-guided":
         from template_prompt import build_template_prompt
@@ -130,24 +135,16 @@ def process_request(
             # Fallback: if LLM returned a single object (non-compliant), wrap it
             if not candidates and "lemma" in result:
                 candidates = [result]
-            # Write ALL candidates (one per line)
             for cand in candidates:
                 cand.setdefault("type", "template_lemma")
-                write_response(args.resp_path, cand)
-            candidate = candidates[0] if candidates else {}
-            candidate.setdefault("type", "template_lemma")
-            # Process all candidates for logging too
-            for ci, cand in enumerate(candidates):
-                if ci > 0:  # already wrote first one above
-                    pass  # write_response already handles each
         except (json.JSONDecodeError, KeyError, IndexError):
-            candidate = {
+            candidates = [{
                 "type": "template_lemma",
                 "lemma": "",
                 "schema": "unknown",
                 "rationale": "LLM response was not valid JSON",
-            }
-        return candidate, token_count, latency_ms
+            }]
+        return candidates, token_count, latency_ms
 
     # Detect multi-CTI batch requests
     if "cti_contexts" in ctx:
@@ -182,7 +179,7 @@ def process_request(
             "rationale": "LLM response was not valid JSON",
         }
 
-    return candidate, token_count, latency_ms
+    return [candidate], token_count, latency_ms
 
 
 def main():
@@ -267,7 +264,7 @@ def main():
             print(f"[sidecar] Processing request #{processed_count + 1}")
 
             try:
-                candidate, token_count, latency_ms = process_request(
+                candidates, token_count, latency_ms = process_request(
                     client,
                     request,
                     args.candidate_language,
@@ -275,7 +272,9 @@ def main():
                     default_model=args.model,
                 )
 
-                write_response(args.resp_path, candidate)
+                for cand in candidates:
+                    write_response(args.resp_path, cand)
+                candidate = candidates[0] if candidates else {}
 
                 # Log the interaction
                 log_entry = {
@@ -289,6 +288,7 @@ def main():
                     ).hexdigest()[:16],
                     "token_count": token_count,
                     "latency_ms": latency_ms,
+                    "candidate_count": len(candidates),
                     "candidate_type": candidate.get("type"),
                     "keep_count": len(candidate.get("keep_literals", [])),
                     "drop_count": len(candidate.get("drop_literals", [])),
@@ -298,8 +298,8 @@ def main():
 
                 processed_count += 1
                 print(
-                    f"[sidecar] Response written, {token_count} tokens, "
-                    f"{latency_ms:.0f}ms latency"
+                    f"[sidecar] Response written ({len(candidates)} candidates), "
+                    f"{token_count} tokens, {latency_ms:.0f}ms latency"
                 )
 
             except Exception as e:
