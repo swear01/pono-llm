@@ -1,0 +1,77 @@
+You are a formal-methods repair engine. Below are 3 semantic lemma candidates that passed init checks but failed one-step transition checks. For each failed lemma, a SAT counterexample model is provided showing the exact next-state assignment that violates the lemma.
+
+For each candidate, propose up to 3 repaired lemma variants. Use the failure model and repair hints to guide your repair strategy.
+
+## Output contract
+
+Return a JSON object with a "repairs" array:
+
+```json
+{
+  "repairs": [
+    {
+      "source_candidate_id": "cand_007",
+      "repair_id": "cand_007_repair_1",
+      "repaired_lemma": "(=> (= state790 1) (= state1536 10))",
+      "repair_strategy": "reverse_implication",
+      "variables": ["state1536", "state790"],
+      "rationale": "...",
+      "risk": "medium"
+    }
+  ]
+}
+```
+
+## Rules
+
+- Use only variables present in the original lemma or counterexample context.
+- Prefer SHORT lemmas (1-2 variables).
+- Do NOT invent unrelated variables.
+- Available repair strategies: add_guard, weaken, reverse_implication, schema_change, reject.
+- If the counterexample shows the relation is merely correlation (not causation), use strategy "reject" with reasond "correlation, not causation".
+- Use "risk" values: low (likely correct), medium (plausible), high (speculative).
+
+## Failed Lemmas
+
+### Candidate 1: cand_007
+Lemma: (=> (= state1536 10) (= state790 0))
+Schema: guarded_implication
+Verilog: {"state1536": "o_dspi_mod", "state790": "o_wb_stall"}
+Failure class: overstrong_implication
+
+### Candidate 2: cand_008
+Lemma: (=> (= state1536 0) (= state1558 0))
+Schema: guarded_implication
+Verilog: {"state1536": "o_dspi_mod", "state1558": "cfg_speed"}
+Failure class: overstrong_implication
+
+### Candidate 3: cand_004
+Lemma: (=> (= state2002 1) (= state1536 0))
+Schema: guarded_implication
+Verilog: {"state2002": "r_pipe_req", "state1536": "o_dspi_mod"}
+Failure class: overstrong_implication
+
+## Counterexample Models
+
+### Candidate 1: cand_007
+Current state: state1536=0, state790=0
+Next state: state1536=10, state790=1
+Inputs: i_reset=0
+Interpretation: antecedent holds (mode=10) but consequent fails (stall=1 not 0). In real design, o_wb_stall=1 when o_dspi_mod=10.
+Repair hints: Try reversed implication: (=> (= state790 1) (= state1536 10)); Try weakening consequent to match system: (=> (= state1536 10) (= state790 1)); Consider if a guard on i_reset or other condition would make this true
+
+### Candidate 2: cand_008
+Current state: state1536=0, state1558=0
+Next state: state1536=0, state1558=1
+Inputs: i_cfg_stb=1, i_reset=0
+Interpretation: cfg_speed=1 reached while mode stays 0. Config strobe (i_cfg_stb=1) drives cfg_speed change independent of mode.
+Repair hints: Add guard: (=> (and (= state1536 0) (not i_cfg_stb)) (= state1558 0)); Weak consequent: (=> (= state1536 0) (<= state1558 1)); Consider rejecting if cfg_speed is truly independent of mode
+
+### Candidate 3: cand_004
+Current state: state2002=0, state1536=0
+Next state: state2002=1, state1536=15
+Inputs: i_reset=0
+Interpretation: r_pipe_req=1 AND mode=15 (not 0). Mode is non-zero when request is active.
+Repair hints: Consequent != 0: (=> (= state2002 1) (not (= state1536 0))); Mode range: (=> (= state2002 1) (>= state1536 10)); Consider if this is just correlation rather than causation
+
+Now generate repairs for all 3 candidates. Return only valid JSON.

@@ -1,0 +1,26 @@
+Candidate: cand_005
+Lemma: (! (and (= state1536 10) (= state79 1)))
+Check: one_step
+Result: SAT
+Violated: one-step: both conditions (state1536=10, state79=1) satisfied in next state (got 10, 1) — mutex violated
+
+Current values:
+  state1536                 = 0           (o_dspi_mod)
+  state79                   = 0           (cfg_mode)
+
+Next values:
+  state1536_next            = 10
+  state79_next              = 1
+
+Inputs:
+  i_reset                   = 0
+  i_wb_data                 = 1023
+  i_wb_addr                 = 127
+  i_wb_stb                  = 1
+  i_wb_cyc                  = 1
+  i_wb_we                   = 1
+  i_cfg_stb                 = 1
+  i_clk                     = 0
+  i_dspi_dat                = 0
+
+Controls:

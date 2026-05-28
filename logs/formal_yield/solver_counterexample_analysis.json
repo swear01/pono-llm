@@ -1,0 +1,54 @@
+[
+  {
+    "failure_class": "overstrong_implication",
+    "repairability": "medium",
+    "repair_direction": "",
+    "notes": "antecedent state1536=10 holds (got 10), but consequent state790=0 fails (got 1). Lemma needs to be weakened: either add guard on extra condition or narrow the consequent.",
+    "one_step_violated_condition": "one-step: antecedent (state1536=10) holds in next state (got 10), but consequent (state790=0) fails (got 1)",
+    "one_step_antecedent_holds": "to_be_determined",
+    "one_step_consequent_fails": "to_be_determined",
+    "rank": 1,
+    "candidate_id": "cand_007",
+    "lemma": "(=> (= state1536 10) (= state790 0))",
+    "schema": "guarded_implication"
+  },
+  {
+    "failure_class": "overstrong_implication",
+    "repairability": "medium",
+    "repair_direction": "",
+    "notes": "antecedent state1536=0 holds (got 0), but consequent state1558=0 fails (got 1). Lemma needs to be weakened: either add guard on extra condition or narrow the consequent.",
+    "one_step_violated_condition": "one-step: antecedent (state1536=0) holds in next state (got 0), but consequent (state1558=0) fails (got 1)",
+    "one_step_antecedent_holds": "to_be_determined",
+    "one_step_consequent_fails": "to_be_determined",
+    "rank": 2,
+    "candidate_id": "cand_008",
+    "lemma": "(=> (= state1536 0) (= state1558 0))",
+    "schema": "guarded_implication"
+  },
+  {
+    "failure_class": "overstrong_implication",
+    "repairability": "medium",
+    "repair_direction": "",
+    "notes": "antecedent state2002=1 holds (got 1), but consequent state1536=0 fails (got 15). Lemma needs to be weakened: either add guard on extra condition or narrow the consequent.",
+    "one_step_violated_condition": "one-step: antecedent (state2002=1) holds in next state (got 1), but consequent (state1536=0) fails (got 15)",
+    "one_step_antecedent_holds": "to_be_determined",
+    "one_step_consequent_fails": "to_be_determined",
+    "rank": 3,
+    "candidate_id": "cand_004",
+    "lemma": "(=> (= state2002 1) (= state1536 0))",
+    "schema": "guarded_implication"
+  },
+  {
+    "failure_class": "reachable_forbidden_mode",
+    "repairability": "medium",
+    "repair_direction": "",
+    "notes": "Mutex violated: both conditions simultaneously true in some reachable state.",
+    "one_step_violated_condition": "one-step: both conditions (state1536=10, state79=1) satisfied in next state (got 10, 1) \u2014 mutex violated",
+    "one_step_antecedent_holds": "to_be_determined",
+    "one_step_consequent_fails": "to_be_determined",
+    "rank": 4,
+    "candidate_id": "cand_005",
+    "lemma": "(! (and (= state1536 10) (= state79 1)))",
+    "schema": "mutual_exclusion"
+  }
+]

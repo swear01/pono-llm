@@ -1,0 +1,31 @@
+{
+  "candidate_id": "cand_004",
+  "lemma": "(=> (= state2002 1) (= state1536 0))",
+  "check": "induction",
+  "result": "SAT",
+  "current_values": {
+    "state2002": "0",
+    "state1536": "15"
+  },
+  "next_values": {
+    "state2002_next": "1",
+    "state1536_next": "15"
+  },
+  "relevant_inputs": {
+    "i_reset": "0",
+    "i_wb_data": "1023",
+    "i_wb_addr": "127",
+    "i_wb_stb": "1",
+    "i_wb_cyc": "1",
+    "i_wb_we": "0",
+    "i_cfg_stb": "1",
+    "i_clk": "0",
+    "i_dspi_dat": "0"
+  },
+  "relevant_controls": {},
+  "violated_condition": "induction: antecedent (state2002=1) holds in next state (got 1), but consequent (state1536=0) fails (got 15)",
+  "verilog_symbols": {
+    "state2002": "OPT_PIPE_BLOCK.r_pipe_req",
+    "state1536": "o_dspi_mod"
+  }
+}
