@@ -187,3 +187,76 @@ if __name__ == "__main__":
         out = "/tmp/batch_prompt.txt"
         Path(out).write_text(build_batch_prompt(batches[0], ctx))
         print(f"\nFirst batch prompt saved to {out}")
+
+
+def build_batch_prompt_v2(batch, benchmark_context):
+    """Rich cluster-context batch prompt with semantic lemma framing."""
+    from pathlib import Path
+    prompt_dir = Path(__file__).resolve().parent / "prompts"
+    v2_template = (prompt_dir / "batch_generation_v2.txt").read_text()
+
+    # Build rich cluster blocks
+    cluster_blocks = []
+    for c in batch.clusters:
+        block = (
+            f"Cluster {c.cluster_id}\n"
+            f"Purpose: Find semantic lemmas that explain or block this CTI cluster.\n"
+            f"Priority score: {c.score:.2f}\n"
+            f"Cluster size: {c.cluster_size} CTIs\n"
+            f"CTI literal coverage: {c.coverage:.0%}\n"
+            f"Reset flag ratio: {c.reset_flag_ratio:.0%}\n"
+            f"Trivial literal ratio: {c.trivial_literal_ratio:.0%}\n"
+            f"Non-reset variables: {c.non_reset_var_count}\n\n"
+            f"Hot state variables:\n"
+        )
+        for v in c.vars:
+            block += f"- {v}\n"
+        block += (
+            f"\nSuggested lemma families:\n"
+            f"- mutual_exclusion, guarded_implication, mode_exclusion,\n"
+            f"  bitslice_disequality, range_bound, equality, disequality\n"
+            f"\nGenerate exactly {batch.candidate_budget // len(batch.clusters)} "
+            f"candidates for {c.cluster_id}.\n"
+        )
+        cluster_blocks.append(block)
+
+    batch_context = (
+        f"Batch ID: {batch.batch_id}\n"
+        f"Number of clusters: {len(batch.clusters)}\n"
+        f"Candidates per cluster: {batch.candidate_budget // len(batch.clusters)}\n"
+        f"Total candidates required: {batch.candidate_budget}\n\n"
+        + "\n".join(cluster_blocks)
+    )
+
+    # Output contract
+    contract = (
+        "\n\nOUTPUT CONTRACT — STRICT\n\n"
+        'Return exactly one JSON object and nothing else.\n'
+        'The top-level JSON object MUST have this exact shape:\n\n'
+        '{\n'
+        '  "batch_id": "' + batch.batch_id + '",\n'
+        '  "candidates": [\n'
+        '    {\n'
+        '      "candidate_id": "' + batch.batch_id + '_' + batch.clusters[0].cluster_id + '_001",\n'
+        '      "cluster_id": "' + batch.clusters[0].cluster_id + '",\n'
+        '      "lemma": "...",\n'
+        '      "schema": "guarded_implication",\n'
+        '      "variables": ["var1", "var2"],\n'
+        '      "intuition": "brief reasoning",\n'
+        '      "risk": "low|medium|high"\n'
+        '    }\n'
+        '  ]\n'
+        '}\n\n'
+        "REQUIREMENTS:\n"
+        '- The key "candidates" IS MANDATORY.\n'
+        '- "candidates" MUST be an array, never a single object.\n'
+        "- Generate exactly " + str(batch.candidate_budget) + " candidates total.\n"
+        "- Candidate IDs must be unique.\n"
+        "- Do NOT wrap JSON in markdown.\n"
+        "- Do NOT include explanations outside JSON.\n\n"
+        "INVALID (single object, no candidates array):\n"
+        '{"candidate_id": "...", "lemma": "..."}\n\n'
+        "Generate now: only the JSON object, nothing else."
+    )
+
+    return v2_template + "\n\n" + batch_context + contract
