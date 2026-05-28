@@ -39,6 +39,12 @@ class BTOR2SMT:
         self.next_vars = {}   # var_name → Term (next-state)
         self.init_values = {} # var_name → init value (0/1)
         self.input_vars = {}  # input_name → Term
+        self.sort_map = {}    # sort_id → bitwidth
+
+        # Parse sort declarations: <id> sort bitvec <width>
+        for lid, p in btor.items():
+            if p[0] == "sort" and len(p) >= 3 and p[1] == "bitvec":
+                self.sort_map[lid] = int(p[2])
 
         # Register state variables
         for lid, p in btor.items():
@@ -52,25 +58,49 @@ class BTOR2SMT:
 
         # Find init values
         for lid, p in btor.items():
-            if p[0] == "init" and len(p) >= 4 and p[2] in self.state_sorts:
+            if p[0] == "init" and len(p) >= 4:
                 sid = p[2]
                 name = f"state{sid}"
+                if name not in self.state_sorts:
+                    continue
                 init_expr = p[3]
                 if init_expr in btor and btor[init_expr][0] == "const":
-                    val = int(btor[init_expr][2]) if len(btor[init_expr]) > 2 else 0
-                    w = self.state_sorts[name].bv_size()
+                    val = int(btor[init_expr][2], 2) if len(btor[init_expr]) > 2 else 0
                     self.init_values[name] = val
 
-        # Find inputs
+        # Find inputs with correct bitwidth
         for lid, p in btor.items():
-            if p[0] == "input":
-                name = p[2] if len(p) > 2 else f"input{lid}"
-                sort = self.tm.mk_bv_sort(1)
+            if p[0] == "input" and len(p) >= 3:
+                name = p[2]
+                w = int(p[1])
+                sort = self.tm.mk_bv_sort(w)
                 self.input_vars[name] = self.tm.mk_const(sort, name)
+
+    def _sort_w(self, sort_id: str) -> int:
+        w = self.sort_map.get(sort_id)
+        if w is not None:
+            return w
+        return int(sort_id)
+
+    def _as_bool(self, term: bz.Term) -> bz.Term:
+        """Convert a 1-bit BV to Boolean if needed."""
+        s = term.sort()
+        if not s.is_bv():
+            return term
+        if s.bv_size() == 1:
+            one = self.tm.mk_bv_value(self.tm.mk_bv_sort(1), 1)
+            return self.tm.mk_term(bz.Kind.EQUAL, [term, one])
+        return term
+
+    def _mk_bv1(self, bool_term: bz.Term) -> bz.Term:
+        """Convert a Boolean term to a 1-bit BV (0/1)."""
+        zero = self.tm.mk_bv_value(self.tm.mk_bv_sort(1), 0)
+        one = self.tm.mk_bv_value(self.tm.mk_bv_sort(1), 1)
+        return self.tm.mk_term(bz.Kind.ITE, [bool_term, one, zero])
 
     def _translate(self, lid: str, suffix: str = "", depth: int = 0) -> Optional[bz.Term]:
         """Translate a BTOR2 expression to Bitwuzla Term. Returns None for unsupported ops."""
-        if depth > 20: return None  # prevent infinite recursion
+        if depth > 30: return None
         cache_key = lid + suffix
         if cache_key in self.cache: return self.cache[cache_key]
         if lid not in self.btor: return None
@@ -80,7 +110,8 @@ class BTOR2SMT:
 
         if op == "const":
             w = int(p[1]) if len(p) > 1 else 1
-            val = int(p[2]) if len(p) > 2 else 0
+            val_str = p[2] if len(p) > 2 else "0"
+            val = int(val_str, 2) if all(c in "01" for c in val_str) else int(val_str)
             return self.tm.mk_bv_value(self.tm.mk_bv_sort(w), val)
 
         if op == "state":
@@ -95,34 +126,98 @@ class BTOR2SMT:
             w = int(p[1]) if len(p) > 1 else 1
             return self.tm.mk_bv_value(self.tm.mk_bv_sort(w), 0)
 
+        if op == "ones":
+            w = int(p[1]) if len(p) > 1 else 1
+            return self.tm.mk_bv_value(self.tm.mk_bv_sort(w), (1 << w) - 1)
+
         def t(a):
             return self._translate(a, suffix, depth + 1)
 
+        # Unary ops
         if op == "not" and len(p) >= 3:
             a = t(p[2])
             return self.tm.mk_term(bz.Kind.BV_NOT, [a]) if a is not None else None
 
-        if op == "and" and len(p) >= 4:
+        # Binary logical ops
+        if op in ("and", "or", "xor", "xnor") and len(p) >= 4:
             a, b = t(p[2]), t(p[3])
-            return self.tm.mk_term(bz.Kind.BV_AND, [a, b]) if a is not None and b is not None else None
+            if a is None or b is None: return None
+            kind = {"and": bz.Kind.BV_AND, "or": bz.Kind.BV_OR,
+                    "xor": bz.Kind.BV_XOR, "xnor": bz.Kind.BV_XNOR}[op]
+            return self.tm.mk_term(kind, [a, b])
 
-        if op == "or" and len(p) >= 4:
+        if op in ("add", "sub", "srl") and len(p) >= 4:
             a, b = t(p[2]), t(p[3])
-            return self.tm.mk_term(bz.Kind.BV_OR, [a, b]) if a is not None and b is not None else None
+            if a is None or b is None: return None
+            kind = {"add": bz.Kind.BV_ADD, "sub": bz.Kind.BV_SUB, "srl": bz.Kind.BV_SHR}[op]
+            return self.tm.mk_term(kind, [a, b])
 
-        if op == "eq" and len(p) >= 4:
+        # Comparisons
+        if op in ("eq", "neq") and len(p) >= 4:
             a, b = t(p[2]), t(p[3])
-            return self.tm.mk_term(bz.Kind.EQUAL, [a, b]) if a is not None and b is not None else None
+            if a is None or b is None: return None
+            eq_bool = self.tm.mk_term(bz.Kind.EQUAL, [a, b])
+            result = self._mk_bv1(eq_bool)
+            if op == "neq":
+                return self.tm.mk_term(bz.Kind.BV_NOT, [result])
+            return result
 
+        if op in ("ult", "ulte") and len(p) >= 4:
+            a, b = t(p[2]), t(p[3])
+            if a is None or b is None: return None
+            kind = {"ult": bz.Kind.BV_ULT, "ulte": bz.Kind.BV_ULE}[op]
+            bool_term = self.tm.mk_term(kind, [a, b])
+            return self._mk_bv1(bool_term)
+
+        # Ternary ops
         if op == "ite" and len(p) >= 5:
             a, b, c = t(p[2]), t(p[3]), t(p[4])
-            return self.tm.mk_term(bz.Kind.ITE, [a, b, c]) if all(x is not None for x in [a, b, c]) else None
+            if a is None or b is None or c is None: return None
+            return self.tm.mk_term(bz.Kind.ITE, [self._as_bool(a), b, c])
 
-        if op == "uext" and len(p) >= 3:
+        # slice: extract bits hi:lo from operand
+        if op == "slice" and len(p) >= 5:
+            src = t(p[2])
+            hi, lo = int(p[3]), int(p[4])
+            if src is None: return None
+            src_w = src.sort().bv_size()
+            if lo > hi:
+                return None
+            if hi >= src_w:
+                if lo >= src_w:
+                    w = hi - lo + 1
+                    return self.tm.mk_bv_value(self.tm.mk_bv_sort(w), 0)
+                ext = hi + 1 - src_w
+                src = self.tm.mk_term(bz.Kind.BV_ZERO_EXTEND, [src], [ext])
+            return self.tm.mk_term(bz.Kind.BV_EXTRACT, [src],
+                                   [hi, lo])
+
+        # concat: operand1 (MSB) + operand2 (LSB)
+        if op == "concat" and len(p) >= 4:
+            a, b = t(p[2]), t(p[3])
+            if a is None or b is None: return None
+            return self.tm.mk_term(bz.Kind.BV_CONCAT, [a, b])
+
+        # Reduction ops
+        if op == "redor" and len(p) >= 3:
             a = t(p[2])
-            return a  # simplified: treating uext as passthrough for same-width
+            return self.tm.mk_term(bz.Kind.BV_REDOR, [a]) if a is not None else None
 
-        return None  # unsupported op
+        if op == "redand" and len(p) >= 3:
+            a = t(p[2])
+            return self.tm.mk_term(bz.Kind.BV_REDAND, [a]) if a is not None else None
+
+        # Zero-extension
+        if op == "uext" and len(p) >= 4:
+            a = t(p[2])
+            ext = int(p[1]) if len(p) > 1 else 0
+            if a is None: return None
+            src_w = a.sort().bv_size()
+            if ext > src_w:
+                return self.tm.mk_term(bz.Kind.BV_ZERO_EXTEND, [a], [ext - src_w])
+            return a
+
+        return None
 
     def get_init_constraints(self) -> List[bz.Term]:
         """Return init constraints for all state vars."""
@@ -136,47 +231,85 @@ class BTOR2SMT:
         return constraints
 
     def get_transition_constraints(self) -> List[bz.Term]:
-        """Return next-state constraints. Returns empty list if any op is unsupported."""
+        """Return next-state constraints. Skips any that fail translation."""
         constraints = []
+        failed = 0
         for lid, p in self.btor.items():
             if p[0] == "next" and len(p) >= 4:
                 sid = p[2]
                 name = f"state{sid}"
-                next_term = self._translate(p[3], "_next")
-                if next_term is None: return []  # bail on unsupported
+                if name not in self.next_vars:
+                    continue
+                try:
+                    next_term = self._translate(p[3], "_next")
+                except Exception:
+                    next_term = None
+                if next_term is None:
+                    failed += 1
+                    continue
                 var = self.next_vars.get(name)
-                if var is None: return []
-                constraints.append(self.tm.mk_term(bz.Kind.EQUAL, [var, next_term]))
+                if var is None: continue
+                try:
+                    constraints.append(self.tm.mk_term(bz.Kind.EQUAL, [var, next_term]))
+                except Exception:
+                    failed += 1
+        if failed > 0:
+            print(f"  (skipped {failed} transition lines due to translation errors)")
         return constraints
 
 
 def lemma_to_smt(lemma: str, vars_dict: Dict[str, bz.Term],
                 tm: bz.TermManager) -> Optional[bz.Term]:
-    """Convert a lemma string to a Bitwuzla Boolean term."""
-    if not vars_dict: return None
+    """Convert a lemma string to a Bitwuzla Boolean term.
 
-    lemma = lemma.strip().replace(" ", "")
+    Handles S-expression patterns: (=> (= stateX V) (= stateY V)),
+    (! (and (= stateX V) (= stateY V))).
+    """
+    if not vars_dict or not lemma.strip():
+        return None
 
-    # Mutual exclusion: !(x && y)
-    m = re.match(r"!\(\s*state(\d+)\s*&&\s*state(\d+)\s*\)", lemma)
+    lemma_clean = lemma.strip()
+
+    def _mk_eq(var_name: str, val_str: str) -> Optional[bz.Term]:
+        """Build (EQUAL var value) with matching widths."""
+        var = vars_dict.get(var_name)
+        if var is None: return None
+        val = int(val_str)
+        w = var.sort().bv_size()
+        return tm.mk_term(bz.Kind.EQUAL, [var, tm.mk_bv_value(tm.mk_bv_sort(w), val)])
+
+    # (=> (= stateX V) (= stateY V))  → guarded implication
+    m = re.match(
+        r'\(\s*=>\s*\(\s*=\s*(state\d+)\s+(\d+)\s*\)\s*\(\s*=\s*(state\d+)\s+(\d+)\s*\)\s*\)',
+        lemma_clean)
+    if m:
+        guard = _mk_eq(m.group(1), m.group(2))
+        consequent = _mk_eq(m.group(3), m.group(4))
+        if guard is None or consequent is None: return None
+        not_guard = tm.mk_term(bz.Kind.NOT, [guard])
+        return tm.mk_term(bz.Kind.OR, [not_guard, consequent])
+
+    # (! (and (= stateX V) (= stateY V)))  → mutual exclusion
+    m = re.match(
+        r'\(\s*!\s*\(\s*and\s*\(\s*=\s*(state\d+)\s+(\d+)\s*\)\s*\(\s*=\s*(state\d+)\s+(\d+)\s*\)\s*\)\s*\)',
+        lemma_clean)
+    if m:
+        a = _mk_eq(m.group(1), m.group(2))
+        b = _mk_eq(m.group(3), m.group(4))
+        if a is None or b is None: return None
+        violation = tm.mk_term(bz.Kind.AND, [a, b])
+        return tm.mk_term(bz.Kind.NOT, [violation])
+
+    # Fallback: symbolic format
+    lemma_nosp = lemma_clean.replace(" ", "")
+    m = re.match(r"!\(\s*state(\d+)\s*&&\s*state(\d+)\s*\)", lemma_nosp)
     if m:
         x = vars_dict.get(f"state{m.group(1)}")
         y = vars_dict.get(f"state{m.group(2)}")
         if x is None or y is None: return None
         zero = tm.mk_bv_value(x.sort(), 0)
-        return tm.mk_term(
-            bz.Kind.EQUAL,
-            [tm.mk_term(bz.Kind.BV_AND, [x, y]), zero]
-        )
-
-    # Equality: (= stateX const)
-    m = re.match(r"\(\s*=\s*state(\d+)\s+(\S+)\s*\)", lemma)
-    if m:
-        x = vars_dict.get(f"state{m.group(1)}")
-        if x is None: return None
-        val_raw = m.group(2).replace("#b", "").replace("'d", "")
-        val = int(val_raw, 2 if "#b" in m.group(2) or val_raw.isdigit() else 10)
-        return tm.mk_term(bz.Kind.EQUAL, [x, tm.mk_bv_value(x.sort(), val)])
+        return tm.mk_term(bz.Kind.EQUAL,
+                          [tm.mk_term(bz.Kind.BV_AND, [x, y]), zero])
 
     return None
 

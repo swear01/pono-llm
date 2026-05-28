@@ -1,0 +1,141 @@
+{
+  "btor2_path": "/home/swear01/hwmcc_benchmarks/2024/btor2/2019/wolf/2019C/qspiflash_dualflexpress_divfive-p040.btor2",
+  "transition_constraints_count": 217,
+  "summary": {
+    "total": 5,
+    "solver_verified_strong": 0,
+    "solver_inductive": 0,
+    "init_fail_one_step_pass": 0,
+    "init_pass_one_step_fail": 4,
+    "init_pass_induction_fail": 0,
+    "parse_failed": 1,
+    "incomplete": 0
+  },
+  "results": [
+    {
+      "candidate_id": "cand_007_guarded_implication",
+      "rank": 1,
+      "lemma": "(=> (= state1536 10) (= state790 0))",
+      "schema": "guarded_implication",
+      "variables": [
+        "state1536",
+        "state790"
+      ],
+      "init": {
+        "verdict": "init_safe",
+        "result": "unsat",
+        "time_ms": 0
+      },
+      "one_step": {
+        "verdict": "one_step_fail",
+        "result": "sat",
+        "time_ms": 4
+      },
+      "inductive": {
+        "verdict": "induction_fail",
+        "result": "sat",
+        "time_ms": 4
+      },
+      "overall_verdict": "init_pass_one_step_fail"
+    },
+    {
+      "candidate_id": "cand_008_guarded_implication",
+      "rank": 2,
+      "lemma": "(=> (= state1536 0) (= state1558 0))",
+      "schema": "guarded_implication",
+      "variables": [
+        "state1536",
+        "state1558"
+      ],
+      "init": {
+        "verdict": "init_safe",
+        "result": "unsat",
+        "time_ms": 0
+      },
+      "one_step": {
+        "verdict": "one_step_fail",
+        "result": "sat",
+        "time_ms": 5
+      },
+      "inductive": {
+        "verdict": "induction_fail",
+        "result": "sat",
+        "time_ms": 4
+      },
+      "overall_verdict": "init_pass_one_step_fail"
+    },
+    {
+      "candidate_id": "cand_004_guarded_implication",
+      "rank": 3,
+      "lemma": "(=> (= state2002 1) (= state1536 0))",
+      "schema": "guarded_implication",
+      "variables": [
+        "state2002",
+        "state1536"
+      ],
+      "init": {
+        "verdict": "init_safe",
+        "result": "unsat",
+        "time_ms": 0
+      },
+      "one_step": {
+        "verdict": "one_step_fail",
+        "result": "sat",
+        "time_ms": 5
+      },
+      "inductive": {
+        "verdict": "induction_fail",
+        "result": "sat",
+        "time_ms": 4
+      },
+      "overall_verdict": "init_pass_one_step_fail"
+    },
+    {
+      "candidate_id": "cand_005_mutual_exclusion",
+      "rank": 4,
+      "lemma": "(! (and (= state1536 10) (= state79 1)))",
+      "schema": "mutual_exclusion",
+      "variables": [
+        "state1536",
+        "state79"
+      ],
+      "init": {
+        "verdict": "init_safe",
+        "result": "unsat",
+        "time_ms": 0
+      },
+      "one_step": {
+        "verdict": "one_step_fail",
+        "result": "sat",
+        "time_ms": 4
+      },
+      "inductive": {
+        "verdict": "induction_fail",
+        "result": "sat",
+        "time_ms": 4
+      },
+      "overall_verdict": "init_pass_one_step_fail"
+    },
+    {
+      "candidate_id": "cand_007_input",
+      "rank": 5,
+      "lemma": "(=> (= state1536 11) (= ((_ extract 12 12) i_wb_data) 1))",
+      "schema": "guarded_implication",
+      "variables": [
+        "state1536",
+        "i_wb_data"
+      ],
+      "init": {
+        "verdict": "parse_failed",
+        "detail": "lemma_to_smt returned None"
+      },
+      "one_step": {
+        "verdict": "parse_failed"
+      },
+      "inductive": {
+        "verdict": "parse_failed"
+      },
+      "overall_verdict": "parse_failed"
+    }
+  ]
+}
