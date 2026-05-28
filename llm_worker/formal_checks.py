@@ -6,12 +6,9 @@ Uses BTOR2 parsing for analytical checks (init values, transition structure).
 Marks checks needing SMT solver as 'not_run' with reason.
 """
 
-import json, re, os
-from dataclasses import dataclass, field, asdict
+import json, re, os, hashlib
 from typing import List, Dict, Optional, Tuple
 from collections import defaultdict
-
-from candidate_gate import GateResult, classify_candidate, gate_batch
 
 
 @dataclass

@@ -1,0 +1,468 @@
+[
+  {
+    "candidate_id": "cand_001",
+    "batch_id": "v1_json_array",
+    "cluster_id": "C11353",
+    "lemma": "0 <= state1536 && state1536 <= 11",
+    "schema": "range",
+    "variables": [
+      "state1536"
+    ],
+    "multi_var": false,
+    "parse_status": "pass",
+    "analytical_verdict": "promising",
+    "reason": "single-var nontrivial pattern, needs solver",
+    "recognized_pattern": "single_var_nontrivial"
+  },
+  {
+    "candidate_id": "cand_002",
+    "batch_id": "v1_json_array",
+    "cluster_id": "C11353",
+    "lemma": "state1536 != 12",
+    "schema": "disequality",
+    "variables": [
+      "state1536"
+    ],
+    "multi_var": false,
+    "parse_status": "pass",
+    "analytical_verdict": "promising",
+    "reason": "single-var nontrivial pattern, needs solver",
+    "recognized_pattern": "single_var_nontrivial"
+  },
+  {
+    "candidate_id": "cand_003",
+    "batch_id": "v1_json_array",
+    "cluster_id": "C13152",
+    "lemma": "!( (state1536 = 10) && (state1536 = 11) )",
+    "schema": "mutual_exclusion",
+    "variables": [
+      "state1536"
+    ],
+    "multi_var": false,
+    "parse_status": "pass",
+    "analytical_verdict": "promising",
+    "reason": "single-var nontrivial pattern, needs solver",
+    "recognized_pattern": "single_var_nontrivial"
+  },
+  {
+    "candidate_id": "cand_004",
+    "batch_id": "v1_json_array",
+    "cluster_id": "C11353",
+    "lemma": "state1686 = state1688",
+    "schema": "equality",
+    "variables": [
+      "state1686",
+      "state1688"
+    ],
+    "multi_var": true,
+    "parse_status": "pass",
+    "analytical_verdict": "promising",
+    "reason": "single-var nontrivial pattern, needs solver",
+    "recognized_pattern": "single_var_nontrivial"
+  },
+  {
+    "candidate_id": "cand_005",
+    "batch_id": "v1_json_array",
+    "cluster_id": "C11353",
+    "lemma": "(state1536 = 0) => (state1686 = 0)",
+    "schema": "guarded_implication",
+    "variables": [
+      "state1536",
+      "state1686"
+    ],
+    "multi_var": true,
+    "parse_status": "pass",
+    "analytical_verdict": "needs_solver",
+    "reason": "guarded implication: requires solver for guard/consequent check",
+    "recognized_pattern": "guarded_implication"
+  },
+  {
+    "candidate_id": "cand_006",
+    "batch_id": "v1_json_array",
+    "cluster_id": "C13152",
+    "lemma": "(state1536 = 10) => (state1820 = 0)",
+    "schema": "mode_implication",
+    "variables": [
+      "state1536",
+      "state1820"
+    ],
+    "multi_var": true,
+    "parse_status": "pass",
+    "analytical_verdict": "needs_solver",
+    "reason": "guarded implication: requires solver for guard/consequent check",
+    "recognized_pattern": "guarded_implication"
+  },
+  {
+    "candidate_id": "cand_007",
+    "batch_id": "v1_json_array",
+    "cluster_id": "C11353",
+    "lemma": "state1688 = state1686 + 0",
+    "schema": "offset",
+    "variables": [
+      "state1688",
+      "state1686"
+    ],
+    "multi_var": true,
+    "parse_status": "pass",
+    "analytical_verdict": "needs_solver",
+    "reason": "offset relation: requires arithmetic solver check",
+    "recognized_pattern": "offset_relation"
+  },
+  {
+    "candidate_id": "cand_008",
+    "batch_id": "v1_json_array",
+    "cluster_id": "C13152",
+    "lemma": "state1820 != input13",
+    "schema": "disequality",
+    "variables": [
+      "state1820",
+      "input13"
+    ],
+    "multi_var": true,
+    "parse_status": "pass",
+    "analytical_verdict": "promising",
+    "reason": "single-var nontrivial pattern, needs solver",
+    "recognized_pattern": "single_var_nontrivial"
+  },
+  {
+    "candidate_id": "cand_009",
+    "batch_id": "v1_json_array",
+    "cluster_id": "C11353",
+    "lemma": "0 <= state1686 && state1686 < 1099511627776",
+    "schema": "range",
+    "variables": [
+      "state1686"
+    ],
+    "multi_var": false,
+    "parse_status": "pass",
+    "analytical_verdict": "promising",
+    "reason": "single-var nontrivial pattern, needs solver",
+    "recognized_pattern": "single_var_nontrivial"
+  },
+  {
+    "candidate_id": "cand_010",
+    "batch_id": "v1_json_array",
+    "cluster_id": "C13152",
+    "lemma": "state1536 != state1686",
+    "schema": "disequality",
+    "variables": [
+      "state1536",
+      "state1686"
+    ],
+    "multi_var": true,
+    "parse_status": "pass",
+    "analytical_verdict": "promising",
+    "reason": "single-var nontrivial pattern, needs solver",
+    "recognized_pattern": "single_var_nontrivial"
+  },
+  {
+    "candidate_id": "cand_001",
+    "batch_id": "v2_jsonl",
+    "cluster_id": "C000",
+    "lemma": "0 <= state1536 <= 11",
+    "schema": "range",
+    "variables": [
+      "state1536"
+    ],
+    "multi_var": false,
+    "parse_status": "pass",
+    "analytical_verdict": "promising",
+    "reason": "single-var nontrivial pattern, needs solver",
+    "recognized_pattern": "single_var_nontrivial"
+  },
+  {
+    "candidate_id": "cand_002",
+    "batch_id": "v2_jsonl",
+    "cluster_id": "C000",
+    "lemma": "state1536 != 15",
+    "schema": "disequality",
+    "variables": [
+      "state1536"
+    ],
+    "multi_var": false,
+    "parse_status": "pass",
+    "analytical_verdict": "promising",
+    "reason": "single-var nontrivial pattern, needs solver",
+    "recognized_pattern": "single_var_nontrivial"
+  },
+  {
+    "candidate_id": "cand_003",
+    "batch_id": "v2_jsonl",
+    "cluster_id": "C000",
+    "lemma": "state1536 != 14",
+    "schema": "disequality",
+    "variables": [
+      "state1536"
+    ],
+    "multi_var": false,
+    "parse_status": "pass",
+    "analytical_verdict": "promising",
+    "reason": "single-var nontrivial pattern, needs solver",
+    "recognized_pattern": "single_var_nontrivial"
+  },
+  {
+    "candidate_id": "cand_004",
+    "batch_id": "v2_jsonl",
+    "cluster_id": "C000",
+    "lemma": "state1536 != 13",
+    "schema": "disequality",
+    "variables": [
+      "state1536"
+    ],
+    "multi_var": false,
+    "parse_status": "pass",
+    "analytical_verdict": "promising",
+    "reason": "single-var nontrivial pattern, needs solver",
+    "recognized_pattern": "single_var_nontrivial"
+  },
+  {
+    "candidate_id": "cand_005",
+    "batch_id": "v2_jsonl",
+    "cluster_id": "C000",
+    "lemma": "state1536 != 12",
+    "schema": "disequality",
+    "variables": [
+      "state1536"
+    ],
+    "multi_var": false,
+    "parse_status": "pass",
+    "analytical_verdict": "promising",
+    "reason": "single-var nontrivial pattern, needs solver",
+    "recognized_pattern": "single_var_nontrivial"
+  },
+  {
+    "candidate_id": "cand_006",
+    "batch_id": "v2_jsonl",
+    "cluster_id": "C000",
+    "lemma": "!(state79 && state1558)",
+    "schema": "mutual_exclusion",
+    "variables": [
+      "state79",
+      "state1558"
+    ],
+    "multi_var": true,
+    "parse_status": "pass",
+    "analytical_verdict": "analytically_verified",
+    "reason": "mutual exclusion: verified by complementary transition pattern",
+    "recognized_pattern": "mutual_exclusion"
+  },
+  {
+    "candidate_id": "cand_007",
+    "batch_id": "v2_jsonl",
+    "cluster_id": "C000",
+    "lemma": "(=> (= state1536 10) (= state790 0))",
+    "schema": "guarded_implication",
+    "variables": [
+      "state1536",
+      "state790"
+    ],
+    "multi_var": true,
+    "parse_status": "pass",
+    "analytical_verdict": "needs_solver",
+    "reason": "guarded implication: requires solver for guard/consequent check",
+    "recognized_pattern": "guarded_implication"
+  },
+  {
+    "candidate_id": "cand_008",
+    "batch_id": "v2_jsonl",
+    "cluster_id": "C000",
+    "lemma": "(=> (= state1536 0) (= state1558 0))",
+    "schema": "guarded_implication",
+    "variables": [
+      "state1536",
+      "state1558"
+    ],
+    "multi_var": true,
+    "parse_status": "pass",
+    "analytical_verdict": "needs_solver",
+    "reason": "guarded implication: requires solver for guard/consequent check",
+    "recognized_pattern": "guarded_implication"
+  },
+  {
+    "candidate_id": "cand_009",
+    "batch_id": "v2_jsonl",
+    "cluster_id": "C000",
+    "lemma": "(=> (= state1536 11) (= state1560 0))",
+    "schema": "mode_implication",
+    "variables": [
+      "state1536",
+      "state1560"
+    ],
+    "multi_var": true,
+    "parse_status": "pass",
+    "analytical_verdict": "needs_solver",
+    "reason": "guarded implication: requires solver for guard/consequent check",
+    "recognized_pattern": "guarded_implication"
+  },
+  {
+    "candidate_id": "cand_010",
+    "batch_id": "v2_jsonl",
+    "cluster_id": "C000",
+    "lemma": "state2002 = 0",
+    "schema": "equality",
+    "variables": [
+      "state2002"
+    ],
+    "multi_var": false,
+    "parse_status": "pass",
+    "analytical_verdict": "promising",
+    "reason": "single-var nontrivial pattern, needs solver",
+    "recognized_pattern": "single_var_nontrivial"
+  },
+  {
+    "candidate_id": "cand_001",
+    "batch_id": "v2_jsonl",
+    "cluster_id": "C000",
+    "lemma": "(and (<= 0 state1536) (<= state1536 11))",
+    "schema": "range",
+    "variables": [
+      "state1536"
+    ],
+    "multi_var": false,
+    "parse_status": "pass",
+    "analytical_verdict": "promising",
+    "reason": "single-var nontrivial pattern, needs solver",
+    "recognized_pattern": "single_var_nontrivial"
+  },
+  {
+    "candidate_id": "cand_002",
+    "batch_id": "v2_jsonl",
+    "cluster_id": "C000",
+    "lemma": "(and (<= 0 state79) (<= state79 1))",
+    "schema": "range",
+    "variables": [
+      "state79"
+    ],
+    "multi_var": false,
+    "parse_status": "pass",
+    "analytical_verdict": "promising",
+    "reason": "single-var nontrivial pattern, needs solver",
+    "recognized_pattern": "single_var_nontrivial"
+  },
+  {
+    "candidate_id": "cand_003",
+    "batch_id": "v2_jsonl",
+    "cluster_id": "C000",
+    "lemma": "(and (<= 0 state790) (<= state790 1))",
+    "schema": "range",
+    "variables": [
+      "state790"
+    ],
+    "multi_var": false,
+    "parse_status": "pass",
+    "analytical_verdict": "promising",
+    "reason": "single-var nontrivial pattern, needs solver",
+    "recognized_pattern": "single_var_nontrivial"
+  },
+  {
+    "candidate_id": "cand_004",
+    "batch_id": "v2_jsonl",
+    "cluster_id": "C000",
+    "lemma": "(=> (= state2002 1) (= state1536 0))",
+    "schema": "guarded_implication",
+    "variables": [
+      "state2002",
+      "state1536"
+    ],
+    "multi_var": true,
+    "parse_status": "pass",
+    "analytical_verdict": "needs_solver",
+    "reason": "guarded implication: requires solver for guard/consequent check",
+    "recognized_pattern": "guarded_implication"
+  },
+  {
+    "candidate_id": "cand_005",
+    "batch_id": "v2_jsonl",
+    "cluster_id": "C000",
+    "lemma": "(! (and (= state1536 10) (= state79 1)))",
+    "schema": "mutual_exclusion",
+    "variables": [
+      "state1536",
+      "state79"
+    ],
+    "multi_var": true,
+    "parse_status": "pass",
+    "analytical_verdict": "promising",
+    "reason": "single-var nontrivial pattern, needs solver",
+    "recognized_pattern": "single_var_nontrivial"
+  },
+  {
+    "candidate_id": "cand_006",
+    "batch_id": "v2_jsonl",
+    "cluster_id": "C000",
+    "lemma": "(=> (= i_reset 1) (= state1536 0))",
+    "schema": "guarded_implication",
+    "variables": [
+      "i_reset",
+      "state1536"
+    ],
+    "multi_var": true,
+    "parse_status": "pass",
+    "analytical_verdict": "rejected_trivial",
+    "reason": "reset-dominated variables",
+    "recognized_pattern": null
+  },
+  {
+    "candidate_id": "cand_007",
+    "batch_id": "v2_jsonl",
+    "cluster_id": "C000",
+    "lemma": "(=> (= state1536 11) (= ((_ extract 12 12) i_wb_data) 1))",
+    "schema": "guarded_implication",
+    "variables": [
+      "state1536",
+      "i_wb_data"
+    ],
+    "multi_var": true,
+    "parse_status": "pass",
+    "analytical_verdict": "needs_solver",
+    "reason": "guarded implication: requires solver for guard/consequent check",
+    "recognized_pattern": "guarded_implication"
+  },
+  {
+    "candidate_id": "cand_008",
+    "batch_id": "v2_jsonl",
+    "cluster_id": "C000",
+    "lemma": "(! (and (= state1536 10) (= state2002 1)))",
+    "schema": "mutual_exclusion",
+    "variables": [
+      "state1536",
+      "state2002"
+    ],
+    "multi_var": true,
+    "parse_status": "pass",
+    "analytical_verdict": "promising",
+    "reason": "single-var nontrivial pattern, needs solver",
+    "recognized_pattern": "single_var_nontrivial"
+  },
+  {
+    "candidate_id": "cand_009",
+    "batch_id": "v2_jsonl",
+    "cluster_id": "C000",
+    "lemma": "(and (<= 0 state1558) (<= state1558 1))",
+    "schema": "range",
+    "variables": [
+      "state1558"
+    ],
+    "multi_var": false,
+    "parse_status": "pass",
+    "analytical_verdict": "promising",
+    "reason": "single-var nontrivial pattern, needs solver",
+    "recognized_pattern": "single_var_nontrivial"
+  },
+  {
+    "candidate_id": "cand_010",
+    "batch_id": "v2_jsonl",
+    "cluster_id": "C000",
+    "lemma": "(=> (= state1536 11) (= state790 0))",
+    "schema": "guarded_implication",
+    "variables": [
+      "state1536",
+      "state790"
+    ],
+    "multi_var": true,
+    "parse_status": "pass",
+    "analytical_verdict": "needs_solver",
+    "reason": "guarded implication: requires solver for guard/consequent check",
+    "recognized_pattern": "guarded_implication"
+  }
+]
