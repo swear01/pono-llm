@@ -360,6 +360,31 @@ def lemma_to_smt(lemma: str, vars_dict: Dict[str, bz.Term],
         return tm.mk_term(bz.Kind.EQUAL,
                           [tm.mk_term(bz.Kind.BV_AND, [x, y]), zero])
 
+    # Standalone: (<= stateX V)  → upper bound
+    m = re.match(r'\(\s*<=\s*(state\d+)\s+(\d+)\s*\)', lemma_clean)
+    if m:
+        var = vars_dict.get(m.group(1))
+        val = int(m.group(2))
+        if var is None: return None
+        bv_val = tm.mk_bv_value(tm.mk_bv_sort(var.sort().bv_size()), val)
+        return tm.mk_term(bz.Kind.BV_ULE, [var, bv_val])
+
+    # Standalone: (>= stateX V)  → lower bound
+    m = re.match(r'\(\s*>=\s*(state\d+)\s+(\d+)\s*\)', lemma_clean)
+    if m:
+        var = vars_dict.get(m.group(1))
+        val = int(m.group(2))
+        if var is None: return None
+        bv_val = tm.mk_bv_value(tm.mk_bv_sort(var.sort().bv_size()), val)
+        return tm.mk_term(bz.Kind.BV_UGE, [var, bv_val])
+
+    # Standalone: (not (= stateX V))  → disequality
+    m = re.match(r'\(\s*not\s*\(\s*=\s*(state\d+)\s+(\d+)\s*\)\s*\)', lemma_clean)
+    if m:
+        eq = _mk_eq(m.group(1), m.group(2))
+        if eq is None: return None
+        return tm.mk_term(bz.Kind.NOT, [eq])
+
     return None
 
 

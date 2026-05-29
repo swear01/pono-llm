@@ -1,0 +1,54 @@
+{
+  "resynthesized_candidates": [
+    {
+      "source_failure_id": "CLUSTER_MODE_STALL",
+      "candidate_id": "resyn_001",
+      "lemma": "(! (and (= state1536 10) (= state790 1)))",
+      "schema": "mutual_exclusion",
+      "variables": ["state1536", "state790"],
+      "why_avoids_counterexample": "CE: state1536=10, state790=1. The lemma says they cannot both be true, so it VIOLATES the lemma (both true). This means the lemma blocks this CE.",
+      "why_nontrivial": "state1536 is 4-bit, state790 is 1-bit. Neither is a bitwidth tautology.",
+      "risk": "medium"
+    },
+    {
+      "source_failure_id": "CLUSTER_REQUEST_MODE",
+      "candidate_id": "resyn_002",
+      "lemma": "(<= state1536 14)",
+      "schema": "range_bound",
+      "variables": ["state1536"],
+      "why_avoids_counterexample": "CE: state1536=15. The lemma says state1536 <= 14, which is false. Thus lemma blocks CE.",
+      "why_nontrivial": "state1536 is 4-bit, max value 15. Bound 14 is less than max, thus not trivially true.",
+      "risk": "high"
+    },
+    {
+      "source_failure_id": "CLUSTER_REQUEST_MODE",
+      "candidate_id": "resyn_003",
+      "lemma": "(! (and (= state2002 1) (= state1536 15)))",
+      "schema": "mutual_exclusion",
+      "variables": ["state2002", "state1536"],
+      "why_avoids_counterexample": "CE: state2002=1, state1536=15. Both true, so lemma violated, blocks.",
+      "why_nontrivial": "state2002 is 1-bit, state1536 is 4-bit. Not a bitwidth tautology.",
+      "risk": "high"
+    },
+    {
+      "source_failure_id": "CLUSTER_REQUEST_MODE",
+      "candidate_id": "resyn_004",
+      "lemma": "(not (= state1536 15))",
+      "schema": "disequality",
+      "variables": ["state1536"],
+      "why_avoids_counterexample": "CE: state1536=15, so (= state1536 15) true, lemma false, blocks.",
+      "why_nontrivial": "state1536 is 4-bit, value 15 is within range, so disequality is not trivially true.",
+      "risk": "high"
+    },
+    {
+      "source_failure_id": "CLUSTER_MODE_CFG",
+      "candidate_id": "resyn_005",
+      "lemma": "",
+      "schema": "reject",
+      "variables": [],
+      "why_avoids_counterexample": "No lemma possible; cluster unsalvageable.",
+      "why_nontrivial": "N/A",
+      "risk": "N/A"
+    }
+  ]
+}
