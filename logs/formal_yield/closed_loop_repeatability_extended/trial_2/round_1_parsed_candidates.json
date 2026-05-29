@@ -1,0 +1,47 @@
+{
+  "round": 1,
+  "candidates": [
+    {
+      "candidate_id": "cls_r1_001",
+      "lemma": "(=> (= state1536 0) (= state79 0))",
+      "schema": "implication",
+      "variables": [
+        "state1536",
+        "state79"
+      ],
+      "transition_rationale": "state79 (cfg_mode) is cleared on reset and only updated during a configuration write when state790=0. When state1536=0 (IDLE mode), the configuration bus may be idle, preventing state79 from being set to 1 without changing state1536. Therefore, state79 remains 0 whenever state1536=0.",
+      "why_avoids_previous_counterexamples": "No previous candidate asserted this specific implication. The falsified (=> (= state1536 0) (= state2002 0)) involved state2002, not state79.",
+      "why_consistent_with_reachable_samples": "All known reachable states with state1536=0 have state79=0 (btor2_init and failure 1). The induction_ce with state1536=0 does not report state79, but no counterexample exists.",
+      "why_nontrivial": "It is not a bitwidth tautology; it restricts the relationship between two state variables.",
+      "risk": "medium"
+    },
+    {
+      "candidate_id": "cls_r1_002",
+      "lemma": "(not (and (= state1536 15) (= state1558 0)))",
+      "schema": "mutual_exclusion",
+      "variables": [
+        "state1536",
+        "state1558"
+      ],
+      "transition_rationale": "When state1536 is 15 (a high-speed mode), the hardware may force state1558 (cfg_speed) to be 1 to reflect active speed configuration. The update logic for state1558 depends on state1536 via complex ITE, possibly ensuring this pair.",
+      "why_avoids_previous_counterexamples": "This is not the same as (=> (= state1536 15) (= state1558 0)) which was falsified; that lemma asserted the opposite implication. The falsified (<= state1536 14) and (not (= state1536 15)) are also unrelated.",
+      "why_consistent_with_reachable_samples": "Reachable sample from failure 3 shows state1536=15, state1558=1. No sample shows state1536=15 with state1558=0, so the lemma holds on known states.",
+      "why_nontrivial": "It excludes a specific combination of values, not a simple bound.",
+      "risk": "medium"
+    },
+    {
+      "candidate_id": "cls_r1_003",
+      "lemma": "(=> (= state2002 1) (= state790 1))",
+      "schema": "implication",
+      "variables": [
+        "state2002",
+        "state790"
+      ],
+      "transition_rationale": "state2002 (r_pipe_req) indicates an active request in the pipeline. The stall signal state790 (o_wb_stall) is likely asserted when a request is pending, as indicated by the complex OR/ITE logic involving state2002.",
+      "why_avoids_previous_counterexamples": "Previous falsified candidates involved state1536 implications or mutual exclusions with state2002, not this direction. The falsified (=> (= state2002 1) (= state1536 0)) is different.",
+      "why_consistent_with_reachable_samples": "Known reachable state with state2002=1 (failure 1) has state790=1. Induction_ce with state1536=15, state2002=1 lacks state790 info, but no contradictory sample exists.",
+      "why_nontrivial": "It links two signals that are not trivially related; not a bitwidth tautology.",
+      "risk": "medium"
+    }
+  ]
+}

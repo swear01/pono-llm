@@ -1,0 +1,47 @@
+{
+  "round": 0,
+  "candidates": [
+    {
+      "candidate_id": "cls_r0_001",
+      "lemma": "(=> (= state1536 0) (= state2002 0))",
+      "schema": "implication",
+      "variables": [
+        "state1536",
+        "state2002"
+      ],
+      "transition_rationale": "In IDLE mode (state1536=0), the r_pipe_req logic is forced to 0 either by the clk_ctr==1 condition or because write-conditions are not met; thus state2002 remains 0.",
+      "why_avoids_previous_counterexamples": "No previous lemma combined state1536=0 and state2002=0; falsified cases involved bounds on state1536 or different mode implications.",
+      "why_consistent_with_reachable_samples": "All samples with state1536=0 (S4, S5) either explicitly show state2002=0 or do not contradict it; no sample shows state1536=0 with state2002=1.",
+      "why_nontrivial": "Encodes a cross-variable constraint between mode and request that is not structurally guaranteed by data widths.",
+      "risk": "medium"
+    },
+    {
+      "candidate_id": "cls_r0_002",
+      "lemma": "(=> (= state2002 1) (= state790 1))",
+      "schema": "implication",
+      "variables": [
+        "state2002",
+        "state790"
+      ],
+      "transition_rationale": "When r_pipe_req is active (state2002=1), the stall generator (state790) depends on state2002 and is driven high by the complex OR/ITE logic, ensuring the bus is stalled.",
+      "why_avoids_previous_counterexamples": "Previous lemmas about state790 or state2002 did not test this exact implication; the falsified ones concerned different mode/reply relations.",
+      "why_consistent_with_reachable_samples": "Samples show state2002=0 (vacuously true) or state2002=1 with state790 unknown; the known counterexample (state1536=15, state2002=0) does not violate the implication.",
+      "why_nontrivial": "Links an internal request signal to a bus stall output, capturing a cross-hierarchy behavior unlikely to be enforced by simple assignments.",
+      "risk": "medium"
+    },
+    {
+      "candidate_id": "cls_r0_003",
+      "lemma": "(=> (= state1536 10) (= state79 1))",
+      "schema": "implication",
+      "variables": [
+        "state1536",
+        "state79"
+      ],
+      "transition_rationale": "Mode value 10 corresponds to a configuration where cfg_mode (state79) is set; the write that sets state1536 to 10 likely also asserts i_wb_data[12], so state79 becomes 1.",
+      "why_avoids_previous_counterexamples": "No falsified lemma involved the pair (state1536=10, state79); earlier refutations targeted state1536 bounds or relations with state2002/state790.",
+      "why_consistent_with_reachable_samples": "Sample S2 shows state1536=10 with state79=1; other samples with state1536=10 (S3) do not provide state79 but are not contradictory.",
+      "why_nontrivial": "Properties linking a multi-bit mode register to a specific configuration bit go beyond simple value propagation.",
+      "risk": "medium"
+    }
+  ]
+}

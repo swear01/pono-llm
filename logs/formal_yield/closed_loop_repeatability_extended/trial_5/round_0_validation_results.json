@@ -1,0 +1,47 @@
+[
+  {
+    "candidate_id": "cls_r0_001",
+    "lemma": "(=> (= state1536 0) (= state2002 0))",
+    "schema": "implication",
+    "verdict": "one_step_fail",
+    "init_result": "unsat",
+    "step_result": "sat",
+    "counterexample": {
+      "state1536_next": "0",
+      "state790_next": "1",
+      "state1558_next": "1",
+      "state2002_next": "1",
+      "state79_next": "0"
+    }
+  },
+  {
+    "candidate_id": "cls_r0_002",
+    "lemma": "(=> (= state2002 1) (not (= state1536 0)))",
+    "schema": "implication",
+    "verdict": "one_step_fail",
+    "init_result": "unsat",
+    "step_result": "sat",
+    "counterexample": {
+      "state1536_next": "0",
+      "state790_next": "1",
+      "state1558_next": "1",
+      "state2002_next": "1",
+      "state79_next": "0"
+    }
+  },
+  {
+    "candidate_id": "cls_r0_003",
+    "lemma": "(! (and (= state1536 15) (= state790 1)))",
+    "schema": "mutual_exclusion",
+    "verdict": "one_step_fail",
+    "init_result": "unsat",
+    "step_result": "sat",
+    "counterexample": {
+      "state1536_next": "15",
+      "state790_next": "1",
+      "state1558_next": "1",
+      "state2002_next": "0",
+      "state79_next": "1"
+    }
+  }
+]

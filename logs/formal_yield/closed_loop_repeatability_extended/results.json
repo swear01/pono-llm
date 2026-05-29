@@ -1,0 +1,52 @@
+{
+  "trials": 5,
+  "target_found": 4,
+  "any_useful": 3,
+  "results": [
+    {
+      "trial": 1,
+      "elapsed_s": 163,
+      "found_target": true,
+      "found_any_useful": true,
+      "useful_lemma": "(=> (= state2002 1) (= state790 1))",
+      "round_found": 1,
+      "total_candidates": 6
+    },
+    {
+      "trial": 2,
+      "elapsed_s": 277,
+      "found_target": true,
+      "found_any_useful": true,
+      "useful_lemma": "(=> (= state2002 1) (= state790 1))",
+      "round_found": 1,
+      "total_candidates": 6
+    },
+    {
+      "trial": 3,
+      "elapsed_s": 296,
+      "found_target": false,
+      "found_any_useful": false,
+      "useful_lemma": "",
+      "round_found": -1,
+      "total_candidates": 6
+    },
+    {
+      "trial": 4,
+      "elapsed_s": 155,
+      "found_target": true,
+      "found_any_useful": false,
+      "useful_lemma": "",
+      "round_found": -1,
+      "total_candidates": 6
+    },
+    {
+      "trial": 5,
+      "elapsed_s": 273,
+      "found_target": true,
+      "found_any_useful": true,
+      "useful_lemma": "(=> (= state2002 1) (= state790 1))",
+      "round_found": 1,
+      "total_candidates": 6
+    }
+  ]
+}

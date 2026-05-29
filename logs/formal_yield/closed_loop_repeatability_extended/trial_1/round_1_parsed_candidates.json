@@ -1,0 +1,45 @@
+{
+  "round": 1,
+  "candidates": [
+    {
+      "candidate_id": "cls_r1_001",
+      "lemma": "(or (= state1536 0) (= state1536 10) (= state1536 15))",
+      "schema": "valid_values",
+      "variables": [
+        "state1536"
+      ],
+      "transition_rationale": "The o_dspi_mod register (state1536) is a 4-bit mode register that is updated only through specific configuration writes, restricting its legal values to IDLE (0), TX_MODE (10), and RX_MODE (15). No other values are assigned by the transition logic.",
+      "why_avoids_previous_counterexamples": "All previous counterexamples in feedback (failures 1,2,3) show state1536 taking only 0, 10, or 15, satisfying this disjunction. No falsified lemma tested the entire set of valid values.",
+      "why_consistent_with_reachable_samples": "Every known reachable sample shows state1536 equal to 0, 10, or 15. For example, the induction_ce samples show state1536_next=15, state1536_next=10, state1536_next=0, all within the set. The btor2_init sample has state1536=0.",
+      "why_nontrivial": "A 4-bit register normally admits 16 values; restricting to three specific values is a strong invariant that reduces the state space.",
+      "risk": "low"
+    },
+    {
+      "candidate_id": "cls_r1_002",
+      "lemma": "(=> (= state2002 1) (= state790 1))",
+      "schema": "implication",
+      "variables": [
+        "state2002",
+        "state790"
+      ],
+      "transition_rationale": "The r_pipe_req flag (state2002) is asserted when a pipeline request is active. The stall signal (state790) is likely asserted concurrently to prevent bus contention, as per typical wishbone peripheral design. The feedback one-step counterexamples show that when state2002 becomes 1, state790 is also 1 (failure1); no case shows state2002=1 with state790=0.",
+      "why_avoids_previous_counterexamples": "Previously falsified lemmas did not examine this implication. The counterexamples in failure2 and failure3 had state2002=0, so the implication holds vacuously. Failure1 had state2002=1 and state790=1, satisfying the consequent.",
+      "why_consistent_with_reachable_samples": "Reachable samples with state2002=1 (e.g., state1536=15, state2002_next=1) do not provide state790, but all other samples have state2002=0, making the implication true. No sample contradicts it.",
+      "why_nontrivial": "It creates a dependency between two independent bits (request and stall), reducing reachable state combinations.",
+      "risk": "medium"
+    },
+    {
+      "candidate_id": "cls_r1_003",
+      "lemma": "(not (= state1536 5))",
+      "schema": "single_value_exclusion",
+      "variables": [
+        "state1536"
+      ],
+      "transition_rationale": "From the mode register definition, legal modes are only 0, 10, and 15. Value 5 is not a defined mode and should never be loaded via configuration writes.",
+      "why_avoids_previous_counterexamples": "All previous counterexamples had state1536 equal to 0, 10, or 15, none equals 5. The falsified lemmas (e.g., <=14, not(=15)) do not involve the value 5, so this is a new restriction.",
+      "why_consistent_with_reachable_samples": "Every provided reachable sample shows state1536 as 0, 10, or 15, never 5. Therefore the invariant holds for all samples.",
+      "why_nontrivial": "A 4-bit signal (16 values) has its possible values narrowed by excluding one specific value, which is not a bitwidth tautology.",
+      "risk": "low"
+    }
+  ]
+}
