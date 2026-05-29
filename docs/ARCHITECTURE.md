@@ -99,6 +99,23 @@ JSONL，一行一個 CTI context：
 - `varname`: IC3 中 literal 的變數名（bit-level IC3 為 boolean var；IC3IA 為 SMT expression）
 - `value`: `"true"` 或 `"false"`，根據 literal 正負極性
 
+### BTOR2 Namespace Mapping (2026-05-28)
+
+IC3IA predicate labels (`stateNN`) correspond directly to BTOR2 node IDs:
+
+| Layer | Name | Source |
+|---|---|---|
+| IC3IA CTI literal | `state1536 = 10` | IC3IA trace output |
+| BTOR2 node | Line 1536: `state 4 o_dspi_mod` | BTOR2 file |
+| Verilog original | `o_dspi_mod` | `symbol_map_` in `btor2_encoder.cpp` |
+
+**The `NN` in `stateNN` IS the BTOR2 line number.** This mapping is deterministic
+for ALL state variables in ANY BTOR2 file. The `symbol_map_[new_symbol] = orig_symbol`
+in `btor2_encoder.cpp:312` stores internal→Verilog name mappings but is only used
+for VCD/witness printing — not yet serialized for the Python pipeline.
+
+See `docs/mapping_spike_solver_shortlist.md` for per-variable mapping details.
+
 ### Response (sidecar → pono)
 
 JSONL，一行一個 candidate lemma：
@@ -367,4 +384,38 @@ LLM: !(state1359 && state1361)         [mutual exclusion, init-safe]
 LLM did not simply add a syntactic guard — it reformulated the lemma from
 complement equality to mutual exclusion, preserving the core semantic relation
 while fixing the init violation. This is formal-feedback-guided semantic lemma repair.
+
+## Current Status (2026-05-29)
+
+### Main Result
+
+Closed-loop solver-guided synthesis discovered a cross-parameter qspiflash invariant:
+
+```
+r_pipe_req ⇒ o_wb_stall    (state2002=1 => state790=1)
+```
+
+### Infrastructure
+- Batch generation: 30 candidates, 100% parse, 7 schema types, no trivial
+- Bitwuzla tests: 66/66 pass
+- StateNN mapping: verified — stateNN = BTOR2 node ID
+- BTOR2 translator: 218/247 transitions (88%), 18+ ops supported
+- Reachable-sample filter: fast solver-free pre-check
+- Nontriviality gate: 5 checks (tautology, antecedent, consequent, CE, vars)
+- Counterexample extraction: SAT models with PRODUCE_MODELS
+- Closed-loop synthesis: propose → validate → CE feedback → refine
+
+### Key Results
+- 5 single-shot experiments produced 0 solver-verified useful lemmas
+- Closed-loop found 1 useful lemma in 5/8 trials (63%)
+- Validated across 6/6 qspiflash variants
+- Never proposed in original 30-candidate batch
+
+### Active Blocker
+IC3IA frame/CTI data unavailable → clause impact cannot be estimated.
+See `docs/lemma_impact_proxy_plan.md`.
+
+### Next
+Pono IC3IA frame dump → lemma impact proxy → if positive, rel_ind_check.
+See `docs/current_progress_summary.md` and `docs/future_work_pono_integration.md`.
 

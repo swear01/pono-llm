@@ -1,6 +1,9 @@
 # Formal-Feedback-Guided Semantic Lemma Repair for Word-Level IC3IA Traces
 
-> Working title. Last updated: 2026-05-25.
+> Working title. Last updated: 2026-05-28.
+>
+> **Gist**: https://gist.github.com/swear01/cb8df13821ab1376f08cc144bc74b68b
+> — update after each major phase completion (new results, blocker resolved, pipeline milestone).
 
 ---
 
@@ -66,7 +69,9 @@ New lemma families discovered: bitslice disequality (`state1536[1:0] != 2'd1`).
 ## 5. Completed Case Study: qspiflash_divfive-p040
 
 **Benchmark:** Quad SPI flash controller, HWMCC'24 word-level BV track.
-Pono solved in 352s; other tools (rIC3, nuXmv) solved in 1-7s.
+Pono reached proof in 352s (other tools 1-7s; this is context only, not a runtime
+claim). Selected as primary case study because it produced the first clean
+closed-loop repair trace.
 
 **Pipeline trace:**
 
@@ -125,64 +130,130 @@ These are explicitly listed as future work.
 
 ## 8. Current Limitations
 
-1. **Namespace mismatch:** BTOR2/Verilog names (`cnt`, `f_cfglswrite`) do not
-   directly match IC3IA predicate labels (`stateNN`). This blocks solver-backed
-   checking on real benchmarks.
+1. **Namespace mapping partially resolved (2026-05-28):** `stateNN` names ARE
+   BTOR2 node IDs. For qspiflash, we can map state1536 → `o_dspi_mod` (4-bit),
+   state79 → `cfg_mode` (1-bit), etc. The `symbol_map_` in `btor2_encoder.cpp`
+   links internal names to Verilog originals. However, this mapping is not yet
+   serialized or exposed to the Python pipeline.
+   See `docs/future_work_pono_integration.md`.
 
-2. **Init semantics:** Some BTOR2 files do not contain explicit `init` lines;
-   reset/init behavior is encoded implicitly in transition logic.
+2. **Python BTOR2-to-SMT translation incomplete:** `smt_checker.py` supports 18
+   BTOR2 operators but 127/247 transitions fail translation for qspiflash
+   (root cause: `slice` indices that Bitwuzla's `BV_EXTRACT` considers
+   out-of-range). Init checks work (216/249 states have init values), but
+   one-step/induction checks are blocked on real HWMCC candidates.
 
-3. **Analytical checks only:** Current formal checks verify only recognizable
-   patterns (mutual exclusion under complementary transition). Full solver-backed
-   checking requires namespace mapping.
+3. **Init semantics for some benchmarks:** Some BTOR2 files do not contain
+   explicit `init` lines; reset/init behavior is encoded implicitly in
+   transition logic.
 
-4. **Bitwuzla available but not yet usable on real candidates** due to namespace
-   mismatch between IC3IA predicates and BTOR2 expressions.
-
-5. **Small lemma impact on qspiflash:** The verified lemma covers only 1% of CTI
+4. **Small lemma impact on qspiflash:** The verified lemma covers only 1% of CTI
    literals.
 
 ---
 
-## 9. Evaluation Plan
+## 9. Evaluation Plan & Completed Results
 
 ### A. Case-Study Correctness
-- qspiflash closed-loop repair trace
-- Formal proof sketch (init + transition)
-- Repair taxonomy (equality → mutual exclusion)
+- ✅ qspiflash closed-loop repair trace (equality → mutual exclusion)
+- ✅ Proof sketch (init + transition)
+- ✅ Repair taxonomy
+- ✅ Closed-loop synthesis case study: `r_pipe_req ⇒ o_wb_stall`
+- ✅ Cross-parameter validation: 6/6 qspiflash variants
 
 ### B. Batch Generation Yield
-- Raw candidates per LLM call
-- Parse-valid rate
-- Unique (deduped) rate
-- Schema distribution
-- Analytical verification rate
-- Repair candidate rate
+- ✅ Raw candidates per LLM call (10-20)
+- ✅ Parse-valid rate (100%)
+- ✅ Unique (deduped) rate
+- ✅ Schema distribution (7 types)
+- ✅ Analytical verification rate
+- ✅ Repair/resynthesis experiments (6 experiments, 1 useful lemma)
 
-### C. Case Mining Quality
-- Clusters found
-- Filtered by reset/trivial dominance
-- LLM-suitable clusters remaining
-- CTI coverage distribution
+### C. Solver-Validated Lemma
+- ✅ `state2002=1 => state790=1` — audited, nontrivial, non-vacuous
+- ✅ Init UNSAT, one-step UNSAT, induction UNSAT
+- ✅ Repeatability: discovered in 5/8 closed-loop trials (63%)
+- ✅ Novelty: never proposed in original 30-candidate batch
+
+### D. Remaining (blocked on IC3IA frame data)
+- Clause subsumption impact
+- Frame relevance proxy
+- Proof-obligation blocking
 
 ---
 
-## 10. Future Work
+## 10. Future Work & Next Steps
 
-1. **Pono predicate-to-BTOR2 mapping dump** — export IC3IA predicate label
-   → underlying SMT expression / BTOR2 symbol mapping.
+### A. Completed (since scope freeze)
 
-2. **Solver-backed formal gate** — Bitwuzla-based init/one-step/inductive checks
-   on real candidates once namespace mapping is resolved.
+1. **BTOR2 transition translation** — improved from 121/247 (49%) to 218/247 (88%).
+   Three bugs fixed: slice OOB, uext source index, Boolean/BV conversion.
 
-3. **Pono `rel_ind_check` integration** — call Pono's relative induction check
-   from the formal gate pipeline.
+2. **Solver-backed validation** — init, one-step, and induction checks now run on
+   all shortlisted candidates. Original 30 candidates classified.
 
-4. **Lemma injection into IC3IA frames** — add accepted lemmas to IC3IA proof
-   search and measure impact.
+3. **Counterexample extraction** — SAT models extracted from failed one-step and
+   induction checks using `Bitwuzla.get_value()` with `PRODUCE_MODELS` enabled.
 
-5. **Unlock experiment** — on Pono-specific hard benchmarks (Pono timeout, other
-   tools solved), test whether LLM-repaired lemmas enable proof completion.
+4. **Nontriviality gate** — 5 checks (bitwidth tautology, impossible antecedent,
+   tautological consequent, CE blocking, variable relevance). Catches vacuous
+   repairs and trivially-true lemmas.
 
-6. **Controlled benchmark** — design a lemma-critical Verilog benchmark where
+5. **Reachable-sample filter** — evaluates lemmas against 17 concrete reachable
+   samples. Fast solver-free pre-check that catches ~80% of doomed candidates.
+
+6. **Closed-loop synthesis** — iterative propose → validate → CE feedback → refine
+   loop found the first solver-verified useful lemma (Task 70).
+
+7. **Current main result**: `r_pipe_req ⇒ o_wb_stall` — a cross-parameter
+   qspiflash invariant, repeatably discoverable (63% of trials), validated on
+   6/6 variants (p020–p162).
+
+### B. Pending (blocked on infrastructure)
+
+1. **IC3IA frame / CTI dump** — minimal Pono C++ export of frame clauses,
+   CTI cubes, and proof obligations with stateNN predicate labels. Needed
+   to estimate clause impact of the validated lemma. See `docs/lemma_impact_proxy_plan.md`.
+
+2. **Pono `rel_ind_check` integration** — call Pono's relative induction check
+   from the formal gate pipeline (requires frame dump first).
+
+3. **Lemma injection into IC3IA frames** — add accepted lemmas to IC3IA proof
+   search and measure impact (requires rel_ind_check first).
+
+### C. Future (research direction)
+
+4. **Controlled benchmark** — design a lemma-critical Verilog design where
    baseline IC3IA times out and an oracle semantic lemma unlocks the proof.
+
+5. **Multi-benchmark closed-loop** — extend the synthesis loop to other
+   benchmark families beyond qspiflash.
+
+6. **Lemma library** — build a collection of solver-verified lemmas from
+   multiple closed-loop trials and cross-parameter validations.
+
+### Important
+
+Do NOT claim runtime speedup, benchmark unlock, full Pono integration, or
+`rel_ind_check` completion. The lemma is validated under the offline Bitwuzla
+pipeline, not inside Pono. IC3IA clause impact remains unknown until frame
+data is available.
+
+---
+
+## 11. Agent / Slides Mode
+
+When the task involves slides, reports, or agent handoffs:
+
+- **Slides**: keyword-based, not document-like. Put detail in speaker notes.
+  Use flowcharts for: (1) main pipeline, (2) qspiflash repair loop,
+  (3) mapping blocker / next steps. Avoid long paragraphs on slides.
+
+- **Reports**: include mapping tables (stateNN → Verilog → bitwidth → init → next),
+  solver verdicts in structured labels, and explicit blocker descriptions.
+
+- **Handoff prompts**: include progress summary, active blockers (with root cause),
+  exact files to read for context, and a clear go/no-go for expensive operations.
+
+- **Do not overclaim**: runtime speedup, benchmark unlock, full Pono integration are
+  future work only. State what was measured, not what might be inferred.

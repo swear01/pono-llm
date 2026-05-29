@@ -1,122 +1,48 @@
 # Pono Integration: Future Work
 
-## Current Status (2026-05-28, updated after BTOR2 translation fix)
+## Current Status (2026-05-29)
 
-### Translation Status
+### Main Result
 
-**Transition translation is now mostly working.** 218/247 transitions (88%)
-translate successfully after fixing 3 BTOR2 translator bugs. All 5 shortlisted
-solver-validation candidates can now generate init, one-step, and induction
-queries.
+Closed-loop solver-guided synthesis discovered a cross-parameter qspiflash
+invariant:
+
+```
+r_pipe_req ⇒ o_wb_stall
+```
+
+This lemma:
+- Is audited (init UNSAT, one-step UNSAT, induction UNSAT)
+- Is nontrivial, non-vacuous
+- Passes on all 6 qspiflash variants (p020–p162)
+- Is repeatably discoverable (5/8 closed-loop trials, 63%)
+- Was never proposed in the original 30-candidate batch
+
+Validation scope: standalone Bitwuzla pipeline, 88% transition coverage.
+NOT Pono `rel_ind_check`.
 
 ### What Works
-- Variable identification: stateNN → BTOR2 node → Verilog symbol (via `symbol_map_`)
-- Init values: 216/249 states have init values available
-- Init checks: 4/5 solver-validation candidates pass init (UNSAT), confirmed post-fix
-- **One-step checks: 4/5 candidates produce SAT (lemma too strong, transition-violable)**
-- **Induction checks: 4/5 candidates produce SAT (not inductive)**
-- Transition translation: 218/247 transitions (88%)
-- 18+ BTOR2 operators supported
+- Variable identification: stateNN → BTOR2 node → Verilog symbol
+- Init values: 216/249 states
+- Init/one-step/induction checks: all queries generate and run
+- Transition translation: 218/247 (88%)
+- Counterexample extraction: SAT models with PRODUCE_MODELS
+- Reachable-sample filter: fast solver-free pre-check
+- Nontriviality gate: 5 checks prevent trivial/vacuous lemmas
+- Closed-loop synthesis: propose → validate → CE feedback → refine
+- Repeatability: lemma found in 63% of trials, useful in 50%
 
-### What Doesn't Work
-- Full transition translation: 29/247 lines still fail (node-208 redor cascade, non-target)
-- Solver-verified lemmas: 0/5 candidates are solver-inductive (all are init-safe but transition-violable)
-- Input-lemma validation: Candidate 5 (i_wb_data) still fails lemma parser
-- SAT model extraction: counterexample models not extracted for repair-loop feedback
+### What Doesn't Work (Blockers)
 
-### Bugs Fixed (Task 63)
-
-| Bug | Root Cause | Fix |
-|---|---|---|
-| slice OOB | hi >= src_w rejected | Zero-extend source before extraction |
-| uext source index | `t(p[3])` instead of `t(p[2])` | Fixed to correct argument index |
-| Boolean/BV mismatch | eq/ult/ulte return Boolean | Wrapped in ITE to produce 1-bit BV |
-
-### What Doesn't Work
-- Full transition translation for target states
-- One-step and induction checks for real HWMCC candidates
-- Input-lemma validation (primary inputs lack environment assumptions)
-
-## Minimal C++ Dump Needed for Solver-Backed Validation
-
-To validate IC3IA-generated or LLM-generated candidate lemmas outside Pono, the prototype needs a dump mapping:
-
-- IC3IA label, e.g. `state1536`
-- bitwidth
-- kind: state / input / derived predicate
-- current-state SMT expression
-- next-state SMT expression
-- BTOR2 node id or original symbol if available
-
-Minimal JSON format:
-
-```json
-{
-  "state1536": {
-    "bitwidth": 4,
-    "kind": "state",
-    "current_expr": "state1536",
-    "next_expr": "<SMT-LIB2 transition expression>",
-    "btor2_node": "1536",
-    "verilog_symbol": "o_dspi_mod"
-  }
-}
-```
-
-Location in Pono to add the dump:
-
-1. **BTOR2 Encoder** (`frontends/btor2_encoder.cpp:312`): The `symbol_map_[new_symbol] = orig_symbol` already stores the mapping. Export this as JSON after BTOR2 loading.
-
-2. **IC3IA** (`engines/ic3ia.cpp`): After `register_symbol_mappings()` (line 490), dump the predicate label → solver term mapping.
-
-3. **Simplest approach**: At BTOR2 encode time, write a JSON file alongside the BTOR2 file:
-   ```cpp
-   {
-     "state1536": {
-       "width": 4,
-       "symbol": "o_dspi_mod",
-       "node_id": 1536
-     }
-   }
-   ```
-
-   Then at IC3IA CTI export time, include the BTOR2 node ID in each literal's metadata:
-   ```json
-   {
-     "literals": [
-       {"varname": "state1536 = 10", "btor2_id": 1536, "verilog": "o_dspi_mod"}
-     ]
-   }
-   ```
-
-## Alternative: Use Bitwuzla CLI Directly
-
-Instead of Python BTOR2-to-SMT translation, use Bitwuzla's native BTOR2 parser:
-
-```bash
-# Add candidate lemma as bad property
-echo "(bad (not (=> (= state1536 10) (= state790 0))))" >> file.btor2
-bitwuzla file.btor2
-```
-
-This would require modifying the BTOR2 file to add bad properties encoding lemma violations. Bitwuzla's native parser supports all BTOR2 operators correctly.
+1. **IC3IA frame/CTI data unavailable**: cannot estimate clause subsumption,
+   CTI blocking, or proof impact.
+2. **No Pono `rel_ind_check` integration**: lemma not tested inside Pono.
+3. **No runtime measurement**: impact on IC3IA convergence unknown.
 
 ## Priority
 
-1. **High**: SAT counterexample model extraction (for repair-loop feedback)
-2. **High**: Lemma parser support for SMT-LIB2 `(_ extract ...)` syntax (Candidate 5)
-3. **Medium**: Pono C++ predicate-to-BTOR2 mapping dump (for IC3IA trace integration)
-4. **Medium**: Fix node-208 redor cascade (29 remaining failures, non-target)
-5. **Low**: Full BTOR2 opcode support (sext, sll, rol, etc.)
-6. **Deferred**: Controlled Verilog benchmarks where baseline IC3IA times out and oracle lemma unlocks
-
-### Next Step: Repair Loop
-
-All 4 state-only candidates are init-safe but one-step-fail (SAT). This means:
-- Lemma holds at reset state
-- Some transition can violate the lemma
-- SAT counterexample provides concrete witness
-
-The natural next step: extract SAT counterexample models and feed them back to
-the LLM repair loop (analogous to the qspiflash case study where init-failing
-lemma `state1361 = !state1359` was repaired to `!(state1359 && state1361)`).
+1. **High**: Pono IC3IA frame/CTI dump (see `docs/lemma_impact_proxy_plan.md`)
+2. **High**: Lemma impact proxy — clause subsumption estimate
+3. **Medium**: Pono `rel_ind_check` integration (if impact proxy positive)
+4. **Medium**: Controlled benchmark with lemma-critical invariant
+5. **Deferred**: Multi-benchmark closed-loop synthesis
