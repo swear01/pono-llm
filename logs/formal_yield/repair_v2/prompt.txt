@@ -1,0 +1,126 @@
+You are a formal-methods repair engine. Below are counterexamples from SAT solver models showing exactly why 3 semantic lemma candidates failed one-step transition checks.
+
+## Critical Rules — READ CAREFULLY
+
+1. **NEVER produce trivial lemmas.** A trivial lemma is one that is always true regardless of state:
+   - For a w-bit variable x: (<= x N) where N >= 2^w - 1 is ALWAYS TRUE
+   - For a w-bit variable x: (>= x N) where N <= 0 is ALWAYS TRUE
+   - For a w-bit variable x: (= x N) where N > 2^w - 1 is ALWAYS FALSE
+   - 1-bit variables can only be 0 or 1 — any (<= 1-bit 1) or (>= 1-bit 0) is TRIVIAL
+
+2. **Your repair MUST block the original counterexample.** The SAT model below shows specific next-state values that violated the original lemma. Your repair must evaluate to FALSE on those exact values (or change the truth condition so the CE no longer violates).
+
+3. **Preserve at least one meaningful relation.** Do not simply delete the relationship. Keep a relation between the original variables.
+
+4. **Prefer these repair strategies:**
+   - **add_guard**: add a missing condition to the antecedent
+   - **reverse_implication**: swap antecedent and consequent
+   - **schema_change**: change lemma family (e.g., implication → mutual exclusion)
+   - **reject**: if no meaningful repair exists, output "reject" — be honest
+
+5. **Avoid these:**
+   - Dropping the key variable
+   - Replacing consequent with a tautology (e.g., x <= max_value)
+   - Input-dependent lemmas unless justified
+
+## Output Contract
+
+Return ONLY valid JSON (no markdown, no comments):
+
+{
+  "repairs": [
+    {
+      "source_candidate_id": "cand_007",
+      "repair_id": "cand_007_repair_v2_1",
+      "repaired_lemma": "(=> (= state790 1) (= state1536 10))",
+      "repair_strategy": "reverse_implication",
+      "variables": ["state790", "state1536"],
+      "why_blocks_counterexample": "Original CE: state1536=10, state790=1. With reversed implication, antecedent state790=1 holds AND consequent state1536=10 holds → lemma SATISFIES the CE (no longer violated).",
+      "why_nontrivial": "state790 is 1-bit (0/1); state1536 is 4-bit (0-15). Neither consequent nor antecedent is a bitwidth tautology.",
+      "risk": "medium"
+    }
+  ]
+}
+
+## Failed Lemmas and Counterexamples
+
+### Candidate 1: cand_007
+Original lemma: (=> (= state1536 10) (= state790 0))
+Schema: guarded_implication
+Failure: overstrong_implication
+
+Verilog signals and bitwidths:
+  state1536 = o_dspi_mod (4-bit DSPI mode register)
+  state790 = o_wb_stall (1-bit Wishbone stall output)
+
+SAT counterexample (next-state values that violate the lemma):
+  state1536_next = 10
+  state790_next = 1
+
+Current state when CE was triggered:
+  state1536 = 0
+  state790 = 0
+
+Relevant inputs: i_reset=0, i_wb_*=write_active
+
+Why the lemma fails: Antecedent holds (mode=10) but consequent fails (stall=1, not 0). In hardware, o_wb_stall IS active when o_dspi_mod=10.
+
+FORBIDDEN trivial patterns:
+  ⛔ DO NOT propose consequents like (<= state790 N) — state790 is 1-bit, any bound >= 1 is trivial
+  ⛔ DO NOT propose consequents like (>= state790 N) with N<=0 — trivial
+  ⛔ DO NOT propose consequent (not (= state1536 V)) with V>15 — impossible value for 4-bit
+
+
+### Candidate 2: cand_008
+Original lemma: (=> (= state1536 0) (= state1558 0))
+Schema: guarded_implication
+Failure: overstrong_implication
+
+Verilog signals and bitwidths:
+  state1536 = o_dspi_mod (4-bit DSPI mode register)
+  state1558 = cfg_speed (1-bit config speed)
+
+SAT counterexample (next-state values that violate the lemma):
+  state1536_next = 0
+  state1558_next = 1
+
+Current state when CE was triggered:
+  state1536 = 0
+  state1558 = 0
+
+Relevant inputs: i_cfg_stb=1 (config strobe active), i_reset=0
+
+Why the lemma fails: cfg_speed becomes 1 via config strobe while mode stays 0 (IDLE). cfg_speed is independently controlled.
+
+FORBIDDEN trivial patterns:
+  ⛔ DO NOT propose consequents like (<= state1558 N) — state1558 is 1-bit, ANY bound is trivial
+  ⛔ cfg_speed is 1-bit; any proposition about its value range is vacuous. Instead, propose a guard or a different relation.
+
+
+### Candidate 3: cand_004
+Original lemma: (=> (= state2002 1) (= state1536 0))
+Schema: guarded_implication
+Failure: overstrong_implication
+
+Verilog signals and bitwidths:
+  state2002 = r_pipe_req (1-bit pipeline request flag)
+  state1536 = o_dspi_mod (4-bit DSPI mode register)
+
+SAT counterexample (next-state values that violate the lemma):
+  state1536_next = 15
+  state2002_next = 1
+
+Current state when CE was triggered:
+  state1536 = 0
+  state2002 = 0
+
+Relevant inputs: i_reset=0
+
+Why the lemma fails: r_pipe_req=1 AND mode=15 (not 0). Mode is non-zero when request is active.
+
+FORBIDDEN trivial patterns:
+  ⛔ DO NOT propose consequents like (<= state2002 N) — state2002 is 1-bit, any bound is trivial
+  ⛔ DO NOT propose (>= state1536 N) with N<=0 — trivial for unsigned
+  ⛔ DO NOT propose (<= state1536 N) with N>=15 — trivial for 4-bit
+
+Now generate up to 3 repairs per candidate. If no nontrivial repair exists for a candidate, use strategy "reject". Return ONLY the JSON array.

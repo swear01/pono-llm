@@ -1,0 +1,34 @@
+{
+  "repairs": [
+    {
+      "source_candidate_id": "cand_007",
+      "repair_id": "cand_007_repair_v2_1",
+      "repaired_lemma": "(=> (= state1536 10) (= state790 1))",
+      "repair_strategy": "schema_change",
+      "variables": ["state1536", "state790"],
+      "why_blocks_counterexample": "Original CE: state1536=10, state790=1 violated the implication. With consequent changed to (= state790 1), the implication becomes true under the CE (antecedent true, consequent true).",
+      "why_nontrivial": "state790 is 1-bit (0/1), state1536 is 4-bit (0–15). The consequent (= state790 1) is not a tautology (it is false when state790=0). The lemma is not trivially true.",
+      "risk": "medium"
+    },
+    {
+      "source_candidate_id": "cand_008",
+      "repair_id": "cand_008_repair_v2_1",
+      "repaired_lemma": "reject",
+      "repair_strategy": "reject",
+      "variables": ["state1536", "state1558"],
+      "why_blocks_counterexample": "The CE shows mode=0 and cfg_speed=1 is reachable. No nontrivial state-only implication between these signals that holds in all reachable states can be deduced. Adding a guard on transient inputs (e.g., i_cfg_stb) is not permissible for a state invariant. Therefore the candidate is unsalvageable.",
+      "why_nontrivial": "Not applicable (rejected).",
+      "risk": null
+    },
+    {
+      "source_candidate_id": "cand_004",
+      "repair_id": "cand_004_repair_v2_1",
+      "repaired_lemma": "(=> (= state2002 1) (not (= state1536 0)))",
+      "repair_strategy": "schema_change",
+      "variables": ["state2002", "state1536"],
+      "why_blocks_counterexample": "Original CE: state2002=1, state1536=15. New consequent (not (= state1536 0)) is true (15 ≠ 0), so the implication holds under the CE.",
+      "why_nontrivial": "state1536 is 4-bit; (not (= state1536 0)) constrains it to 1–15, not a tautology. state2002 is 1-bit, so no trivial range. The lemma expresses a meaningful relation: request active ⇒ mode nonzero.",
+      "risk": "medium"
+    }
+  ]
+}
