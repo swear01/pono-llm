@@ -1,0 +1,22 @@
+[
+  {
+    "candidate_id": "rsyn_001",
+    "lemma": "(=> (= state1536 15) (= state2002 1))",
+    "schema": "guarded_implication",
+    "reachable_filter": "consistent_with_samples",
+    "nontriviality": "solver_verified_useful",
+    "init": "unsat",
+    "one_step": "sat",
+    "verdict": "one_step_fail"
+  },
+  {
+    "candidate_id": "rsyn_002",
+    "lemma": "(! (and (= state1536 15) (= state2002 0)))",
+    "schema": "mutual_exclusion",
+    "reachable_filter": "consistent_with_samples",
+    "nontriviality": "solver_verified_useful",
+    "init": "unsat",
+    "one_step": "sat",
+    "verdict": "one_step_fail"
+  }
+]

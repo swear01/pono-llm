@@ -1,0 +1,923 @@
+{
+  "original_30": {
+    "total": 30,
+    "consistent_with_samples": 5,
+    "violates_reachable_sample": 20,
+    "no_applicable_samples": 5,
+    "not_applicable": 0
+  },
+  "original_30_detail": [
+    {
+      "candidate_id": "cand_001",
+      "lemma": "0 <= state1536 && state1536 <= 11",
+      "filter_result": "violates_reachable_sample",
+      "samples_checked": 9,
+      "samples_violated": 9,
+      "samples_held": 0,
+      "violations": [
+        {
+          "sample_id": "cand_004_induction_model",
+          "evaluation": "parse error: cannot parse: 0 <= state1536 && state1536 <= 11"
+        },
+        {
+          "sample_id": "cand_004_one_step_model",
+          "evaluation": "parse error: cannot parse: 0 <= state1536 && state1536 <= 11"
+        },
+        {
+          "sample_id": "cand_005_induction_model",
+          "evaluation": "parse error: cannot parse: 0 <= state1536 && state1536 <= 11"
+        }
+      ]
+    },
+    {
+      "candidate_id": "cand_002",
+      "lemma": "state1536 != 12",
+      "filter_result": "violates_reachable_sample",
+      "samples_checked": 9,
+      "samples_violated": 9,
+      "samples_held": 0,
+      "violations": [
+        {
+          "sample_id": "cand_004_induction_model",
+          "evaluation": "parse error: cannot parse: state1536 != 12"
+        },
+        {
+          "sample_id": "cand_004_one_step_model",
+          "evaluation": "parse error: cannot parse: state1536 != 12"
+        },
+        {
+          "sample_id": "cand_005_induction_model",
+          "evaluation": "parse error: cannot parse: state1536 != 12"
+        }
+      ]
+    },
+    {
+      "candidate_id": "cand_003",
+      "lemma": "!( (state1536 = 10) && (state1536 = 11) )",
+      "filter_result": "violates_reachable_sample",
+      "samples_checked": 9,
+      "samples_violated": 9,
+      "samples_held": 0,
+      "violations": [
+        {
+          "sample_id": "cand_004_induction_model",
+          "evaluation": "parse error: cannot parse: !( (state1536 = 10) && (state1536 = 11) )"
+        },
+        {
+          "sample_id": "cand_004_one_step_model",
+          "evaluation": "parse error: cannot parse: !( (state1536 = 10) && (state1536 = 11) )"
+        },
+        {
+          "sample_id": "cand_005_induction_model",
+          "evaluation": "parse error: cannot parse: !( (state1536 = 10) && (state1536 = 11) )"
+        }
+      ]
+    },
+    {
+      "candidate_id": "cand_004",
+      "lemma": "state1686 = state1688",
+      "filter_result": "violates_reachable_sample",
+      "samples_checked": 9,
+      "samples_violated": 9,
+      "samples_held": 0,
+      "violations": [
+        {
+          "sample_id": "cand_004_induction_model",
+          "evaluation": "parse error: cannot parse: state1686 = state1688"
+        },
+        {
+          "sample_id": "cand_004_one_step_model",
+          "evaluation": "parse error: cannot parse: state1686 = state1688"
+        },
+        {
+          "sample_id": "cand_005_induction_model",
+          "evaluation": "parse error: cannot parse: state1686 = state1688"
+        }
+      ]
+    },
+    {
+      "candidate_id": "cand_005",
+      "lemma": "(state1536 = 0) => (state1686 = 0)",
+      "filter_result": "no_applicable_samples",
+      "samples_checked": 9,
+      "samples_violated": 0,
+      "samples_held": 0,
+      "violations": []
+    },
+    {
+      "candidate_id": "cand_006",
+      "lemma": "(state1536 = 10) => (state1820 = 0)",
+      "filter_result": "no_applicable_samples",
+      "samples_checked": 9,
+      "samples_violated": 0,
+      "samples_held": 0,
+      "violations": []
+    },
+    {
+      "candidate_id": "cand_007",
+      "lemma": "state1688 = state1686 + 0",
+      "filter_result": "violates_reachable_sample",
+      "samples_checked": 9,
+      "samples_violated": 9,
+      "samples_held": 0,
+      "violations": [
+        {
+          "sample_id": "cand_004_induction_model",
+          "evaluation": "parse error: cannot parse: state1688 = state1686 + 0"
+        },
+        {
+          "sample_id": "cand_004_one_step_model",
+          "evaluation": "parse error: cannot parse: state1688 = state1686 + 0"
+        },
+        {
+          "sample_id": "cand_005_induction_model",
+          "evaluation": "parse error: cannot parse: state1688 = state1686 + 0"
+        }
+      ]
+    },
+    {
+      "candidate_id": "cand_008",
+      "lemma": "state1820 != input13",
+      "filter_result": "violates_reachable_sample",
+      "samples_checked": 9,
+      "samples_violated": 9,
+      "samples_held": 0,
+      "violations": [
+        {
+          "sample_id": "cand_004_induction_model",
+          "evaluation": "parse error: cannot parse: state1820 != input13"
+        },
+        {
+          "sample_id": "cand_004_one_step_model",
+          "evaluation": "parse error: cannot parse: state1820 != input13"
+        },
+        {
+          "sample_id": "cand_005_induction_model",
+          "evaluation": "parse error: cannot parse: state1820 != input13"
+        }
+      ]
+    },
+    {
+      "candidate_id": "cand_009",
+      "lemma": "0 <= state1686 && state1686 < 1099511627776",
+      "filter_result": "violates_reachable_sample",
+      "samples_checked": 9,
+      "samples_violated": 9,
+      "samples_held": 0,
+      "violations": [
+        {
+          "sample_id": "cand_004_induction_model",
+          "evaluation": "parse error: cannot parse: 0 <= state1686 && state1686 < 1099511627776"
+        },
+        {
+          "sample_id": "cand_004_one_step_model",
+          "evaluation": "parse error: cannot parse: 0 <= state1686 && state1686 < 1099511627776"
+        },
+        {
+          "sample_id": "cand_005_induction_model",
+          "evaluation": "parse error: cannot parse: 0 <= state1686 && state1686 < 1099511627776"
+        }
+      ]
+    },
+    {
+      "candidate_id": "cand_010",
+      "lemma": "state1536 != state1686",
+      "filter_result": "violates_reachable_sample",
+      "samples_checked": 9,
+      "samples_violated": 9,
+      "samples_held": 0,
+      "violations": [
+        {
+          "sample_id": "cand_004_induction_model",
+          "evaluation": "parse error: cannot parse: state1536 != state1686"
+        },
+        {
+          "sample_id": "cand_004_one_step_model",
+          "evaluation": "parse error: cannot parse: state1536 != state1686"
+        },
+        {
+          "sample_id": "cand_005_induction_model",
+          "evaluation": "parse error: cannot parse: state1536 != state1686"
+        }
+      ]
+    },
+    {
+      "candidate_id": "cand_001",
+      "lemma": "0 <= state1536 <= 11",
+      "filter_result": "violates_reachable_sample",
+      "samples_checked": 9,
+      "samples_violated": 9,
+      "samples_held": 0,
+      "violations": [
+        {
+          "sample_id": "cand_004_induction_model",
+          "evaluation": "parse error: cannot parse: 0 <= state1536 <= 11"
+        },
+        {
+          "sample_id": "cand_004_one_step_model",
+          "evaluation": "parse error: cannot parse: 0 <= state1536 <= 11"
+        },
+        {
+          "sample_id": "cand_005_induction_model",
+          "evaluation": "parse error: cannot parse: 0 <= state1536 <= 11"
+        }
+      ]
+    },
+    {
+      "candidate_id": "cand_002",
+      "lemma": "state1536 != 15",
+      "filter_result": "violates_reachable_sample",
+      "samples_checked": 9,
+      "samples_violated": 9,
+      "samples_held": 0,
+      "violations": [
+        {
+          "sample_id": "cand_004_induction_model",
+          "evaluation": "parse error: cannot parse: state1536 != 15"
+        },
+        {
+          "sample_id": "cand_004_one_step_model",
+          "evaluation": "parse error: cannot parse: state1536 != 15"
+        },
+        {
+          "sample_id": "cand_005_induction_model",
+          "evaluation": "parse error: cannot parse: state1536 != 15"
+        }
+      ]
+    },
+    {
+      "candidate_id": "cand_003",
+      "lemma": "state1536 != 14",
+      "filter_result": "violates_reachable_sample",
+      "samples_checked": 9,
+      "samples_violated": 9,
+      "samples_held": 0,
+      "violations": [
+        {
+          "sample_id": "cand_004_induction_model",
+          "evaluation": "parse error: cannot parse: state1536 != 14"
+        },
+        {
+          "sample_id": "cand_004_one_step_model",
+          "evaluation": "parse error: cannot parse: state1536 != 14"
+        },
+        {
+          "sample_id": "cand_005_induction_model",
+          "evaluation": "parse error: cannot parse: state1536 != 14"
+        }
+      ]
+    },
+    {
+      "candidate_id": "cand_004",
+      "lemma": "state1536 != 13",
+      "filter_result": "violates_reachable_sample",
+      "samples_checked": 9,
+      "samples_violated": 9,
+      "samples_held": 0,
+      "violations": [
+        {
+          "sample_id": "cand_004_induction_model",
+          "evaluation": "parse error: cannot parse: state1536 != 13"
+        },
+        {
+          "sample_id": "cand_004_one_step_model",
+          "evaluation": "parse error: cannot parse: state1536 != 13"
+        },
+        {
+          "sample_id": "cand_005_induction_model",
+          "evaluation": "parse error: cannot parse: state1536 != 13"
+        }
+      ]
+    },
+    {
+      "candidate_id": "cand_005",
+      "lemma": "state1536 != 12",
+      "filter_result": "violates_reachable_sample",
+      "samples_checked": 9,
+      "samples_violated": 9,
+      "samples_held": 0,
+      "violations": [
+        {
+          "sample_id": "cand_004_induction_model",
+          "evaluation": "parse error: cannot parse: state1536 != 12"
+        },
+        {
+          "sample_id": "cand_004_one_step_model",
+          "evaluation": "parse error: cannot parse: state1536 != 12"
+        },
+        {
+          "sample_id": "cand_005_induction_model",
+          "evaluation": "parse error: cannot parse: state1536 != 12"
+        }
+      ]
+    },
+    {
+      "candidate_id": "cand_006",
+      "lemma": "!(state79 && state1558)",
+      "filter_result": "violates_reachable_sample",
+      "samples_checked": 9,
+      "samples_violated": 9,
+      "samples_held": 0,
+      "violations": [
+        {
+          "sample_id": "cand_004_induction_model",
+          "evaluation": "parse error: cannot parse: !(state79 && state1558)"
+        },
+        {
+          "sample_id": "cand_004_one_step_model",
+          "evaluation": "parse error: cannot parse: !(state79 && state1558)"
+        },
+        {
+          "sample_id": "cand_005_induction_model",
+          "evaluation": "parse error: cannot parse: !(state79 && state1558)"
+        }
+      ]
+    },
+    {
+      "candidate_id": "cand_007",
+      "lemma": "(=> (= state1536 10) (= state790 0))",
+      "filter_result": "violates_reachable_sample",
+      "samples_checked": 9,
+      "samples_violated": 2,
+      "samples_held": 1,
+      "violations": [
+        {
+          "sample_id": "cand_007_induction_model",
+          "sample_values": {
+            "state1536_next": "10",
+            "state790_next": "1"
+          },
+          "evaluation": "evaluates to False on sample"
+        },
+        {
+          "sample_id": "cand_007_one_step_model",
+          "sample_values": {
+            "state1536_next": "10",
+            "state790_next": "1"
+          },
+          "evaluation": "evaluates to False on sample"
+        }
+      ]
+    },
+    {
+      "candidate_id": "cand_008",
+      "lemma": "(=> (= state1536 0) (= state1558 0))",
+      "filter_result": "violates_reachable_sample",
+      "samples_checked": 9,
+      "samples_violated": 2,
+      "samples_held": 1,
+      "violations": [
+        {
+          "sample_id": "cand_008_induction_model",
+          "sample_values": {
+            "state1536_next": "0",
+            "state1558_next": "1"
+          },
+          "evaluation": "evaluates to False on sample"
+        },
+        {
+          "sample_id": "cand_008_one_step_model",
+          "sample_values": {
+            "state1536_next": "0",
+            "state1558_next": "1"
+          },
+          "evaluation": "evaluates to False on sample"
+        }
+      ]
+    },
+    {
+      "candidate_id": "cand_009",
+      "lemma": "(=> (= state1536 11) (= state1560 0))",
+      "filter_result": "no_applicable_samples",
+      "samples_checked": 9,
+      "samples_violated": 0,
+      "samples_held": 0,
+      "violations": []
+    },
+    {
+      "candidate_id": "cand_010",
+      "lemma": "state2002 = 0",
+      "filter_result": "violates_reachable_sample",
+      "samples_checked": 9,
+      "samples_violated": 9,
+      "samples_held": 0,
+      "violations": [
+        {
+          "sample_id": "cand_004_induction_model",
+          "evaluation": "parse error: cannot parse: state2002 = 0"
+        },
+        {
+          "sample_id": "cand_004_one_step_model",
+          "evaluation": "parse error: cannot parse: state2002 = 0"
+        },
+        {
+          "sample_id": "cand_005_induction_model",
+          "evaluation": "parse error: cannot parse: state2002 = 0"
+        }
+      ]
+    },
+    {
+      "candidate_id": "cand_001",
+      "lemma": "(and (<= 0 state1536) (<= state1536 11))",
+      "filter_result": "violates_reachable_sample",
+      "samples_checked": 9,
+      "samples_violated": 2,
+      "samples_held": 7,
+      "violations": [
+        {
+          "sample_id": "cand_004_induction_model",
+          "sample_values": {
+            "state2002_next": "1",
+            "state1536_next": "15"
+          },
+          "evaluation": "evaluates to False on sample"
+        },
+        {
+          "sample_id": "cand_004_one_step_model",
+          "sample_values": {
+            "state2002_next": "1",
+            "state1536_next": "15"
+          },
+          "evaluation": "evaluates to False on sample"
+        }
+      ]
+    },
+    {
+      "candidate_id": "cand_002",
+      "lemma": "(and (<= 0 state79) (<= state79 1))",
+      "filter_result": "consistent_with_samples",
+      "samples_checked": 9,
+      "samples_violated": 0,
+      "samples_held": 3,
+      "violations": []
+    },
+    {
+      "candidate_id": "cand_003",
+      "lemma": "(and (<= 0 state790) (<= state790 1))",
+      "filter_result": "consistent_with_samples",
+      "samples_checked": 9,
+      "samples_violated": 0,
+      "samples_held": 3,
+      "violations": []
+    },
+    {
+      "candidate_id": "cand_004",
+      "lemma": "(=> (= state2002 1) (= state1536 0))",
+      "filter_result": "violates_reachable_sample",
+      "samples_checked": 9,
+      "samples_violated": 2,
+      "samples_held": 1,
+      "violations": [
+        {
+          "sample_id": "cand_004_induction_model",
+          "sample_values": {
+            "state2002_next": "1",
+            "state1536_next": "15"
+          },
+          "evaluation": "evaluates to False on sample"
+        },
+        {
+          "sample_id": "cand_004_one_step_model",
+          "sample_values": {
+            "state2002_next": "1",
+            "state1536_next": "15"
+          },
+          "evaluation": "evaluates to False on sample"
+        }
+      ]
+    },
+    {
+      "candidate_id": "cand_005",
+      "lemma": "(! (and (= state1536 10) (= state79 1)))",
+      "filter_result": "violates_reachable_sample",
+      "samples_checked": 9,
+      "samples_violated": 2,
+      "samples_held": 1,
+      "violations": [
+        {
+          "sample_id": "cand_005_induction_model",
+          "sample_values": {
+            "state1536_next": "10",
+            "state79_next": "1"
+          },
+          "evaluation": "evaluates to False on sample"
+        },
+        {
+          "sample_id": "cand_005_one_step_model",
+          "sample_values": {
+            "state1536_next": "10",
+            "state79_next": "1"
+          },
+          "evaluation": "evaluates to False on sample"
+        }
+      ]
+    },
+    {
+      "candidate_id": "cand_006",
+      "lemma": "(=> (= i_reset 1) (= state1536 0))",
+      "filter_result": "no_applicable_samples",
+      "samples_checked": 9,
+      "samples_violated": 0,
+      "samples_held": 0,
+      "violations": []
+    },
+    {
+      "candidate_id": "cand_007",
+      "lemma": "(=> (= state1536 11) (= ((_ extract 12 12) i_wb_data) 1))",
+      "filter_result": "no_applicable_samples",
+      "samples_checked": 9,
+      "samples_violated": 0,
+      "samples_held": 0,
+      "violations": []
+    },
+    {
+      "candidate_id": "cand_008",
+      "lemma": "(! (and (= state1536 10) (= state2002 1)))",
+      "filter_result": "consistent_with_samples",
+      "samples_checked": 9,
+      "samples_violated": 0,
+      "samples_held": 3,
+      "violations": []
+    },
+    {
+      "candidate_id": "cand_009",
+      "lemma": "(and (<= 0 state1558) (<= state1558 1))",
+      "filter_result": "consistent_with_samples",
+      "samples_checked": 9,
+      "samples_violated": 0,
+      "samples_held": 3,
+      "violations": []
+    },
+    {
+      "candidate_id": "cand_010",
+      "lemma": "(=> (= state1536 11) (= state790 0))",
+      "filter_result": "consistent_with_samples",
+      "samples_checked": 9,
+      "samples_violated": 0,
+      "samples_held": 3,
+      "violations": []
+    }
+  ],
+  "solver_shortlist": {
+    "total": 5,
+    "consistent_with_samples": 0,
+    "violates_reachable_sample": 4,
+    "no_applicable_samples": 1,
+    "not_applicable": 0
+  },
+  "solver_shortlist_detail": [
+    {
+      "candidate_id": "cand_007",
+      "lemma": "(=> (= state1536 10) (= state790 0))",
+      "filter_result": "violates_reachable_sample",
+      "samples_checked": 9,
+      "samples_violated": 2,
+      "samples_held": 1,
+      "violations": [
+        {
+          "sample_id": "cand_007_induction_model",
+          "sample_values": {
+            "state1536_next": "10",
+            "state790_next": "1"
+          },
+          "evaluation": "evaluates to False on sample"
+        },
+        {
+          "sample_id": "cand_007_one_step_model",
+          "sample_values": {
+            "state1536_next": "10",
+            "state790_next": "1"
+          },
+          "evaluation": "evaluates to False on sample"
+        }
+      ]
+    },
+    {
+      "candidate_id": "cand_008",
+      "lemma": "(=> (= state1536 0) (= state1558 0))",
+      "filter_result": "violates_reachable_sample",
+      "samples_checked": 9,
+      "samples_violated": 2,
+      "samples_held": 1,
+      "violations": [
+        {
+          "sample_id": "cand_008_induction_model",
+          "sample_values": {
+            "state1536_next": "0",
+            "state1558_next": "1"
+          },
+          "evaluation": "evaluates to False on sample"
+        },
+        {
+          "sample_id": "cand_008_one_step_model",
+          "sample_values": {
+            "state1536_next": "0",
+            "state1558_next": "1"
+          },
+          "evaluation": "evaluates to False on sample"
+        }
+      ]
+    },
+    {
+      "candidate_id": "cand_004",
+      "lemma": "(=> (= state2002 1) (= state1536 0))",
+      "filter_result": "violates_reachable_sample",
+      "samples_checked": 9,
+      "samples_violated": 2,
+      "samples_held": 1,
+      "violations": [
+        {
+          "sample_id": "cand_004_induction_model",
+          "sample_values": {
+            "state2002_next": "1",
+            "state1536_next": "15"
+          },
+          "evaluation": "evaluates to False on sample"
+        },
+        {
+          "sample_id": "cand_004_one_step_model",
+          "sample_values": {
+            "state2002_next": "1",
+            "state1536_next": "15"
+          },
+          "evaluation": "evaluates to False on sample"
+        }
+      ]
+    },
+    {
+      "candidate_id": "cand_005",
+      "lemma": "(! (and (= state1536 10) (= state79 1)))",
+      "filter_result": "violates_reachable_sample",
+      "samples_checked": 9,
+      "samples_violated": 2,
+      "samples_held": 1,
+      "violations": [
+        {
+          "sample_id": "cand_005_induction_model",
+          "sample_values": {
+            "state1536_next": "10",
+            "state79_next": "1"
+          },
+          "evaluation": "evaluates to False on sample"
+        },
+        {
+          "sample_id": "cand_005_one_step_model",
+          "sample_values": {
+            "state1536_next": "10",
+            "state79_next": "1"
+          },
+          "evaluation": "evaluates to False on sample"
+        }
+      ]
+    },
+    {
+      "candidate_id": "cand_007",
+      "lemma": "(=> (= state1536 11) (= ((_ extract 12 12) i_wb_data) 1))",
+      "filter_result": "no_applicable_samples",
+      "samples_checked": 9,
+      "samples_violated": 0,
+      "samples_held": 0,
+      "violations": []
+    }
+  ],
+  "repair_v1": {
+    "total": 6,
+    "consistent_with_samples": 4,
+    "violates_reachable_sample": 2,
+    "no_applicable_samples": 0,
+    "not_applicable": 0
+  },
+  "repair_v1_detail": [
+    {
+      "candidate_id": "cand_007_repair_1",
+      "lemma": "(=> (= state790 1) (= state1536 10))",
+      "filter_result": "violates_reachable_sample",
+      "samples_checked": 9,
+      "samples_violated": 1,
+      "samples_held": 2,
+      "violations": [
+        {
+          "sample_id": "init_state",
+          "sample_values": {
+            "state1536_next": "0",
+            "state790_next": "1",
+            "state1558_next": "0",
+            "state2002_next": "0",
+            "state79_next": "0"
+          },
+          "evaluation": "evaluates to False on sample"
+        }
+      ]
+    },
+    {
+      "candidate_id": "cand_007_repair_2",
+      "lemma": "(=> (= state1536 10) (= state790 1))",
+      "filter_result": "consistent_with_samples",
+      "samples_checked": 9,
+      "samples_violated": 0,
+      "samples_held": 3,
+      "violations": []
+    },
+    {
+      "candidate_id": "cand_008_repair_1",
+      "lemma": "(=> (and (= state1536 0) (not i_cfg_stb)) (= state1558 0))",
+      "filter_result": "violates_reachable_sample",
+      "samples_checked": 9,
+      "samples_violated": 9,
+      "samples_held": 0,
+      "violations": [
+        {
+          "sample_id": "cand_004_induction_model",
+          "evaluation": "parse error: unexpected atom: i_cfg_stb"
+        },
+        {
+          "sample_id": "cand_004_one_step_model",
+          "evaluation": "parse error: unexpected atom: i_cfg_stb"
+        },
+        {
+          "sample_id": "cand_005_induction_model",
+          "evaluation": "parse error: unexpected atom: i_cfg_stb"
+        }
+      ]
+    },
+    {
+      "candidate_id": "cand_008_repair_2",
+      "lemma": "(=> (= state1536 0) (<= state1558 1))",
+      "filter_result": "consistent_with_samples",
+      "samples_checked": 9,
+      "samples_violated": 0,
+      "samples_held": 3,
+      "violations": []
+    },
+    {
+      "candidate_id": "cand_004_repair_1",
+      "lemma": "(=> (= state2002 1) (not (= state1536 0)))",
+      "filter_result": "consistent_with_samples",
+      "samples_checked": 9,
+      "samples_violated": 0,
+      "samples_held": 3,
+      "violations": []
+    },
+    {
+      "candidate_id": "cand_004_repair_2",
+      "lemma": "(=> (= state2002 1) (>= state1536 10))",
+      "filter_result": "consistent_with_samples",
+      "samples_checked": 9,
+      "samples_violated": 0,
+      "samples_held": 3,
+      "violations": []
+    }
+  ],
+  "repair_v2": {
+    "total": 3,
+    "consistent_with_samples": 2,
+    "violates_reachable_sample": 0,
+    "no_applicable_samples": 0,
+    "not_applicable": 1
+  },
+  "repair_v2_detail": [
+    {
+      "candidate_id": "cand_007_repair_v2_1",
+      "lemma": "(=> (= state1536 10) (= state790 1))",
+      "filter_result": "consistent_with_samples",
+      "samples_checked": 9,
+      "samples_violated": 0,
+      "samples_held": 3,
+      "violations": []
+    },
+    {
+      "candidate_id": "cand_008_repair_v2_1",
+      "lemma": "reject",
+      "filter_result": "not_applicable",
+      "reason": "empty or rejected"
+    },
+    {
+      "candidate_id": "cand_004_repair_v2_1",
+      "lemma": "(=> (= state2002 1) (not (= state1536 0)))",
+      "filter_result": "consistent_with_samples",
+      "samples_checked": 9,
+      "samples_violated": 0,
+      "samples_held": 3,
+      "violations": []
+    }
+  ],
+  "resynthesis": {
+    "total": 5,
+    "consistent_with_samples": 0,
+    "violates_reachable_sample": 4,
+    "no_applicable_samples": 0,
+    "not_applicable": 1
+  },
+  "resynthesis_detail": [
+    {
+      "candidate_id": "resyn_001",
+      "lemma": "(! (and (= state1536 10) (= state790 1)))",
+      "filter_result": "violates_reachable_sample",
+      "samples_checked": 9,
+      "samples_violated": 2,
+      "samples_held": 1,
+      "violations": [
+        {
+          "sample_id": "cand_007_induction_model",
+          "sample_values": {
+            "state1536_next": "10",
+            "state790_next": "1"
+          },
+          "evaluation": "evaluates to False on sample"
+        },
+        {
+          "sample_id": "cand_007_one_step_model",
+          "sample_values": {
+            "state1536_next": "10",
+            "state790_next": "1"
+          },
+          "evaluation": "evaluates to False on sample"
+        }
+      ]
+    },
+    {
+      "candidate_id": "resyn_002",
+      "lemma": "(<= state1536 14)",
+      "filter_result": "violates_reachable_sample",
+      "samples_checked": 9,
+      "samples_violated": 2,
+      "samples_held": 7,
+      "violations": [
+        {
+          "sample_id": "cand_004_induction_model",
+          "sample_values": {
+            "state2002_next": "1",
+            "state1536_next": "15"
+          },
+          "evaluation": "evaluates to False on sample"
+        },
+        {
+          "sample_id": "cand_004_one_step_model",
+          "sample_values": {
+            "state2002_next": "1",
+            "state1536_next": "15"
+          },
+          "evaluation": "evaluates to False on sample"
+        }
+      ]
+    },
+    {
+      "candidate_id": "resyn_003",
+      "lemma": "(! (and (= state2002 1) (= state1536 15)))",
+      "filter_result": "violates_reachable_sample",
+      "samples_checked": 9,
+      "samples_violated": 2,
+      "samples_held": 1,
+      "violations": [
+        {
+          "sample_id": "cand_004_induction_model",
+          "sample_values": {
+            "state2002_next": "1",
+            "state1536_next": "15"
+          },
+          "evaluation": "evaluates to False on sample"
+        },
+        {
+          "sample_id": "cand_004_one_step_model",
+          "sample_values": {
+            "state2002_next": "1",
+            "state1536_next": "15"
+          },
+          "evaluation": "evaluates to False on sample"
+        }
+      ]
+    },
+    {
+      "candidate_id": "resyn_004",
+      "lemma": "(not (= state1536 15))",
+      "filter_result": "violates_reachable_sample",
+      "samples_checked": 9,
+      "samples_violated": 2,
+      "samples_held": 7,
+      "violations": [
+        {
+          "sample_id": "cand_004_induction_model",
+          "sample_values": {
+            "state2002_next": "1",
+            "state1536_next": "15"
+          },
+          "evaluation": "evaluates to False on sample"
+        },
+        {
+          "sample_id": "cand_004_one_step_model",
+          "sample_values": {
+            "state2002_next": "1",
+            "state1536_next": "15"
+          },
+          "evaluation": "evaluates to False on sample"
+        }
+      ]
+    },
+    {
+      "candidate_id": "resyn_005",
+      "lemma": "",
+      "filter_result": "not_applicable",
+      "reason": "empty or rejected"
+    }
+  ]
+}
