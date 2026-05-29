@@ -360,6 +360,19 @@ def lemma_to_smt(lemma: str, vars_dict: Dict[str, bz.Term],
         return tm.mk_term(bz.Kind.EQUAL,
                           [tm.mk_term(bz.Kind.BV_AND, [x, y]), zero])
 
+    # (=> (= stateX V) (or (= stateY W) (= stateZ U)))  → OR consequent
+    m = re.match(
+        r'\(\s*=>\s*\(\s*=\s*(state\d+)\s+(\d+)\s*\)\s*\(\s*or\s*\(\s*=\s*(state\d+)\s+(\d+)\s*\)\s*'
+        r'\(\s*=\s*(state\d+)\s+(\d+)\s*\)\s*\)\s*\)',
+        lemma_clean)
+    if m:
+        guard = _mk_eq(m.group(1), m.group(2))
+        c1 = _mk_eq(m.group(3), m.group(4))
+        c2 = _mk_eq(m.group(5), m.group(6))
+        if guard is None or c1 is None or c2 is None: return None
+        not_guard = tm.mk_term(bz.Kind.NOT, [guard])
+        return tm.mk_term(bz.Kind.OR, [not_guard, c1, c2])
+
     # Standalone: (<= stateX V)  → upper bound
     m = re.match(r'\(\s*<=\s*(state\d+)\s+(\d+)\s*\)', lemma_clean)
     if m:

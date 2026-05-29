@@ -1,0 +1,123 @@
+{
+  "state1536": {
+    "symbol": "state1536",
+    "bitwidth": 4,
+    "next_expr_node": "2968",
+    "init_val": "00",
+    "dependencies": [
+      "i_cfg_stb",
+      "i_reset",
+      "i_wb_addr",
+      "i_wb_cyc",
+      "i_wb_data",
+      "i_wb_stb",
+      "i_wb_we",
+      "state1536",
+      "state1558",
+      "state1560",
+      "state1789",
+      "state2002",
+      "state79",
+      "state790",
+      "state85"
+    ],
+    "dependency_count": 15,
+    "pseudo_code": "(<Li_reset> ? <L4'd00> : <L(<L((((i_wb_stb & ~state790) & ~i_wb_we) & ~state79) & ~state2002)> ? <L4'd10> : <L(<L((((i_wb_stb & ~state790) & ~i_wb_we) & ~state79) | ((((((i_cfg_stb & ~<L790>) & i_wb_we) & i_wb_data[12:12]) & ~i_wb_data[8:8]) & i_wb_data[10:10]) & ~i_wb_data[9:9]))> ? <L4'd11> : <L(<",
+    "pseudo_code_length": 667,
+    "opaque_references": 23,
+    "readability": "poor",
+    "notes": "4-bit DSPI mode register. 15 deps, deeply nested ITE. Not readable by LLM. Use structural summary instead."
+  },
+  "state790": {
+    "symbol": "state790",
+    "bitwidth": 1,
+    "next_expr_node": "2676",
+    "init_val": "1",
+    "dependencies": [
+      "i_cfg_stb",
+      "i_dspi_dat",
+      "i_reset",
+      "i_wb_addr",
+      "i_wb_data",
+      "i_wb_stb",
+      "i_wb_we",
+      "state1789",
+      "state2002",
+      "state2029",
+      "state79",
+      "state790",
+      "state85"
+    ],
+    "dependency_count": 13,
+    "pseudo_code": "(((<L(state1789 | ~<L1589 op=redor>)> ? <L(<L(((state2029 & i_wb_stb) & state2002) & (state85 == ext(4'd10)))> ? <L0> : <L(ext(1) < state85)>)> : <L(<L(((state2029 & i_wb_stb) & state2002) & (state85 == ext(1)))> ? <L0> : <Lstate790>)>) | ((((i_wb_stb & ~state790) & ~i_wb_we) & ~state79) | ((((i_cfg",
+    "pseudo_code_length": 380,
+    "opaque_references": 10,
+    "readability": "poor",
+    "notes": "1-bit WB stall. 13 deps, complex OR/ITE. Not readable. Summarize: stall depends on bus arbitration + state conditions."
+  },
+  "state1558": {
+    "symbol": "state1558",
+    "bitwidth": 1,
+    "next_expr_node": "2970",
+    "init_val": "0",
+    "dependencies": [
+      "i_cfg_stb",
+      "i_wb_data",
+      "i_wb_we",
+      "state1558",
+      "state790"
+    ],
+    "dependency_count": 5,
+    "pseudo_code": "(<L((i_cfg_stb & ~state790) & i_wb_we)> ? <Li_wb_data[10:10]> : <Lstate1558>)",
+    "pseudo_code_length": 77,
+    "opaque_references": 3,
+    "readability": "good",
+    "notes": "1-bit cfg_speed. Simple ITE on config strobe. READABLE. Set when cfg_stb && !stall && write."
+  },
+  "state2002": {
+    "symbol": "state2002",
+    "bitwidth": 1,
+    "next_expr_node": "3213",
+    "init_val": "0",
+    "dependencies": [
+      "i_cfg_stb",
+      "i_dspi_dat",
+      "i_wb_addr",
+      "i_wb_stb",
+      "i_wb_we",
+      "state1722",
+      "state1789",
+      "state2001",
+      "state79",
+      "state85",
+      "state93"
+    ],
+    "dependency_count": 11,
+    "pseudo_code": "(<L((state85 == ext(1)) & state1789)> ? <L0> : <L((((((i_wb_stb & ~i_wb_we) & state1722) & ~state79) & ~state93) & <L2013 op=redor>) & (state2001 == i_wb_addr))>)",
+    "pseudo_code_length": 162,
+    "opaque_references": 4,
+    "readability": "medium",
+    "notes": "1-bit pipe request. Medium ITE. Partially readable. Active when write conditions + address match."
+  },
+  "state79": {
+    "symbol": "state79",
+    "bitwidth": 1,
+    "next_expr_node": "2172",
+    "init_val": "0",
+    "dependencies": [
+      "i_cfg_stb",
+      "i_reset",
+      "i_wb_data",
+      "i_wb_stb",
+      "i_wb_we",
+      "state79",
+      "state790"
+    ],
+    "dependency_count": 7,
+    "pseudo_code": "(<Li_reset> ? <L0> : <L(<L((i_cfg_stb & ~state790) & i_wb_we)> ? <Li_wb_data[12:12]> : <Lstate79>)>)",
+    "pseudo_code_length": 100,
+    "opaque_references": 6,
+    "readability": "good",
+    "notes": "1-bit cfg_mode. Simple ITE on config strobe. READABLE. Set when cfg_stb && !stall && write via i_wb_data[12]."
+  }
+}

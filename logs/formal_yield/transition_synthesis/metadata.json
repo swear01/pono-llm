@@ -1,0 +1,7 @@
+{
+  "model": "deepseek-v4-pro",
+  "tokens": 14642,
+  "latency_ms": 365944.1611766815,
+  "prompt_chars": 5803,
+  "num_candidates": 3
+}
