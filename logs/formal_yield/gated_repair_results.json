@@ -1,0 +1,147 @@
+[
+  {
+    "lemma": "(=> (= state790 1) (= state1536 10))",
+    "solver_verdict": "init_fail",
+    "checks": {
+      "bitwidth_tautology": "nontrivial",
+      "impossible_antecedent": "feasible",
+      "tautological_consequent": "nontrivial",
+      "ce_blocking": "ce_blocked",
+      "variable_relevance": "ok"
+    },
+    "gate_verdict": "init_fail",
+    "issues": [],
+    "repair_id": "cand_007_repair_1",
+    "source_candidate_id": "cand_007",
+    "repair_strategy": "reverse_implication",
+    "llm_risk": "medium"
+  },
+  {
+    "lemma": "(=> (= state1536 10) (= state790 1))",
+    "solver_verdict": "init_pass_one_step_fail",
+    "checks": {
+      "bitwidth_tautology": "nontrivial",
+      "impossible_antecedent": "feasible",
+      "tautological_consequent": "nontrivial",
+      "ce_blocking": "ce_blocked",
+      "variable_relevance": "ok"
+    },
+    "gate_verdict": "init_pass_one_step_fail",
+    "issues": [],
+    "repair_id": "cand_007_repair_2",
+    "source_candidate_id": "cand_007",
+    "repair_strategy": "weaken",
+    "llm_risk": "low"
+  },
+  {
+    "lemma": "(=> (and (= state1536 0) (not i_cfg_stb)) (= state1558 0))",
+    "solver_verdict": "parse_failed",
+    "checks": {
+      "bitwidth_tautology": "nontrivial",
+      "impossible_antecedent": "feasible",
+      "tautological_consequent": "nontrivial",
+      "ce_blocking": "ce_not_blocked",
+      "variable_relevance": "ok"
+    },
+    "gate_verdict": "parse_failed",
+    "issues": [
+      "counterexample_not_blocked"
+    ],
+    "repair_id": "cand_008_repair_1",
+    "source_candidate_id": "cand_008",
+    "repair_strategy": "add_guard",
+    "llm_risk": "medium"
+  },
+  {
+    "lemma": "(=> (= state1536 0) (<= state1558 1))",
+    "solver_verdict": "solver_verified_strong",
+    "checks": {
+      "bitwidth_tautology": "tautology",
+      "impossible_antecedent": "feasible",
+      "tautological_consequent": "tautology",
+      "ce_blocking": "ce_blocked",
+      "variable_relevance": "ok"
+    },
+    "gate_verdict": "solver_verified_trivial",
+    "issues": [
+      "bitwidth_tautology",
+      "tautological_consequent"
+    ],
+    "repair_id": "cand_008_repair_2",
+    "source_candidate_id": "cand_008",
+    "repair_strategy": "weaken",
+    "llm_risk": "low"
+  },
+  {
+    "lemma": "(=> (= state1536 0) (= state1558 0))",
+    "solver_verdict": "no_solver_data",
+    "checks": {
+      "bitwidth_tautology": "nontrivial",
+      "impossible_antecedent": "feasible",
+      "tautological_consequent": "nontrivial",
+      "ce_blocking": "ce_not_blocked",
+      "variable_relevance": "ok"
+    },
+    "gate_verdict": "no_solver_data",
+    "issues": [
+      "counterexample_not_blocked"
+    ],
+    "repair_id": "cand_008_repair_3",
+    "source_candidate_id": "cand_008",
+    "repair_strategy": "reject",
+    "llm_risk": "low"
+  },
+  {
+    "lemma": "(=> (= state2002 1) (not (= state1536 0)))",
+    "solver_verdict": "init_pass_one_step_fail",
+    "checks": {
+      "bitwidth_tautology": "nontrivial",
+      "impossible_antecedent": "feasible",
+      "tautological_consequent": "nontrivial",
+      "ce_blocking": "ce_blocked",
+      "variable_relevance": "ok"
+    },
+    "gate_verdict": "init_pass_one_step_fail",
+    "issues": [],
+    "repair_id": "cand_004_repair_1",
+    "source_candidate_id": "cand_004",
+    "repair_strategy": "weaken",
+    "llm_risk": "medium"
+  },
+  {
+    "lemma": "(=> (= state2002 1) (>= state1536 10))",
+    "solver_verdict": "init_pass_one_step_fail",
+    "checks": {
+      "bitwidth_tautology": "nontrivial",
+      "impossible_antecedent": "feasible",
+      "tautological_consequent": "nontrivial",
+      "ce_blocking": "ce_blocked",
+      "variable_relevance": "ok"
+    },
+    "gate_verdict": "init_pass_one_step_fail",
+    "issues": [],
+    "repair_id": "cand_004_repair_2",
+    "source_candidate_id": "cand_004",
+    "repair_strategy": "schema_change",
+    "llm_risk": "high"
+  },
+  {
+    "lemma": "(=> (= state2002 1) (= state1536 0))",
+    "solver_verdict": "no_solver_data",
+    "checks": {
+      "bitwidth_tautology": "nontrivial",
+      "impossible_antecedent": "feasible",
+      "tautological_consequent": "nontrivial",
+      "ce_blocking": "ce_not_blocked",
+      "variable_relevance": "ok"
+    },
+    "gate_verdict": "no_solver_data",
+    "issues": [
+      "counterexample_not_blocked"
+    ],
+    "repair_id": "cand_004_repair_3",
+    "source_candidate_id": "cand_004",
+    "repair_strategy": "reject",
+    "llm_risk": "low"
+  }
+]
