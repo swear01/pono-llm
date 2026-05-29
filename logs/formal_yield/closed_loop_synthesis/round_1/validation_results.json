@@ -1,0 +1,11 @@
+[
+  {
+    "candidate_id": "cls_r1_001",
+    "lemma": "(=> (= state2002 1) (= state790 1))",
+    "schema": "implication",
+    "verdict": "solver_verified_useful",
+    "init_result": "unsat",
+    "step_result": "unsat",
+    "induction_result": "unsat"
+  }
+]

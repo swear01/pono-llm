@@ -1,0 +1,47 @@
+{
+  "round": 0,
+  "candidates": [
+    {
+      "candidate_id": "cls_r0_001",
+      "lemma": "(=> (= state1536 0) (= state790 1))",
+      "schema": "implication",
+      "variables": [
+        "state1536",
+        "state790"
+      ],
+      "transition_rationale": "When the mode register is IDLE (0), no transaction is active, so the pipeline should be stalled (o_wb_stall=1). The init state confirms this, and the update of stall depends on non-idle conditions (state2002, i_wb_*), suggesting stall stays high unless a transaction starts.",
+      "why_avoids_previous_counterexamples": "No previous falsified candidate relates state1536=0 and state790=1; the falsified (=> (= state1536 0) (= state1558 0)) involves a different variable. The sample with state1536=0, state1558=1 does not provide state790, so no conflict.",
+      "why_consistent_with_reachable_samples": "The init sample (state1536=0, state790=1) satisfies the implication. The sample with state1536=0, state1558=1 does not specify state790, so no contradiction.",
+      "why_nontrivial": "state1536 is 4-bit and state790 is 1-bit, so the constraint is not a bitwidth tautology. It expresses a design-specific mode-stall relationship.",
+      "risk": "medium"
+    },
+    {
+      "candidate_id": "cls_r0_002",
+      "lemma": "(=> (= state1536 0) (= state79 0))",
+      "schema": "implication",
+      "variables": [
+        "state1536",
+        "state79"
+      ],
+      "transition_rationale": "cfg_mode (state79) is initially 0 and is only updated on writes when cfg_stb & !stall. In IDLE mode (state1536=0) such writes are unlikely to occur without transitioning out of IDLE, so state79 should remain 0.",
+      "why_avoids_previous_counterexamples": "The only previous falsified candidate linking state1536=0 and a 1-bit register is (=> (= state1536 0) (= state1558 0)), which was falsified. state79 is a different register, so this is a distinct assertion.",
+      "why_consistent_with_reachable_samples": "The init sample (state1536=0, state79=0) satisfies it. The sample with state1536=0 and state1558=1 does not specify state79, so no direct contradiction.",
+      "why_nontrivial": "state1536 is 4-bit, state79 is 1-bit; the lemma is not a width tautology. It ties a mode value to the configuration mode bit.",
+      "risk": "medium"
+    },
+    {
+      "candidate_id": "cls_r0_003",
+      "lemma": "(=> (= state1536 15) (= state790 0))",
+      "schema": "implication",
+      "variables": [
+        "state1536",
+        "state790"
+      ],
+      "transition_rationale": "When the mode is 15 (likely an active transfer mode), the bus should not be stalled (o_wb_stall=0) to allow data flow. The stall logic likely deasserts during active transactions.",
+      "why_avoids_previous_counterexamples": "No falsified candidate links state1536=15 with state790. The falsified (=> (= state1536 15) (= state2002 1)) involves a different relation.",
+      "why_consistent_with_reachable_samples": "The only sample with state1536=15 does not specify state790, so no conflict. No sample shows state1536=15 and state790=1.",
+      "why_nontrivial": "It relates a specific mode to the stall signal, which is a non-trivial design feature, not a generic tautology.",
+      "risk": "high"
+    }
+  ]
+}

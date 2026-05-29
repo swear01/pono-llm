@@ -1,0 +1,12 @@
+{
+  "max_rounds": 2,
+  "rounds_run": 2,
+  "total_candidates": 4,
+  "best_verdict": "solver_verified_useful",
+  "found_useful": true,
+  "verdict_distribution": {
+    "one_step_fail": 3,
+    "solver_verified_useful": 1
+  },
+  "feedback_blocks": 3
+}

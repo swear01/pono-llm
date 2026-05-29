@@ -1,0 +1,47 @@
+{
+  "round": 1,
+  "candidates": [
+    {
+      "candidate_id": "cls_r1_001",
+      "lemma": "(=> (= state2002 1) (= state790 1))",
+      "schema": "implication",
+      "variables": [
+        "state2002",
+        "state790"
+      ],
+      "transition_rationale": "State790 (o_wb_stall) is computed via complex OR/ITE that includes state2002 (r_pipe_req) as a dependency. The design behavior suggests that when a pipeline request is active, the Wishbone stall is asserted to prevent new transactions from interfering.",
+      "why_avoids_previous_counterexamples": "Previously falsified lemmas focused on state1536 relationships with state790, state2002, state1558, and state79, or vice versa. This direct implication between state2002 and state790 was not among them.",
+      "why_consistent_with_reachable_samples": "All known reachable samples either have state2002=0 (btor2_init, induction_ce with state1536_next=0) or show state790=1 where state2002 is not specified, none show a state with state2002=1 and state790=0.",
+      "why_nontrivial": "It connects a pipeline request signal to a stall signal, which is not a tautology or a simple bitwidth bound; it requires understanding of the interaction logic.",
+      "risk": "medium"
+    },
+    {
+      "candidate_id": "cls_r1_002",
+      "lemma": "(! (and (= state1536 15) (= state79 1)))",
+      "schema": "mutual_exclusion",
+      "variables": [
+        "state1536",
+        "state79"
+      ],
+      "transition_rationale": "State1536 (o_dspi_mod) is a 4-bit mode register and state79 (cfg_mode) is a configuration bit. Mode value 15 may represent a special state that forces cfg_mode to 0 or they are never set together because they are driven by exclusive conditions in the complex ITE logic.",
+      "why_avoids_previous_counterexamples": "Previous falsified candidates did not examine this conjunction; they tested implications like state1536=15 => state2002=1, state1536=0 => state79=0, etc., but not the exclusion of state1536=15 and state79=1.",
+      "why_consistent_with_reachable_samples": "No provided reachable sample has state1536=15 and state79=1 simultaneously. The sample state1536_next=15, state2002_next=1 does not specify state79, allowing it to be 0.",
+      "why_nontrivial": "It relates a multi-bit mode value to a single configuration bit, not a direct encoding tautology.",
+      "risk": "medium"
+    },
+    {
+      "candidate_id": "cls_r1_003",
+      "lemma": "(! (and (= state1536 15) (= state1558 1)))",
+      "schema": "mutual_exclusion",
+      "variables": [
+        "state1536",
+        "state1558"
+      ],
+      "transition_rationale": "State1558 (cfg_speed) is updated only under cfg_stb & !stall & write, and state1536 is o_dspi_mod. Mode 15 might correspond to a low-speed or idle condition where speed bit is forced low, or the update logic prevents both being high due to cross-dependencies in the ITE chain.",
+      "why_avoids_previous_counterexamples": "Falsified lemmas did not include this specific combination. The falsified (=> (= state1536 0) (= state1558 0)) is distinct and does not cover the 15 case.",
+      "why_consistent_with_reachable_samples": "None of the given reachable samples show state1536=15 and state1558=1 together; the sample with state1536_next=15 does not indicate state1558, so it could be 0.",
+      "why_nontrivial": "It imposes a restriction between a mode register and a configuration speed bit, not a simple bitwidth bound.",
+      "risk": "medium"
+    }
+  ]
+}
