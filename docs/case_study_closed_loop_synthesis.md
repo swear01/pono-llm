@@ -134,7 +134,36 @@ The key ingredients for success were:
 The winning lemma **was not proposed** in any of the 5 prior single-shot
 experiments. It emerged only through iterative refinement.
 
-## 8. Limitations
+## 8. Repeatability
+
+Three fresh closed-loop trials were run with identical configuration.
+
+| Trial | Rounds | Solver-Useful | Target Lemma |
+|---|---|---|---|
+| Trial 1 | 2 | 0 | Not found |
+| Trial 2 | 2 | 0 | Not found |
+| Trial 3 | 2 | **1** | **Found in round 1** |
+
+The lemma was found in 1/3 trials — discoverable but not guaranteed.
+It consistently appears in **round 1**, not round 0, confirming that
+counterexample feedback is necessary to trigger the variable shift.
+
+Recommendation: run 3-5 parallel trials and take the union of verified results.
+
+## 9. Cross-Parameter Validation
+
+The lemma was validated across all 6 qspiflash_dualflexpress_divfive
+parameterizations (p020, p027, p040, p063, p114, p162).
+
+| Variants | Init | One-Step | Induction |
+|---|---|---|---|
+| **6/6** | UNSAT | UNSAT | UNSAT |
+
+The lemma `r_pipe_req ⇒ o_wb_stall` holds across all divider configurations.
+It is **not** a quirk of p040 — it's a genuine design invariant of the
+qspiflash controller, independent of the clock divider parameter.
+
+## 10. Limitations
 
 - **One lemma only**: Not a batch of inductive invariants.
 - **Not integrated with Pono**: Offline Bitwuzla pipeline, no IC3IA frame

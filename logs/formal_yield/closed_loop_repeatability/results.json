@@ -1,0 +1,43 @@
+{
+  "trials": 3,
+  "results": [
+    {
+      "trial": "trial_1",
+      "elapsed_s": 230,
+      "verdict": "unknown",
+      "found_target_lemma": false,
+      "found_other_useful": false,
+      "round_0_candidates": 3,
+      "round_0_has_target": false,
+      "round_1_candidates": 3,
+      "round_1_has_target": false
+    },
+    {
+      "trial": "trial_2",
+      "elapsed_s": 345,
+      "verdict": "unknown",
+      "found_target_lemma": false,
+      "found_other_useful": false,
+      "round_0_candidates": 3,
+      "round_0_has_target": false,
+      "round_1_candidates": 3,
+      "round_1_has_target": false
+    },
+    {
+      "trial": "trial_3",
+      "elapsed_s": 305,
+      "verdict": "solver_verified_useful",
+      "found_target_lemma": false,
+      "found_other_useful": true,
+      "round_0_candidates": 3,
+      "round_0_has_target": false,
+      "round_1_candidates": 3,
+      "round_1_has_target": true,
+      "target_found_round": 1,
+      "target_found_as": "cls_r1_002",
+      "useful_lemma": "(=> (= state2002 1) (= state790 1))",
+      "useful_candidate_id": "cls_r1_002"
+    }
+  ],
+  "target_lemma": "(=> (= state2002 1) (= state790 1))"
+}

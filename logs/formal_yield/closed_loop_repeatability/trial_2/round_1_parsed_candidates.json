@@ -1,0 +1,46 @@
+{
+  "round": 1,
+  "candidates": [
+    {
+      "candidate_id": "cls_r1_001",
+      "lemma": "(or (= state1536 0) (= state1536 10) (= state1536 15))",
+      "schema": "domain_restriction",
+      "variables": [
+        "state1536"
+      ],
+      "transition_rationale": "The o_dspi_mod register is updated only under specific write conditions, and the written data appears limited to these three values by the surrounding logic. No other values are produced in the complex ITE.",
+      "why_avoids_previous_counterexamples": "Does not exclude 15 like (<= state1536 14) or (not (= state1536 15)). Includes 0, 10, and 15, which are all observed reachable values.",
+      "why_consistent_with_reachable_samples": "All known reachable states have state1536 in {0, 10, 15}, including the init state, induction counterexamples, and one-step failures.",
+      "why_nontrivial": "Restricts a 4-bit state variable to three specific values out of sixteen possible, which is not a bitwidth tautology.",
+      "risk": "medium"
+    },
+    {
+      "candidate_id": "cls_r1_002",
+      "lemma": "(=> (= state1536 10) (= state790 1))",
+      "schema": "implication",
+      "variables": [
+        "state1536",
+        "state790"
+      ],
+      "transition_rationale": "When in mode 10, the design likely deasserts stall to prevent further transfers, forcing o_wb_stall high. The transition logic may set stall whenever state1536 takes this value.",
+      "why_avoids_previous_counterexamples": "Opposite of the falsified (=> (= state1536 10) (= state790 0)). Does not conflict with any other previously tried lemma.",
+      "why_consistent_with_reachable_samples": "All reachable states with state1536=10, both partial (induction_ce) and full (one-step failure), exhibit state790=1.",
+      "why_nontrivial": "Imposes a relational constraint between two independent state variables, not a simple tautology.",
+      "risk": "medium"
+    },
+    {
+      "candidate_id": "cls_r1_003",
+      "lemma": "(=> (= state79 1) (= state790 1))",
+      "schema": "implication",
+      "variables": [
+        "state79",
+        "state790"
+      ],
+      "transition_rationale": "The cfg_mode bit is written only when stall is low, and afterward the interface typically returns to a stalled state. Hence, observing cfg_mode=1 implies the interface is currently stalled.",
+      "why_avoids_previous_counterexamples": "Not among the falsified lemmas; previous failures involving state79 focused on its relationship with state1536, not state790.",
+      "why_consistent_with_reachable_samples": "The reachable state (0,1,0,1,1) in Failure 1 satisfies it, and no known state contains state79=1 with state790=0.",
+      "why_nontrivial": "Establishes a connection between two distinct 1-bit signals that is not universally true.",
+      "risk": "medium"
+    }
+  ]
+}

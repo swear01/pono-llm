@@ -1,0 +1,46 @@
+[
+  {
+    "lemma": "(=> (= state1536 10) (= state790 1))",
+    "check": "one_step",
+    "next_values": {
+      "state1536_next": "10",
+      "state790_next": "0",
+      "state1558_next": "0",
+      "state2002_next": "0",
+      "state79_next": "0"
+    },
+    "current_values": {
+      "state1536": "0",
+      "state790": "0",
+      "state1558": "0",
+      "state2002": "0",
+      "state79": "0"
+    },
+    "violated_condition": "antecedent state1536=10 holds",
+    "verdict": "one_step_fail",
+    "init_ms": 0,
+    "step_ms": 4
+  },
+  {
+    "lemma": "(=> (= state79 1) (= state790 1))",
+    "check": "one_step",
+    "next_values": {
+      "state1536_next": "15",
+      "state790_next": "0",
+      "state1558_next": "1",
+      "state2002_next": "0",
+      "state79_next": "1"
+    },
+    "current_values": {
+      "state1536": "0",
+      "state790": "0",
+      "state1558": "0",
+      "state2002": "0",
+      "state79": "0"
+    },
+    "violated_condition": "antecedent state79=1 holds",
+    "verdict": "one_step_fail",
+    "init_ms": 0,
+    "step_ms": 4
+  }
+]
