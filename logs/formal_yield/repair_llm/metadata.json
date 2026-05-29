@@ -1,0 +1,9 @@
+{
+  "model": "deepseek-v4-pro",
+  "tokens": 4695,
+  "latency_ms": 79040.33064842224,
+  "prompt_chars": 3350,
+  "num_candidates": 3,
+  "num_repairs": 8,
+  "timestamp": "2026-05-29T09:39:33"
+}

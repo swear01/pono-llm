@@ -262,8 +262,12 @@ def lemma_to_smt(lemma: str, vars_dict: Dict[str, bz.Term],
                 tm: bz.TermManager) -> Optional[bz.Term]:
     """Convert a lemma string to a Bitwuzla Boolean term.
 
-    Handles S-expression patterns: (=> (= stateX V) (= stateY V)),
-    (! (and (= stateX V) (= stateY V))).
+    Handles:
+    - (=> (= stateX V) (= stateY V))           guarded implication
+    - (=> (= stateX V) (not (= stateY W)))     guarded implication, negated consequent
+    - (=> (= stateX V) (<= stateY W))          guarded implication, consequent bound
+    - (=> (= stateX V) (>= stateY W))          guarded implication, consequent lower bound
+    - (! (and (= stateX V) (= stateY V)))      mutual exclusion
     """
     if not vars_dict or not lemma.strip():
         return None
@@ -278,6 +282,13 @@ def lemma_to_smt(lemma: str, vars_dict: Dict[str, bz.Term],
         w = var.sort().bv_size()
         return tm.mk_term(bz.Kind.EQUAL, [var, tm.mk_bv_value(tm.mk_bv_sort(w), val)])
 
+    def _mk_bv_val(var_name: str, val_str: str) -> Optional[bz.Term]:
+        var = vars_dict.get(var_name)
+        if var is None: return None
+        val = int(val_str)
+        w = var.sort().bv_size()
+        return tm.mk_bv_value(tm.mk_bv_sort(w), val)
+
     # (=> (= stateX V) (= stateY V))  → guarded implication
     m = re.match(
         r'\(\s*=>\s*\(\s*=\s*(state\d+)\s+(\d+)\s*\)\s*\(\s*=\s*(state\d+)\s+(\d+)\s*\)\s*\)',
@@ -286,6 +297,44 @@ def lemma_to_smt(lemma: str, vars_dict: Dict[str, bz.Term],
         guard = _mk_eq(m.group(1), m.group(2))
         consequent = _mk_eq(m.group(3), m.group(4))
         if guard is None or consequent is None: return None
+        not_guard = tm.mk_term(bz.Kind.NOT, [guard])
+        return tm.mk_term(bz.Kind.OR, [not_guard, consequent])
+
+    # (=> (= stateX V) (not (= stateY W)))  → guarded, negated consequent
+    m = re.match(
+        r'\(\s*=>\s*\(\s*=\s*(state\d+)\s+(\d+)\s*\)\s*\(\s*not\s*\(\s*=\s*(state\d+)\s+(\d+)\s*\)\s*\)\s*\)',
+        lemma_clean)
+    if m:
+        guard = _mk_eq(m.group(1), m.group(2))
+        consequent_eq = _mk_eq(m.group(3), m.group(4))
+        if guard is None or consequent_eq is None: return None
+        not_guard = tm.mk_term(bz.Kind.NOT, [guard])
+        neg_consequent = tm.mk_term(bz.Kind.NOT, [consequent_eq])
+        return tm.mk_term(bz.Kind.OR, [not_guard, neg_consequent])
+
+    # (=> (= stateX V) (<= stateY W))  → consequent upper bound
+    m = re.match(
+        r'\(\s*=>\s*\(\s*=\s*(state\d+)\s+(\d+)\s*\)\s*\(\s*<=\s*(state\d+)\s+(\d+)\s*\)\s*\)',
+        lemma_clean)
+    if m:
+        guard = _mk_eq(m.group(1), m.group(2))
+        var_y = _mk_bv_val(m.group(3), m.group(4))
+        y = vars_dict.get(m.group(3))
+        if guard is None or var_y is None or y is None: return None
+        consequent = tm.mk_term(bz.Kind.BV_ULE, [y, var_y])
+        not_guard = tm.mk_term(bz.Kind.NOT, [guard])
+        return tm.mk_term(bz.Kind.OR, [not_guard, consequent])
+
+    # (=> (= stateX V) (>= stateY W))  → consequent lower bound
+    m = re.match(
+        r'\(\s*=>\s*\(\s*=\s*(state\d+)\s+(\d+)\s*\)\s*\(\s*>=\s*(state\d+)\s+(\d+)\s*\)\s*\)',
+        lemma_clean)
+    if m:
+        guard = _mk_eq(m.group(1), m.group(2))
+        var_y = _mk_bv_val(m.group(3), m.group(4))
+        y = vars_dict.get(m.group(3))
+        if guard is None or var_y is None or y is None: return None
+        consequent = tm.mk_term(bz.Kind.BV_UGE, [y, var_y])
         not_guard = tm.mk_term(bz.Kind.NOT, [guard])
         return tm.mk_term(bz.Kind.OR, [not_guard, consequent])
 
