@@ -1,0 +1,4 @@
+{"type": "cti", "frame": 5, "cube": [{"varname": "state2002", "expr": "state2002 = 1", "value": "1", "kind": "state"}, {"varname": "state790", "expr": "state790 = 0", "value": "0", "kind": "state"}], "variables": ["state2002", "state790"]}
+{"type": "cti", "frame": 8, "cube": [{"varname": "state2002", "expr": "state2002 = 1", "value": "1", "kind": "state"}, {"varname": "state790", "expr": "state790 = 1", "value": "1", "kind": "state"}, {"varname": "state1536", "expr": "state1536 = 15", "value": "15", "kind": "state"}], "variables": ["state2002", "state790", "state1536"]}
+{"type": "cti", "frame": 12, "cube": [{"varname": "state1536", "expr": "state1536 = 10", "value": "10", "kind": "state"}, {"varname": "state79", "expr": "state79 = 1", "value": "1", "kind": "state"}], "variables": ["state1536", "state79"]}
+{"type": "cti", "frame": 15, "cube": [{"varname": "state2002", "expr": "state2002 = 1", "value": "1", "kind": "state"}], "variables": ["state2002"]}
