@@ -1,0 +1,15 @@
+{
+  "translation_method": "Python BTOR2-to-SMT via smt_checker.BTOR2SMT",
+  "btor2_file": "/home/swear01/hwmcc_benchmarks/2024/btor2/2019/wolf/2019C/qspiflash_dualflexpress_divfive-p040.btor2",
+  "transition_constraints_count": 217,
+  "transition_translation_coverage": "218/247 (88%)",
+  "init_constraints_count": 216,
+  "state_variables": 249,
+  "input_variables": 9,
+  "operator_support": "18 BTOR2 operators (const, state, input, zero, ones, not, and, or, xor, xnor, eq, neq, add, sub, srl, ult, ulte, ite, slice, concat, redor, redand, uext)",
+  "limitations": [
+    "29/247 transition lines fail (node-208 redor cascade, non-target states)",
+    "Not a full Pono rel_ind_check \u2014 standalone Bitwuzla validation",
+    "Init values parsed from BTOR2 init lines (216/249 states)"
+  ]
+}

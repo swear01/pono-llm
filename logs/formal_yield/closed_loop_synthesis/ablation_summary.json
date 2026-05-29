@@ -1,0 +1,67 @@
+{
+  "experiments": [
+    {
+      "id": 1,
+      "name": "Repair v1",
+      "llm_calls": 1,
+      "candidates": 8,
+      "pre_gate_pass": 4,
+      "solver_trivial": 1,
+      "solver_useful": 0,
+      "key_failure": "weakening \u2192 trivialization (nontriviality gate added)"
+    },
+    {
+      "id": 2,
+      "name": "Repair v2",
+      "llm_calls": 1,
+      "candidates": 3,
+      "pre_gate_pass": 2,
+      "solver_trivial": 0,
+      "solver_useful": 0,
+      "key_failure": "original lemmas too far from ground truth"
+    },
+    {
+      "id": 3,
+      "name": "CE-aware resynthesis",
+      "llm_calls": 1,
+      "candidates": 5,
+      "pre_gate_pass": 0,
+      "solver_trivial": 0,
+      "solver_useful": 0,
+      "key_failure": "excluded known reachable CE values (e.g., state1536 <= 14 when CE has 15)"
+    },
+    {
+      "id": 4,
+      "name": "Reachability-aware synthesis",
+      "llm_calls": 1,
+      "candidates": 2,
+      "pre_gate_pass": 2,
+      "solver_trivial": 0,
+      "solver_useful": 0,
+      "key_failure": "plausible relations, still one-step-fail"
+    },
+    {
+      "id": 5,
+      "name": "Transition-aware synthesis",
+      "llm_calls": 1,
+      "candidates": 3,
+      "pre_gate_pass": 3,
+      "solver_trivial": 0,
+      "solver_useful": 0,
+      "key_failure": "transition context adds structure but not inductive reasoning"
+    },
+    {
+      "id": 6,
+      "name": "Closed-loop synthesis",
+      "llm_calls": 2,
+      "candidates": 6,
+      "pre_gate_pass": 4,
+      "solver_trivial": 0,
+      "solver_useful": 1,
+      "key_failure": "\u2014 (found useful lemma: r_pipe_req => o_wb_stall)"
+    }
+  ],
+  "trend": "Pre-gate quality improved across experiments. Only iterative solver feedback produced a genuine inductive lemma.",
+  "winning_lemma": "(=> (= state2002 1) (= state790 1))",
+  "winning_lemma_interpretation": "r_pipe_req = 1 => o_wb_stall = 1 (pipeline request implies bus stall)"
+}

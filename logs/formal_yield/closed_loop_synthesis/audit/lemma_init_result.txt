@@ -1,0 +1,3 @@
+Lemma: (=> (= state2002 1) (= state790 1))
+Query: Init(s) ∧ ¬L(s)
+Result: unsat
