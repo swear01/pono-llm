@@ -1,0 +1,309 @@
+{
+  "top_clusters": [
+    {
+      "internal_vars": [
+        "state15",
+        "state886"
+      ],
+      "word_vars": [
+        "state15",
+        "state886"
+      ],
+      "predicates": [
+        "(= state15 #b0)",
+        "(= state886 #b0)"
+      ],
+      "resolution_status": "resolved",
+      "score": 82.1,
+      "frame_occurrences": 35,
+      "cti_occurrences": 1974,
+      "highest_frame": 3,
+      "penalty": 0
+    },
+    {
+      "internal_vars": [
+        "state15",
+        "state785"
+      ],
+      "word_vars": [
+        "state15",
+        "state785"
+      ],
+      "predicates": [
+        "(= state15 #b0)",
+        "(= state785 #b0)"
+      ],
+      "resolution_status": "resolved",
+      "score": 81.7,
+      "frame_occurrences": 33,
+      "cti_occurrences": 1974,
+      "highest_frame": 3,
+      "penalty": 0
+    },
+    {
+      "internal_vars": [
+        "state1368",
+        "state15"
+      ],
+      "word_vars": [
+        "state1368",
+        "state15"
+      ],
+      "predicates": [
+        "(= state1368 #b0)",
+        "(= state15 #b0)"
+      ],
+      "resolution_status": "resolved",
+      "score": 81.5,
+      "frame_occurrences": 32,
+      "cti_occurrences": 1974,
+      "highest_frame": 3,
+      "penalty": 0
+    },
+    {
+      "internal_vars": [
+        "state15",
+        "state483"
+      ],
+      "word_vars": [
+        "state15",
+        "state483"
+      ],
+      "predicates": [
+        "(= state15 #b0)",
+        "(= state483 #b0)"
+      ],
+      "resolution_status": "resolved",
+      "score": 81.1,
+      "frame_occurrences": 30,
+      "cti_occurrences": 1974,
+      "highest_frame": 3,
+      "penalty": 0
+    },
+    {
+      "internal_vars": [
+        "state1368",
+        "state886"
+      ],
+      "word_vars": [
+        "state1368",
+        "state886"
+      ],
+      "predicates": [
+        "(= state1368 #b0)",
+        "(= state886 #b0)"
+      ],
+      "resolution_status": "resolved",
+      "score": 81.1,
+      "frame_occurrences": 30,
+      "cti_occurrences": 1974,
+      "highest_frame": 3,
+      "penalty": 0
+    },
+    {
+      "internal_vars": [
+        "state1368",
+        "state17"
+      ],
+      "word_vars": [
+        "state1368",
+        "state17"
+      ],
+      "predicates": [
+        "(= state1368 #b0)",
+        "(= state17 #b0)"
+      ],
+      "resolution_status": "resolved",
+      "score": 80.1,
+      "frame_occurrences": 25,
+      "cti_occurrences": 1974,
+      "highest_frame": 3,
+      "penalty": 0
+    },
+    {
+      "internal_vars": [
+        "state471",
+        "state490"
+      ],
+      "word_vars": [
+        "state471",
+        "state490"
+      ],
+      "predicates": [
+        "(= state471 #b0)",
+        "(= state490 #b0)"
+      ],
+      "resolution_status": "resolved",
+      "score": 79.8,
+      "frame_occurrences": 24,
+      "cti_occurrences": 1974,
+      "highest_frame": 3,
+      "penalty": 0
+    },
+    {
+      "internal_vars": [
+        "state490",
+        "state645"
+      ],
+      "word_vars": [
+        "state490",
+        "state645"
+      ],
+      "predicates": [
+        "(= state490 #b0)",
+        "(= state645 #b0)"
+      ],
+      "resolution_status": "resolved",
+      "score": 79.6,
+      "frame_occurrences": 23,
+      "cti_occurrences": 1974,
+      "highest_frame": 3,
+      "penalty": 0
+    },
+    {
+      "internal_vars": [
+        "state15",
+        "state858"
+      ],
+      "word_vars": [
+        "state15",
+        "state858"
+      ],
+      "predicates": [
+        "(= state15 #b0)",
+        "(= state858 #b0)"
+      ],
+      "resolution_status": "resolved",
+      "score": 79.4,
+      "frame_occurrences": 22,
+      "cti_occurrences": 1974,
+      "highest_frame": 3,
+      "penalty": 0
+    },
+    {
+      "internal_vars": [
+        "state15",
+        "state872"
+      ],
+      "word_vars": [
+        "state15",
+        "state872"
+      ],
+      "predicates": [
+        "(= state15 #b0)",
+        "(= state872 #b0)"
+      ],
+      "resolution_status": "resolved",
+      "score": 79.2,
+      "frame_occurrences": 21,
+      "cti_occurrences": 1974,
+      "highest_frame": 3,
+      "penalty": 0
+    },
+    {
+      "internal_vars": [
+        "state490",
+        "state638"
+      ],
+      "word_vars": [
+        "state490",
+        "state638"
+      ],
+      "predicates": [
+        "(= state490 #b0)",
+        "(= state638 #b0)"
+      ],
+      "resolution_status": "resolved",
+      "score": 79.2,
+      "frame_occurrences": 21,
+      "cti_occurrences": 1974,
+      "highest_frame": 3,
+      "penalty": 0
+    },
+    {
+      "internal_vars": [
+        "state15",
+        "state462"
+      ],
+      "word_vars": [
+        "state15",
+        "state462"
+      ],
+      "predicates": [
+        "(= state15 #b0)",
+        "(= state462 #b0)"
+      ],
+      "resolution_status": "resolved",
+      "score": 79.0,
+      "frame_occurrences": 20,
+      "cti_occurrences": 1974,
+      "highest_frame": 3,
+      "penalty": 0
+    },
+    {
+      "internal_vars": [
+        "state455",
+        "state785"
+      ],
+      "word_vars": [
+        "state455",
+        "state785"
+      ],
+      "predicates": [
+        "(= state455 #b0)",
+        "(= state785 #b0)"
+      ],
+      "resolution_status": "resolved",
+      "score": 79.0,
+      "frame_occurrences": 20,
+      "cti_occurrences": 1974,
+      "highest_frame": 3,
+      "penalty": 0
+    },
+    {
+      "internal_vars": [
+        "state471",
+        "state638"
+      ],
+      "word_vars": [
+        "state471",
+        "state638"
+      ],
+      "predicates": [
+        "(= state471 #b0)",
+        "(= state638 #b0)"
+      ],
+      "resolution_status": "resolved",
+      "score": 79.0,
+      "frame_occurrences": 20,
+      "cti_occurrences": 1974,
+      "highest_frame": 3,
+      "penalty": 0
+    },
+    {
+      "internal_vars": [
+        "state638",
+        "state645"
+      ],
+      "word_vars": [
+        "state638",
+        "state645"
+      ],
+      "predicates": [
+        "(= state638 #b0)",
+        "(= state645 #b0)"
+      ],
+      "resolution_status": "resolved",
+      "score": 78.8,
+      "frame_occurrences": 19,
+      "cti_occurrences": 1974,
+      "highest_frame": 3,
+      "penalty": 0
+    }
+  ],
+  "resolved_count": 200,
+  "partial_count": 0,
+  "unresolved_count": 0,
+  "total_btor2_vars": 228,
+  "total_pairs": 1103
+}
