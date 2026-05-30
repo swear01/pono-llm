@@ -1,0 +1,4 @@
+{"type": "cti", "frame": 5, "cube": [{"label": "pred_1", "polarity": true}, {"label": "pred_2", "polarity": false}]}
+{"type": "cti", "frame": 8, "cube": [{"label": "pred_1", "polarity": true}, {"label": "pred_2", "polarity": true}]}
+{"type": "cti", "frame": 12, "cube": [{"label": "pred_1", "polarity": true}]}
+{"type": "cti", "frame": 15, "cube": [{"label": "pred_3", "polarity": true}]}

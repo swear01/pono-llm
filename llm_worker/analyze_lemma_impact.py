@@ -18,6 +18,68 @@ class LemmaImpactAnalyzer:
         self.lemma = lemma
         self.target_vars = {"state2002", "state790"}
         self.results = {}
+        self.predicate_map = {}  # label → {variables, state_values, raw_expr, pretty_expr}
+
+    def load_predicate_map(self, predicates_path: str) -> int:
+        records = self.load_jsonl(predicates_path)
+        count = 0
+        for rec in records:
+            label = rec.get("label", "")
+            if label:
+                self.predicate_map[label] = {
+                    "label": label,
+                    "predicate_id": rec.get("predicate_id", 0),
+                    "raw_expr": rec.get("raw_expr", ""),
+                    "pretty_expr": rec.get("pretty_expr", ""),
+                    "variables": rec.get("variables", []),
+                    "state_values": rec.get("state_values", {}),
+                }
+                count += 1
+        return count
+
+    def _resolve_var_val_from_label(self, label: str, polarity: bool) -> Dict[str, int]:
+        """Resolve a (label, polarity) pair to concrete state variable values.
+
+        Only resolves when the predicate is a simple equality (stateX = V)
+        and polarity is reliable. Returns empty dict if resolution is unsafe.
+        """
+        pred = self.predicate_map.get(label)
+        if not pred:
+            return {}
+
+        state_vals = pred.get("state_values", {})
+        if not state_vals:
+            return {}
+
+        result = {}
+        for var, val_str in state_vals.items():
+            if var.startswith("state"):
+                try:
+                    val = int(val_str)
+                except ValueError:
+                    continue
+                if polarity:
+                    result[var] = val
+                else:
+                    # Negated predicate: infer opposite value only for 1-bit vars
+                    # For multi-bit vars with specific equality, negation means "not equal"
+                    # rather than "equal to the complement" — safer to not infer
+                    bw = self._get_var_bw(var)
+                    if bw == 1 and val == 1:
+                        result[var] = 0
+                    elif bw == 1 and val == 0:
+                        result[var] = 1
+                    else:
+                        # Multi-bit: negation doesn't give a concrete value
+                        pass
+        return result
+
+    def _get_var_bw(self, var_name: str) -> Optional[int]:
+        known = {
+            "state1536": 4, "state790": 1, "state1558": 1,
+            "state2002": 1, "state79": 1, "state1359": 1, "state1361": 1,
+        }
+        return known.get(var_name)
 
     def load_jsonl(self, path: str) -> List[Dict]:
         records = []
@@ -32,6 +94,24 @@ class LemmaImpactAnalyzer:
                     except json.JSONDecodeError:
                         pass
         return records
+
+    def _check_lemma_values(self, vals: Dict[str, int]) -> Optional[bool]:
+        """Check if the target lemma holds on given variable assignments."""
+        has_2002 = "state2002" in vals
+        has_790 = "state790" in vals
+
+        if not has_2002 and not has_790:
+            return None  # not relevant
+        if not has_2002:
+            return None  # can't evaluate antecedent
+        if not has_790:
+            return None  # can't evaluate consequent
+
+        ante_true = vals["state2002"] == 1
+        cons_false = vals["state790"] == 0
+
+        # Lemma violated when antecedent true AND consequent false
+        return not (ante_true and cons_false)
 
     def _var_in_record(self, record: Dict, var: str) -> bool:
         variables = record.get("variables", [])
@@ -72,7 +152,25 @@ class LemmaImpactAnalyzer:
         cube = cti.get("cube", [])
         vals = {}
 
+        # First pass: extract values from explicit literals
         for lit in cube:
+            # Check for label-based format (predicate map)
+            label = lit.get("label", "")
+            if label and self.predicate_map:
+                polarity = lit.get("polarity", True)
+                resolved = self._resolve_var_val_from_label(label, polarity)
+                vals.update(resolved)
+                continue
+
+            # Check for resolved literal (already resolved by earlier pass)
+            resolved_expr = lit.get("resolved_expr", "")
+            if resolved_expr:
+                for m in re.finditer(r'(state\d+)\s*=\s*(\d+)', resolved_expr):
+                    var, val = m.group(1), int(m.group(2))
+                    vals[var] = val
+                continue
+
+            # Standard varname/expr/value format
             vn = lit.get("varname", "")
             m = re.search(r'(state\d+)', vn)
             if not m:
@@ -86,22 +184,7 @@ class LemmaImpactAnalyzer:
             elif val.isdigit():
                 vals[var] = int(val)
 
-        # Check implication: state2002=1 => state790=1
-        has_2002 = "state2002" in vals
-        has_790 = "state790" in vals
-
-        if not has_2002 and not has_790:
-            return None  # not relevant
-        if not has_2002:
-            return None  # can't evaluate antecedent
-        if not has_790:
-            return None  # can't evaluate consequent
-
-        ante_true = vals["state2002"] == 1
-        cons_false = vals["state790"] == 0
-
-        # Lemma violated when antecedent true AND consequent false
-        return not (ante_true and cons_false)
+        return self._check_lemma_values(vals)
 
     def analyze_ctis(self, cti_path: str) -> Dict:
         ctis = self.load_jsonl(cti_path)
@@ -220,11 +303,17 @@ class LemmaImpactAnalyzer:
 
     def run(self, cti_path: Optional[str] = None,
             frame_path: Optional[str] = None,
-            obligation_path: Optional[str] = None) -> Dict:
+            obligation_path: Optional[str] = None,
+            predicates_path: Optional[str] = None) -> Dict:
 
         cti_results = {}
         frame_results = {}
         obligation_results = {}
+
+        if predicates_path and os.path.exists(predicates_path):
+            count = self.load_predicate_map(predicates_path)
+            if count > 0:
+                print(f"Loaded {count} predicate mappings")
 
         if cti_path and os.path.exists(cti_path):
             cti_results = self.analyze_ctis(cti_path)
@@ -282,6 +371,7 @@ def main():
     parser.add_argument("--ctis", default="", help="Path to CTI JSONL file")
     parser.add_argument("--frames", default="", help="Path to frame clause JSONL file")
     parser.add_argument("--obligations", default="", help="Path to obligation JSONL file")
+    parser.add_argument("--predicates", default="", help="Path to predicate map JSONL file")
     parser.add_argument("--lemma", default="(=> (= state2002 1) (= state790 1))",
                         help="Lemma to analyze")
     parser.add_argument("--out", default="logs/formal_yield/lemma_impact_proxy.json",
@@ -290,7 +380,7 @@ def main():
     args = parser.parse_args()
 
     analyzer = LemmaImpactAnalyzer(args.lemma)
-    result = analyzer.run(args.ctis, args.frames, args.obligations)
+    result = analyzer.run(args.ctis, args.frames, args.obligations, args.predicates)
 
     os.makedirs(os.path.dirname(args.out) or ".", exist_ok=True)
     with open(args.out, "w") as f:

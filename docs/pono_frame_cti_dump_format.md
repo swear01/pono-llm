@@ -85,6 +85,59 @@ Fields:
 }
 ```
 
+## Predicate Label Mapping Dump (IC3IA-specific)
+
+One JSONL line per predicate, written when predicates are added via
+`IC3IA::add_predicate()`.
+
+```json
+{
+  "type": "predicate_map",
+  "benchmark": "qspiflash_dualflexpress_divfive-p040",
+  "predicate_id": 17,
+  "label": "pred_17",
+  "raw_expr": "(= state2002 #b1)",
+  "pretty_expr": "state2002 = 1",
+  "variables": ["state2002"],
+  "state_values": {
+    "state2002": "1"
+  },
+  "polarity_note": "label is true iff raw_expr is true"
+}
+```
+
+### Resolving Frame Clause Literals via Predicate Map
+
+Frame clauses in IC3IA reference predicates by label:
+
+```json
+{
+  "type": "clause",
+  "frame": 8,
+  "literals": [
+    {"label": "pred_17", "polarity": true, "resolved_expr": "state2002 = 1"},
+    {"label": "pred_42", "polarity": false, "resolved_expr": "state790 = 1"}
+  ]
+}
+```
+
+Polarity semantics:
+- `polarity=true` → the predicate expression holds in the model
+- `polarity=false` → the predicate expression does NOT hold
+
+When `pred_42 = (state790 = 1)` and `polarity=false`, the analyzer infers
+`state790 = 0`. This inference is only valid when the predicate is a
+simple Boolean equality over a 1-bit variable.
+
+### Label Format
+
+IC3IA uses the format `assump_{hash}_{counter}` (e.g., `assump_39827134_0`).
+Labels are NOT stable across runs. The mapping is only valid within a single
+Pono execution.
+
+Exception: Boolean state variables used as precise predicates reuse their
+own symbolic names as labels (e.g., `state2002`). These ARE stable.
+
 ## Implementation Notes
 
 1. **No external JSON library needed**: follow existing `std::ostringstream` pattern.

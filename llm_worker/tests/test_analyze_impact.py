@@ -105,5 +105,64 @@ class TestImpactAnalyzer(unittest.TestCase):
         self.assertIn("state790", vars_found)
 
 
+class TestPredicateMapResolution(unittest.TestCase):
+
+    def setUp(self):
+        self.analyzer = LemmaImpactAnalyzer()
+        # Load predicate map
+        preds = [
+            {"label": "pred_1", "variables": ["state2002"], "state_values": {"state2002": "1"}},
+            {"label": "pred_2", "variables": ["state790"], "state_values": {"state790": "1"}},
+            {"label": "pred_3", "variables": ["state1536"], "state_values": {"state1536": "15"}},
+        ]
+        for p in preds:
+            self.analyzer.predicate_map[p["label"]] = p
+
+    def test_pos_pred1_neg_pred2_violates_lemma(self):
+        cti = {"cube": [
+            {"label": "pred_1", "polarity": True},
+            {"label": "pred_2", "polarity": False},
+        ]}
+        result = self.analyzer._evaluate_lemma_on_cti(cti)
+        # pred_1=true => state2002=1, pred_2=false on 1-bit => state790=0
+        self.assertFalse(result)  # lemma violated
+
+    def test_pos_pred1_pos_pred2_satisfies_lemma(self):
+        cti = {"cube": [
+            {"label": "pred_1", "polarity": True},
+            {"label": "pred_2", "polarity": True},
+        ]}
+        result = self.analyzer._evaluate_lemma_on_cti(cti)
+        self.assertTrue(result)  # lemma satisfied
+
+    def test_only_pred1_present_antecedent_known(self):
+        cti = {"cube": [
+            {"label": "pred_1", "polarity": True},
+        ]}
+        result = self.analyzer._evaluate_lemma_on_cti(cti)
+        self.assertIsNone(result)  # can't evaluate (no consequent)
+
+    def test_unknown_label_handled_gracefully(self):
+        cti = {"cube": [
+            {"label": "pred_unknown", "polarity": True},
+        ]}
+        result = self.analyzer._evaluate_lemma_on_cti(cti)
+        self.assertIsNone(result)  # unknown label
+
+    def test_negated_non_1bit_not_resolved(self):
+        cti = {"cube": [
+            {"label": "pred_3", "polarity": False},  # state1536=15 negated — 4-bit, unsafe
+        ]}
+        result = self.analyzer._evaluate_lemma_on_cti(cti)
+        self.assertIsNone(result)  # cannot resolve negated 4-bit equality
+
+    def test_resolved_expr_in_literal(self):
+        cti = {"cube": [
+            {"resolved_expr": "state2002 = 1 state790 = 0"},
+        ]}
+        result = self.analyzer._evaluate_lemma_on_cti(cti)
+        self.assertFalse(result)
+
+
 if __name__ == "__main__":
     unittest.main()
