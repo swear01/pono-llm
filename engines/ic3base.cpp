@@ -34,6 +34,9 @@
 #include "utils/exceptions.h"
 #include "utils/logger.h"
 
+#include <fstream>
+#include <cstdlib>
+
 using namespace smt;
 using namespace std;
 
@@ -1332,8 +1335,83 @@ void IC3Base::write_llm_static_context_once()
   llm_static_context_written_ = true;
 }
 
+namespace {
+
+std::string cti_json_escape(const std::string & s) {
+  std::string out;
+  out.reserve(s.size());
+  for (char c : s) {
+    switch (c) {
+      case '"': out += "\\\""; break;
+      case '\\': out += "\\\\"; break;
+      case '\n': out += "\\n"; break;
+      default: out += c;
+    }
+  }
+  return out;
+}
+
+void dump_ic3ia_cti(const CTIContext & ctx, const smt::TermVec & children) {
+  const char * env = std::getenv("PONO_LLM_DUMP_IC3IA");
+  if (!env || std::string(env) == "0" || std::string(env) == "") return;
+
+  std::string dir = std::getenv("PONO_LLM_DUMP_DIR")
+                        ? std::getenv("PONO_LLM_DUMP_DIR")
+                        : "logs/pono_frame_dump";
+
+  static int cti_counter = 0;
+  static std::ofstream cti_file;
+  static bool cti_opened = false;
+  if (!cti_opened) {
+    std::string path = dir + "/qspiflash_p040_ctis.jsonl";
+    cti_file.open(path, std::ios::out | std::ios::app);
+    cti_opened = true;
+  }
+  if (!cti_file.is_open()) return;
+
+  cti_file << "{";
+  cti_file << "\"type\":\"cti\",";
+  cti_file << "\"benchmark\":\"qspiflash_divfive-p040\",";
+  cti_file << "\"cti_id\":\"cti_" << cti_counter << "\",";
+  cti_file << "\"frame\":" << ctx.frame_idx << ",";
+
+  cti_file << "\"cube\":[";
+  for (size_t i = 0; i < ctx.literals.size(); ++i) {
+    if (i > 0) cti_file << ",";
+    cti_file << "{";
+    cti_file << "\"varname\":\"" << cti_json_escape(ctx.literals[i].varname) << "\",";
+    cti_file << "\"expr\":\"" << cti_json_escape(ctx.literals[i].expr) << "\",";
+    cti_file << "\"value\":\"" << cti_json_escape(ctx.literals[i].value) << "\",";
+    cti_file << "\"kind\":\"" << cti_json_escape(ctx.literals[i].kind) << "\"";
+    cti_file << "}";
+  }
+  cti_file << "],";
+
+  cti_file << "\"raw_smt\":\"" << cti_json_escape(ctx.literals.empty() ? "" : ctx.literals[0].expr) << "\"";
+  cti_file << "}\n";
+  cti_file.flush();
+
+  cti_counter++;
+}
+
+}  // namespace
+
 void IC3Base::capture_cti_context(size_t frame_idx, const IC3Formula & cube)
 {
+  // Build CTI context (always, for dump support even without LLM)
+  CTIContext ctx;
+  ctx.frame_idx = frame_idx;
+  std::string raw_prop = simplify_cti_literal(bad_);
+  ctx.property_name = raw_prop.size() > 200 ? raw_prop.substr(0, 197) + "..."
+                                            : raw_prop;
+  ctx.literals = collect_cti_literals(cube);
+  if (llm_gen_) {
+    ctx.cti_id = llm_gen_->make_cti_id(frame_idx, ctx.literals);
+  }
+
+  // Dump CTI for impact analysis (independent of LLM)
+  dump_ic3ia_cti(ctx, cube.children);
+
   if (!llm_gen_) return;
   if (!llm_gen_->is_async_cti() && !llm_gen_->is_offline_dump()
       && !llm_gen_->is_offline_check()) {
@@ -1341,14 +1419,6 @@ void IC3Base::capture_cti_context(size_t frame_idx, const IC3Formula & cube)
   }
 
   write_llm_static_context_once();
-
-  CTIContext ctx;
-  ctx.frame_idx = frame_idx;
-  std::string raw_prop = simplify_cti_literal(bad_);
-  ctx.property_name = raw_prop.size() > 200 ? raw_prop.substr(0, 197) + "..."
-                                            : raw_prop;
-  ctx.literals = collect_cti_literals(cube);
-  ctx.cti_id = llm_gen_->make_cti_id(frame_idx, ctx.literals);
 
   // Store the cube children + simplified names for later candidate pairing
   std::vector<std::string> names;

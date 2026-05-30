@@ -152,7 +152,6 @@ class LemmaImpactAnalyzer:
         cube = cti.get("cube", [])
         vals = {}
 
-        # First pass: extract values from explicit literals
         for lit in cube:
             # Check for label-based format (predicate map)
             label = lit.get("label", "")
@@ -162,27 +161,23 @@ class LemmaImpactAnalyzer:
                 vals.update(resolved)
                 continue
 
-            # Check for resolved literal (already resolved by earlier pass)
-            resolved_expr = lit.get("resolved_expr", "")
-            if resolved_expr:
-                for m in re.finditer(r'(state\d+)\s*=\s*(\d+)', resolved_expr):
-                    var, val = m.group(1), int(m.group(2))
-                    vals[var] = val
-                continue
-
-            # Standard varname/expr/value format
             vn = lit.get("varname", "")
-            m = re.search(r'(state\d+)', vn)
-            if not m:
-                continue
-            var = m.group(1)
             val = lit.get("value", "")
-            if val in ("true", "1"):
-                vals[var] = 1
-            elif val in ("false", "0"):
-                vals[var] = 0
-            elif val.isdigit():
-                vals[var] = int(val)
+
+            # Parse variable name and value from the varname expression
+            # IC3IA CTI literals have varname like "state2002 = #b1" or "(= state2002 #b1)"
+            mv = re.search(r'(state\d+)\s*=\s*(?:#b)?(\d+)', vn)
+            if mv:
+                var = mv.group(1)
+                expr_val = int(mv.group(2))
+                if val in ("true", "1"):
+                    vals[var] = expr_val  # predicate holds → var = expr_val
+                elif val in ("false", "0"):
+                    bw = self._get_var_bw(var)
+                    if bw == 1:
+                        vals[var] = 1 - expr_val  # negated 1-bit equality → complement
+                    else:
+                        vals[var] = expr_val ^ 1  # conservative
 
         return self._check_lemma_values(vals)
 

@@ -30,16 +30,16 @@ class TestImpactAnalyzer(unittest.TestCase):
 
     def test_cti_violates_lemma(self):
         ctis = [{"frame": 5, "cube": [
-            {"varname": "state2002", "value": "1"},
-            {"varname": "state790", "value": "0"}]}]
+            {"varname": "state2002 = #b1", "value": "true"},
+            {"varname": "state790 = #b0", "value": "true"}]}]
         path, _ = self._write_fixtures(ctis, [])
         result = self.analyzer.analyze_ctis(path)
         self.assertEqual(result["ctis_violating_lemma"], 1)
 
     def test_cti_satisfies_lemma(self):
         ctis = [{"frame": 5, "cube": [
-            {"varname": "state2002", "value": "1"},
-            {"varname": "state790", "value": "1"}]}]
+            {"varname": "state2002 = #b1", "value": "true"},
+            {"varname": "state790 = #b1", "value": "true"}]}]
         path, _ = self._write_fixtures(ctis, [])
         result = self.analyzer.analyze_ctis(path)
         self.assertEqual(result["ctis_satisfying_lemma"], 1)
@@ -55,10 +55,10 @@ class TestImpactAnalyzer(unittest.TestCase):
 
     def test_cti_antecedent_true(self):
         ctis = [{"frame": 5, "cube": [
-            {"varname": "state2002", "value": "1"}]},
+            {"varname": "state2002 = #b1", "value": "true"}]},
             {"frame": 8, "cube": [
-                {"varname": "state2002", "value": "1"},
-                {"varname": "state790", "value": "1"}]}]
+                {"varname": "state2002 = #b1", "value": "true"},
+                {"varname": "state790 = #b1", "value": "true"}]}]
         path, _ = self._write_fixtures(ctis, [])
         result = self.analyzer.analyze_ctis(path)
         self.assertEqual(result["ctis_antecedent_true"], 2)
