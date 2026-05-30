@@ -1,0 +1,946 @@
+[
+  {
+    "type": "predicate_map",
+    "benchmark": "qspiflash_divfive-p040",
+    "predicate_id": 1,
+    "term_hash": 4941,
+    "label": "assump_14_0",
+    "raw_expr": "(= state15 #b0)",
+    "variables": [
+      "state15"
+    ],
+    "state_values": {
+      "state15": "0"
+    }
+  },
+  {
+    "type": "predicate_map",
+    "benchmark": "qspiflash_divfive-p040",
+    "predicate_id": 91,
+    "term_hash": 6107,
+    "label": "assump_1631_0",
+    "raw_expr": "(= state1521 #b0)",
+    "variables": [
+      "state1521"
+    ],
+    "state_values": {
+      "state1521": "0"
+    }
+  },
+  {
+    "type": "predicate_map",
+    "benchmark": "qspiflash_divfive-p040",
+    "predicate_id": 98,
+    "term_hash": 6198,
+    "label": "assump_2067_0",
+    "raw_expr": "(let ((_let0 (ite (not (distinct state1536 #b00)) (bvnot (bvxor ((_ extract 0 0) state1797) ((_ extract 32 32) state1820))) #b1))) (= (bvor _let0 (bvnot (bvnot _let0))) #b1))",
+    "variables": [
+      "state1536",
+      "state1797",
+      "state1820"
+    ],
+    "state_values": {
+      "state1536": "00",
+      "state1797": "1",
+      "state1820": "1"
+    }
+  },
+  {
+    "type": "predicate_map",
+    "benchmark": "qspiflash_divfive-p040",
+    "predicate_id": 143,
+    "term_hash": 6761,
+    "label": "assump_2022_0",
+    "raw_expr": "(let ((_let0 (ite (= (ite (not (distinct state1536 #b00)) #b0 (bvcomp state1536 #b10)) #b1) (bvcomp state1797 ((_ extract 33 32) state1820)) #b1))) (= (bvor _let0 (bvnot (bvnot _let0))) #b1))",
+    "variables": [
+      "state1536",
+      "state1536",
+      "state1797",
+      "state1820"
+    ],
+    "state_values": {
+      "state1536": "10",
+      "state1797": "1",
+      "state1820": "1"
+    }
+  },
+  {
+    "type": "predicate_map",
+    "benchmark": "qspiflash_divfive-p040",
+    "predicate_id": 144,
+    "term_hash": 6772,
+    "label": "assump_1641_0",
+    "raw_expr": "(= state1528 #b0)",
+    "variables": [
+      "state1528"
+    ],
+    "state_values": {
+      "state1528": "0"
+    }
+  },
+  {
+    "type": "predicate_map",
+    "benchmark": "qspiflash_divfive-p040",
+    "predicate_id": 163,
+    "term_hash": 7009,
+    "label": "assump_1986_0",
+    "raw_expr": "(let ((_let0 (bvxnor state1797 state1803))) (let ((_let1 (ite (= (ite (not (distinct state1536 #b00)) #b0 (ite (= (bvcomp state1536 #b10) #b1) #b0 (bvor state81 (bvnot state1809)))) #b1) (bvcomp (concat ((_ extract 0 0) _let0) ((_ extract 1 1) _let0)) #b11) #b1))) (= (bvor _let1 (bvnot (bvnot _let1))) #b1)))",
+    "variables": [
+      "state1797",
+      "state1803",
+      "state1536",
+      "state1536",
+      "state81",
+      "state1809"
+    ],
+    "state_values": {
+      "state1797": "00",
+      "state1803": "00",
+      "state1536": "10",
+      "state81": "1",
+      "state1809": "1"
+    }
+  },
+  {
+    "type": "predicate_map",
+    "benchmark": "qspiflash_divfive-p040",
+    "predicate_id": 165,
+    "term_hash": 7033,
+    "label": "assump_2045_0",
+    "raw_expr": "(let ((_let0 (ite (= (bvand (ite (not (distinct state1536 #b00)) #b1 #b0) (bvor state81 (bvnot state1809))) #b1) (bvxnor ((_ extract 1 1) state1797) state1831) #b1))) (= (bvor _let0 (bvnot (bvnot _let0))) #b1))",
+    "variables": [
+      "state1536",
+      "state81",
+      "state1809",
+      "state1797",
+      "state1831"
+    ],
+    "state_values": {
+      "state1536": "00",
+      "state81": "1",
+      "state1809": "1",
+      "state1797": "1",
+      "state1831": "1"
+    }
+  },
+  {
+    "type": "predicate_map",
+    "benchmark": "qspiflash_divfive-p040",
+    "predicate_id": 191,
+    "term_hash": 7367,
+    "label": "assump_1705_0",
+    "raw_expr": "(= state1587 #b0)",
+    "variables": [
+      "state1587"
+    ],
+    "state_values": {
+      "state1587": "0"
+    }
+  },
+  {
+    "type": "predicate_map",
+    "benchmark": "qspiflash_divfive-p040",
+    "predicate_id": 196,
+    "term_hash": 7432,
+    "label": "assump_1651_0",
+    "raw_expr": "(= state1536 #b00)",
+    "variables": [
+      "state1536"
+    ],
+    "state_values": {
+      "state1536": "00"
+    }
+  },
+  {
+    "type": "predicate_map",
+    "benchmark": "qspiflash_divfive-p040",
+    "predicate_id": 197,
+    "term_hash": 7445,
+    "label": "assump_1645_0",
+    "raw_expr": "(= state1530 #b0)",
+    "variables": [
+      "state1530"
+    ],
+    "state_values": {
+      "state1530": "0"
+    }
+  },
+  {
+    "type": "predicate_map",
+    "benchmark": "qspiflash_divfive-p040",
+    "predicate_id": 198,
+    "term_hash": 7458,
+    "label": "assump_1635_0",
+    "raw_expr": "(= state1523 #b0)",
+    "variables": [
+      "state1523"
+    ],
+    "state_values": {
+      "state1523": "0"
+    }
+  },
+  {
+    "type": "predicate_map",
+    "benchmark": "qspiflash_divfive-p040",
+    "predicate_id": 200,
+    "term_hash": 7484,
+    "label": "assump_1617_0",
+    "raw_expr": "(= state1506 #b0)",
+    "variables": [
+      "state1506"
+    ],
+    "state_values": {
+      "state1506": "0"
+    }
+  },
+  {
+    "type": "predicate_map",
+    "benchmark": "qspiflash_divfive-p040",
+    "predicate_id": 201,
+    "term_hash": 7497,
+    "label": "assump_1611_0",
+    "raw_expr": "(= state1501 #b0)",
+    "variables": [
+      "state1501"
+    ],
+    "state_values": {
+      "state1501": "0"
+    }
+  },
+  {
+    "type": "predicate_map",
+    "benchmark": "qspiflash_divfive-p040",
+    "predicate_id": 228,
+    "term_hash": 7844,
+    "label": "assump_1678_0",
+    "raw_expr": "(= state1560 #b0)",
+    "variables": [
+      "state1560"
+    ],
+    "state_values": {
+      "state1560": "0"
+    }
+  },
+  {
+    "type": "predicate_map",
+    "benchmark": "qspiflash_divfive-p040",
+    "predicate_id": 231,
+    "term_hash": 7883,
+    "label": "assump_1674_0",
+    "raw_expr": "(= state1558 #b0)",
+    "variables": [
+      "state1558"
+    ],
+    "state_values": {
+      "state1558": "0"
+    }
+  },
+  {
+    "type": "predicate_map",
+    "benchmark": "qspiflash_divfive-p040",
+    "predicate_id": 1,
+    "term_hash": 4941,
+    "label": "assump_14_0",
+    "raw_expr": "(= state15 #b0)",
+    "variables": [
+      "state15"
+    ],
+    "state_values": {
+      "state15": "0"
+    }
+  },
+  {
+    "type": "predicate_map",
+    "benchmark": "qspiflash_divfive-p040",
+    "predicate_id": 91,
+    "term_hash": 6107,
+    "label": "assump_1631_0",
+    "raw_expr": "(= state1521 #b0)",
+    "variables": [
+      "state1521"
+    ],
+    "state_values": {
+      "state1521": "0"
+    }
+  },
+  {
+    "type": "predicate_map",
+    "benchmark": "qspiflash_divfive-p040",
+    "predicate_id": 98,
+    "term_hash": 6198,
+    "label": "assump_2067_0",
+    "raw_expr": "(let ((_let0 (ite (not (distinct state1536 #b00)) (bvnot (bvxor ((_ extract 0 0) state1797) ((_ extract 32 32) state1820))) #b1))) (= (bvor _let0 (bvnot (bvnot _let0))) #b1))",
+    "variables": [
+      "state1536",
+      "state1797",
+      "state1820"
+    ],
+    "state_values": {
+      "state1536": "00",
+      "state1797": "1",
+      "state1820": "1"
+    }
+  },
+  {
+    "type": "predicate_map",
+    "benchmark": "qspiflash_divfive-p040",
+    "predicate_id": 143,
+    "term_hash": 6761,
+    "label": "assump_2022_0",
+    "raw_expr": "(let ((_let0 (ite (= (ite (not (distinct state1536 #b00)) #b0 (bvcomp state1536 #b10)) #b1) (bvcomp state1797 ((_ extract 33 32) state1820)) #b1))) (= (bvor _let0 (bvnot (bvnot _let0))) #b1))",
+    "variables": [
+      "state1536",
+      "state1536",
+      "state1797",
+      "state1820"
+    ],
+    "state_values": {
+      "state1536": "10",
+      "state1797": "1",
+      "state1820": "1"
+    }
+  },
+  {
+    "type": "predicate_map",
+    "benchmark": "qspiflash_divfive-p040",
+    "predicate_id": 144,
+    "term_hash": 6772,
+    "label": "assump_1641_0",
+    "raw_expr": "(= state1528 #b0)",
+    "variables": [
+      "state1528"
+    ],
+    "state_values": {
+      "state1528": "0"
+    }
+  },
+  {
+    "type": "predicate_map",
+    "benchmark": "qspiflash_divfive-p040",
+    "predicate_id": 163,
+    "term_hash": 7009,
+    "label": "assump_1986_0",
+    "raw_expr": "(let ((_let0 (bvxnor state1797 state1803))) (let ((_let1 (ite (= (ite (not (distinct state1536 #b00)) #b0 (ite (= (bvcomp state1536 #b10) #b1) #b0 (bvor state81 (bvnot state1809)))) #b1) (bvcomp (concat ((_ extract 0 0) _let0) ((_ extract 1 1) _let0)) #b11) #b1))) (= (bvor _let1 (bvnot (bvnot _let1))) #b1)))",
+    "variables": [
+      "state1797",
+      "state1803",
+      "state1536",
+      "state1536",
+      "state81",
+      "state1809"
+    ],
+    "state_values": {
+      "state1797": "00",
+      "state1803": "00",
+      "state1536": "10",
+      "state81": "1",
+      "state1809": "1"
+    }
+  },
+  {
+    "type": "predicate_map",
+    "benchmark": "qspiflash_divfive-p040",
+    "predicate_id": 165,
+    "term_hash": 7033,
+    "label": "assump_2045_0",
+    "raw_expr": "(let ((_let0 (ite (= (bvand (ite (not (distinct state1536 #b00)) #b1 #b0) (bvor state81 (bvnot state1809))) #b1) (bvxnor ((_ extract 1 1) state1797) state1831) #b1))) (= (bvor _let0 (bvnot (bvnot _let0))) #b1))",
+    "variables": [
+      "state1536",
+      "state81",
+      "state1809",
+      "state1797",
+      "state1831"
+    ],
+    "state_values": {
+      "state1536": "00",
+      "state81": "1",
+      "state1809": "1",
+      "state1797": "1",
+      "state1831": "1"
+    }
+  },
+  {
+    "type": "predicate_map",
+    "benchmark": "qspiflash_divfive-p040",
+    "predicate_id": 191,
+    "term_hash": 7367,
+    "label": "assump_1705_0",
+    "raw_expr": "(= state1587 #b0)",
+    "variables": [
+      "state1587"
+    ],
+    "state_values": {
+      "state1587": "0"
+    }
+  },
+  {
+    "type": "predicate_map",
+    "benchmark": "qspiflash_divfive-p040",
+    "predicate_id": 196,
+    "term_hash": 7432,
+    "label": "assump_1651_0",
+    "raw_expr": "(= state1536 #b00)",
+    "variables": [
+      "state1536"
+    ],
+    "state_values": {
+      "state1536": "00"
+    }
+  },
+  {
+    "type": "predicate_map",
+    "benchmark": "qspiflash_divfive-p040",
+    "predicate_id": 197,
+    "term_hash": 7445,
+    "label": "assump_1645_0",
+    "raw_expr": "(= state1530 #b0)",
+    "variables": [
+      "state1530"
+    ],
+    "state_values": {
+      "state1530": "0"
+    }
+  },
+  {
+    "type": "predicate_map",
+    "benchmark": "qspiflash_divfive-p040",
+    "predicate_id": 198,
+    "term_hash": 7458,
+    "label": "assump_1635_0",
+    "raw_expr": "(= state1523 #b0)",
+    "variables": [
+      "state1523"
+    ],
+    "state_values": {
+      "state1523": "0"
+    }
+  },
+  {
+    "type": "predicate_map",
+    "benchmark": "qspiflash_divfive-p040",
+    "predicate_id": 200,
+    "term_hash": 7484,
+    "label": "assump_1617_0",
+    "raw_expr": "(= state1506 #b0)",
+    "variables": [
+      "state1506"
+    ],
+    "state_values": {
+      "state1506": "0"
+    }
+  },
+  {
+    "type": "predicate_map",
+    "benchmark": "qspiflash_divfive-p040",
+    "predicate_id": 201,
+    "term_hash": 7497,
+    "label": "assump_1611_0",
+    "raw_expr": "(= state1501 #b0)",
+    "variables": [
+      "state1501"
+    ],
+    "state_values": {
+      "state1501": "0"
+    }
+  },
+  {
+    "type": "predicate_map",
+    "benchmark": "qspiflash_divfive-p040",
+    "predicate_id": 228,
+    "term_hash": 7844,
+    "label": "assump_1678_0",
+    "raw_expr": "(= state1560 #b0)",
+    "variables": [
+      "state1560"
+    ],
+    "state_values": {
+      "state1560": "0"
+    }
+  },
+  {
+    "type": "predicate_map",
+    "benchmark": "qspiflash_divfive-p040",
+    "predicate_id": 231,
+    "term_hash": 7883,
+    "label": "assump_1674_0",
+    "raw_expr": "(= state1558 #b0)",
+    "variables": [
+      "state1558"
+    ],
+    "state_values": {
+      "state1558": "0"
+    }
+  },
+  {
+    "type": "predicate_map",
+    "benchmark": "qspiflash_divfive-p040",
+    "predicate_id": 1,
+    "term_hash": 4941,
+    "label": "assump_14_0",
+    "raw_expr": "(= state15 #b0)",
+    "variables": [
+      "state15"
+    ],
+    "state_values": {
+      "state15": "0"
+    }
+  },
+  {
+    "type": "predicate_map",
+    "benchmark": "qspiflash_divfive-p040",
+    "predicate_id": 91,
+    "term_hash": 6107,
+    "label": "assump_1631_0",
+    "raw_expr": "(= state1521 #b0)",
+    "variables": [
+      "state1521"
+    ],
+    "state_values": {
+      "state1521": "0"
+    }
+  },
+  {
+    "type": "predicate_map",
+    "benchmark": "qspiflash_divfive-p040",
+    "predicate_id": 98,
+    "term_hash": 6198,
+    "label": "assump_2067_0",
+    "raw_expr": "(let ((_let0 (ite (not (distinct state1536 #b00)) (bvnot (bvxor ((_ extract 0 0) state1797) ((_ extract 32 32) state1820))) #b1))) (= (bvor _let0 (bvnot (bvnot _let0))) #b1))",
+    "variables": [
+      "state1536",
+      "state1797",
+      "state1820"
+    ],
+    "state_values": {
+      "state1536": "00",
+      "state1797": "1",
+      "state1820": "1"
+    }
+  },
+  {
+    "type": "predicate_map",
+    "benchmark": "qspiflash_divfive-p040",
+    "predicate_id": 143,
+    "term_hash": 6761,
+    "label": "assump_2022_0",
+    "raw_expr": "(let ((_let0 (ite (= (ite (not (distinct state1536 #b00)) #b0 (bvcomp state1536 #b10)) #b1) (bvcomp state1797 ((_ extract 33 32) state1820)) #b1))) (= (bvor _let0 (bvnot (bvnot _let0))) #b1))",
+    "variables": [
+      "state1536",
+      "state1536",
+      "state1797",
+      "state1820"
+    ],
+    "state_values": {
+      "state1536": "10",
+      "state1797": "1",
+      "state1820": "1"
+    }
+  },
+  {
+    "type": "predicate_map",
+    "benchmark": "qspiflash_divfive-p040",
+    "predicate_id": 144,
+    "term_hash": 6772,
+    "label": "assump_1641_0",
+    "raw_expr": "(= state1528 #b0)",
+    "variables": [
+      "state1528"
+    ],
+    "state_values": {
+      "state1528": "0"
+    }
+  },
+  {
+    "type": "predicate_map",
+    "benchmark": "qspiflash_divfive-p040",
+    "predicate_id": 163,
+    "term_hash": 7009,
+    "label": "assump_1986_0",
+    "raw_expr": "(let ((_let0 (bvxnor state1797 state1803))) (let ((_let1 (ite (= (ite (not (distinct state1536 #b00)) #b0 (ite (= (bvcomp state1536 #b10) #b1) #b0 (bvor state81 (bvnot state1809)))) #b1) (bvcomp (concat ((_ extract 0 0) _let0) ((_ extract 1 1) _let0)) #b11) #b1))) (= (bvor _let1 (bvnot (bvnot _let1))) #b1)))",
+    "variables": [
+      "state1797",
+      "state1803",
+      "state1536",
+      "state1536",
+      "state81",
+      "state1809"
+    ],
+    "state_values": {
+      "state1797": "00",
+      "state1803": "00",
+      "state1536": "10",
+      "state81": "1",
+      "state1809": "1"
+    }
+  },
+  {
+    "type": "predicate_map",
+    "benchmark": "qspiflash_divfive-p040",
+    "predicate_id": 165,
+    "term_hash": 7033,
+    "label": "assump_2045_0",
+    "raw_expr": "(let ((_let0 (ite (= (bvand (ite (not (distinct state1536 #b00)) #b1 #b0) (bvor state81 (bvnot state1809))) #b1) (bvxnor ((_ extract 1 1) state1797) state1831) #b1))) (= (bvor _let0 (bvnot (bvnot _let0))) #b1))",
+    "variables": [
+      "state1536",
+      "state81",
+      "state1809",
+      "state1797",
+      "state1831"
+    ],
+    "state_values": {
+      "state1536": "00",
+      "state81": "1",
+      "state1809": "1",
+      "state1797": "1",
+      "state1831": "1"
+    }
+  },
+  {
+    "type": "predicate_map",
+    "benchmark": "qspiflash_divfive-p040",
+    "predicate_id": 191,
+    "term_hash": 7367,
+    "label": "assump_1705_0",
+    "raw_expr": "(= state1587 #b0)",
+    "variables": [
+      "state1587"
+    ],
+    "state_values": {
+      "state1587": "0"
+    }
+  },
+  {
+    "type": "predicate_map",
+    "benchmark": "qspiflash_divfive-p040",
+    "predicate_id": 196,
+    "term_hash": 7432,
+    "label": "assump_1651_0",
+    "raw_expr": "(= state1536 #b00)",
+    "variables": [
+      "state1536"
+    ],
+    "state_values": {
+      "state1536": "00"
+    }
+  },
+  {
+    "type": "predicate_map",
+    "benchmark": "qspiflash_divfive-p040",
+    "predicate_id": 197,
+    "term_hash": 7445,
+    "label": "assump_1645_0",
+    "raw_expr": "(= state1530 #b0)",
+    "variables": [
+      "state1530"
+    ],
+    "state_values": {
+      "state1530": "0"
+    }
+  },
+  {
+    "type": "predicate_map",
+    "benchmark": "qspiflash_divfive-p040",
+    "predicate_id": 198,
+    "term_hash": 7458,
+    "label": "assump_1635_0",
+    "raw_expr": "(= state1523 #b0)",
+    "variables": [
+      "state1523"
+    ],
+    "state_values": {
+      "state1523": "0"
+    }
+  },
+  {
+    "type": "predicate_map",
+    "benchmark": "qspiflash_divfive-p040",
+    "predicate_id": 200,
+    "term_hash": 7484,
+    "label": "assump_1617_0",
+    "raw_expr": "(= state1506 #b0)",
+    "variables": [
+      "state1506"
+    ],
+    "state_values": {
+      "state1506": "0"
+    }
+  },
+  {
+    "type": "predicate_map",
+    "benchmark": "qspiflash_divfive-p040",
+    "predicate_id": 201,
+    "term_hash": 7497,
+    "label": "assump_1611_0",
+    "raw_expr": "(= state1501 #b0)",
+    "variables": [
+      "state1501"
+    ],
+    "state_values": {
+      "state1501": "0"
+    }
+  },
+  {
+    "type": "predicate_map",
+    "benchmark": "qspiflash_divfive-p040",
+    "predicate_id": 228,
+    "term_hash": 7844,
+    "label": "assump_1678_0",
+    "raw_expr": "(= state1560 #b0)",
+    "variables": [
+      "state1560"
+    ],
+    "state_values": {
+      "state1560": "0"
+    }
+  },
+  {
+    "type": "predicate_map",
+    "benchmark": "qspiflash_divfive-p040",
+    "predicate_id": 231,
+    "term_hash": 7883,
+    "label": "assump_1674_0",
+    "raw_expr": "(= state1558 #b0)",
+    "variables": [
+      "state1558"
+    ],
+    "state_values": {
+      "state1558": "0"
+    }
+  },
+  {
+    "type": "predicate_map",
+    "benchmark": "qspiflash_divfive-p040",
+    "predicate_id": 1,
+    "term_hash": 4941,
+    "label": "assump_14_0",
+    "raw_expr": "(= state15 #b0)",
+    "variables": [
+      "state15"
+    ],
+    "state_values": {
+      "state15": "0"
+    }
+  },
+  {
+    "type": "predicate_map",
+    "benchmark": "qspiflash_divfive-p040",
+    "predicate_id": 91,
+    "term_hash": 6107,
+    "label": "assump_1631_0",
+    "raw_expr": "(= state1521 #b0)",
+    "variables": [
+      "state1521"
+    ],
+    "state_values": {
+      "state1521": "0"
+    }
+  },
+  {
+    "type": "predicate_map",
+    "benchmark": "qspiflash_divfive-p040",
+    "predicate_id": 98,
+    "term_hash": 6198,
+    "label": "assump_2067_0",
+    "raw_expr": "(let ((_let0 (ite (not (distinct state1536 #b00)) (bvnot (bvxor ((_ extract 0 0) state1797) ((_ extract 32 32) state1820))) #b1))) (= (bvor _let0 (bvnot (bvnot _let0))) #b1))",
+    "variables": [
+      "state1536",
+      "state1797",
+      "state1820"
+    ],
+    "state_values": {
+      "state1536": "00",
+      "state1797": "1",
+      "state1820": "1"
+    }
+  },
+  {
+    "type": "predicate_map",
+    "benchmark": "qspiflash_divfive-p040",
+    "predicate_id": 143,
+    "term_hash": 6761,
+    "label": "assump_2022_0",
+    "raw_expr": "(let ((_let0 (ite (= (ite (not (distinct state1536 #b00)) #b0 (bvcomp state1536 #b10)) #b1) (bvcomp state1797 ((_ extract 33 32) state1820)) #b1))) (= (bvor _let0 (bvnot (bvnot _let0))) #b1))",
+    "variables": [
+      "state1536",
+      "state1536",
+      "state1797",
+      "state1820"
+    ],
+    "state_values": {
+      "state1536": "10",
+      "state1797": "1",
+      "state1820": "1"
+    }
+  },
+  {
+    "type": "predicate_map",
+    "benchmark": "qspiflash_divfive-p040",
+    "predicate_id": 144,
+    "term_hash": 6772,
+    "label": "assump_1641_0",
+    "raw_expr": "(= state1528 #b0)",
+    "variables": [
+      "state1528"
+    ],
+    "state_values": {
+      "state1528": "0"
+    }
+  },
+  {
+    "type": "predicate_map",
+    "benchmark": "qspiflash_divfive-p040",
+    "predicate_id": 163,
+    "term_hash": 7009,
+    "label": "assump_1986_0",
+    "raw_expr": "(let ((_let0 (bvxnor state1797 state1803))) (let ((_let1 (ite (= (ite (not (distinct state1536 #b00)) #b0 (ite (= (bvcomp state1536 #b10) #b1) #b0 (bvor state81 (bvnot state1809)))) #b1) (bvcomp (concat ((_ extract 0 0) _let0) ((_ extract 1 1) _let0)) #b11) #b1))) (= (bvor _let1 (bvnot (bvnot _let1))) #b1)))",
+    "variables": [
+      "state1797",
+      "state1803",
+      "state1536",
+      "state1536",
+      "state81",
+      "state1809"
+    ],
+    "state_values": {
+      "state1797": "00",
+      "state1803": "00",
+      "state1536": "10",
+      "state81": "1",
+      "state1809": "1"
+    }
+  },
+  {
+    "type": "predicate_map",
+    "benchmark": "qspiflash_divfive-p040",
+    "predicate_id": 165,
+    "term_hash": 7033,
+    "label": "assump_2045_0",
+    "raw_expr": "(let ((_let0 (ite (= (bvand (ite (not (distinct state1536 #b00)) #b1 #b0) (bvor state81 (bvnot state1809))) #b1) (bvxnor ((_ extract 1 1) state1797) state1831) #b1))) (= (bvor _let0 (bvnot (bvnot _let0))) #b1))",
+    "variables": [
+      "state1536",
+      "state81",
+      "state1809",
+      "state1797",
+      "state1831"
+    ],
+    "state_values": {
+      "state1536": "00",
+      "state81": "1",
+      "state1809": "1",
+      "state1797": "1",
+      "state1831": "1"
+    }
+  },
+  {
+    "type": "predicate_map",
+    "benchmark": "qspiflash_divfive-p040",
+    "predicate_id": 191,
+    "term_hash": 7367,
+    "label": "assump_1705_0",
+    "raw_expr": "(= state1587 #b0)",
+    "variables": [
+      "state1587"
+    ],
+    "state_values": {
+      "state1587": "0"
+    }
+  },
+  {
+    "type": "predicate_map",
+    "benchmark": "qspiflash_divfive-p040",
+    "predicate_id": 196,
+    "term_hash": 7432,
+    "label": "assump_1651_0",
+    "raw_expr": "(= state1536 #b00)",
+    "variables": [
+      "state1536"
+    ],
+    "state_values": {
+      "state1536": "00"
+    }
+  },
+  {
+    "type": "predicate_map",
+    "benchmark": "qspiflash_divfive-p040",
+    "predicate_id": 197,
+    "term_hash": 7445,
+    "label": "assump_1645_0",
+    "raw_expr": "(= state1530 #b0)",
+    "variables": [
+      "state1530"
+    ],
+    "state_values": {
+      "state1530": "0"
+    }
+  },
+  {
+    "type": "predicate_map",
+    "benchmark": "qspiflash_divfive-p040",
+    "predicate_id": 198,
+    "term_hash": 7458,
+    "label": "assump_1635_0",
+    "raw_expr": "(= state1523 #b0)",
+    "variables": [
+      "state1523"
+    ],
+    "state_values": {
+      "state1523": "0"
+    }
+  },
+  {
+    "type": "predicate_map",
+    "benchmark": "qspiflash_divfive-p040",
+    "predicate_id": 200,
+    "term_hash": 7484,
+    "label": "assump_1617_0",
+    "raw_expr": "(= state1506 #b0)",
+    "variables": [
+      "state1506"
+    ],
+    "state_values": {
+      "state1506": "0"
+    }
+  },
+  {
+    "type": "predicate_map",
+    "benchmark": "qspiflash_divfive-p040",
+    "predicate_id": 201,
+    "term_hash": 7497,
+    "label": "assump_1611_0",
+    "raw_expr": "(= state1501 #b0)",
+    "variables": [
+      "state1501"
+    ],
+    "state_values": {
+      "state1501": "0"
+    }
+  },
+  {
+    "type": "predicate_map",
+    "benchmark": "qspiflash_divfive-p040",
+    "predicate_id": 228,
+    "term_hash": 7844,
+    "label": "assump_1678_0",
+    "raw_expr": "(= state1560 #b0)",
+    "variables": [
+      "state1560"
+    ],
+    "state_values": {
+      "state1560": "0"
+    }
+  },
+  {
+    "type": "predicate_map",
+    "benchmark": "qspiflash_divfive-p040",
+    "predicate_id": 231,
+    "term_hash": 7883,
+    "label": "assump_1674_0",
+    "raw_expr": "(= state1558 #b0)",
+    "variables": [
+      "state1558"
+    ],
+    "state_values": {
+      "state1558": "0"
+    }
+  }
+]

@@ -402,6 +402,13 @@ def lemma_to_smt(lemma: str, vars_dict: Dict[str, bz.Term],
         if a is None or b is None: return None
         return tm.mk_term(bz.Kind.EQUAL, [a, b])
 
+    # Standalone: (= stateX V)  → equality with constant
+    m = re.match(r'\(\s*=\s*(state\d+)\s+(.+?)\s*\)', lemma_clean)
+    if m:
+        eq = _mk_eq(m.group(1), m.group(2).strip())
+        if eq is None: return None
+        return eq
+
     # Standalone: (<= stateX V)  → upper bound
     m = re.match(r'\(\s*<=\s*(state\d+)\s+(\d+)\s*\)', lemma_clean)
     if m:
@@ -421,9 +428,9 @@ def lemma_to_smt(lemma: str, vars_dict: Dict[str, bz.Term],
         return tm.mk_term(bz.Kind.BV_UGE, [var, bv_val])
 
     # Standalone: (not (= stateX V))  → disequality
-    m = re.match(r'\(\s*not\s*\(\s*=\s*(state\d+)\s+(\d+)\s*\)\s*\)', lemma_clean)
+    m = re.match(r'\(\s*not\s*\(\s*=\s*(state\d+)\s+(.+?)\s*\)\s*\)', lemma_clean)
     if m:
-        eq = _mk_eq(m.group(1), m.group(2))
+        eq = _mk_eq(m.group(1), m.group(2).strip())
         if eq is None: return None
         return tm.mk_term(bz.Kind.NOT, [eq])
 

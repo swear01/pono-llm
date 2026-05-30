@@ -1,0 +1,38 @@
+[
+  {
+    "schema": "single_value_exclusion",
+    "candidate_form": "(= state15 #b0)",
+    "target_clause_family": "all state15 clauses",
+    "expected_impact": "high",
+    "risk": "overstrong",
+    "needs_llm": false,
+    "rationale": "All frame clause literals involve state15=0. state15=0 as an invariant would explain all clauses."
+  },
+  {
+    "schema": "mode_exclusion",
+    "candidate_form": "(not (= state15 #b1))",
+    "target_clause_family": "all 391 state15 clauses",
+    "expected_impact": "high",
+    "risk": "overstrong",
+    "needs_llm": false,
+    "rationale": "CTIs show state15 \u2208 ['0', '1']. state15=1 is CTI-dominant (22534x). If state15=1 is BAD, lemma NOT(state15=1) could compress all clauses referencing it."
+  },
+  {
+    "schema": "clause_family_compression",
+    "candidate_form": "(= state15 #b0)",
+    "target_clause_family": "230+ clauses with NOT(state15=0)",
+    "expected_impact": "high",
+    "risk": "overstrong",
+    "needs_llm": false,
+    "rationale": "state15=0 as invariant would trivially satisfy all clauses containing NOT(state15=0). Must verify init/one-step/induction."
+  },
+  {
+    "schema": "guarded_exclusion",
+    "candidate_form": "(=> (= state785 #b0) (= state15 #b0))",
+    "target_clause_family": "clauses with state785",
+    "expected_impact": "medium",
+    "risk": "overstrong",
+    "needs_llm": true,
+    "rationale": "state785 is the most common satellite (26x). A guarded relation may generalize clause patterns."
+  }
+]

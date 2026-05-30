@@ -1,0 +1,50 @@
+{
+  "frame_values": {
+    "0": 391
+  },
+  "frame_polarity": {
+    "false": 77,
+    "true": 314
+  },
+  "cti_values": {
+    "0": 7076,
+    "1": 22534
+  },
+  "examples": [
+    {
+      "frame": 2,
+      "raw": "(not (= state15 #b0))",
+      "state15_val": "0",
+      "polarity": false,
+      "clause_raw": "(or (or (not (= state15 #b0)) (not (= state17 #b0))) (= state552 #b0))"
+    },
+    {
+      "frame": 2,
+      "raw": "(= state15 #b0)",
+      "state15_val": "0",
+      "polarity": true,
+      "clause_raw": "(or (or (not (= state367 #b0)) (not (= state369 #b0))) (= state15 #b0))"
+    },
+    {
+      "frame": 2,
+      "raw": "(= state15 #b0)",
+      "state15_val": "0",
+      "polarity": true,
+      "clause_raw": "(or (or (not (= state374 #b0)) (not (= state376 #b0))) (= state15 #b0))"
+    },
+    {
+      "frame": 2,
+      "raw": "(= state15 #b0)",
+      "state15_val": "0",
+      "polarity": true,
+      "clause_raw": "(or (or (not (= state455 #b0)) (not (= state457 #b0))) (= state15 #b0))"
+    },
+    {
+      "frame": 2,
+      "raw": "(not (= state15 #b0))",
+      "state15_val": "0",
+      "polarity": false,
+      "clause_raw": "(or (not (= state15 #b0)) (= state645 #b0))"
+    }
+  ]
+}
