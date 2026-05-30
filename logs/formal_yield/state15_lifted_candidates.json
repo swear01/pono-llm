@@ -1,0 +1,390 @@
+[
+  {
+    "lemma": "(=> (and (= state15 #0) (= state17 #0)) (= state552 #0))",
+    "source_clause": "(or (or (not (= state15 #b0)) (not (= state17 #b0))) (= state552 #b0))",
+    "frame": 2,
+    "consequent_var": "state552",
+    "consequent_val": "0",
+    "antecedent_vars": [
+      "state15",
+      "state17"
+    ],
+    "antecedent_count": 2,
+    "coverage_count": 1
+  },
+  {
+    "lemma": "(=> (and (= state552 #0) (= state17 #0)) (= state15 #0))",
+    "source_clause": "(or (or (not (= state15 #b0)) (not (= state17 #b0))) (= state552 #b0))",
+    "frame": 2,
+    "consequent_var": "state15",
+    "consequent_val": "0",
+    "antecedent_vars": [
+      "state552",
+      "state17"
+    ],
+    "antecedent_count": 2,
+    "coverage_count": 1
+  },
+  {
+    "lemma": "(=> (and (= state552 #0) (= state15 #0)) (= state17 #0))",
+    "source_clause": "(or (or (not (= state15 #b0)) (not (= state17 #b0))) (= state552 #b0))",
+    "frame": 2,
+    "consequent_var": "state17",
+    "consequent_val": "0",
+    "antecedent_vars": [
+      "state552",
+      "state15"
+    ],
+    "antecedent_count": 2,
+    "coverage_count": 1
+  },
+  {
+    "lemma": "(=> (and (= state369 #0) (= state367 #0)) (= state15 #0))",
+    "source_clause": "(or (or (not (= state367 #b0)) (not (= state369 #b0))) (= state15 #b0))",
+    "frame": 2,
+    "consequent_var": "state15",
+    "consequent_val": "0",
+    "antecedent_vars": [
+      "state369",
+      "state367"
+    ],
+    "antecedent_count": 2,
+    "coverage_count": 1
+  },
+  {
+    "lemma": "(=> (and (= state15 #0) (= state367 #0)) (= state369 #0))",
+    "source_clause": "(or (or (not (= state367 #b0)) (not (= state369 #b0))) (= state15 #b0))",
+    "frame": 2,
+    "consequent_var": "state369",
+    "consequent_val": "0",
+    "antecedent_vars": [
+      "state15",
+      "state367"
+    ],
+    "antecedent_count": 2,
+    "coverage_count": 1
+  },
+  {
+    "lemma": "(=> (and (= state15 #0) (= state369 #0)) (= state367 #0))",
+    "source_clause": "(or (or (not (= state367 #b0)) (not (= state369 #b0))) (= state15 #b0))",
+    "frame": 2,
+    "consequent_var": "state367",
+    "consequent_val": "0",
+    "antecedent_vars": [
+      "state15",
+      "state369"
+    ],
+    "antecedent_count": 2,
+    "coverage_count": 1
+  },
+  {
+    "lemma": "(=> (and (= state376 #0) (= state374 #0)) (= state15 #0))",
+    "source_clause": "(or (or (not (= state374 #b0)) (not (= state376 #b0))) (= state15 #b0))",
+    "frame": 2,
+    "consequent_var": "state15",
+    "consequent_val": "0",
+    "antecedent_vars": [
+      "state376",
+      "state374"
+    ],
+    "antecedent_count": 2,
+    "coverage_count": 1
+  },
+  {
+    "lemma": "(=> (and (= state15 #0) (= state374 #0)) (= state376 #0))",
+    "source_clause": "(or (or (not (= state374 #b0)) (not (= state376 #b0))) (= state15 #b0))",
+    "frame": 2,
+    "consequent_var": "state376",
+    "consequent_val": "0",
+    "antecedent_vars": [
+      "state15",
+      "state374"
+    ],
+    "antecedent_count": 2,
+    "coverage_count": 1
+  },
+  {
+    "lemma": "(=> (and (= state15 #0) (= state376 #0)) (= state374 #0))",
+    "source_clause": "(or (or (not (= state374 #b0)) (not (= state376 #b0))) (= state15 #b0))",
+    "frame": 2,
+    "consequent_var": "state374",
+    "consequent_val": "0",
+    "antecedent_vars": [
+      "state15",
+      "state376"
+    ],
+    "antecedent_count": 2,
+    "coverage_count": 1
+  },
+  {
+    "lemma": "(=> (and (= state455 #0) (= state457 #0)) (= state15 #0))",
+    "source_clause": "(or (or (not (= state455 #b0)) (not (= state457 #b0))) (= state15 #b0))",
+    "frame": 2,
+    "consequent_var": "state15",
+    "consequent_val": "0",
+    "antecedent_vars": [
+      "state455",
+      "state457"
+    ],
+    "antecedent_count": 2,
+    "coverage_count": 1
+  },
+  {
+    "lemma": "(=> (and (= state15 #0) (= state457 #0)) (= state455 #0))",
+    "source_clause": "(or (or (not (= state455 #b0)) (not (= state457 #b0))) (= state15 #b0))",
+    "frame": 2,
+    "consequent_var": "state455",
+    "consequent_val": "0",
+    "antecedent_vars": [
+      "state15",
+      "state457"
+    ],
+    "antecedent_count": 2,
+    "coverage_count": 1
+  },
+  {
+    "lemma": "(=> (and (= state15 #0) (= state455 #0)) (= state457 #0))",
+    "source_clause": "(or (or (not (= state455 #b0)) (not (= state457 #b0))) (= state15 #b0))",
+    "frame": 2,
+    "consequent_var": "state457",
+    "consequent_val": "0",
+    "antecedent_vars": [
+      "state15",
+      "state455"
+    ],
+    "antecedent_count": 2,
+    "coverage_count": 1
+  },
+  {
+    "lemma": "(=> (= state15 #0) (= state645 #0))",
+    "source_clause": "(or (not (= state15 #b0)) (= state645 #b0))",
+    "frame": 2,
+    "consequent_var": "state645",
+    "consequent_val": "0",
+    "antecedent_vars": [
+      "state15"
+    ],
+    "antecedent_count": 1,
+    "coverage_count": 1
+  },
+  {
+    "lemma": "(=> (= state645 #0) (= state15 #0))",
+    "source_clause": "(or (not (= state15 #b0)) (= state645 #b0))",
+    "frame": 2,
+    "consequent_var": "state15",
+    "consequent_val": "0",
+    "antecedent_vars": [
+      "state645"
+    ],
+    "antecedent_count": 1,
+    "coverage_count": 1
+  },
+  {
+    "lemma": "(=> (and (= state462 #0) (= state464 #0)) (= state15 #0))",
+    "source_clause": "(or (or (not (= state462 #b0)) (not (= state464 #b0))) (= state15 #b0))",
+    "frame": 2,
+    "consequent_var": "state15",
+    "consequent_val": "0",
+    "antecedent_vars": [
+      "state462",
+      "state464"
+    ],
+    "antecedent_count": 2,
+    "coverage_count": 1
+  },
+  {
+    "lemma": "(=> (and (= state15 #0) (= state464 #0)) (= state462 #0))",
+    "source_clause": "(or (or (not (= state462 #b0)) (not (= state464 #b0))) (= state15 #b0))",
+    "frame": 2,
+    "consequent_var": "state462",
+    "consequent_val": "0",
+    "antecedent_vars": [
+      "state15",
+      "state464"
+    ],
+    "antecedent_count": 2,
+    "coverage_count": 1
+  },
+  {
+    "lemma": "(=> (and (= state15 #0) (= state462 #0)) (= state464 #0))",
+    "source_clause": "(or (or (not (= state462 #b0)) (not (= state464 #b0))) (= state15 #b0))",
+    "frame": 2,
+    "consequent_var": "state464",
+    "consequent_val": "0",
+    "antecedent_vars": [
+      "state15",
+      "state462"
+    ],
+    "antecedent_count": 2,
+    "coverage_count": 1
+  },
+  {
+    "lemma": "(=> (and (= state469 #0) (= state471 #0)) (= state15 #0))",
+    "source_clause": "(or (or (not (= state469 #b0)) (not (= state471 #b0))) (= state15 #b0))",
+    "frame": 2,
+    "consequent_var": "state15",
+    "consequent_val": "0",
+    "antecedent_vars": [
+      "state469",
+      "state471"
+    ],
+    "antecedent_count": 2,
+    "coverage_count": 1
+  },
+  {
+    "lemma": "(=> (and (= state15 #0) (= state471 #0)) (= state469 #0))",
+    "source_clause": "(or (or (not (= state469 #b0)) (not (= state471 #b0))) (= state15 #b0))",
+    "frame": 2,
+    "consequent_var": "state469",
+    "consequent_val": "0",
+    "antecedent_vars": [
+      "state15",
+      "state471"
+    ],
+    "antecedent_count": 2,
+    "coverage_count": 1
+  },
+  {
+    "lemma": "(=> (and (= state15 #0) (= state469 #0)) (= state471 #0))",
+    "source_clause": "(or (or (not (= state469 #b0)) (not (= state471 #b0))) (= state15 #b0))",
+    "frame": 2,
+    "consequent_var": "state471",
+    "consequent_val": "0",
+    "antecedent_vars": [
+      "state15",
+      "state469"
+    ],
+    "antecedent_count": 2,
+    "coverage_count": 1
+  },
+  {
+    "lemma": "(=> (and (= state469 #0) (= state497 #0)) (= state15 #0))",
+    "source_clause": "(or (or (not (= state469 #b0)) (not (= state497 #b0))) (= state15 #b0))",
+    "frame": 2,
+    "consequent_var": "state15",
+    "consequent_val": "0",
+    "antecedent_vars": [
+      "state469",
+      "state497"
+    ],
+    "antecedent_count": 2,
+    "coverage_count": 1
+  },
+  {
+    "lemma": "(=> (and (= state15 #0) (= state497 #0)) (= state469 #0))",
+    "source_clause": "(or (or (not (= state469 #b0)) (not (= state497 #b0))) (= state15 #b0))",
+    "frame": 2,
+    "consequent_var": "state469",
+    "consequent_val": "0",
+    "antecedent_vars": [
+      "state15",
+      "state497"
+    ],
+    "antecedent_count": 2,
+    "coverage_count": 1
+  },
+  {
+    "lemma": "(=> (and (= state15 #0) (= state469 #0)) (= state497 #0))",
+    "source_clause": "(or (or (not (= state469 #b0)) (not (= state497 #b0))) (= state15 #b0))",
+    "frame": 2,
+    "consequent_var": "state497",
+    "consequent_val": "0",
+    "antecedent_vars": [
+      "state15",
+      "state469"
+    ],
+    "antecedent_count": 2,
+    "coverage_count": 1
+  },
+  {
+    "lemma": "(=> (and (= state469 #0) (= state636 #0)) (= state15 #0))",
+    "source_clause": "(or (or (not (= state469 #b0)) (not (= state636 #b0))) (= state15 #b0))",
+    "frame": 2,
+    "consequent_var": "state15",
+    "consequent_val": "0",
+    "antecedent_vars": [
+      "state469",
+      "state636"
+    ],
+    "antecedent_count": 2,
+    "coverage_count": 1
+  },
+  {
+    "lemma": "(=> (and (= state15 #0) (= state636 #0)) (= state469 #0))",
+    "source_clause": "(or (or (not (= state469 #b0)) (not (= state636 #b0))) (= state15 #b0))",
+    "frame": 2,
+    "consequent_var": "state469",
+    "consequent_val": "0",
+    "antecedent_vars": [
+      "state15",
+      "state636"
+    ],
+    "antecedent_count": 2,
+    "coverage_count": 1
+  },
+  {
+    "lemma": "(=> (and (= state15 #0) (= state469 #0)) (= state636 #0))",
+    "source_clause": "(or (or (not (= state469 #b0)) (not (= state636 #b0))) (= state15 #b0))",
+    "frame": 2,
+    "consequent_var": "state636",
+    "consequent_val": "0",
+    "antecedent_vars": [
+      "state15",
+      "state469"
+    ],
+    "antecedent_count": 2,
+    "coverage_count": 1
+  },
+  {
+    "lemma": "(=> (and (= state469 #0) (= state872 #0)) (= state15 #0))",
+    "source_clause": "(or (or (not (= state469 #b0)) (not (= state872 #b0))) (= state15 #b0))",
+    "frame": 2,
+    "consequent_var": "state15",
+    "consequent_val": "0",
+    "antecedent_vars": [
+      "state469",
+      "state872"
+    ],
+    "antecedent_count": 2,
+    "coverage_count": 1
+  },
+  {
+    "lemma": "(=> (and (= state15 #0) (= state872 #0)) (= state469 #0))",
+    "source_clause": "(or (or (not (= state469 #b0)) (not (= state872 #b0))) (= state15 #b0))",
+    "frame": 2,
+    "consequent_var": "state469",
+    "consequent_val": "0",
+    "antecedent_vars": [
+      "state15",
+      "state872"
+    ],
+    "antecedent_count": 2,
+    "coverage_count": 1
+  },
+  {
+    "lemma": "(=> (and (= state15 #0) (= state469 #0)) (= state872 #0))",
+    "source_clause": "(or (or (not (= state469 #b0)) (not (= state872 #b0))) (= state15 #b0))",
+    "frame": 2,
+    "consequent_var": "state872",
+    "consequent_val": "0",
+    "antecedent_vars": [
+      "state15",
+      "state469"
+    ],
+    "antecedent_count": 2,
+    "coverage_count": 1
+  },
+  {
+    "lemma": "(=> (and (= state469 #0) (= state879 #0)) (= state15 #0))",
+    "source_clause": "(or (or (not (= state469 #b0)) (not (= state879 #b0))) (= state15 #b0))",
+    "frame": 2,
+    "consequent_var": "state15",
+    "consequent_val": "0",
+    "antecedent_vars": [
+      "state469",
+      "state879"
+    ],
+    "antecedent_count": 2,
+    "coverage_count": 1
+  }
+]

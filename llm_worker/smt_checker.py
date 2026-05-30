@@ -357,6 +357,21 @@ def lemma_to_smt(lemma: str, vars_dict: Dict[str, bz.Term],
         not_guard = tm.mk_term(bz.Kind.NOT, [guard])
         return tm.mk_term(bz.Kind.OR, [not_guard, consequent])
 
+    # (=> (and (= stateX V) (= stateY W)) (= stateZ U))  → guarded with conjunction
+    m = re.match(
+        r'\(\s*=>\s*\(\s*and\s*\(\s*=\s*(state\d+)\s+(.+?)\s*\)\s*'
+        r'\(\s*=\s*(state\d+)\s+(.+?)\s*\)\s*\)\s*'
+        r'\(\s*=\s*(state\d+)\s+(.+?)\s*\)\s*\)',
+        lemma_clean)
+    if m:
+        g1 = _mk_eq(m.group(1), m.group(2).strip())
+        g2 = _mk_eq(m.group(3), m.group(4).strip())
+        cons = _mk_eq(m.group(5), m.group(6).strip())
+        if g1 is None or g2 is None or cons is None: return None
+        guard = tm.mk_term(bz.Kind.AND, [g1, g2])
+        not_guard = tm.mk_term(bz.Kind.NOT, [guard])
+        return tm.mk_term(bz.Kind.OR, [not_guard, cons])
+
     # (! (and (= stateX V) (= stateY V)))  → mutual exclusion
     m = re.match(
         r'\(\s*!\s*\(\s*and\s*\(\s*=\s*(state\d+)\s+(\d+)\s*\)\s*\(\s*=\s*(state\d+)\s+(\d+)\s*\)\s*\)\s*\)',
