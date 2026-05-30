@@ -44,6 +44,9 @@
 #include "utils/logger.h"
 #include "utils/term_analysis.h"
 
+#include <fstream>
+#include <cstdlib>
+
 using namespace smt;
 using namespace std;
 
@@ -434,6 +437,141 @@ void IC3IA::reabstract()
   }
 }
 
+namespace {
+
+bool dump_enabled() {
+  const char * env = std::getenv("PONO_LLM_DUMP_IC3IA");
+  return env && std::string(env) != "0" && std::string(env) != "";
+}
+
+std::string dump_dir() {
+  const char * env = std::getenv("PONO_LLM_DUMP_DIR");
+  return env ? std::string(env) : "logs/pono_frame_dump";
+}
+
+std::string json_escape(const std::string & s) {
+  std::string out;
+  out.reserve(s.size());
+  for (char c : s) {
+    switch (c) {
+      case '"': out += "\\\""; break;
+      case '\\': out += "\\\\"; break;
+      case '\n': out += "\\n"; break;
+      case '\r': out += "\\r"; break;
+      case '\t': out += "\\t"; break;
+      default: out += c;
+    }
+  }
+  return out;
+}
+
+void dump_predicate_map(const smt::Term & lbl, const smt::Term & pred) {
+  if (!dump_enabled()) return;
+
+  static int predicate_id = 0;
+  static std::ofstream out_file;
+  static bool opened = false;
+
+  if (!opened) {
+    std::string out_path = dump_dir() + "/qspiflash_p040_predicates.jsonl";
+    out_file.open(out_path, std::ios::out | std::ios::app);
+    opened = true;
+  }
+
+  if (!out_file.is_open()) return;
+
+  std::string raw_expr = pred->to_string();
+  std::string label_str = lbl->to_string();
+
+  // Extract variable names from raw_expr (simple state\d+ pattern matching)
+  std::string variables_json = "[";
+  std::string state_values_json = "{";
+  bool first_var = true;
+  size_t pos = 0;
+  while (pos < raw_expr.size()) {
+    // Look for "state" followed by digits
+    size_t state_pos = raw_expr.find("state", pos);
+    if (state_pos == std::string::npos) break;
+    // Find end of the number
+    size_t num_start = state_pos + 5;  // after "state"
+    size_t num_end = num_start;
+    while (num_end < raw_expr.size() && std::isdigit(raw_expr[num_end])) num_end++;
+    if (num_end == num_start) { pos = num_end; continue; }
+
+    std::string var_name = raw_expr.substr(state_pos, num_end - state_pos);
+
+    if (!first_var) {
+      variables_json += ",";
+      state_values_json += ",";
+    }
+    variables_json += "\"" + var_name + "\"";
+
+    state_values_json += "\"" + var_name + "\":\"";
+    // Extract value: look for #b<N> after the variable
+    std::string val_str = "?";
+    // Search for common SMT-LIB2 value patterns after the variable position
+    size_t after_var = num_end;
+    size_t bv_pos = raw_expr.find("#b", after_var);
+    if (bv_pos != std::string::npos) {
+      size_t val_start = bv_pos + 2;  // skip "#b"
+      size_t val_end = val_start;
+      while (val_end < raw_expr.size()
+             && (std::isdigit(raw_expr[val_end]) || raw_expr[val_end] == 'x'
+                 || (raw_expr[val_end] >= 'a' && raw_expr[val_end] <= 'f')
+                 || (raw_expr[val_end] >= 'A' && raw_expr[val_end] <= 'F'))) {
+        val_end++;
+      }
+      if (val_end > val_start) {
+        val_str = raw_expr.substr(val_start, val_end - val_start);
+      }
+    }
+    // Also check for "#x" (hex values)
+    if (val_str == "?") {
+      size_t hx_pos = raw_expr.find("#x", after_var);
+      if (hx_pos != std::string::npos) {
+        size_t val_start = hx_pos + 2;
+        size_t val_end = val_start;
+        while (val_end < raw_expr.size()
+               && (std::isdigit(raw_expr[val_end])
+                   || (raw_expr[val_end] >= 'a' && raw_expr[val_end] <= 'f')
+                   || (raw_expr[val_end] >= 'A' && raw_expr[val_end] <= 'F'))) {
+          val_end++;
+        }
+        if (val_end > val_start) {
+          val_str = raw_expr.substr(val_start, val_end - val_start);
+        }
+      }
+    }
+    // Check for "true" or "false"
+    if (val_str == "?") {
+      if (raw_expr.find("true", after_var) != std::string::npos) { val_str = "1"; }
+      else if (raw_expr.find("false", after_var) != std::string::npos) { val_str = "0"; }
+    }
+    state_values_json += val_str;
+    state_values_json += "\"";
+
+    first_var = false;
+    pos = num_end + 1;
+  }
+  variables_json += "]";
+  state_values_json += "}";
+
+  out_file << "{";
+  out_file << "\"type\":\"predicate_map\",";
+  out_file << "\"benchmark\":\"qspiflash_divfive-p040\",";
+  out_file << "\"predicate_id\":" << predicate_id << ",";
+  out_file << "\"label\":\"" << json_escape(label_str) << "\",";
+  out_file << "\"raw_expr\":\"" << json_escape(raw_expr) << "\",";
+  out_file << "\"variables\":" << variables_json << ",";
+  out_file << "\"state_values\":" << state_values_json;
+  out_file << "}\n";
+  out_file.flush();
+
+  predicate_id++;
+}
+
+}  // namespace
+
 bool IC3IA::add_predicate(const Term & pred)
 {
   if (predset_.find(pred) != predset_.end()) {
@@ -454,6 +592,8 @@ bool IC3IA::add_predicate(const Term & pred)
 
   predlbls_.insert(lbl);
   lbl2pred_[lbl] = pred;
+
+  dump_predicate_map(lbl, pred);
 
   Term npred = ts_.next(pred);
   Term nlbl = label(npred);

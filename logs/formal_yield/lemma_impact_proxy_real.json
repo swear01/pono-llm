@@ -1,0 +1,19 @@
+{
+  "lemma": "(=> (= state2002 1) (= state790 1))",
+  "target_variables": [
+    "state790",
+    "state2002"
+  ],
+  "impact_classification": "unknown_no_trace_data",
+  "cti_analysis": {},
+  "frame_analysis": {},
+  "obligation_analysis": {},
+  "missing_files": [
+    "cti_path",
+    "frame_path"
+  ],
+  "notes": [
+    "Missing data: cti_path, frame_path. Impact estimate based on partial data only.",
+    "No trace data available. Need Pono IC3IA dump to estimate impact."
+  ]
+}
