@@ -1,0 +1,647 @@
+[
+  {
+    "original": "(=> (and (= state469 #0) (= state471 #0)) (= state15 #0))",
+    "antecedents": [
+      {
+        "var": "state469",
+        "value": "0"
+      },
+      {
+        "var": "state471",
+        "value": "0"
+      }
+    ],
+    "consequent": {
+      "var": "state15",
+      "value": "0"
+    },
+    "variables": [
+      "state469",
+      "state471",
+      "state15"
+    ],
+    "ante_count": 2,
+    "supported": true,
+    "lemma_id": "lift_000"
+  },
+  {
+    "original": "(=> (and (= state469 #0) (= state497 #0)) (= state15 #0))",
+    "antecedents": [
+      {
+        "var": "state469",
+        "value": "0"
+      },
+      {
+        "var": "state497",
+        "value": "0"
+      }
+    ],
+    "consequent": {
+      "var": "state15",
+      "value": "0"
+    },
+    "variables": [
+      "state469",
+      "state497",
+      "state15"
+    ],
+    "ante_count": 2,
+    "supported": true,
+    "lemma_id": "lift_001"
+  },
+  {
+    "original": "(=> (and (= state469 #0) (= state636 #0)) (= state15 #0))",
+    "antecedents": [
+      {
+        "var": "state469",
+        "value": "0"
+      },
+      {
+        "var": "state636",
+        "value": "0"
+      }
+    ],
+    "consequent": {
+      "var": "state15",
+      "value": "0"
+    },
+    "variables": [
+      "state469",
+      "state636",
+      "state15"
+    ],
+    "ante_count": 2,
+    "supported": true,
+    "lemma_id": "lift_002"
+  },
+  {
+    "original": "(=> (and (= state469 #0) (= state872 #0)) (= state15 #0))",
+    "antecedents": [
+      {
+        "var": "state469",
+        "value": "0"
+      },
+      {
+        "var": "state872",
+        "value": "0"
+      }
+    ],
+    "consequent": {
+      "var": "state15",
+      "value": "0"
+    },
+    "variables": [
+      "state469",
+      "state872",
+      "state15"
+    ],
+    "ante_count": 2,
+    "supported": true,
+    "lemma_id": "lift_003"
+  },
+  {
+    "original": "(=> (and (= state469 #0) (= state879 #0)) (= state15 #0))",
+    "antecedents": [
+      {
+        "var": "state469",
+        "value": "0"
+      },
+      {
+        "var": "state879",
+        "value": "0"
+      }
+    ],
+    "consequent": {
+      "var": "state15",
+      "value": "0"
+    },
+    "variables": [
+      "state469",
+      "state879",
+      "state15"
+    ],
+    "ante_count": 2,
+    "supported": true,
+    "lemma_id": "lift_004"
+  },
+  {
+    "original": "(=> (and (= state455 #0) (= state457 #0)) (= state15 #0))",
+    "antecedents": [
+      {
+        "var": "state455",
+        "value": "0"
+      },
+      {
+        "var": "state457",
+        "value": "0"
+      }
+    ],
+    "consequent": {
+      "var": "state15",
+      "value": "0"
+    },
+    "variables": [
+      "state455",
+      "state457",
+      "state15"
+    ],
+    "ante_count": 2,
+    "supported": true,
+    "lemma_id": "lift_005"
+  },
+  {
+    "original": "(=> (and (= state462 #0) (= state464 #0)) (= state15 #0))",
+    "antecedents": [
+      {
+        "var": "state462",
+        "value": "0"
+      },
+      {
+        "var": "state464",
+        "value": "0"
+      }
+    ],
+    "consequent": {
+      "var": "state15",
+      "value": "0"
+    },
+    "variables": [
+      "state462",
+      "state464",
+      "state15"
+    ],
+    "ante_count": 2,
+    "supported": true,
+    "lemma_id": "lift_006"
+  },
+  {
+    "original": "(=> (and (= state15 #0) (= state17 #0)) (= state552 #0))",
+    "antecedents": [
+      {
+        "var": "state15",
+        "value": "0"
+      },
+      {
+        "var": "state17",
+        "value": "0"
+      }
+    ],
+    "consequent": {
+      "var": "state552",
+      "value": "0"
+    },
+    "variables": [
+      "state15",
+      "state17",
+      "state552"
+    ],
+    "ante_count": 2,
+    "supported": true,
+    "lemma_id": "lift_007"
+  },
+  {
+    "original": "(=> (and (= state15 #0) (= state469 #0)) (= state471 #0))",
+    "antecedents": [
+      {
+        "var": "state15",
+        "value": "0"
+      },
+      {
+        "var": "state469",
+        "value": "0"
+      }
+    ],
+    "consequent": {
+      "var": "state471",
+      "value": "0"
+    },
+    "variables": [
+      "state15",
+      "state469",
+      "state471"
+    ],
+    "ante_count": 2,
+    "supported": true,
+    "lemma_id": "lift_008"
+  },
+  {
+    "original": "(=> (and (= state15 #0) (= state469 #0)) (= state497 #0))",
+    "antecedents": [
+      {
+        "var": "state15",
+        "value": "0"
+      },
+      {
+        "var": "state469",
+        "value": "0"
+      }
+    ],
+    "consequent": {
+      "var": "state497",
+      "value": "0"
+    },
+    "variables": [
+      "state15",
+      "state469",
+      "state497"
+    ],
+    "ante_count": 2,
+    "supported": true,
+    "lemma_id": "lift_009"
+  },
+  {
+    "original": "(=> (and (= state15 #0) (= state469 #0)) (= state636 #0))",
+    "antecedents": [
+      {
+        "var": "state15",
+        "value": "0"
+      },
+      {
+        "var": "state469",
+        "value": "0"
+      }
+    ],
+    "consequent": {
+      "var": "state636",
+      "value": "0"
+    },
+    "variables": [
+      "state15",
+      "state469",
+      "state636"
+    ],
+    "ante_count": 2,
+    "supported": true,
+    "lemma_id": "lift_010"
+  },
+  {
+    "original": "(=> (and (= state15 #0) (= state469 #0)) (= state872 #0))",
+    "antecedents": [
+      {
+        "var": "state15",
+        "value": "0"
+      },
+      {
+        "var": "state469",
+        "value": "0"
+      }
+    ],
+    "consequent": {
+      "var": "state872",
+      "value": "0"
+    },
+    "variables": [
+      "state15",
+      "state469",
+      "state872"
+    ],
+    "ante_count": 2,
+    "supported": true,
+    "lemma_id": "lift_011"
+  },
+  {
+    "original": "(=> (and (= state552 #0) (= state15 #0)) (= state17 #0))",
+    "antecedents": [
+      {
+        "var": "state552",
+        "value": "0"
+      },
+      {
+        "var": "state15",
+        "value": "0"
+      }
+    ],
+    "consequent": {
+      "var": "state17",
+      "value": "0"
+    },
+    "variables": [
+      "state552",
+      "state15",
+      "state17"
+    ],
+    "ante_count": 2,
+    "supported": true,
+    "lemma_id": "lift_012"
+  },
+  {
+    "original": "(=> (and (= state15 #0) (= state367 #0)) (= state369 #0))",
+    "antecedents": [
+      {
+        "var": "state15",
+        "value": "0"
+      },
+      {
+        "var": "state367",
+        "value": "0"
+      }
+    ],
+    "consequent": {
+      "var": "state369",
+      "value": "0"
+    },
+    "variables": [
+      "state15",
+      "state367",
+      "state369"
+    ],
+    "ante_count": 2,
+    "supported": true,
+    "lemma_id": "lift_013"
+  },
+  {
+    "original": "(=> (and (= state15 #0) (= state369 #0)) (= state367 #0))",
+    "antecedents": [
+      {
+        "var": "state15",
+        "value": "0"
+      },
+      {
+        "var": "state369",
+        "value": "0"
+      }
+    ],
+    "consequent": {
+      "var": "state367",
+      "value": "0"
+    },
+    "variables": [
+      "state15",
+      "state369",
+      "state367"
+    ],
+    "ante_count": 2,
+    "supported": true,
+    "lemma_id": "lift_014"
+  },
+  {
+    "original": "(=> (and (= state15 #0) (= state374 #0)) (= state376 #0))",
+    "antecedents": [
+      {
+        "var": "state15",
+        "value": "0"
+      },
+      {
+        "var": "state374",
+        "value": "0"
+      }
+    ],
+    "consequent": {
+      "var": "state376",
+      "value": "0"
+    },
+    "variables": [
+      "state15",
+      "state374",
+      "state376"
+    ],
+    "ante_count": 2,
+    "supported": true,
+    "lemma_id": "lift_015"
+  },
+  {
+    "original": "(=> (and (= state15 #0) (= state376 #0)) (= state374 #0))",
+    "antecedents": [
+      {
+        "var": "state15",
+        "value": "0"
+      },
+      {
+        "var": "state376",
+        "value": "0"
+      }
+    ],
+    "consequent": {
+      "var": "state374",
+      "value": "0"
+    },
+    "variables": [
+      "state15",
+      "state376",
+      "state374"
+    ],
+    "ante_count": 2,
+    "supported": true,
+    "lemma_id": "lift_016"
+  },
+  {
+    "original": "(=> (and (= state15 #0) (= state457 #0)) (= state455 #0))",
+    "antecedents": [
+      {
+        "var": "state15",
+        "value": "0"
+      },
+      {
+        "var": "state457",
+        "value": "0"
+      }
+    ],
+    "consequent": {
+      "var": "state455",
+      "value": "0"
+    },
+    "variables": [
+      "state15",
+      "state457",
+      "state455"
+    ],
+    "ante_count": 2,
+    "supported": true,
+    "lemma_id": "lift_017"
+  },
+  {
+    "original": "(=> (and (= state15 #0) (= state455 #0)) (= state457 #0))",
+    "antecedents": [
+      {
+        "var": "state15",
+        "value": "0"
+      },
+      {
+        "var": "state455",
+        "value": "0"
+      }
+    ],
+    "consequent": {
+      "var": "state457",
+      "value": "0"
+    },
+    "variables": [
+      "state15",
+      "state455",
+      "state457"
+    ],
+    "ante_count": 2,
+    "supported": true,
+    "lemma_id": "lift_018"
+  },
+  {
+    "original": "(=> (and (= state15 #0) (= state464 #0)) (= state462 #0))",
+    "antecedents": [
+      {
+        "var": "state15",
+        "value": "0"
+      },
+      {
+        "var": "state464",
+        "value": "0"
+      }
+    ],
+    "consequent": {
+      "var": "state462",
+      "value": "0"
+    },
+    "variables": [
+      "state15",
+      "state464",
+      "state462"
+    ],
+    "ante_count": 2,
+    "supported": true,
+    "lemma_id": "lift_019"
+  },
+  {
+    "original": "(=> (and (= state15 #0) (= state462 #0)) (= state464 #0))",
+    "antecedents": [
+      {
+        "var": "state15",
+        "value": "0"
+      },
+      {
+        "var": "state462",
+        "value": "0"
+      }
+    ],
+    "consequent": {
+      "var": "state464",
+      "value": "0"
+    },
+    "variables": [
+      "state15",
+      "state462",
+      "state464"
+    ],
+    "ante_count": 2,
+    "supported": true,
+    "lemma_id": "lift_020"
+  },
+  {
+    "original": "(=> (and (= state15 #0) (= state471 #0)) (= state469 #0))",
+    "antecedents": [
+      {
+        "var": "state15",
+        "value": "0"
+      },
+      {
+        "var": "state471",
+        "value": "0"
+      }
+    ],
+    "consequent": {
+      "var": "state469",
+      "value": "0"
+    },
+    "variables": [
+      "state15",
+      "state471",
+      "state469"
+    ],
+    "ante_count": 2,
+    "supported": true,
+    "lemma_id": "lift_021"
+  },
+  {
+    "original": "(=> (and (= state15 #0) (= state497 #0)) (= state469 #0))",
+    "antecedents": [
+      {
+        "var": "state15",
+        "value": "0"
+      },
+      {
+        "var": "state497",
+        "value": "0"
+      }
+    ],
+    "consequent": {
+      "var": "state469",
+      "value": "0"
+    },
+    "variables": [
+      "state15",
+      "state497",
+      "state469"
+    ],
+    "ante_count": 2,
+    "supported": true,
+    "lemma_id": "lift_022"
+  },
+  {
+    "original": "(=> (and (= state15 #0) (= state636 #0)) (= state469 #0))",
+    "antecedents": [
+      {
+        "var": "state15",
+        "value": "0"
+      },
+      {
+        "var": "state636",
+        "value": "0"
+      }
+    ],
+    "consequent": {
+      "var": "state469",
+      "value": "0"
+    },
+    "variables": [
+      "state15",
+      "state636",
+      "state469"
+    ],
+    "ante_count": 2,
+    "supported": true,
+    "lemma_id": "lift_023"
+  },
+  {
+    "original": "(=> (and (= state15 #0) (= state872 #0)) (= state469 #0))",
+    "antecedents": [
+      {
+        "var": "state15",
+        "value": "0"
+      },
+      {
+        "var": "state872",
+        "value": "0"
+      }
+    ],
+    "consequent": {
+      "var": "state469",
+      "value": "0"
+    },
+    "variables": [
+      "state15",
+      "state872",
+      "state469"
+    ],
+    "ante_count": 2,
+    "supported": true,
+    "lemma_id": "lift_024"
+  },
+  {
+    "original": "(=> (= state15 #0) (= state645 #0))",
+    "antecedents": [
+      {
+        "var": "state15",
+        "value": "0"
+      }
+    ],
+    "consequent": {
+      "var": "state645",
+      "value": "0"
+    },
+    "variables": [
+      "state15",
+      "state645"
+    ],
+    "ante_count": 1,
+    "supported": true,
+    "lemma_id": "lift_025"
+  }
+]
