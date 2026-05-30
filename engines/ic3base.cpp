@@ -42,6 +42,14 @@ using namespace std;
 
 namespace pono {
 
+// Forward declarations for dump functions
+namespace {
+void dump_ic3ia_cti(const CTIContext & ctx, const smt::TermVec & children);
+void dump_ic3ia_frame_clause(size_t frame_idx,
+                             const IC3Formula & clause,
+                             const smt::TermVec & literals);
+}
+
 // helper functions
 
 /** Less than comparison of the hash of two terms
@@ -882,6 +890,8 @@ void IC3Base::constrain_frame(size_t i,
 
   constrain_frame_label(i, constraint);
   frames_.at(i).push_back(constraint);
+
+  dump_ic3ia_frame_clause(i, constraint, constraint.children);
 }
 
 void IC3Base::constrain_frame_label(size_t i, const IC3Formula & constraint)
@@ -1392,6 +1402,51 @@ void dump_ic3ia_cti(const CTIContext & ctx, const smt::TermVec & children) {
   cti_file.flush();
 
   cti_counter++;
+}
+
+void dump_ic3ia_frame_clause(size_t frame_idx,
+                             const IC3Formula & clause,
+                             const smt::TermVec & literals) {
+  const char * env = std::getenv("PONO_LLM_DUMP_IC3IA");
+  if (!env || std::string(env) == "0" || std::string(env) == "") return;
+
+  std::string dir = std::getenv("PONO_LLM_DUMP_DIR")
+                        ? std::getenv("PONO_LLM_DUMP_DIR")
+                        : "logs/pono_frame_dump";
+
+  static int clause_counter = 0;
+  static std::ofstream clause_file;
+  static bool clause_opened = false;
+  if (!clause_opened) {
+    std::string path = dir + "/qspiflash_p040_frames.jsonl";
+    clause_file.open(path, std::ios::out | std::ios::app);
+    clause_opened = true;
+  }
+  if (!clause_file.is_open()) return;
+
+  clause_file << "{";
+  clause_file << "\"type\":\"clause\",";
+  clause_file << "\"benchmark\":\"qspiflash_divfive-p040\",";
+  clause_file << "\"frame\":" << frame_idx << ",";
+  clause_file << "\"clause_id\":\"F" << frame_idx << "_C" << clause_counter << "\",";
+  clause_file << "\"literal_count\":" << literals.size() << ",";
+  clause_file << "\"is_disjunction\":" << (clause.disjunction ? "true" : "false") << ",";
+
+  clause_file << "\"literals\":[";
+  for (size_t i = 0; i < literals.size(); ++i) {
+    if (i > 0) clause_file << ",";
+    std::string raw = literals[i]->to_string();
+    clause_file << "{";
+    clause_file << "\"raw\":\"" << cti_json_escape(raw) << "\"";
+    clause_file << "}";
+  }
+  clause_file << "],";
+
+  clause_file << "\"raw_smt\":\"" << cti_json_escape(clause.term->to_string()) << "\"";
+  clause_file << "}\n";
+  clause_file.flush();
+
+  clause_counter++;
 }
 
 }  // namespace

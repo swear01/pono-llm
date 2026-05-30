@@ -4,16 +4,31 @@
     "state790",
     "state2002"
   ],
-  "impact_classification": "unknown_no_trace_data",
-  "cti_analysis": {},
-  "frame_analysis": {},
+  "impact_classification": "low_potential",
+  "cti_analysis": {
+    "total_ctis": 935,
+    "ctis_with_state2002": 935,
+    "ctis_with_state790": 935,
+    "ctis_with_both": 935,
+    "ctis_violating_lemma": 0,
+    "ctis_satisfying_lemma": 935,
+    "ctis_antecedent_true": 925,
+    "highest_frame_any_cti": 4,
+    "lemma_blocks": 0
+  },
+  "frame_analysis": {
+    "total_clauses": 1934,
+    "clauses_with_state2002": 3,
+    "clauses_with_state790": 39,
+    "clauses_with_both": 0,
+    "potential_subsumeable": 0,
+    "highest_frame_with_either": 4
+  },
   "obligation_analysis": {},
-  "missing_files": [
-    "cti_path",
-    "frame_path"
-  ],
+  "missing_files": [],
   "notes": [
-    "Missing data: cti_path, frame_path. Impact estimate based on partial data only.",
-    "No trace data available. Need Pono IC3IA dump to estimate impact."
+    "CTI violation rate: 0/935 (0%)",
+    "Clauses with both vars: 0/1934 (0%)",
+    "Lemma is formally valid but may have limited proof-trace impact. Consider broader synthesis."
   ]
 }
