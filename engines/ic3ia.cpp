@@ -560,6 +560,7 @@ void dump_predicate_map(const smt::Term & lbl, const smt::Term & pred) {
   out_file << "\"type\":\"predicate_map\",";
   out_file << "\"benchmark\":\"qspiflash_divfive-p040\",";
   out_file << "\"predicate_id\":" << predicate_id << ",";
+  out_file << "\"term_hash\":" << lbl->hash() << ",";
   out_file << "\"label\":\"" << json_escape(label_str) << "\",";
   out_file << "\"raw_expr\":\"" << json_escape(raw_expr) << "\",";
   out_file << "\"variables\":" << variables_json << ",";

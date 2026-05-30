@@ -1436,8 +1436,17 @@ void dump_ic3ia_frame_clause(size_t frame_idx,
   for (size_t i = 0; i < literals.size(); ++i) {
     if (i > 0) clause_file << ",";
     std::string raw = literals[i]->to_string();
+    smt::Term inner = literals[i];
+    bool is_negated = false;
+    if (literals[i]->get_op() == smt::Not) {
+      is_negated = true;
+      inner = *(literals[i]->begin());
+    }
     clause_file << "{";
-    clause_file << "\"raw\":\"" << cti_json_escape(raw) << "\"";
+    clause_file << "\"raw\":\"" << cti_json_escape(raw) << "\",";
+    clause_file << "\"polarity\":" << (is_negated ? "false" : "true") << ",";
+    clause_file << "\"term_hash\":" << inner->hash() << ",";
+    clause_file << "\"inner_raw\":\"" << cti_json_escape(inner->to_string()) << "\"";
     clause_file << "}";
   }
   clause_file << "],";
