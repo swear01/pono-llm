@@ -1,0 +1,26 @@
+[
+  {
+    "candidate_id": "igcl_r0_001",
+    "lemma": "(=> (= state15 #b0) (= state886 #b0))",
+    "schema": "implication",
+    "verdict": "parse_failed"
+  },
+  {
+    "candidate_id": "igcl_r0_002",
+    "lemma": "(=> (= state15 #b0) (= state785 #b0))",
+    "schema": "implication",
+    "verdict": "parse_failed"
+  },
+  {
+    "candidate_id": "igcl_r0_003",
+    "lemma": "(=> (= state15 #b0) (= state1368 #b0))",
+    "schema": "implication",
+    "verdict": "parse_failed"
+  },
+  {
+    "candidate_id": "igcl_r0_004",
+    "lemma": "(= state15 state886)",
+    "schema": "equivalence",
+    "verdict": "parse_failed"
+  }
+]

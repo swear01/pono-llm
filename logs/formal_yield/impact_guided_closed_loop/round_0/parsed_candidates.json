@@ -1,0 +1,69 @@
+{
+  "round": 0,
+  "candidates": [
+    {
+      "candidate_id": "igcl_r0_001",
+      "lemma": "(=> (= state15 #b0) (= state886 #b0))",
+      "schema": "implication",
+      "variables": [
+        "state15",
+        "state886"
+      ],
+      "source_cluster": [
+        "state15",
+        "state886"
+      ],
+      "proof_trace_rationale": "These vars co-occur in 35 frame clauses (max frame 3) and 1974 CTI cubes, implying a systematic relation IC3IA struggles with. The implication captures the observed pattern: when state15 is 0, state886 is 0.",
+      "why_nontrivial": "Not a bitwidth tautology; expresses non-obvious control dependency.",
+      "risk": "medium"
+    },
+    {
+      "candidate_id": "igcl_r0_002",
+      "lemma": "(=> (= state15 #b0) (= state785 #b0))",
+      "schema": "implication",
+      "variables": [
+        "state15",
+        "state785"
+      ],
+      "source_cluster": [
+        "state15",
+        "state785"
+      ],
+      "proof_trace_rationale": "High co-occurrence in frames (33 clauses) and CTIs (1974) suggests this pair shares a constraint beyond individual invariance. IC3IA repeatedly tries to learn them together.",
+      "why_nontrivial": "Not a bitwidth tautology; links two distinct state variables.",
+      "risk": "medium"
+    },
+    {
+      "candidate_id": "igcl_r0_003",
+      "lemma": "(=> (= state15 #b0) (= state1368 #b0))",
+      "schema": "implication",
+      "variables": [
+        "state15",
+        "state1368"
+      ],
+      "source_cluster": [
+        "state15",
+        "state1368"
+      ],
+      "proof_trace_rationale": "32 frame clause co-occurrences and heavy CTI co-occurrence (1974) indicate that IC3IA\u2019s proof search repeatedly hits this relationship. This lemma could prune branches.",
+      "why_nontrivial": "Not a bitwidth tautology; cross-variable implication.",
+      "risk": "medium"
+    },
+    {
+      "candidate_id": "igcl_r0_004",
+      "lemma": "(= state15 state886)",
+      "schema": "equivalence",
+      "variables": [
+        "state15",
+        "state886"
+      ],
+      "source_cluster": [
+        "state15",
+        "state886"
+      ],
+      "proof_trace_rationale": "Cluster 1 has the highest frame co-occurrence (35) and ties for CTI co-occurrence, strongly suggesting these 1-bit signals always share the same value. An equivalence could simplify many frame clauses.",
+      "why_nontrivial": "Not a bitwidth tautology; asserts strict equality between two distinct signals.",
+      "risk": "medium"
+    }
+  ]
+}

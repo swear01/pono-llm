@@ -275,11 +275,30 @@ def lemma_to_smt(lemma: str, vars_dict: Dict[str, bz.Term],
     lemma_clean = lemma.strip()
 
     def _mk_eq(var_name: str, val_str: str) -> Optional[bz.Term]:
-        """Build (EQUAL var value) with matching widths."""
+        """Build (EQUAL var value) with matching widths.
+        Handles: plain numbers, #b binary, #x hex, or another state variable.
+        """
         var = vars_dict.get(var_name)
         if var is None: return None
-        val = int(val_str)
         w = var.sort().bv_size()
+
+        # Check if val_str is another state variable
+        if re.match(r'state\d+', val_str):
+            other = vars_dict.get(val_str)
+            if other is None: return None
+            return tm.mk_term(bz.Kind.EQUAL, [var, other])
+
+        # Handle #b and #x prefixes
+        clean = val_str
+        if clean.startswith("#b"):
+            clean = clean[2:]
+            base = 2
+        elif clean.startswith("#x"):
+            clean = clean[2:]
+            base = 16
+        else:
+            base = 10
+        val = int(clean, base)
         return tm.mk_term(bz.Kind.EQUAL, [var, tm.mk_bv_value(tm.mk_bv_sort(w), val)])
 
     def _mk_bv_val(var_name: str, val_str: str) -> Optional[bz.Term]:
@@ -291,7 +310,7 @@ def lemma_to_smt(lemma: str, vars_dict: Dict[str, bz.Term],
 
     # (=> (= stateX V) (= stateY V))  → guarded implication
     m = re.match(
-        r'\(\s*=>\s*\(\s*=\s*(state\d+)\s+(\d+)\s*\)\s*\(\s*=\s*(state\d+)\s+(\d+)\s*\)\s*\)',
+        r'\(\s*=>\s*\(\s*=\s*(state\d+)\s+([#b#x]?\w+)\s*\)\s*\(\s*=\s*(state\d+)\s+([#b#x]?\w+)\s*\)\s*\)',
         lemma_clean)
     if m:
         guard = _mk_eq(m.group(1), m.group(2))
@@ -372,6 +391,16 @@ def lemma_to_smt(lemma: str, vars_dict: Dict[str, bz.Term],
         if guard is None or c1 is None or c2 is None: return None
         not_guard = tm.mk_term(bz.Kind.NOT, [guard])
         return tm.mk_term(bz.Kind.OR, [not_guard, c1, c2])
+
+    # Standalone: (= stateX stateY)  → variable equality
+    m = re.match(r'\(\s*=\s*(state\d+)\s+(state\d+)\s*\)', lemma_clean)
+    if not m:
+        m = re.match(r'^\s*=\s*(state\d+)\s+(state\d+)$', lemma_clean)
+    if m:
+        a = vars_dict.get(m.group(1))
+        b = vars_dict.get(m.group(2))
+        if a is None or b is None: return None
+        return tm.mk_term(bz.Kind.EQUAL, [a, b])
 
     # Standalone: (<= stateX V)  → upper bound
     m = re.match(r'\(\s*<=\s*(state\d+)\s+(\d+)\s*\)', lemma_clean)

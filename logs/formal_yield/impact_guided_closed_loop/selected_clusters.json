@@ -1,0 +1,44 @@
+[
+  {
+    "rank": 1,
+    "vars": [
+      "state15",
+      "state886"
+    ],
+    "frame_cooccur": 35,
+    "cti_cooccur": 1974,
+    "max_frame": 3,
+    "predicates": [
+      "(= state15 #b0)",
+      "(= state886 #b0)"
+    ]
+  },
+  {
+    "rank": 2,
+    "vars": [
+      "state15",
+      "state785"
+    ],
+    "frame_cooccur": 33,
+    "cti_cooccur": 1974,
+    "max_frame": 3,
+    "predicates": [
+      "(= state15 #b0)",
+      "(= state785 #b0)"
+    ]
+  },
+  {
+    "rank": 3,
+    "vars": [
+      "state1368",
+      "state15"
+    ],
+    "frame_cooccur": 32,
+    "cti_cooccur": 1974,
+    "max_frame": 3,
+    "predicates": [
+      "(= state1368 #b0)",
+      "(= state15 #b0)"
+    ]
+  }
+]
