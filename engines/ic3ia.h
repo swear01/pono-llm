@@ -108,6 +108,11 @@ class IC3IA : public IC3
   // (bit-level) IC3
   void check_ts() const override;
 
+  /** Override to resolve frame literals using lbl2pred_ mapping. */
+  bool resolve_frame_literal_for_dump(const smt::Term & lit,
+                                      std::string & resolved_expr,
+                                      bool & is_negated) const override;
+
   void initialize() override;
 
   void abstract() override;

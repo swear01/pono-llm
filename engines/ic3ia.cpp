@@ -146,6 +146,26 @@ void IC3IA::check_ts() const
   // exception better than maintaining in two places
 }
 
+bool IC3IA::resolve_frame_literal_for_dump(const smt::Term & lit,
+                                            std::string & resolved_expr,
+                                            bool & is_negated) const {
+  is_negated = false;
+  smt::Term inner = lit;
+
+  if (lit->get_op() == smt::Not) {
+    is_negated = true;
+    inner = *(lit->begin());
+  }
+
+  auto it = lbl2pred_.find(inner);
+  if (it != lbl2pred_.end()) {
+    resolved_expr = it->second->to_string();
+    return true;
+  }
+
+  return false;
+}
+
 void IC3IA::initialize()
 {
   if (initialized_) {

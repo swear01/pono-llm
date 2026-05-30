@@ -6,29 +6,29 @@
 ## CTI Analysis
 | Metric | Count |
 |---|---|
-| total_ctis | 935 |
-| ctis_with_state2002 | 935 |
-| ctis_with_state790 | 935 |
-| ctis_with_both | 935 |
+| total_ctis | 1974 |
+| ctis_with_state2002 | 1974 |
+| ctis_with_state790 | 1974 |
+| ctis_with_both | 1974 |
 | ctis_violating_lemma | 0 |
-| ctis_satisfying_lemma | 935 |
-| ctis_antecedent_true | 925 |
-| highest_frame_any_cti | 4 |
+| ctis_satisfying_lemma | 1974 |
+| ctis_antecedent_true | 1966 |
+| highest_frame_any_cti | 3 |
 | lemma_blocks | 0 |
 
 ## Frame Analysis
 | Metric | Count |
 |---|---|
-| total_clauses | 1934 |
-| clauses_with_state2002 | 3 |
-| clauses_with_state790 | 39 |
+| total_clauses | 1072 |
+| clauses_with_state2002 | 1 |
+| clauses_with_state790 | 4 |
 | clauses_with_both | 0 |
 | potential_subsumeable | 0 |
-| highest_frame_with_either | 4 |
+| highest_frame_with_either | 3 |
 
 ## Notes
-- CTI violation rate: 0/935 (0%)
-- Clauses with both vars: 0/1934 (0%)
+- CTI violation rate: 0/1974 (0%)
+- Clauses with both vars: 0/1072 (0%)
 - Lemma is formally valid but may have limited proof-trace impact. Consider broader synthesis.
 
 ## Interpretation

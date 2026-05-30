@@ -45,7 +45,8 @@ namespace pono {
 // Forward declarations for dump functions
 namespace {
 void dump_ic3ia_cti(const CTIContext & ctx, const smt::TermVec & children);
-void dump_ic3ia_frame_clause(size_t frame_idx,
+void dump_ic3ia_frame_clause(const IC3Base * engine,
+                             size_t frame_idx,
                              const IC3Formula & clause,
                              const smt::TermVec & literals);
 }
@@ -395,6 +396,14 @@ IC3Formula IC3Base::inductive_generalization(size_t i, const IC3Formula & c)
   IC3Formula block = ic3formula_negate(gen);
   assert(block.disjunction);
   return block;
+}
+
+bool IC3Base::resolve_frame_literal_for_dump(const smt::Term & lit,
+                                              std::string & resolved_expr,
+                                              bool & is_negated) const {
+  is_negated = false;
+  // Base implementation: cannot resolve, return false
+  return false;
 }
 
 void IC3Base::predecessor_generalization(size_t i,
@@ -891,7 +900,7 @@ void IC3Base::constrain_frame(size_t i,
   constrain_frame_label(i, constraint);
   frames_.at(i).push_back(constraint);
 
-  dump_ic3ia_frame_clause(i, constraint, constraint.children);
+  dump_ic3ia_frame_clause(this, i, constraint, constraint.children);
 }
 
 void IC3Base::constrain_frame_label(size_t i, const IC3Formula & constraint)
@@ -1404,7 +1413,8 @@ void dump_ic3ia_cti(const CTIContext & ctx, const smt::TermVec & children) {
   cti_counter++;
 }
 
-void dump_ic3ia_frame_clause(size_t frame_idx,
+void dump_ic3ia_frame_clause(const IC3Base * engine,
+                             size_t frame_idx,
                              const IC3Formula & clause,
                              const smt::TermVec & literals) {
   const char * env = std::getenv("PONO_LLM_DUMP_IC3IA");
@@ -1436,17 +1446,52 @@ void dump_ic3ia_frame_clause(size_t frame_idx,
   for (size_t i = 0; i < literals.size(); ++i) {
     if (i > 0) clause_file << ",";
     std::string raw = literals[i]->to_string();
-    smt::Term inner = literals[i];
-    bool is_negated = false;
-    if (literals[i]->get_op() == smt::Not) {
-      is_negated = true;
-      inner = *(literals[i]->begin());
+
+    // Try to resolve via virtual method (IC3IA overrides with lbl2pred_)
+    std::string resolved_raw_expr;
+    bool resolved_is_negated = false;
+    bool resolved_ok = engine->resolve_frame_literal_for_dump(
+        literals[i], resolved_raw_expr, resolved_is_negated);
+
+    // Extract variable names from the raw SMT string
+    // Frame literals look like: (= stateNN #bV) or (not (= stateNN #bV))
+    std::string var_expr = resolved_ok ? resolved_raw_expr : raw;
+    std::string vars_json = "[";
+    std::string vals_json = "{";
+    bool first_v = true;
+    size_t pos = 0;
+    while (pos < var_expr.size()) {
+      size_t st_pos = var_expr.find("state", pos);
+      if (st_pos == std::string::npos) break;
+      size_t ns = st_pos + 5;
+      while (ns < var_expr.size() && std::isdigit(var_expr[ns])) ns++;
+      if (ns == st_pos + 5) { pos = ns; continue; }
+      std::string st_var = var_expr.substr(st_pos, ns - st_pos);
+      if (!first_v) { vars_json += ","; vals_json += ","; }
+      vars_json += "\"" + st_var + "\"";
+      // Try to get the value
+      std::string val = "?";
+      size_t bv = var_expr.find("#b", ns);
+      if (bv != std::string::npos) {
+        size_t vs = bv + 2;
+        size_t ve = vs;
+        while (ve < var_expr.size() && (std::isdigit(var_expr[ve]) || var_expr[ve] == 'x' || (var_expr[ve] >= 'a' && var_expr[ve] <= 'f'))) ve++;
+        if (ve > vs) val = var_expr.substr(vs, ve - vs);
+      }
+      vals_json += "\"" + st_var + "\":\"" + val + "\"";
+      first_v = false;
+      pos = ns + 1;
     }
+    vars_json += "]";
+    vals_json += "}";
+
     clause_file << "{";
     clause_file << "\"raw\":\"" << cti_json_escape(raw) << "\",";
-    clause_file << "\"polarity\":" << (is_negated ? "false" : "true") << ",";
-    clause_file << "\"term_hash\":" << inner->hash() << ",";
-    clause_file << "\"inner_raw\":\"" << cti_json_escape(inner->to_string()) << "\"";
+    clause_file << "\"resolved\":" << (resolved_ok ? "true" : "false") << ",";
+    clause_file << "\"polarity\":" << (resolved_is_negated ? "false" : "true") << ",";
+    clause_file << "\"raw_expr\":\"" << cti_json_escape(resolved_ok ? resolved_raw_expr : raw) << "\",";
+    clause_file << "\"variables\":" << vars_json << ",";
+    clause_file << "\"state_values\":" << vals_json;
     clause_file << "}";
   }
   clause_file << "],";

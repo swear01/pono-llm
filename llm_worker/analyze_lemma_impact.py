@@ -114,6 +114,11 @@ class LemmaImpactAnalyzer:
         return not (ante_true and cons_false)
 
     def _var_in_record(self, record: Dict, var: str) -> bool:
+        if var in variables:
+            return True
+        return self._var_in_text(json.dumps(record), var)
+
+    def _var_in_record(self, record: Dict, var: str) -> bool:
         variables = record.get("variables", [])
         if var in variables:
             return True

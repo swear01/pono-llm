@@ -190,6 +190,18 @@ class IC3Base : public SafetyProver
 
   std::shared_ptr<LLMGeneralizer> llm_gen_;
 
+  /** Resolve a frame clause literal to its underlying predicate expression.
+   *  Used by IC3IA to map abstract solver labels back to concrete predicates.
+   *  Base implementation returns the literal as-is (unresolved).
+   *  @param lit the frame clause literal term (may be negated)
+   *  @param[out] resolved_expr set to predicate expression string if resolved
+   *  @param[out] is_negated set to true if the literal was negated
+   *  @return true if the literal was resolved, false otherwise
+   */
+  virtual bool resolve_frame_literal_for_dump(const smt::Term & lit,
+                                              std::string & resolved_expr,
+                                              bool & is_negated) const;
+
  protected:
   bool compute_witness() override;
 
