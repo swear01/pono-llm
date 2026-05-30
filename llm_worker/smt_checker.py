@@ -288,7 +288,7 @@ def lemma_to_smt(lemma: str, vars_dict: Dict[str, bz.Term],
             if other is None: return None
             return tm.mk_term(bz.Kind.EQUAL, [var, other])
 
-        # Handle #b and #x prefixes
+        # Handle #b and #x prefixes, and bare # prefix
         clean = val_str
         if clean.startswith("#b"):
             clean = clean[2:]
@@ -296,6 +296,9 @@ def lemma_to_smt(lemma: str, vars_dict: Dict[str, bz.Term],
         elif clean.startswith("#x"):
             clean = clean[2:]
             base = 16
+        elif clean.startswith("#"):
+            clean = clean[1:]
+            base = 2  # Assume binary for bare #
         else:
             base = 10
         val = int(clean, base)

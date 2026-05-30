@@ -1,0 +1,416 @@
+[
+  {
+    "lemma": "(=> (and (= state552 #0) (= state17 #0)) (= state15 #0))",
+    "antecedent_count": 2,
+    "consequent": "state15",
+    "antecedents": [
+      "state552",
+      "state17"
+    ],
+    "coverage": 1,
+    "init_ms": 0,
+    "step_ms": 5,
+    "verdict": "one_step_fail"
+  },
+  {
+    "lemma": "(=> (and (= state469 #0) (= state471 #0)) (= state15 #0))",
+    "antecedent_count": 2,
+    "consequent": "state15",
+    "antecedents": [
+      "state469",
+      "state471"
+    ],
+    "coverage": 1,
+    "init_ms": 0,
+    "step_ms": 4,
+    "induction_ms": 4,
+    "verdict": "solver_verified"
+  },
+  {
+    "lemma": "(=> (and (= state469 #0) (= state497 #0)) (= state15 #0))",
+    "antecedent_count": 2,
+    "consequent": "state15",
+    "antecedents": [
+      "state469",
+      "state497"
+    ],
+    "coverage": 1,
+    "init_ms": 0,
+    "step_ms": 4,
+    "induction_ms": 4,
+    "verdict": "solver_verified"
+  },
+  {
+    "lemma": "(=> (and (= state469 #0) (= state636 #0)) (= state15 #0))",
+    "antecedent_count": 2,
+    "consequent": "state15",
+    "antecedents": [
+      "state469",
+      "state636"
+    ],
+    "coverage": 1,
+    "init_ms": 0,
+    "step_ms": 4,
+    "induction_ms": 4,
+    "verdict": "solver_verified"
+  },
+  {
+    "lemma": "(=> (and (= state469 #0) (= state872 #0)) (= state15 #0))",
+    "antecedent_count": 2,
+    "consequent": "state15",
+    "antecedents": [
+      "state469",
+      "state872"
+    ],
+    "coverage": 1,
+    "init_ms": 0,
+    "step_ms": 4,
+    "induction_ms": 4,
+    "verdict": "solver_verified"
+  },
+  {
+    "lemma": "(=> (and (= state469 #0) (= state879 #0)) (= state15 #0))",
+    "antecedent_count": 2,
+    "consequent": "state15",
+    "antecedents": [
+      "state469",
+      "state879"
+    ],
+    "coverage": 1,
+    "init_ms": 0,
+    "step_ms": 5,
+    "induction_ms": 4,
+    "verdict": "solver_verified"
+  },
+  {
+    "lemma": "(=> (and (= state369 #0) (= state367 #0)) (= state15 #0))",
+    "antecedent_count": 2,
+    "consequent": "state15",
+    "antecedents": [
+      "state369",
+      "state367"
+    ],
+    "coverage": 1,
+    "init_ms": 0,
+    "step_ms": 4,
+    "verdict": "one_step_fail"
+  },
+  {
+    "lemma": "(=> (and (= state376 #0) (= state374 #0)) (= state15 #0))",
+    "antecedent_count": 2,
+    "consequent": "state15",
+    "antecedents": [
+      "state376",
+      "state374"
+    ],
+    "coverage": 1,
+    "init_ms": 0,
+    "step_ms": 5,
+    "verdict": "one_step_fail"
+  },
+  {
+    "lemma": "(=> (and (= state455 #0) (= state457 #0)) (= state15 #0))",
+    "antecedent_count": 2,
+    "consequent": "state15",
+    "antecedents": [
+      "state455",
+      "state457"
+    ],
+    "coverage": 1,
+    "init_ms": 0,
+    "step_ms": 4,
+    "induction_ms": 4,
+    "verdict": "solver_verified"
+  },
+  {
+    "lemma": "(=> (and (= state462 #0) (= state464 #0)) (= state15 #0))",
+    "antecedent_count": 2,
+    "consequent": "state15",
+    "antecedents": [
+      "state462",
+      "state464"
+    ],
+    "coverage": 1,
+    "init_ms": 0,
+    "step_ms": 4,
+    "induction_ms": 4,
+    "verdict": "solver_verified"
+  },
+  {
+    "lemma": "(=> (and (= state15 #0) (= state17 #0)) (= state552 #0))",
+    "antecedent_count": 2,
+    "consequent": "state552",
+    "antecedents": [
+      "state15",
+      "state17"
+    ],
+    "coverage": 1,
+    "init_ms": 0,
+    "step_ms": 4,
+    "induction_ms": 5,
+    "verdict": "solver_verified"
+  },
+  {
+    "lemma": "(=> (= state645 #0) (= state15 #0))",
+    "antecedent_count": 1,
+    "consequent": "state15",
+    "antecedents": [
+      "state645"
+    ],
+    "coverage": 1,
+    "init_ms": 0,
+    "step_ms": 4,
+    "verdict": "one_step_fail"
+  },
+  {
+    "lemma": "(=> (and (= state15 #0) (= state469 #0)) (= state471 #0))",
+    "antecedent_count": 2,
+    "consequent": "state471",
+    "antecedents": [
+      "state15",
+      "state469"
+    ],
+    "coverage": 1,
+    "init_ms": 0,
+    "step_ms": 4,
+    "induction_ms": 4,
+    "verdict": "solver_verified"
+  },
+  {
+    "lemma": "(=> (and (= state15 #0) (= state469 #0)) (= state497 #0))",
+    "antecedent_count": 2,
+    "consequent": "state497",
+    "antecedents": [
+      "state15",
+      "state469"
+    ],
+    "coverage": 1,
+    "init_ms": 0,
+    "step_ms": 4,
+    "induction_ms": 4,
+    "verdict": "solver_verified"
+  },
+  {
+    "lemma": "(=> (and (= state15 #0) (= state469 #0)) (= state636 #0))",
+    "antecedent_count": 2,
+    "consequent": "state636",
+    "antecedents": [
+      "state15",
+      "state469"
+    ],
+    "coverage": 1,
+    "init_ms": 0,
+    "step_ms": 4,
+    "induction_ms": 4,
+    "verdict": "solver_verified"
+  },
+  {
+    "lemma": "(=> (and (= state15 #0) (= state469 #0)) (= state872 #0))",
+    "antecedent_count": 2,
+    "consequent": "state872",
+    "antecedents": [
+      "state15",
+      "state469"
+    ],
+    "coverage": 1,
+    "init_ms": 0,
+    "step_ms": 4,
+    "induction_ms": 4,
+    "verdict": "solver_verified"
+  },
+  {
+    "lemma": "(=> (and (= state552 #0) (= state15 #0)) (= state17 #0))",
+    "antecedent_count": 2,
+    "consequent": "state17",
+    "antecedents": [
+      "state552",
+      "state15"
+    ],
+    "coverage": 1,
+    "init_ms": 0,
+    "step_ms": 4,
+    "induction_ms": 4,
+    "verdict": "solver_verified"
+  },
+  {
+    "lemma": "(=> (and (= state15 #0) (= state367 #0)) (= state369 #0))",
+    "antecedent_count": 2,
+    "consequent": "state369",
+    "antecedents": [
+      "state15",
+      "state367"
+    ],
+    "coverage": 1,
+    "init_ms": 0,
+    "step_ms": 4,
+    "induction_ms": 4,
+    "verdict": "solver_verified"
+  },
+  {
+    "lemma": "(=> (and (= state15 #0) (= state369 #0)) (= state367 #0))",
+    "antecedent_count": 2,
+    "consequent": "state367",
+    "antecedents": [
+      "state15",
+      "state369"
+    ],
+    "coverage": 1,
+    "init_ms": 0,
+    "step_ms": 4,
+    "induction_ms": 4,
+    "verdict": "solver_verified"
+  },
+  {
+    "lemma": "(=> (and (= state15 #0) (= state374 #0)) (= state376 #0))",
+    "antecedent_count": 2,
+    "consequent": "state376",
+    "antecedents": [
+      "state15",
+      "state374"
+    ],
+    "coverage": 1,
+    "init_ms": 0,
+    "step_ms": 4,
+    "induction_ms": 4,
+    "verdict": "solver_verified"
+  },
+  {
+    "lemma": "(=> (and (= state15 #0) (= state376 #0)) (= state374 #0))",
+    "antecedent_count": 2,
+    "consequent": "state374",
+    "antecedents": [
+      "state15",
+      "state376"
+    ],
+    "coverage": 1,
+    "init_ms": 0,
+    "step_ms": 4,
+    "induction_ms": 4,
+    "verdict": "solver_verified"
+  },
+  {
+    "lemma": "(=> (and (= state15 #0) (= state457 #0)) (= state455 #0))",
+    "antecedent_count": 2,
+    "consequent": "state455",
+    "antecedents": [
+      "state15",
+      "state457"
+    ],
+    "coverage": 1,
+    "init_ms": 0,
+    "step_ms": 4,
+    "induction_ms": 4,
+    "verdict": "solver_verified"
+  },
+  {
+    "lemma": "(=> (and (= state15 #0) (= state455 #0)) (= state457 #0))",
+    "antecedent_count": 2,
+    "consequent": "state457",
+    "antecedents": [
+      "state15",
+      "state455"
+    ],
+    "coverage": 1,
+    "init_ms": 0,
+    "step_ms": 5,
+    "induction_ms": 4,
+    "verdict": "solver_verified"
+  },
+  {
+    "lemma": "(=> (and (= state15 #0) (= state464 #0)) (= state462 #0))",
+    "antecedent_count": 2,
+    "consequent": "state462",
+    "antecedents": [
+      "state15",
+      "state464"
+    ],
+    "coverage": 1,
+    "init_ms": 0,
+    "step_ms": 4,
+    "induction_ms": 5,
+    "verdict": "solver_verified"
+  },
+  {
+    "lemma": "(=> (and (= state15 #0) (= state462 #0)) (= state464 #0))",
+    "antecedent_count": 2,
+    "consequent": "state464",
+    "antecedents": [
+      "state15",
+      "state462"
+    ],
+    "coverage": 1,
+    "init_ms": 0,
+    "step_ms": 4,
+    "induction_ms": 4,
+    "verdict": "solver_verified"
+  },
+  {
+    "lemma": "(=> (and (= state15 #0) (= state471 #0)) (= state469 #0))",
+    "antecedent_count": 2,
+    "consequent": "state469",
+    "antecedents": [
+      "state15",
+      "state471"
+    ],
+    "coverage": 1,
+    "init_ms": 0,
+    "step_ms": 4,
+    "induction_ms": 4,
+    "verdict": "solver_verified"
+  },
+  {
+    "lemma": "(=> (and (= state15 #0) (= state497 #0)) (= state469 #0))",
+    "antecedent_count": 2,
+    "consequent": "state469",
+    "antecedents": [
+      "state15",
+      "state497"
+    ],
+    "coverage": 1,
+    "init_ms": 0,
+    "step_ms": 4,
+    "induction_ms": 4,
+    "verdict": "solver_verified"
+  },
+  {
+    "lemma": "(=> (and (= state15 #0) (= state636 #0)) (= state469 #0))",
+    "antecedent_count": 2,
+    "consequent": "state469",
+    "antecedents": [
+      "state15",
+      "state636"
+    ],
+    "coverage": 1,
+    "init_ms": 0,
+    "step_ms": 4,
+    "induction_ms": 4,
+    "verdict": "solver_verified"
+  },
+  {
+    "lemma": "(=> (and (= state15 #0) (= state872 #0)) (= state469 #0))",
+    "antecedent_count": 2,
+    "consequent": "state469",
+    "antecedents": [
+      "state15",
+      "state872"
+    ],
+    "coverage": 1,
+    "init_ms": 0,
+    "step_ms": 4,
+    "induction_ms": 4,
+    "verdict": "solver_verified"
+  },
+  {
+    "lemma": "(=> (= state15 #0) (= state645 #0))",
+    "antecedent_count": 1,
+    "consequent": "state645",
+    "antecedents": [
+      "state15"
+    ],
+    "coverage": 1,
+    "init_ms": 0,
+    "step_ms": 4,
+    "induction_ms": 4,
+    "verdict": "solver_verified"
+  }
+]
