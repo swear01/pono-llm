@@ -47,6 +47,8 @@
 #include <fstream>
 #include <cstdlib>
 
+#include <iostream>
+
 using namespace smt;
 using namespace std;
 
@@ -401,6 +403,59 @@ void IC3IA::reset_solver()
     Term npred = ts_.next(elem.second);
     Term nlbl = label(npred);
     solver_->assert_formula(solver_->make_term(Equal, nlbl, npred));
+  }
+
+  // Opt-in concrete lifted lemma assertions
+  {
+    const char * env = std::getenv("PONO_LLM_ASSERT_LIFTED_LEMMAS");
+    if (env && std::string(env) != "0" && std::string(env) != "") {
+      static bool already_logged = false;
+      if (!already_logged) {
+        std::cerr << "[PONO_LLM] asserting lifted lemmas" << std::endl;
+        already_logged = true;
+      }
+
+      // Helper to build (= stateN #b0) term
+      auto mk_eq_bv0 = [this](const std::string & varname) -> Term {
+        Term sv = conc_ts_.lookup(varname);
+        if (!sv) return Term();
+        Term bv0 = solver_->make_term(0, sv->get_sort());
+        return solver_->make_term(Equal, sv, bv0);
+      };
+
+      // Lemma 1: state469=0 AND state471=0 => state15=0
+      {
+        Term eq469 = mk_eq_bv0("state469");
+        Term eq471 = mk_eq_bv0("state471");
+        Term eq15  = mk_eq_bv0("state15");
+        if (eq469 && eq471 && eq15) {
+          Term ante = solver_->make_term(And, TermVec{eq469, eq471});
+          solver_->assert_formula(solver_->make_term(Implies, ante, eq15));
+        }
+      }
+
+      // Lemma 2: state469=0 AND state497=0 => state15=0
+      {
+        Term eq469 = mk_eq_bv0("state469");
+        Term eq497 = mk_eq_bv0("state497");
+        Term eq15  = mk_eq_bv0("state15");
+        if (eq469 && eq497 && eq15) {
+          Term ante = solver_->make_term(And, TermVec{eq469, eq497});
+          solver_->assert_formula(solver_->make_term(Implies, ante, eq15));
+        }
+      }
+
+      // Lemma 3: state469=0 AND state636=0 => state15=0
+      {
+        Term eq469 = mk_eq_bv0("state469");
+        Term eq636 = mk_eq_bv0("state636");
+        Term eq15  = mk_eq_bv0("state15");
+        if (eq469 && eq636 && eq15) {
+          Term ante = solver_->make_term(And, TermVec{eq469, eq636});
+          solver_->assert_formula(solver_->make_term(Implies, ante, eq15));
+        }
+      }
+    }
   }
 }
 
