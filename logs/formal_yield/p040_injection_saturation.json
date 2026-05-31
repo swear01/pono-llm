@@ -1,0 +1,35 @@
+[
+  {
+    "config": "baseline",
+    "ctis": 1175,
+    "frame_clauses": 2936,
+    "predicates": 247
+  },
+  {
+    "config": "one_best",
+    "ctis": 1102,
+    "frame_clauses": 2892,
+    "predicates": 251,
+    "lemmas": 1,
+    "cti_delta_pct": -6.2,
+    "frame_delta_pct": -1.5
+  },
+  {
+    "config": "top_5_by_score",
+    "ctis": 801,
+    "frame_clauses": 2174,
+    "predicates": 248,
+    "lemmas": 5,
+    "cti_delta_pct": -31.8,
+    "frame_delta_pct": -26.0
+  },
+  {
+    "config": "all_26",
+    "ctis": 896,
+    "frame_clauses": 2531,
+    "predicates": 247,
+    "lemmas": 25,
+    "cti_delta_pct": -23.7,
+    "frame_delta_pct": -13.8
+  }
+]

@@ -47,6 +47,8 @@
 #include <fstream>
 #include <cstdlib>
 
+#include <fstream>
+#include <sstream>
 #include <iostream>
 
 using namespace smt;
@@ -406,16 +408,36 @@ void IC3IA::reset_solver()
   }
 
   // Opt-in concrete lifted lemma assertions
+  // Reads lemma list from text file (one lemma per line):
+  //   ant_var1 ant_var2 cons_var
+  // All values are #b0 (false / zero).
   {
     const char * env = std::getenv("PONO_LLM_ASSERT_LIFTED_LEMMAS");
     if (env && std::string(env) != "0" && std::string(env) != "") {
-      static bool already_logged = false;
-      if (!already_logged) {
-        std::cerr << "[PONO_LLM] asserting lifted lemmas" << std::endl;
-        already_logged = true;
+      static std::vector<std::vector<std::string>> loaded_lemmas;
+      static bool loaded = false;
+
+      if (!loaded) {
+        loaded = true;
+        const char * file_env = std::getenv("PONO_LLM_LEMMA_LIST");
+        std::string path = file_env ? file_env : "logs/formal_yield/lemma_list.txt";
+
+        std::ifstream infile(path);
+        std::string line;
+        while (std::getline(infile, line)) {
+          if (line.empty() || line[0] == '#') continue;
+          std::istringstream iss(line);
+          std::vector<std::string> words;
+          std::string w;
+          while (iss >> w) words.push_back(w);
+          if (words.size() >= 3) loaded_lemmas.push_back(words);
+        }
+        std::cerr << "[PONO_LLM] loaded " << loaded_lemmas.size()
+                  << " lifted lemmas from " << path << std::endl;
       }
 
-      // Helper to build (= stateN #b0) term
+      if (loaded_lemmas.empty()) return;
+
       auto mk_eq_bv0 = [this](const std::string & varname) -> Term {
         Term sv = conc_ts_.lookup(varname);
         if (!sv) return Term();
@@ -423,36 +445,16 @@ void IC3IA::reset_solver()
         return solver_->make_term(Equal, sv, bv0);
       };
 
-      // Lemma 1: state469=0 AND state471=0 => state15=0
-      {
-        Term eq469 = mk_eq_bv0("state469");
-        Term eq471 = mk_eq_bv0("state471");
-        Term eq15  = mk_eq_bv0("state15");
-        if (eq469 && eq471 && eq15) {
-          Term ante = solver_->make_term(And, TermVec{eq469, eq471});
-          solver_->assert_formula(solver_->make_term(Implies, ante, eq15));
-        }
-      }
-
-      // Lemma 2: state469=0 AND state497=0 => state15=0
-      {
-        Term eq469 = mk_eq_bv0("state469");
-        Term eq497 = mk_eq_bv0("state497");
-        Term eq15  = mk_eq_bv0("state15");
-        if (eq469 && eq497 && eq15) {
-          Term ante = solver_->make_term(And, TermVec{eq469, eq497});
-          solver_->assert_formula(solver_->make_term(Implies, ante, eq15));
-        }
-      }
-
-      // Lemma 3: state469=0 AND state636=0 => state15=0
-      {
-        Term eq469 = mk_eq_bv0("state469");
-        Term eq636 = mk_eq_bv0("state636");
-        Term eq15  = mk_eq_bv0("state15");
-        if (eq469 && eq636 && eq15) {
-          Term ante = solver_->make_term(And, TermVec{eq469, eq636});
-          solver_->assert_formula(solver_->make_term(Implies, ante, eq15));
+      int asserted = 0;
+      for (const auto & l : loaded_lemmas) {
+        if (l.size() < 3) continue;
+        Term eq1 = mk_eq_bv0(l[0]);
+        Term eq2 = mk_eq_bv0(l[1]);
+        Term eqC = mk_eq_bv0(l[2]);
+        if (eq1 && eq2 && eqC) {
+          Term ante = solver_->make_term(And, TermVec{eq1, eq2});
+          solver_->assert_formula(solver_->make_term(Implies, ante, eqC));
+          asserted++;
         }
       }
     }
