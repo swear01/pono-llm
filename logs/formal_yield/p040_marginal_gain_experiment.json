@@ -1,0 +1,32 @@
+[
+  {
+    "cfg": "baseline",
+    "ctis": -1,
+    "frames": -1,
+    "runtime": -1
+  },
+  {
+    "cfg": "top_5",
+    "ctis": -1,
+    "frames": -1,
+    "runtime": -1
+  },
+  {
+    "cfg": "diverse_5",
+    "ctis": -1,
+    "frames": -1,
+    "runtime": -1
+  },
+  {
+    "cfg": "one_best",
+    "ctis": -1,
+    "frames": -1,
+    "runtime": -1
+  },
+  {
+    "cfg": "all_26",
+    "ctis": -1,
+    "frames": -1,
+    "runtime": -1
+  }
+]

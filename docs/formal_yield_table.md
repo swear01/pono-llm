@@ -39,3 +39,20 @@
 
 Task 59 measures formal-gate readiness, not proof impact. Analytical checks are intentionally conservative.
 1 candidates analytically verified.
+
+## Solver Validation (Tasks 61-62)
+
+5 candidates shortlisted for Bitwuzla-backed validation:
+
+| Candidate | Init | One-step | Induction | Verdict |
+|---|---|---|---|---|
+| 1: `state1536=10 => state790=0` | UNSAT | blocked | blocked | init_pass_induction_blocked |
+| 2: `state1536=0 => state1558=0` | UNSAT | blocked | blocked | init_pass_induction_blocked |
+| 3: `state2002=1 => state1536=0` | UNSAT | blocked | blocked | init_pass_induction_blocked |
+| 4: `!(state1536=10 && state79=1)` | UNSAT | blocked | blocked | init_pass_induction_blocked |
+| 5: `state1536=11 => i_wb_data[12]=1` | blocked | blocked | blocked | mapping_blocked |
+
+All 4 state-only candidates are init-safe. Transition checks blocked: Python
+`BV_EXTRACT` rejects BTOR2 `slice` indices. Fix is the next priority.
+
+See `docs/solver_validation_results.md` and `docs/mapping_spike_solver_shortlist.md`.

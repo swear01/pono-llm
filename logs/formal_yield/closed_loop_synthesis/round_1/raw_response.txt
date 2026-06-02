@@ -3,36 +3,36 @@
   "candidates": [
     {
       "candidate_id": "cls_r1_001",
-      "lemma": "(=> (= state2002 1) (= state790 1))",
-      "schema": "implication",
-      "variables": ["state2002", "state790"],
-      "transition_rationale": "State790 (o_wb_stall) is computed via complex OR/ITE that includes state2002 (r_pipe_req) as a dependency. The design behavior suggests that when a pipeline request is active, the Wishbone stall is asserted to prevent new transactions from interfering.",
-      "why_avoids_previous_counterexamples": "Previously falsified lemmas focused on state1536 relationships with state790, state2002, state1558, and state79, or vice versa. This direct implication between state2002 and state790 was not among them.",
-      "why_consistent_with_reachable_samples": "All known reachable samples either have state2002=0 (btor2_init, induction_ce with state1536_next=0) or show state790=1 where state2002 is not specified, none show a state with state2002=1 and state790=0.",
-      "why_nontrivial": "It connects a pipeline request signal to a stall signal, which is not a tautology or a simple bitwidth bound; it requires understanding of the interaction logic.",
+      "lemma": "(or (= state1536 0) (= state1536 10) (= state1536 15))",
+      "schema": "subset_restriction",
+      "variables": ["state1536"],
+      "transition_rationale": "The o_dspi_mod register (state1536) is a 4-bit mode register that is only assigned values 0 (IDLE), 10, or 15 according to the finite-state machine logic. The complex ITE update ensures no other mode values are written.",
+      "why_avoids_previous_counterexamples": "Previous counterexamples falsified a bound (<=14), which excluded 15; this disjunction allows 15 while restricting to the observed reachable values.",
+      "why_consistent_with_reachable_samples": "All known reachable samples have state1536_next as 0, 10, or 15, satisfying the disjunction.",
+      "why_nontrivial": "It restricts the state space beyond the bitwidth, ruling out 12 other possible mode values.",
       "risk": "medium"
     },
     {
       "candidate_id": "cls_r1_002",
-      "lemma": "(! (and (= state1536 15) (= state79 1)))",
-      "schema": "mutual_exclusion",
-      "variables": ["state1536", "state79"],
-      "transition_rationale": "State1536 (o_dspi_mod) is a 4-bit mode register and state79 (cfg_mode) is a configuration bit. Mode value 15 may represent a special state that forces cfg_mode to 0 or they are never set together because they are driven by exclusive conditions in the complex ITE logic.",
-      "why_avoids_previous_counterexamples": "Previous falsified candidates did not examine this conjunction; they tested implications like state1536=15 => state2002=1, state1536=0 => state79=0, etc., but not the exclusion of state1536=15 and state79=1.",
-      "why_consistent_with_reachable_samples": "No provided reachable sample has state1536=15 and state79=1 simultaneously. The sample state1536_next=15, state2002_next=1 does not specify state79, allowing it to be 0.",
-      "why_nontrivial": "It relates a multi-bit mode value to a single configuration bit, not a direct encoding tautology.",
-      "risk": "medium"
+      "lemma": "(=> (= state2002 1) (= state790 1))",
+      "schema": "implication",
+      "variables": ["state2002", "state790"],
+      "transition_rationale": "The r_pipe_req (state2002) indicates an active request; the wb_stall (state790) is always asserted during such requests to prevent new accesses, as per the stall logic.",
+      "why_avoids_previous_counterexamples": "No previous candidate involved this implication, so the counterexamples do not apply.",
+      "why_consistent_with_reachable_samples": "No reachable sample shows state2002=1 with state790=0; the init state has state2002=0 (vacuously true), and samples with state2002_next=1 all show state790_next=1.",
+      "why_nontrivial": "It links two distinct signals, indicating a dependency rather than a simple value constraint.",
+      "risk": "high"
     },
     {
       "candidate_id": "cls_r1_003",
-      "lemma": "(! (and (= state1536 15) (= state1558 1)))",
-      "schema": "mutual_exclusion",
-      "variables": ["state1536", "state1558"],
-      "transition_rationale": "State1558 (cfg_speed) is updated only under cfg_stb & !stall & write, and state1536 is o_dspi_mod. Mode 15 might correspond to a low-speed or idle condition where speed bit is forced low, or the update logic prevents both being high due to cross-dependencies in the ITE chain.",
-      "why_avoids_previous_counterexamples": "Falsified lemmas did not include this specific combination. The falsified (=> (= state1536 0) (= state1558 0)) is distinct and does not cover the 15 case.",
-      "why_consistent_with_reachable_samples": "None of the given reachable samples show state1536=15 and state1558=1 together; the sample with state1536_next=15 does not indicate state1558, so it could be 0.",
-      "why_nontrivial": "It imposes a restriction between a mode register and a configuration speed bit, not a simple bitwidth bound.",
-      "risk": "medium"
+      "lemma": "(= state790 1)",
+      "schema": "constant",
+      "variables": ["state790"],
+      "transition_rationale": "The o_wb_stall signal is asserted at reset and in all observed transitions. The complex OR/ITE logic might unconditionally keep it high under all reachable conditions.",
+      "why_avoids_previous_counterexamples": "No previous candidate claimed a constant value for state790, so the counterexamples do not contradict it.",
+      "why_consistent_with_reachable_samples": "All reachable samples show state790_next=1, and init state790 is 1.",
+      "why_nontrivial": "It asserts a constant value for a 1-bit signal, which is not a tautology and significantly restricts the design.",
+      "risk": "high"
     }
   ]
 }

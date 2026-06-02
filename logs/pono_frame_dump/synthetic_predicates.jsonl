@@ -1,3 +1,0 @@
-{"type": "predicate_map", "label": "pred_1", "pretty_expr": "state2002 = 1", "variables": ["state2002"], "state_values": {"state2002": "1"}}
-{"type": "predicate_map", "label": "pred_2", "pretty_expr": "state790 = 1", "variables": ["state790"], "state_values": {"state790": "1"}}
-{"type": "predicate_map", "label": "pred_3", "pretty_expr": "state1536 = 15", "variables": ["state1536"], "state_values": {"state1536": "15"}}

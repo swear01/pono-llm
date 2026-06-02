@@ -1,0 +1,10 @@
+{
+  "cfg": "baseline",
+  "run_id": "baseline_1780330534",
+  "seed": 42,
+  "k": 5,
+  "ctis": 1119,
+  "frames": 2130,
+  "predicates": 243,
+  "runtime_s": -1
+}

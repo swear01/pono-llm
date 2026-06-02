@@ -1,0 +1,11 @@
+{
+  "schemas": [
+    "single_guard_implication",
+    "guarded_implication_2",
+    "guarded_implication_3",
+    "nary_mutex_3",
+    "or_consequent_guard",
+    "reject"
+  ],
+  "tests_ran": 5
+}

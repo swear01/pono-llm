@@ -64,23 +64,23 @@ Generate exactly 3 candidates. Return ONLY JSON.
 The following candidates were proposed but FAILED formal checks:
 
   ### Failure 1
-  lemma: (=> (= state1536 0) (= state790 1))
+  lemma: (=> (= state1536 0) (= state2002 0))
   failure: one_step (SAT counterexample found)
-  next-state: state1536_next=0, state1558_next=0, state2002_next=0, state790_next=0, state79_next=0
+  next-state: state1536_next=0, state1558_next=1, state2002_next=1, state790_next=1, state79_next=0
   current-state: state1536=0, state1558=0, state2002=0, state79=0
   reason: antecedent state1536=0 holds
 
   ### Failure 2
-  lemma: (=> (= state1536 0) (= state79 0))
+  lemma: (=> (= state2002 1) (not (= state1536 0)))
   failure: one_step (SAT counterexample found)
-  next-state: state1536_next=0, state1558_next=1, state2002_next=0, state790_next=1, state79_next=1
+  next-state: state1536_next=0, state1558_next=1, state2002_next=1, state790_next=1, state79_next=0
   current-state: state1536=0, state1558=0, state2002=0, state79=0
-  reason: antecedent state1536=0 holds
+  reason: one_step SAT — lemma evaluates to FALSE
 
   ### Failure 3
-  lemma: (=> (= state1536 15) (= state790 0))
+  lemma: (! (and (= state1536 15) (= state790 1)))
   failure: one_step (SAT counterexample found)
   next-state: state1536_next=15, state1558_next=1, state2002_next=0, state790_next=1, state79_next=1
   current-state: state1536=0, state1558=0, state2002=0, state79=0
-  reason: antecedent state1536=15 holds
+  reason: mutex violated — both conditions true
 

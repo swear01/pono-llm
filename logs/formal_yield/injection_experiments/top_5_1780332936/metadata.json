@@ -1,0 +1,10 @@
+{
+  "cfg": "top_5",
+  "run_id": "top_5_1780332936",
+  "seed": 42,
+  "k": 5,
+  "ctis": 903,
+  "frames": 1156,
+  "predicates": 241,
+  "runtime_s": -1
+}

@@ -1,0 +1,76 @@
+{
+  "summary": {
+    "total_candidates": 5,
+    "init_checks_run": 4,
+    "init_pass": 4,
+    "init_fail": 0,
+    "one_step_checks_run": 0,
+    "inductive_checks_run": 0,
+    "blocked_by_transition_fail": 4,
+    "blocked_by_input_lemma": 1
+  },
+  "results": [
+    {
+      "candidate_id": "cand_007_guarded_implication",
+      "lemma": "(=> (= state1536 10) (= state790 0))",
+      "init": {"result": "unsat", "time_ms": 0, "label": "init_safe"},
+      "one_step": {"result": "blocked_transition_fail", "label": "mapping_blocked"},
+      "inductive": {"result": "blocked_transition_fail", "label": "mapping_blocked"},
+      "verdict": "init_pass_induction_blocked"
+    },
+    {
+      "candidate_id": "cand_008_guarded_implication",
+      "lemma": "(=> (= state1536 0) (= state1558 0))",
+      "init": {"result": "unsat", "time_ms": 0, "label": "init_safe"},
+      "one_step": {"result": "blocked_transition_fail", "label": "mapping_blocked"},
+      "inductive": {"result": "blocked_transition_fail", "label": "mapping_blocked"},
+      "verdict": "init_pass_induction_blocked"
+    },
+    {
+      "candidate_id": "cand_004_guarded_implication",
+      "lemma": "(=> (= state2002 1) (= state1536 0))",
+      "init": {"result": "unsat", "time_ms": 0, "label": "init_safe"},
+      "one_step": {"result": "blocked_transition_fail", "label": "mapping_blocked"},
+      "inductive": {"result": "blocked_transition_fail", "label": "mapping_blocked"},
+      "verdict": "init_pass_induction_blocked"
+    },
+    {
+      "candidate_id": "cand_005_mutual_exclusion",
+      "lemma": "(! (and (= state1536 10) (= state79 1)))",
+      "init": {"result": "unsat", "time_ms": 0, "label": "init_safe"},
+      "one_step": {"result": "blocked_transition_fail", "label": "mapping_blocked"},
+      "inductive": {"result": "blocked_transition_fail", "label": "mapping_blocked"},
+      "verdict": "init_pass_induction_blocked"
+    },
+    {
+      "candidate_id": "cand_007_input",
+      "lemma": "(=> (= state1536 11) (= ((_ extract 12 12) i_wb_data) 1))",
+      "init": {"result": "blocked_input_lemma", "label": "mapping_blocked"},
+      "one_step": {"result": "blocked_transition_fail", "label": "mapping_blocked"},
+      "inductive": {"result": "blocked_transition_fail", "label": "mapping_blocked"},
+      "verdict": "mapping_blocked"
+    }
+  ],
+  "smt_checker_fixes": [
+    "init parsing: p[2] -> f'state{p[2]}' in state_sorts lookup",
+    "input width: read from BTOR2 declaration instead of hardcoded 1",
+    "const parsing: support binary values via int(val_str, 2)",
+    "12 new BTOR2 ops: slice, concat, redor, redand, xor, xnor, add, sub, ult, ulte, neq, srl",
+    "ite condition: _as_bool() converts 1-bit BV to Boolean via EQUAL with 1",
+    "error tolerance: skip failed transition lines instead of bailing entirely",
+    "lemma parser: regex-based S-expression parser with width-aware constant creation"
+  ],
+  "transition_translation_stats": {
+    "total_next_lines": 247,
+    "successfully_translated": 120,
+    "skipped": 127,
+    "target_state_transitions_all_skipped": true,
+    "target_states_failing": [
+      {"state_id": "79", "next_node": "2172", "failure": "returns None (unsupported sub-op)"},
+      {"state_id": "790", "next_node": "2676", "failure": "sort mismatch in BV_CONCAT"},
+      {"state_id": "1536", "next_node": "2968", "failure": "returns None (out-of-range slice)"},
+      {"state_id": "1558", "next_node": "2970", "failure": "returns None (out-of-range slice: bit 10 from 10-bit input)"},
+      {"state_id": "2002", "next_node": "3213", "failure": "sort mismatch"}
+    ]
+  }
+}

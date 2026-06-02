@@ -1,6 +1,12 @@
 [
   {
     "candidate_id": "cls_r1_001",
+    "lemma": "(or (= state1536 0) (= state1536 10) (= state1536 15))",
+    "schema": "subset_restriction",
+    "verdict": "parse_failed"
+  },
+  {
+    "candidate_id": "cls_r1_002",
     "lemma": "(=> (= state2002 1) (= state790 1))",
     "schema": "implication",
     "verdict": "solver_verified_useful",

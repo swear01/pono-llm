@@ -1,3 +1,0 @@
-{"type": "clause", "frame": 3, "literals": [{"varname": "state2002", "polarity": "negated"}, {"varname": "state790", "polarity": "positive"}], "variables": ["state2002", "state790"], "raw_smt": "(or (not (= state2002 #b1)) (= state790 #b1))"}
-{"type": "clause", "frame": 8, "literals": [{"varname": "state1536", "polarity": "negated"}], "variables": ["state1536"], "raw_smt": "(or (not (= state1536 #x0f)))"}
-{"type": "clause", "frame": 12, "literals": [{"varname": "state2002", "polarity": "negated"}, {"varname": "state790", "polarity": "negative"}, {"varname": "state1536", "polarity": "negative"}], "variables": ["state2002", "state790", "state1536"], "raw_smt": "(or (not state2002) (not state790) (not (= state1536 #x0a)))"}

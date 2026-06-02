@@ -9,6 +9,10 @@
 **Selection criteria**: Multi-variable, state-only, concise, belongs to useful schema
 family (guarded_implication, mutual_exclusion, bitslice_disequality, mode_exclusion).
 
+**Solver results (Tasks 61-62)**: All 4 state-only candidates pass init check (UNSAT).
+One-step/induction blocked by Python BTOR2-to-SMT transition translation failures.
+See `docs/solver_validation_results.md`.
+
 ## Selected Candidates
 
 | Rank | Candidate ID | Cluster | Schema | Lemma | Verdict | Why selected | Mapping risk |
