@@ -1,0 +1,12 @@
+{
+  "index": 1,
+  "mode": "satellite_generalization",
+  "seed": 1,
+  "primer_hash": "0cf5b0822c28fbfc",
+  "payload_hash": "f946795a354851d3",
+  "thinking": "none",
+  "temperature": 0.8,
+  "tokens": 4586,
+  "latency_ms": 69827.44526863098,
+  "runtime_s": 69
+}

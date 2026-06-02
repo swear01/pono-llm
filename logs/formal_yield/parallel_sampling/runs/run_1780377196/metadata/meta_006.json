@@ -1,0 +1,12 @@
+{
+  "index": 6,
+  "mode": "nary_mutex",
+  "seed": 6,
+  "primer_hash": "0cf5b0822c28fbfc",
+  "payload_hash": "c781a41bdeac4098",
+  "thinking": "none",
+  "temperature": 0.8,
+  "tokens": 4691,
+  "latency_ms": 70374.66669082642,
+  "runtime_s": 70
+}

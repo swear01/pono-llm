@@ -1,0 +1,837 @@
+[
+  {
+    "candidate_id": "cand_001",
+    "lemma": "(=> (not (and (= state559 #b1) (= state566 #b1) (= state573 #b1) (= state580 #b1))) (= state15 #b0))",
+    "schema": "guarded_implication",
+    "variables": [
+      "state559",
+      "state566",
+      "state573",
+      "state580",
+      "state15"
+    ],
+    "source_mode": "guarded_implication",
+    "why_may_be_inductive": "The individual frame clauses already establish that state15=0 whenever any of state559, state566, state573, state580 is 0. The consequent is true exactly when at least one is 0, which matches the antecedent of this lemma. Since the individual clauses are inductive, their conjunction (compressed into this single implication) is likely also inductive.",
+    "why_may_have_proof_impact": "Compresses multiple proof-relevant frame clauses into a single lemma, potentially simplifying the IC3IA proof frontier and enabling higher-level reasoning about state15.",
+    "risk": "low",
+    "_source_file": "response_000.txt"
+  },
+  {
+    "candidate_id": "cand_002",
+    "lemma": "(=> (or (= state559 #b0) (= state566 #b0) (= state573 #b0) (= state580 #b0)) (= state15 #b0))",
+    "schema": "guarded_implication",
+    "variables": [
+      "state559",
+      "state566",
+      "state573",
+      "state580",
+      "state15"
+    ],
+    "source_mode": "guarded_implication",
+    "why_may_be_inductive": "Logically equivalent to cand_001; the frame clauses guarantee that if any of the four flags is 0 then state15 is 0, which is exactly the condition in the antecedent. This or-form may be recognized as a direct clause-lifting pattern.",
+    "why_may_have_proof_impact": "Same compression benefit as cand_001; this alternate syntax may interact better with the solver's clause management and generalization heuristics.",
+    "risk": "low",
+    "_source_file": "response_000.txt"
+  },
+  {
+    "candidate_id": "cand_003",
+    "lemma": "(=> (and (= state559 #b0) (= state566 #b0)) (= state15 #b0))",
+    "schema": "guarded_implication",
+    "variables": [
+      "state559",
+      "state566",
+      "state15"
+    ],
+    "source_mode": "guarded_implication",
+    "why_may_be_inductive": "Because state559=0 alone already forces state15=0, the conjunction of state559=0 and state566=0 is a stronger antecedent, guaranteeing the same consequent. As the individual implications are inductive, this specific conjunction should also be inductive.",
+    "why_may_have_proof_impact": "Acts as a strengthened local invariant that may help the IC3IA engine detect contradictions earlier, even if it does not compress the clause family as much.",
+    "risk": "low",
+    "_source_file": "response_000.txt"
+  },
+  {
+    "candidate_id": "cand_004",
+    "lemma": "(=> (and (= state573 #b0) (= state580 #b0)) (= state15 #b0))",
+    "schema": "guarded_implication",
+    "variables": [
+      "state573",
+      "state580",
+      "state15"
+    ],
+    "source_mode": "guarded_implication",
+    "why_may_be_inductive": "Analogous to cand_003; the antecedent is a subset of conditions that individually imply state15=0, so the lemma should hold inductively.",
+    "why_may_have_proof_impact": "Provides a focused implication that may be more useful while proving certain CTIs involving state573 and state580.",
+    "risk": "low",
+    "_source_file": "response_000.txt"
+  },
+  {
+    "candidate_id": "cand_005",
+    "lemma": "(=> (and (= state559 #b0) (= state573 #b0)) (= state15 #b0))",
+    "schema": "guarded_implication",
+    "variables": [
+      "state559",
+      "state573",
+      "state15"
+    ],
+    "source_mode": "guarded_implication",
+    "why_may_be_inductive": "Same reasoning as cand_003: any conjunction of these zero-conditions is a sufficient antecedent for state15=0, and the base implications are already inductive.",
+    "why_may_have_proof_impact": "Diversifies the library of lemmas to cover different pairwise combinations, increasing the chance that IC3IA finds a useful generalization.",
+    "risk": "low",
+    "_source_file": "response_000.txt"
+  },
+  {
+    "candidate_id": "cand_006",
+    "lemma": "(=> (and (= state566 #b0) (= state580 #b0)) (= state15 #b0))",
+    "schema": "guarded_implication",
+    "variables": [
+      "state566",
+      "state580",
+      "state15"
+    ],
+    "source_mode": "guarded_implication",
+    "why_may_be_inductive": "Pairwise conjunction of two known sufficient conditions; inductiveness is inherited from the individual conditions.",
+    "why_may_have_proof_impact": "May serve as a stepping stone to prove more complex invariants combining these two specific signals.",
+    "risk": "low",
+    "_source_file": "response_000.txt"
+  },
+  {
+    "candidate_id": "cand_007",
+    "lemma": "(=> (and (= state559 #b0) (= state580 #b0)) (= state15 #b0))",
+    "schema": "guarded_implication",
+    "variables": [
+      "state559",
+      "state580",
+      "state15"
+    ],
+    "source_mode": "guarded_implication",
+    "why_may_be_inductive": "Another pairwise combination; inductiveness follows from the individual frame clauses.",
+    "why_may_have_proof_impact": "Completing the set of pairings ensures all local redundancies are exploited, which may strengthen the proof frontier.",
+    "risk": "low",
+    "_source_file": "response_000.txt"
+  },
+  {
+    "candidate_id": "cand_008",
+    "lemma": "(=> (and (= state566 #b0) (= state573 #b0)) (= state15 #b0))",
+    "schema": "guarded_implication",
+    "variables": [
+      "state566",
+      "state573",
+      "state15"
+    ],
+    "source_mode": "guarded_implication",
+    "why_may_be_inductive": "The final pairwise conjunction; each constituent condition already implies the consequent, so the conjunction does as well. Should remain inductive.",
+    "why_may_have_proof_impact": "Provides a comprehensive set of strengthened implications, potentially reducing the number of required proof steps for state15 unreachability.",
+    "risk": "low",
+    "_source_file": "response_000.txt"
+  },
+  {
+    "candidate_id": "sample_001",
+    "lemma": "(=> (= state15 #b1) (= state559 #b0))",
+    "schema": "guarded_implication",
+    "variables": [
+      "state15",
+      "state559"
+    ],
+    "source_mode": "satellite_generalization",
+    "why_may_be_inductive": "Frame clauses show that when state559=1, state15 must be 0, so the forward implication state15=1 => state559=0 may hold invariantly as a contrapositive.",
+    "why_may_have_proof_impact": "Reducing the activation condition of state15 may simplify the invariant by limiting the context in which state15 can be true, aiding PDR convergence.",
+    "risk": "medium",
+    "_source_file": "response_001.txt"
+  },
+  {
+    "candidate_id": "sample_002",
+    "lemma": "(=> (= state15 #b1) (= state566 #b0))",
+    "schema": "guarded_implication",
+    "variables": [
+      "state15",
+      "state566"
+    ],
+    "source_mode": "satellite_generalization",
+    "why_may_be_inductive": "Similar to sample_001, frame clauses force state566=1 -> state15=0, indicating state15=1 => state566=0 may be an auxiliary invariant.",
+    "why_may_have_proof_impact": "Constraining state15 with additional satellite guards reduces the over-approximation of reachable states where state15 is true.",
+    "risk": "medium",
+    "_source_file": "response_001.txt"
+  },
+  {
+    "candidate_id": "sample_003",
+    "lemma": "(=> (= state15 #b1) (= state573 #b0))",
+    "schema": "guarded_implication",
+    "variables": [
+      "state15",
+      "state573"
+    ],
+    "source_mode": "satellite_generalization",
+    "why_may_be_inductive": "From the frame-clause pattern (not (not (= state573 #b0)) => state15=0), state573=1 precludes state15=1, suggesting the implication holds inductively.",
+    "why_may_have_proof_impact": "Adding this lemma may reduce the number of clauses needed for state15 by explicitly encoding a necessary condition.",
+    "risk": "medium",
+    "_source_file": "response_001.txt"
+  },
+  {
+    "candidate_id": "sample_004",
+    "lemma": "(=> (= state15 #b1) (= state580 #b0))",
+    "schema": "guarded_implication",
+    "variables": [
+      "state15",
+      "state580"
+    ],
+    "source_mode": "satellite_generalization",
+    "why_may_be_inductive": "Contrapositive of the clause (not (= state580 #b0)) -> (not (= state15 #b1)) may be inductive, as seen in similar frame clauses.",
+    "why_may_have_proof_impact": "Extending the set of satellite constraints on state15 can help IC3IA abstract away irrelevant details about these bits.",
+    "risk": "medium",
+    "_source_file": "response_001.txt"
+  },
+  {
+    "candidate_id": "sample_005",
+    "lemma": "(not (and (= state15 #b1) (= state559 #b1)))",
+    "schema": "nary_mutex",
+    "variables": [
+      "state15",
+      "state559"
+    ],
+    "source_mode": "satellite_generalization",
+    "why_may_be_inductive": "Mutual exclusion between state15 and state559 is a restatement of the frame clause and may be stable across transitions.",
+    "why_may_have_proof_impact": "Mutex clauses are unit-clause friendly for SAT and may directly prune counterexamples without complex resolution.",
+    "risk": "medium",
+    "_source_file": "response_001.txt"
+  },
+  {
+    "candidate_id": "sample_006",
+    "lemma": "(not (and (= state15 #b1) (= state566 #b1)))",
+    "schema": "nary_mutex",
+    "variables": [
+      "state15",
+      "state566"
+    ],
+    "source_mode": "satellite_generalization",
+    "why_may_be_inductive": "Since state566=1 forces state15=0, the mutex is an equivalent, compact invariant that may be verified modularly.",
+    "why_may_have_proof_impact": "This candidate breaks the relation into a crisp SAT-friendly invariant, potentially accelerating proof of state15 unreachability.",
+    "risk": "medium",
+    "_source_file": "response_001.txt"
+  },
+  {
+    "candidate_id": "sample_007",
+    "lemma": "(=> (= state15 #b1) (and (= state559 #b0) (= state566 #b0) (= state573 #b0) (= state580 #b0)))",
+    "schema": "guarded_implication",
+    "variables": [
+      "state15",
+      "state559",
+      "state566",
+      "state573",
+      "state580"
+    ],
+    "source_mode": "satellite_generalization",
+    "why_may_be_inductive": "Combining several individual constraints from frame clauses into a single conjunction may be inductive if the conjunction closure holds under transition.",
+    "why_may_have_proof_impact": "A strong precondition on state15 can drastically reduce the reachable region, potentially compressing many frame clauses into one.",
+    "risk": "medium",
+    "_source_file": "response_001.txt"
+  },
+  {
+    "candidate_id": "sample_008",
+    "lemma": "(=> (= state15 #b1) (= state1558 #b0))",
+    "schema": "guarded_implication",
+    "variables": [
+      "state15",
+      "state1558"
+    ],
+    "source_mode": "satellite_generalization",
+    "why_may_be_inductive": "Speculatively, state15 may be tied to a high-speed config; cfg_speed=1 could be incompatible with whatever condition state15 represents.",
+    "why_may_have_proof_impact": "Linking state15 to a known configuration variable may reveal a global mode invariant, reducing proof-local clauses.",
+    "risk": "medium",
+    "_source_file": "response_001.txt"
+  },
+  {
+    "candidate_id": "cfc_002",
+    "lemma": "(=> (= state15 #b1) (and (= state559 #b1) (= state566 #b1) (= state573 #b1) (= state580 #b1)))",
+    "schema": "guarded_implication",
+    "variables": [
+      "state15",
+      "state559",
+      "state566",
+      "state573",
+      "state580"
+    ],
+    "source_mode": "clause_family_compression",
+    "why_may_be_inductive": "If the frame already ensures that any zero on these bits forces state15=0, then the contrapositive holds frame-invariantly. Assuming the state machine treats these bits as mutually exclusive or as a one-hot condition, the forward implication might also be stepwise stable.",
+    "why_may_have_proof_impact": "Provides a forward guarantee about state15=1, enabling the solver to propagate constraints forward and potentially block deeper CTIs that rely on state15 being active without all bits set.",
+    "risk": "high",
+    "_source_file": "response_002.txt"
+  },
+  {
+    "candidate_id": "cfc_003",
+    "lemma": "(=> (and (= state559 #b1) (= state566 #b1) (= state573 #b1) (= state580 #b1)) (= state15 #b1))",
+    "schema": "guarded_implication",
+    "variables": [
+      "state15",
+      "state559",
+      "state566",
+      "state573",
+      "state580"
+    ],
+    "source_mode": "clause_family_compression",
+    "why_may_be_inductive": "This is the converse of the existing frame clauses. If the original clauses show that any zero bit forces state15=0, then the only way state15 can be 1 is if all bits are 1. Under the assumption that this corollary holds in all reachable states (based on the original clauses), it may also hold inductively.",
+    "why_may_have_proof_impact": "Complements the existing backward implication, potentially enabling equivalence reasoning between state15 and the conjunction of these bits, strengthening the abstraction of state15.",
+    "risk": "high",
+    "_source_file": "response_002.txt"
+  },
+  {
+    "candidate_id": "cfc_004",
+    "lemma": "(not (and (= state15 #b1) (or (= state559 #b0) (= state566 #b0) (= state573 #b0) (= state580 #b0))))",
+    "schema": "nary_mutex",
+    "variables": [
+      "state15",
+      "state559",
+      "state566",
+      "state573",
+      "state580"
+    ],
+    "source_mode": "clause_family_compression",
+    "why_may_be_inductive": "This is a restatement of the compressed OR implication as a forbidden combination. Since each primitive clause excludes (state15=1 & stateXXX=0), the conjunction of them excludes any case where state15=1 and at least one bit is 0. The mutex formulation is often naturally inductive when the underlying clauses are.",
+    "why_may_have_proof_impact": "Explicitly forbids a large family of counterexamples in a single lemma, reducing the number of CTI cube refinements needed during PDR.",
+    "risk": "low",
+    "_source_file": "response_002.txt"
+  },
+  {
+    "candidate_id": "cfc_005",
+    "lemma": "(=> (or (= state559 #b0) (= state566 #b0) (= state573 #b0) (= state580 #b0) (= state2002 #b0)) (= state15 #b0))",
+    "schema": "guarded_implication",
+    "variables": [
+      "state15",
+      "state559",
+      "state566",
+      "state573",
+      "state580",
+      "state2002"
+    ],
+    "source_mode": "clause_family_compression",
+    "why_may_be_inductive": "Extends the compressed OR with an additional related pipeline request flag (r_pipe_req). If the design only sets state15 when there is an active request (state2002=1), then state2002=0 might also force state15=0. This could be an inductive generalization if state2002 is a prerequisite for the SPI transaction that raises state15.",
+    "why_may_have_proof_impact": "Broadens the coverage of the lemma to include a transition-request scenario, potentially blocking CTIs that arise when the pipeline is empty.",
+    "risk": "medium",
+    "_source_file": "response_002.txt"
+  },
+  {
+    "candidate_id": "cfc_006",
+    "lemma": "(=> (or (= state559 #b0) (= state566 #b0) (= state573 #b0) (= state580 #b0)) (and (= state15 #b0) (= o_wb_stall #b0)))",
+    "schema": "guarded_implication",
+    "variables": [
+      "state15",
+      "state559",
+      "state566",
+      "state573",
+      "state580",
+      "o_wb_stall"
+    ],
+    "source_mode": "clause_family_compression",
+    "why_may_be_inductive": "The Wishbone stall signal often correlates with internal pipeline activity. If the SPI mode bits being zero indicates an idle bus, then the stall should also be deasserted. Since the individual clauses already force state15=0, adding o_wb_stall=0 as a joint consequent may still hold inductively if the stall is deterministically low under those bit conditions.",
+    "why_may_have_proof_impact": "Adds a bus-handshake invariant that ties the DSPI mode status bits to the stall signal, potentially reducing interactions between bus state and the state15 frontier.",
+    "risk": "high",
+    "_source_file": "response_002.txt"
+  },
+  {
+    "candidate_id": "cfc_007",
+    "lemma": "(=> (and (= o_wb_stall #b1) (or (= state559 #b0) (= state566 #b0) (= state573 #b0) (= state580 #b0))) (= state15 #b0))",
+    "schema": "guarded_implication",
+    "variables": [
+      "state15",
+      "state559",
+      "state566",
+      "state573",
+      "state580",
+      "o_wb_stall"
+    ],
+    "source_mode": "clause_family_compression",
+    "why_may_be_inductive": "This guarded variant restricts the OR\u2013implication to cases where the Wishbone stall is asserted. If the stall indicates a pipelined transaction, it may be that state15 must remain zero regardless of the mode bits. This could be a more focused invariant that is easier to prove inductively because it relies on an external handshake signal.",
+    "why_may_have_proof_impact": "Targets a specific operational phase (stall active) where state15 might be prone to spurious activation, thus streamlining the proof by isolating that scenario.",
+    "risk": "low",
+    "_source_file": "response_002.txt"
+  },
+  {
+    "candidate_id": "cfc_008",
+    "lemma": "(=> (= (bvconcat state559 state566 state573 state580) #b0000) (= state15 #b0))",
+    "schema": "range_bound",
+    "variables": [
+      "state15",
+      "state559",
+      "state566",
+      "state573",
+      "state580"
+    ],
+    "source_mode": "clause_family_compression",
+    "why_may_be_inductive": "Treats the four bits as a single 4-bit vector and asserts state15=0 when the vector is zero. This is semantically equivalent to the OR of bit-zero conditions but expressed as a range bound (value = 0). The IC3 engine may handle a single vector comparison more efficiently than a disjunction, and the invariance should follow directly from the bit-level clauses.",
+    "why_may_have_proof_impact": "Compresses the four clauses into a single atomic constraint, reducing the number of Boolean variables and clauses in the SAT representation, thereby potentially accelerating both frame generalization and induction checks.",
+    "risk": "medium",
+    "_source_file": "response_002.txt"
+  },
+  {
+    "candidate_id": "tcg_001",
+    "lemma": "(=> (= state559 #b0) (= state15 #b0))",
+    "schema": "transition_causal_guard",
+    "variables": [
+      "state559",
+      "state15"
+    ],
+    "source_mode": "transition_causal_guard",
+    "why_may_be_inductive": "Direct clause from IC3IA frame; if state559 is 0 then state15 must be 0, likely a stable invariant because state15=1 forces state559 non-zero and that condition may not change in one step.",
+    "why_may_have_proof_impact": "Covers at least one existing frame clause; if proven it removes that clause and may block CTIs where state559=0.",
+    "risk": "low",
+    "_source_file": "response_003.txt"
+  },
+  {
+    "candidate_id": "tcg_002",
+    "lemma": "(=> (= state566 #b0) (= state15 #b0))",
+    "schema": "transition_causal_guard",
+    "variables": [
+      "state566",
+      "state15"
+    ],
+    "source_mode": "transition_causal_guard",
+    "why_may_be_inductive": "Similar to tcg_001, directly from a frame clause. Likely an inductive consequence of the transition logic where state566 being low prevents state15 from being high.",
+    "why_may_have_proof_impact": "Removes a specific frame clause; may block CTI scenarios where state566=0.",
+    "risk": "low",
+    "_source_file": "response_003.txt"
+  },
+  {
+    "candidate_id": "tcg_003",
+    "lemma": "(=> (= state573 #b0) (= state15 #b0))",
+    "schema": "transition_causal_guard",
+    "variables": [
+      "state573",
+      "state15"
+    ],
+    "source_mode": "transition_causal_guard",
+    "why_may_be_inductive": "Directly lifted from a representative frame clause. Should be provable if the clause was generated from a concrete counterexample generalization.",
+    "why_may_have_proof_impact": "Targets one frame clause; useful to reduce clause set if many similar clauses exist for this variable.",
+    "risk": "low",
+    "_source_file": "response_003.txt"
+  },
+  {
+    "candidate_id": "tcg_004",
+    "lemma": "(=> (= state580 #b0) (= state15 #b0))",
+    "schema": "transition_causal_guard",
+    "variables": [
+      "state580",
+      "state15"
+    ],
+    "source_mode": "transition_causal_guard",
+    "why_may_be_inductive": "From the same clause family; state580=0 always implies state15=0 in the current inductive hypothesis; likely holds inductively.",
+    "why_may_have_proof_impact": "Covers the remaining shown clause; several such guards may compress into a single lemma later.",
+    "risk": "low",
+    "_source_file": "response_003.txt"
+  },
+  {
+    "candidate_id": "tcg_005",
+    "lemma": "(=> (or (= state559 #b0) (= state566 #b0)) (= state15 #b0))",
+    "schema": "transition_causal_guard",
+    "variables": [
+      "state559",
+      "state566",
+      "state15"
+    ],
+    "source_mode": "transition_causal_guard",
+    "why_may_be_inductive": "Weaker than the individual implications; if either guard holds, state15 is forced 0. This disjunction may still be invariant if one guard being 0 persists when the other changes.",
+    "why_may_have_proof_impact": "Compresses two clause families into one lemma, potentially reducing the number of frame clauses needed to prove state15 unreachable.",
+    "risk": "medium",
+    "_source_file": "response_003.txt"
+  },
+  {
+    "candidate_id": "tcg_006",
+    "lemma": "(=> (or (= state573 #b0) (= state580 #b0)) (= state15 #b0))",
+    "schema": "transition_causal_guard",
+    "variables": [
+      "state573",
+      "state580",
+      "state15"
+    ],
+    "source_mode": "transition_causal_guard",
+    "why_may_be_inductive": "Analogous to tcg_005; the disjunction likely holds inductively if the two variables are not simultaneously forced to 1 in a single step from a state where one is 0.",
+    "why_may_have_proof_impact": "Combines two distinct frame clause types; may generalize to a wider family of zero-guard variables.",
+    "risk": "medium",
+    "_source_file": "response_003.txt"
+  },
+  {
+    "candidate_id": "sample_001",
+    "lemma": "(=> (= state790 #b1) (= state15 #b0))",
+    "schema": "guarded_implication",
+    "variables": [
+      "state790",
+      "state15"
+    ],
+    "source_mode": "guarded_implication",
+    "why_may_be_inductive": "When stall is active, the pipeline is frozen, preventing transitions into the error state captured by state15. This may be an invariant of the bus protocol.",
+    "why_may_have_proof_impact": "If stall occurs frequently, this lemma directly blocks state15=1 in many frames, aiding IC3's reachability analysis.",
+    "risk": "medium",
+    "_source_file": "response_004.txt"
+  },
+  {
+    "candidate_id": "sample_002",
+    "lemma": "(! (and (= state15 #b1) (= state1536 #b0001)))",
+    "schema": "nary_mutex",
+    "variables": [
+      "state15",
+      "state1536"
+    ],
+    "source_mode": "protocol_invariant",
+    "why_may_be_inductive": "The error state state15 may never coincide with DSPI mode 1, possibly due to operational constraints of this mode.",
+    "why_may_have_proof_impact": "Establishes a mutual exclusion that prevents state15=1 in mode 1, which may be a common operating mode.",
+    "risk": "medium",
+    "_source_file": "response_004.txt"
+  },
+  {
+    "candidate_id": "sample_003",
+    "lemma": "(= state559 #b0)",
+    "schema": "allowed_set",
+    "variables": [
+      "state559"
+    ],
+    "source_mode": "clause_family_compression",
+    "why_may_be_inductive": "state559 might be a constant signal that is always deasserted after reset, as suggested by its appearance in frame clauses as an antecedent to safety.",
+    "why_may_have_proof_impact": "If true, it compresses multiple frame clauses and directly forces state15=0 via those clauses, potentially proving the property.",
+    "risk": "high",
+    "_source_file": "response_004.txt"
+  },
+  {
+    "candidate_id": "sample_004",
+    "lemma": "(= state566 #b0)",
+    "schema": "allowed_set",
+    "variables": [
+      "state566"
+    ],
+    "source_mode": "clause_family_compression",
+    "why_may_be_inductive": "Similar to state559, state566 may be an internal signal that remains low permanently, making its frame clause always active.",
+    "why_may_have_proof_impact": "If always low, it provides a direct path to state15=0 through the corresponding clause, simplifying proof obligations.",
+    "risk": "high",
+    "_source_file": "response_004.txt"
+  },
+  {
+    "candidate_id": "sample_005",
+    "lemma": "(=> (and (= state1536 #b0000) (= state1558 #b0)) (= state15 #b0))",
+    "schema": "guarded_implication",
+    "variables": [
+      "state1536",
+      "state1558",
+      "state15"
+    ],
+    "source_mode": "protocol_invariant",
+    "why_may_be_inductive": "When both DSPI mode and speed are zero (idle/default), the controller may not be able to enter the error state, serving as a safe configuration invariant.",
+    "why_may_have_proof_impact": "If the controller spends significant time in this configuration, this lemma could cover many reachable states.",
+    "risk": "medium",
+    "_source_file": "response_004.txt"
+  },
+  {
+    "candidate_id": "sample_006",
+    "lemma": "(=> (= state79 #b1) (= state15 #b0))",
+    "schema": "guarded_implication",
+    "variables": [
+      "state79",
+      "state15"
+    ],
+    "source_mode": "protocol_invariant",
+    "why_may_be_inductive": "cfg_mode=1 might correspond to a safe operational mode that prevents the error condition, potentially as a design-level guarantee.",
+    "why_may_have_proof_impact": "If cfg_mode=1 is a common or persistent state, it blocks a large set of threatening CTIs.",
+    "risk": "medium",
+    "_source_file": "response_004.txt"
+  },
+  {
+    "candidate_id": "sample_007",
+    "lemma": "(=> (and (= state2002 #b0) (= state790 #b0)) (= state15 #b0))",
+    "schema": "guarded_implication",
+    "variables": [
+      "state2002",
+      "state790",
+      "state15"
+    ],
+    "source_mode": "protocol_invariant",
+    "why_may_be_inductive": "When there is no pending request and the bus is not stalled, the controller is in a quiescent state that cannot transition to an error. This may be an invariant of the handshake protocol.",
+    "why_may_have_proof_impact": "Covers idle cycles, which may be numerous, thereby restricting the reachability of state15.",
+    "risk": "medium",
+    "_source_file": "response_004.txt"
+  },
+  {
+    "candidate_id": "sample_002",
+    "lemma": "(=> (and (= state559 #b0) (= state566 #b0) (= state573 #b0) (= state580 #b0)) (= state15 #b0))",
+    "schema": "guarded_implication",
+    "variables": [
+      "state15",
+      "state559",
+      "state566",
+      "state573",
+      "state580"
+    ],
+    "source_mode": "near_miss_repair",
+    "why_may_be_inductive": "Requiring all four bits to be zero may capture a stable condition (e.g., a multi-bit field being cleared) that is easier to prove inductively than individual weaker guards.",
+    "why_may_have_proof_impact": "If this conjunction is commonly true, it can preempt many proof obligations and might act as a stronger invariant that prevents further CTIs.",
+    "risk": "high",
+    "_source_file": "response_005.txt"
+  },
+  {
+    "candidate_id": "sample_005",
+    "lemma": "(=> (= state2002 #b1) (= state15 #b0))",
+    "schema": "guarded_implication",
+    "variables": [
+      "state15",
+      "state2002"
+    ],
+    "source_mode": "near_miss_repair",
+    "why_may_be_inductive": "An active pipeline request may keep the controller busy and unable to enter the risky state; other related lemmas (e.g., state2002 => o_wb_stall) suggest such causal links are inductive.",
+    "why_may_have_proof_impact": "Though similar lemmas exist, applying this directly to state15 could have a different impact if it blocks CTI patterns that are not covered by state2002=>state790.",
+    "risk": "medium",
+    "_source_file": "response_005.txt"
+  },
+  {
+    "candidate_id": "sample_006",
+    "lemma": "(=> (= state1536 #b0000) (= state15 #b0))",
+    "schema": "guarded_implication",
+    "variables": [
+      "state15",
+      "state1536"
+    ],
+    "source_mode": "near_miss_repair",
+    "why_may_be_inductive": "If DSPI mode 0 is a safe or idle mode where state15 cannot be triggered, then this implication may be provable by simple forward analysis.",
+    "why_may_have_proof_impact": "o_dspi_mod is a 4-bit control register; covering its zero value could shield much of the state space related to mode transitions.",
+    "risk": "low",
+    "_source_file": "response_005.txt"
+  },
+  {
+    "candidate_id": "sample_007",
+    "lemma": "(not (and (= state15 #b1) (= state1558 #b1)))",
+    "schema": "nary_mutex",
+    "variables": [
+      "state15",
+      "state1558"
+    ],
+    "source_mode": "near_miss_repair",
+    "why_may_be_inductive": "Mutual exclusion between high speed and the bad state is a common safety property; both bits being true simultaneously may be impossible due to hardware constraints.",
+    "why_may_have_proof_impact": "If state1558 appears in many CTIs alongside state15, this mutex can break those counterexamples and reduce CTI complexity.",
+    "risk": "low",
+    "_source_file": "response_005.txt"
+  },
+  {
+    "candidate_id": "sample_008",
+    "lemma": "(=> (or (= state559 #b0) (= state790 #b1)) (= state15 #b0))",
+    "schema": "guarded_implication",
+    "variables": [
+      "state15",
+      "state559",
+      "state790"
+    ],
+    "source_mode": "near_miss_repair",
+    "why_may_be_inductive": "Mixing a low-level zero-bit condition with a high-level bus stall guard may capture a broader set of safe states while retaining inductive strength from each component.",
+    "why_may_have_proof_impact": "This cross-level lemma ties together internal micro-architectural signals with a top-level protocol signal, potentially squeezing out CTIs from multiple families.",
+    "risk": "medium",
+    "_source_file": "response_005.txt"
+  },
+  {
+    "candidate_id": "sample_001",
+    "lemma": "(! (and (= state15 #b1) (= state559 #b0)))",
+    "schema": "nary_mutex",
+    "variables": [
+      "state15",
+      "state559"
+    ],
+    "source_mode": "nary_mutex",
+    "why_may_be_inductive": "Direct translation of frame clause (or (not (= state559 #b0)) (= state15 #b0)), which is known true in current frames; may hold inductively.",
+    "why_may_have_proof_impact": "Compresses the explicit claw back to a minimal binary mutex; if proven invariant, eliminates that clause from active frame set.",
+    "risk": "low",
+    "_source_file": "response_006.txt"
+  },
+  {
+    "candidate_id": "sample_002",
+    "lemma": "(! (and (= state15 #b1) (= state566 #b0)))",
+    "schema": "nary_mutex",
+    "variables": [
+      "state15",
+      "state566"
+    ],
+    "source_mode": "nary_mutex",
+    "why_may_be_inductive": "Analogous to sample_001; frame clause (or (not (= state566 #b0)) (= state15 #b0)) supports this mutex.",
+    "why_may_have_proof_impact": "Covering another clause family member individually; may be necessary for incremental compression.",
+    "risk": "low",
+    "_source_file": "response_006.txt"
+  },
+  {
+    "candidate_id": "sample_003",
+    "lemma": "(! (and (= state15 #b1) (= state573 #b0)))",
+    "schema": "nary_mutex",
+    "variables": [
+      "state15",
+      "state573"
+    ],
+    "source_mode": "nary_mutex",
+    "why_may_be_inductive": "Matches frame clause (or (not (= state573 #b0)) (= state15 #b0)); likely a safe lifting.",
+    "why_may_have_proof_impact": "Directly replaces another repeated clause; reduces proof obligation count.",
+    "risk": "low",
+    "_source_file": "response_006.txt"
+  },
+  {
+    "candidate_id": "sample_004",
+    "lemma": "(! (and (= state15 #b1) (= state580 #b0)))",
+    "schema": "nary_mutex",
+    "variables": [
+      "state15",
+      "state580"
+    ],
+    "source_mode": "nary_mutex",
+    "why_may_be_inductive": "Derived from frame clause (or (not (= state580 #b0)) (= state15 #b0)); strong inductive candidate.",
+    "why_may_have_proof_impact": "Single-clause elimination; could thin frame significantly if many similar clauses exist.",
+    "risk": "low",
+    "_source_file": "response_006.txt"
+  },
+  {
+    "candidate_id": "sample_005",
+    "lemma": "(! (and (= state15 #b1) (= state559 #b0) (= state566 #b0)))",
+    "schema": "nary_mutex",
+    "variables": [
+      "state15",
+      "state559",
+      "state566"
+    ],
+    "source_mode": "nary_mutex",
+    "why_may_be_inductive": "Conjunction of two safe mutexes; if both are invariants, their product is also invariant; likely holds stepwise because state15=1 forces at least one variable non-zero.",
+    "why_may_have_proof_impact": "Covers two clauses simultaneously; desired clause-family compression effect.",
+    "risk": "medium",
+    "_source_file": "response_006.txt"
+  },
+  {
+    "candidate_id": "sample_006",
+    "lemma": "(! (and (= state15 #b1) (= state566 #b0) (= state573 #b0)))",
+    "schema": "nary_mutex",
+    "variables": [
+      "state15",
+      "state566",
+      "state573"
+    ],
+    "source_mode": "nary_mutex",
+    "why_may_be_inductive": "Similar to sample_005; each singleton mutex known true; their intersection may still be inductive if no transition creates state15=1 when both are 0.",
+    "why_may_have_proof_impact": "Further clause-family compression; could reduce proof depth if added as single invariant.",
+    "risk": "medium",
+    "_source_file": "response_006.txt"
+  },
+  {
+    "candidate_id": "sample_007",
+    "lemma": "(! (and (= state15 #b1) (= state573 #b0) (= state580 #b0)))",
+    "schema": "nary_mutex",
+    "variables": [
+      "state15",
+      "state573",
+      "state580"
+    ],
+    "source_mode": "nary_mutex",
+    "why_may_be_inductive": "Each component derived from frame clauses; the ternary combination is a natural generalization that may still hold due to mutual exclusion pattern.",
+    "why_may_have_proof_impact": "Targets two specific clauses in one lemma; may reduce solver effort by blocking simultaneous failure paths.",
+    "risk": "medium",
+    "_source_file": "response_006.txt"
+  },
+  {
+    "candidate_id": "sample_008",
+    "lemma": "(! (and (= state15 #b1) (= state559 #b0) (= state566 #b0) (= state573 #b0) (= state580 #b0)))",
+    "schema": "nary_mutex",
+    "variables": [
+      "state15",
+      "state559",
+      "state566",
+      "state573",
+      "state580"
+    ],
+    "source_mode": "nary_mutex",
+    "why_may_be_inductive": "Maximum compression of the observed frame clause pattern; if state15=1 is incompatible with each individual variable being 0, it is incompatible with all being 0 simultaneously.",
+    "why_may_have_proof_impact": "Potentially replaces many binary clauses at once, drastically simplifying proof frontier and reducing memory.",
+    "risk": "medium",
+    "_source_file": "response_006.txt"
+  },
+  {
+    "candidate_id": "sample_001",
+    "lemma": "(=> (= state15 #b1) (= state559 #b1))",
+    "schema": "guarded_implication",
+    "variables": [
+      "state15",
+      "state559"
+    ],
+    "source_mode": "guarded_implication",
+    "why_may_be_inductive": "Since state559 must be 1 for state15 to be 1, this conditional is trivially true in initial state (state15=0) and if state15 becomes 1, the next state must maintain that state559=1. The model may preserve this relationship.",
+    "why_may_have_proof_impact": "Explicitly stating this necessary condition may help the solver rule out counterexamples where state559 is 0.",
+    "risk": "medium",
+    "_source_file": "response_007.txt"
+  },
+  {
+    "candidate_id": "sample_002",
+    "lemma": "(=> (= state15 #b1) (and (= state559 #b1) (= state566 #b1)))",
+    "schema": "clause_family_compression",
+    "variables": [
+      "state15",
+      "state559",
+      "state566"
+    ],
+    "source_mode": "clause_family_compression",
+    "why_may_be_inductive": "If both clauses are inductive individually, their conjunction as a consequence of state15 may also be inductive, since it holds initially and the transition relation may preserve the dependency.",
+    "why_may_have_proof_impact": "Reduces the need to track multiple separate dependencies.",
+    "risk": "medium",
+    "_source_file": "response_007.txt"
+  },
+  {
+    "candidate_id": "sample_003",
+    "lemma": "(! (and (= state15 #b1) (= state790 #b1)))",
+    "schema": "nary_mutex",
+    "variables": [
+      "state15",
+      "state790"
+    ],
+    "source_mode": "nary_mutex",
+    "why_may_be_inductive": "If state15=1 only occurs when the bus is not stalled, then this mutual exclusion holds initially (stall may be false or true, but state15=0) and may be preserved.",
+    "why_may_have_proof_impact": "Adds a constraint that forbids a possible reachable state where both are true, narrowing the proof frontier.",
+    "risk": "medium",
+    "_source_file": "response_007.txt"
+  },
+  {
+    "candidate_id": "sample_004",
+    "lemma": "(! (and (= state15 #b1) (= state2002 #b1)))",
+    "schema": "nary_mutex",
+    "variables": [
+      "state15",
+      "state2002"
+    ],
+    "source_mode": "nary_mutex",
+    "why_may_be_inductive": "If the pipeline request flag is set, state15 may be prevented from becoming 1. This lemma encodes that they cannot coexist.",
+    "why_may_have_proof_impact": "Could help break a circular dependency involving r_pipe_req.",
+    "risk": "medium",
+    "_source_file": "response_007.txt"
+  },
+  {
+    "candidate_id": "sample_005",
+    "lemma": "(or (= state1536 #b0000) (= state1536 #b0001) (= state1536 #b0010) (= state1536 #b0011))",
+    "schema": "allowed_set",
+    "variables": [
+      "state1536"
+    ],
+    "source_mode": "allowed_set",
+    "why_may_be_inductive": "DSPI mode register is likely limited to these four values by design. It may be that transitions only move between these values.",
+    "why_may_have_proof_impact": "Constraining the mode register reduces the state space and may block unreachable modes that allow state15 to become 1.",
+    "risk": "low",
+    "_source_file": "response_007.txt"
+  },
+  {
+    "candidate_id": "sample_006",
+    "lemma": "(<= state1536 #b0011)",
+    "schema": "range_bound",
+    "variables": [
+      "state1536"
+    ],
+    "source_mode": "range_bound",
+    "why_may_be_inductive": "Same as allowed_set but expressed as inequality; likely a simple invariant.",
+    "why_may_have_proof_impact": "Simplifies reasoning about state1536 range.",
+    "risk": "low",
+    "_source_file": "response_007.txt"
+  },
+  {
+    "candidate_id": "sample_008",
+    "lemma": "(=> (and (= state1558 #b1) (= state79 #b0)) (= state15 #b0))",
+    "schema": "satellite_generalization",
+    "variables": [
+      "state1558",
+      "state79",
+      "state15"
+    ],
+    "source_mode": "satellite_generalization",
+    "why_may_be_inductive": "Generalizes over two configuration bits; if both hold, state15=0. Might be invariant if the transition relation preserves the condition.",
+    "why_may_have_proof_impact": "Could capture a scenario where state15 is suppressed, compressing multiple configuration cases.",
+    "risk": "medium",
+    "_source_file": "response_007.txt"
+  }
+]

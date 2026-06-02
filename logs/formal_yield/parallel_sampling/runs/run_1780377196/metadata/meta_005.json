@@ -1,0 +1,12 @@
+{
+  "index": 5,
+  "mode": "near_miss_repair",
+  "seed": 5,
+  "primer_hash": "0cf5b0822c28fbfc",
+  "payload_hash": "83d4cea0123ff09f",
+  "thinking": "none",
+  "temperature": 0.8,
+  "tokens": 6887,
+  "latency_ms": 121222.9254245758,
+  "runtime_s": 121
+}

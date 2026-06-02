@@ -1,0 +1,84 @@
+{
+  "candidates": [
+    {
+      "candidate_id": "sample_001",
+      "lemma": "(=> (= state15 #b1) (= state559 #b1))",
+      "schema": "guarded_implication",
+      "variables": ["state15", "state559"],
+      "source_mode": "guarded_implication",
+      "why_may_be_inductive": "Since state559 must be 1 for state15 to be 1, this conditional is trivially true in initial state (state15=0) and if state15 becomes 1, the next state must maintain that state559=1. The model may preserve this relationship.",
+      "why_may_have_proof_impact": "Explicitly stating this necessary condition may help the solver rule out counterexamples where state559 is 0.",
+      "risk": "medium"
+    },
+    {
+      "candidate_id": "sample_002",
+      "lemma": "(=> (= state15 #b1) (and (= state559 #b1) (= state566 #b1)))",
+      "schema": "clause_family_compression",
+      "variables": ["state15", "state559", "state566"],
+      "source_mode": "clause_family_compression",
+      "why_may_be_inductive": "If both clauses are inductive individually, their conjunction as a consequence of state15 may also be inductive, since it holds initially and the transition relation may preserve the dependency.",
+      "why_may_have_proof_impact": "Reduces the need to track multiple separate dependencies.",
+      "risk": "medium"
+    },
+    {
+      "candidate_id": "sample_003",
+      "lemma": "(! (and (= state15 #b1) (= state790 #b1)))",
+      "schema": "nary_mutex",
+      "variables": ["state15", "state790"],
+      "source_mode": "nary_mutex",
+      "why_may_be_inductive": "If state15=1 only occurs when the bus is not stalled, then this mutual exclusion holds initially (stall may be false or true, but state15=0) and may be preserved.",
+      "why_may_have_proof_impact": "Adds a constraint that forbids a possible reachable state where both are true, narrowing the proof frontier.",
+      "risk": "medium"
+    },
+    {
+      "candidate_id": "sample_004",
+      "lemma": "(! (and (= state15 #b1) (= state2002 #b1)))",
+      "schema": "nary_mutex",
+      "variables": ["state15", "state2002"],
+      "source_mode": "nary_mutex",
+      "why_may_be_inductive": "If the pipeline request flag is set, state15 may be prevented from becoming 1. This lemma encodes that they cannot coexist.",
+      "why_may_have_proof_impact": "Could help break a circular dependency involving r_pipe_req.",
+      "risk": "medium"
+    },
+    {
+      "candidate_id": "sample_005",
+      "lemma": "(or (= state1536 #b0000) (= state1536 #b0001) (= state1536 #b0010) (= state1536 #b0011))",
+      "schema": "allowed_set",
+      "variables": ["state1536"],
+      "source_mode": "allowed_set",
+      "why_may_be_inductive": "DSPI mode register is likely limited to these four values by design. It may be that transitions only move between these values.",
+      "why_may_have_proof_impact": "Constraining the mode register reduces the state space and may block unreachable modes that allow state15 to become 1.",
+      "risk": "low"
+    },
+    {
+      "candidate_id": "sample_006",
+      "lemma": "(<= state1536 #b0011)",
+      "schema": "range_bound",
+      "variables": ["state1536"],
+      "source_mode": "range_bound",
+      "why_may_be_inductive": "Same as allowed_set but expressed as inequality; likely a simple invariant.",
+      "why_may_have_proof_impact": "Simplifies reasoning about state1536 range.",
+      "risk": "low"
+    },
+    {
+      "candidate_id": "sample_007",
+      "lemma": "(=> (= state79 #b1) (= state15 #b0))",
+      "schema": "guarded_implication",
+      "variables": ["state79", "state15"],
+      "source_mode": "guarded_implication",
+      "why_may_be_inductive": "If cfg_mode=1 implies state15 must be 0, then in any transition where cfg_mode becomes 1, state15 must be forced to 0. This may hold if the configuration prohibits state15.",
+      "why_may_have_proof_impact": "Provides a direct implication for state15=0 under a particular configuration, potentially closing many counterexamples.",
+      "risk": "medium"
+    },
+    {
+      "candidate_id": "sample_008",
+      "lemma": "(=> (and (= state1558 #b1) (= state79 #b0)) (= state15 #b0))",
+      "schema": "satellite_generalization",
+      "variables": ["state1558", "state79", "state15"],
+      "source_mode": "satellite_generalization",
+      "why_may_be_inductive": "Generalizes over two configuration bits; if both hold, state15=0. Might be invariant if the transition relation preserves the condition.",
+      "why_may_have_proof_impact": "Could capture a scenario where state15 is suppressed, compressing multiple configuration cases.",
+      "risk": "medium"
+    }
+  ]
+}

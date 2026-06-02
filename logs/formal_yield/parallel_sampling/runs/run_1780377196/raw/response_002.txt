@@ -1,0 +1,84 @@
+{
+  "candidates": [
+    {
+      "candidate_id": "cfc_001",
+      "lemma": "(=> (or (= state559 #b0) (= state566 #b0) (= state573 #b0) (= state580 #b0)) (= state15 #b0))",
+      "schema": "guarded_implication",
+      "variables": ["state15", "state559", "state566", "state573", "state580"],
+      "source_mode": "clause_family_compression",
+      "why_may_be_inductive": "Each individual clause (not (= stateXXX #b0) or (= state15 #b0)) already appears in frame clauses, implying the single-step property holds separately for each antecedent. The disjunction in the antecedent is the logical union of all those cases, so if any disjunct holds, the consequent must hold in the next state, likely preserving the inductive invariant.",
+      "why_may_have_proof_impact": "Compresses four redundant frame clauses into a single lemma, reducing the SAT solver's clause database and potentially helping IC3IA converge faster on the state15 frontier.",
+      "risk": "medium"
+    },
+    {
+      "candidate_id": "cfc_002",
+      "lemma": "(=> (= state15 #b1) (and (= state559 #b1) (= state566 #b1) (= state573 #b1) (= state580 #b1)))",
+      "schema": "guarded_implication",
+      "variables": ["state15", "state559", "state566", "state573", "state580"],
+      "source_mode": "clause_family_compression",
+      "why_may_be_inductive": "If the frame already ensures that any zero on these bits forces state15=0, then the contrapositive holds frame-invariantly. Assuming the state machine treats these bits as mutually exclusive or as a one-hot condition, the forward implication might also be stepwise stable.",
+      "why_may_have_proof_impact": "Provides a forward guarantee about state15=1, enabling the solver to propagate constraints forward and potentially block deeper CTIs that rely on state15 being active without all bits set.",
+      "risk": "high"
+    },
+    {
+      "candidate_id": "cfc_003",
+      "lemma": "(=> (and (= state559 #b1) (= state566 #b1) (= state573 #b1) (= state580 #b1)) (= state15 #b1))",
+      "schema": "guarded_implication",
+      "variables": ["state15", "state559", "state566", "state573", "state580"],
+      "source_mode": "clause_family_compression",
+      "why_may_be_inductive": "This is the converse of the existing frame clauses. If the original clauses show that any zero bit forces state15=0, then the only way state15 can be 1 is if all bits are 1. Under the assumption that this corollary holds in all reachable states (based on the original clauses), it may also hold inductively.",
+      "why_may_have_proof_impact": "Complements the existing backward implication, potentially enabling equivalence reasoning between state15 and the conjunction of these bits, strengthening the abstraction of state15.",
+      "risk": "high"
+    },
+    {
+      "candidate_id": "cfc_004",
+      "lemma": "(not (and (= state15 #b1) (or (= state559 #b0) (= state566 #b0) (= state573 #b0) (= state580 #b0))))",
+      "schema": "nary_mutex",
+      "variables": ["state15", "state559", "state566", "state573", "state580"],
+      "source_mode": "clause_family_compression",
+      "why_may_be_inductive": "This is a restatement of the compressed OR implication as a forbidden combination. Since each primitive clause excludes (state15=1 & stateXXX=0), the conjunction of them excludes any case where state15=1 and at least one bit is 0. The mutex formulation is often naturally inductive when the underlying clauses are.",
+      "why_may_have_proof_impact": "Explicitly forbids a large family of counterexamples in a single lemma, reducing the number of CTI cube refinements needed during PDR.",
+      "risk": "low"
+    },
+    {
+      "candidate_id": "cfc_005",
+      "lemma": "(=> (or (= state559 #b0) (= state566 #b0) (= state573 #b0) (= state580 #b0) (= state2002 #b0)) (= state15 #b0))",
+      "schema": "guarded_implication",
+      "variables": ["state15", "state559", "state566", "state573", "state580", "state2002"],
+      "source_mode": "clause_family_compression",
+      "why_may_be_inductive": "Extends the compressed OR with an additional related pipeline request flag (r_pipe_req). If the design only sets state15 when there is an active request (state2002=1), then state2002=0 might also force state15=0. This could be an inductive generalization if state2002 is a prerequisite for the SPI transaction that raises state15.",
+      "why_may_have_proof_impact": "Broadens the coverage of the lemma to include a transition-request scenario, potentially blocking CTIs that arise when the pipeline is empty.",
+      "risk": "medium"
+    },
+    {
+      "candidate_id": "cfc_006",
+      "lemma": "(=> (or (= state559 #b0) (= state566 #b0) (= state573 #b0) (= state580 #b0)) (and (= state15 #b0) (= o_wb_stall #b0)))",
+      "schema": "guarded_implication",
+      "variables": ["state15", "state559", "state566", "state573", "state580", "o_wb_stall"],
+      "source_mode": "clause_family_compression",
+      "why_may_be_inductive": "The Wishbone stall signal often correlates with internal pipeline activity. If the SPI mode bits being zero indicates an idle bus, then the stall should also be deasserted. Since the individual clauses already force state15=0, adding o_wb_stall=0 as a joint consequent may still hold inductively if the stall is deterministically low under those bit conditions.",
+      "why_may_have_proof_impact": "Adds a bus-handshake invariant that ties the DSPI mode status bits to the stall signal, potentially reducing interactions between bus state and the state15 frontier.",
+      "risk": "high"
+    },
+    {
+      "candidate_id": "cfc_007",
+      "lemma": "(=> (and (= o_wb_stall #b1) (or (= state559 #b0) (= state566 #b0) (= state573 #b0) (= state580 #b0))) (= state15 #b0))",
+      "schema": "guarded_implication",
+      "variables": ["state15", "state559", "state566", "state573", "state580", "o_wb_stall"],
+      "source_mode": "clause_family_compression",
+      "why_may_be_inductive": "This guarded variant restricts the OR–implication to cases where the Wishbone stall is asserted. If the stall indicates a pipelined transaction, it may be that state15 must remain zero regardless of the mode bits. This could be a more focused invariant that is easier to prove inductively because it relies on an external handshake signal.",
+      "why_may_have_proof_impact": "Targets a specific operational phase (stall active) where state15 might be prone to spurious activation, thus streamlining the proof by isolating that scenario.",
+      "risk": "low"
+    },
+    {
+      "candidate_id": "cfc_008",
+      "lemma": "(=> (= (bvconcat state559 state566 state573 state580) #b0000) (= state15 #b0))",
+      "schema": "range_bound",
+      "variables": ["state15", "state559", "state566", "state573", "state580"],
+      "source_mode": "clause_family_compression",
+      "why_may_be_inductive": "Treats the four bits as a single 4-bit vector and asserts state15=0 when the vector is zero. This is semantically equivalent to the OR of bit-zero conditions but expressed as a range bound (value = 0). The IC3 engine may handle a single vector comparison more efficiently than a disjunction, and the invariance should follow directly from the bit-level clauses.",
+      "why_may_have_proof_impact": "Compresses the four clauses into a single atomic constraint, reducing the number of Boolean variables and clauses in the SAT representation, thereby potentially accelerating both frame generalization and induction checks.",
+      "risk": "medium"
+    }
+  ]
+}

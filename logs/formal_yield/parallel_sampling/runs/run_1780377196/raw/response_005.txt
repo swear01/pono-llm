@@ -1,0 +1,84 @@
+{
+  "candidates": [
+    {
+      "candidate_id": "sample_001",
+      "lemma": "(=> (or (= state559 #b0) (= state566 #b0) (= state573 #b0) (= state580 #b0)) (= state15 #b0))",
+      "schema": "guarded_implication",
+      "variables": ["state15", "state559", "state566", "state573", "state580"],
+      "source_mode": "near_miss_repair",
+      "why_may_be_inductive": "Each individual zero-bit implication appears in frame clauses; their disjunction is a logical consequence that may remain inductive as it covers all cases where any of these bits are zero, forcing state15 low.",
+      "why_may_have_proof_impact": "It can replace four separate frame clauses, compressing the clause family and reducing the number of PDR obligations, potentially accelerating convergence.",
+      "risk": "medium"
+    },
+    {
+      "candidate_id": "sample_002",
+      "lemma": "(=> (and (= state559 #b0) (= state566 #b0) (= state573 #b0) (= state580 #b0)) (= state15 #b0))",
+      "schema": "guarded_implication",
+      "variables": ["state15", "state559", "state566", "state573", "state580"],
+      "source_mode": "near_miss_repair",
+      "why_may_be_inductive": "Requiring all four bits to be zero may capture a stable condition (e.g., a multi-bit field being cleared) that is easier to prove inductively than individual weaker guards.",
+      "why_may_have_proof_impact": "If this conjunction is commonly true, it can preempt many proof obligations and might act as a stronger invariant that prevents further CTIs.",
+      "risk": "high"
+    },
+    {
+      "candidate_id": "sample_003",
+      "lemma": "(=> (= state790 #b1) (= state15 #b0))",
+      "schema": "guarded_implication",
+      "variables": ["state15", "state790"],
+      "source_mode": "near_miss_repair",
+      "why_may_be_inductive": "Bus stall is a high-level protocol signal that likely forces the pipeline to block, preventing the occurrence of state15 high; such protocol invariants often hold inductively.",
+      "why_may_have_proof_impact": "o_wb_stall is a top-level output, so a lemma involving it can cut across many internal states, compressing proof effort broadly.",
+      "risk": "medium"
+    },
+    {
+      "candidate_id": "sample_004",
+      "lemma": "(=> (= state79 #b1) (= state15 #b0))",
+      "schema": "guarded_implication",
+      "variables": ["state15", "state79"],
+      "source_mode": "near_miss_repair",
+      "why_may_be_inductive": "Configuration mode bits are often set once and remain constant; if a mode disables the logic that can raise state15, the implication should be inductively stable.",
+      "why_may_have_proof_impact": "Since cfg_mode is a static configuration, this lemma can prune large parts of the state space if the mode is always active.",
+      "risk": "low"
+    },
+    {
+      "candidate_id": "sample_005",
+      "lemma": "(=> (= state2002 #b1) (= state15 #b0))",
+      "schema": "guarded_implication",
+      "variables": ["state15", "state2002"],
+      "source_mode": "near_miss_repair",
+      "why_may_be_inductive": "An active pipeline request may keep the controller busy and unable to enter the risky state; other related lemmas (e.g., state2002 => o_wb_stall) suggest such causal links are inductive.",
+      "why_may_have_proof_impact": "Though similar lemmas exist, applying this directly to state15 could have a different impact if it blocks CTI patterns that are not covered by state2002=>state790.",
+      "risk": "medium"
+    },
+    {
+      "candidate_id": "sample_006",
+      "lemma": "(=> (= state1536 #b0000) (= state15 #b0))",
+      "schema": "guarded_implication",
+      "variables": ["state15", "state1536"],
+      "source_mode": "near_miss_repair",
+      "why_may_be_inductive": "If DSPI mode 0 is a safe or idle mode where state15 cannot be triggered, then this implication may be provable by simple forward analysis.",
+      "why_may_have_proof_impact": "o_dspi_mod is a 4-bit control register; covering its zero value could shield much of the state space related to mode transitions.",
+      "risk": "low"
+    },
+    {
+      "candidate_id": "sample_007",
+      "lemma": "(not (and (= state15 #b1) (= state1558 #b1)))",
+      "schema": "nary_mutex",
+      "variables": ["state15", "state1558"],
+      "source_mode": "near_miss_repair",
+      "why_may_be_inductive": "Mutual exclusion between high speed and the bad state is a common safety property; both bits being true simultaneously may be impossible due to hardware constraints.",
+      "why_may_have_proof_impact": "If state1558 appears in many CTIs alongside state15, this mutex can break those counterexamples and reduce CTI complexity.",
+      "risk": "low"
+    },
+    {
+      "candidate_id": "sample_008",
+      "lemma": "(=> (or (= state559 #b0) (= state790 #b1)) (= state15 #b0))",
+      "schema": "guarded_implication",
+      "variables": ["state15", "state559", "state790"],
+      "source_mode": "near_miss_repair",
+      "why_may_be_inductive": "Mixing a low-level zero-bit condition with a high-level bus stall guard may capture a broader set of safe states while retaining inductive strength from each component.",
+      "why_may_have_proof_impact": "This cross-level lemma ties together internal micro-architectural signals with a top-level protocol signal, potentially squeezing out CTIs from multiple families.",
+      "risk": "medium"
+    }
+  ]
+}

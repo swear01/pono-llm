@@ -1,0 +1,12 @@
+{
+  "index": 0,
+  "mode": "guarded_implication",
+  "seed": 0,
+  "primer_hash": "0cf5b0822c28fbfc",
+  "payload_hash": "0bc663f946b5f553",
+  "thinking": "none",
+  "temperature": 0.8,
+  "tokens": 7922,
+  "latency_ms": 144459.08904075623,
+  "runtime_s": 144
+}

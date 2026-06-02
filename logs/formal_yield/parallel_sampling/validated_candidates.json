@@ -1,0 +1,394 @@
+[
+  {
+    "candidate_id": "cand_001",
+    "lemma": "(=> (not (and (= state559 #b1) (= state566 #b1) (= state573 #b1) (= state580 #b1))) (= state15 #b0))",
+    "mode": "guarded_implication",
+    "schema": "guarded_implication",
+    "verdict": "parse_failed"
+  },
+  {
+    "candidate_id": "cand_002",
+    "lemma": "(=> (or (= state559 #b0) (= state566 #b0) (= state573 #b0) (= state580 #b0)) (= state15 #b0))",
+    "mode": "guarded_implication",
+    "schema": "guarded_implication",
+    "verdict": "parse_failed"
+  },
+  {
+    "candidate_id": "cand_003",
+    "lemma": "(=> (and (= state559 #b0) (= state566 #b0)) (= state15 #b0))",
+    "mode": "guarded_implication",
+    "schema": "guarded_implication",
+    "verdict": "nontriviality_fail"
+  },
+  {
+    "candidate_id": "cand_004",
+    "lemma": "(=> (and (= state573 #b0) (= state580 #b0)) (= state15 #b0))",
+    "mode": "guarded_implication",
+    "schema": "guarded_implication",
+    "verdict": "nontriviality_fail"
+  },
+  {
+    "candidate_id": "cand_005",
+    "lemma": "(=> (and (= state559 #b0) (= state573 #b0)) (= state15 #b0))",
+    "mode": "guarded_implication",
+    "schema": "guarded_implication",
+    "verdict": "nontriviality_fail"
+  },
+  {
+    "candidate_id": "cand_006",
+    "lemma": "(=> (and (= state566 #b0) (= state580 #b0)) (= state15 #b0))",
+    "mode": "guarded_implication",
+    "schema": "guarded_implication",
+    "verdict": "nontriviality_fail"
+  },
+  {
+    "candidate_id": "cand_007",
+    "lemma": "(=> (and (= state559 #b0) (= state580 #b0)) (= state15 #b0))",
+    "mode": "guarded_implication",
+    "schema": "guarded_implication",
+    "verdict": "nontriviality_fail"
+  },
+  {
+    "candidate_id": "cand_008",
+    "lemma": "(=> (and (= state566 #b0) (= state573 #b0)) (= state15 #b0))",
+    "mode": "guarded_implication",
+    "schema": "guarded_implication",
+    "verdict": "nontriviality_fail"
+  },
+  {
+    "candidate_id": "sample_001",
+    "lemma": "(=> (= state15 #b1) (= state559 #b0))",
+    "mode": "satellite_generalization",
+    "schema": "guarded_implication",
+    "verdict": "nontriviality_fail"
+  },
+  {
+    "candidate_id": "sample_002",
+    "lemma": "(=> (= state15 #b1) (= state566 #b0))",
+    "mode": "satellite_generalization",
+    "schema": "guarded_implication",
+    "verdict": "nontriviality_fail"
+  },
+  {
+    "candidate_id": "sample_003",
+    "lemma": "(=> (= state15 #b1) (= state573 #b0))",
+    "mode": "satellite_generalization",
+    "schema": "guarded_implication",
+    "verdict": "nontriviality_fail"
+  },
+  {
+    "candidate_id": "sample_004",
+    "lemma": "(=> (= state15 #b1) (= state580 #b0))",
+    "mode": "satellite_generalization",
+    "schema": "guarded_implication",
+    "verdict": "nontriviality_fail"
+  },
+  {
+    "candidate_id": "sample_005",
+    "lemma": "(not (and (= state15 #b1) (= state559 #b1)))",
+    "mode": "satellite_generalization",
+    "schema": "nary_mutex",
+    "verdict": "parse_failed"
+  },
+  {
+    "candidate_id": "sample_006",
+    "lemma": "(not (and (= state15 #b1) (= state566 #b1)))",
+    "mode": "satellite_generalization",
+    "schema": "nary_mutex",
+    "verdict": "parse_failed"
+  },
+  {
+    "candidate_id": "sample_007",
+    "lemma": "(=> (= state15 #b1) (and (= state559 #b0) (= state566 #b0) (= state573 #b0) (= state580 #b0)))",
+    "mode": "satellite_generalization",
+    "schema": "guarded_implication",
+    "verdict": "parse_failed"
+  },
+  {
+    "candidate_id": "sample_008",
+    "lemma": "(=> (= state15 #b1) (= state1558 #b0))",
+    "mode": "satellite_generalization",
+    "schema": "guarded_implication",
+    "verdict": "nontriviality_fail"
+  },
+  {
+    "candidate_id": "cfc_002",
+    "lemma": "(=> (= state15 #b1) (and (= state559 #b1) (= state566 #b1) (= state573 #b1) (= state580 #b1)))",
+    "mode": "clause_family_compression",
+    "schema": "guarded_implication",
+    "verdict": "parse_failed"
+  },
+  {
+    "candidate_id": "cfc_003",
+    "lemma": "(=> (and (= state559 #b1) (= state566 #b1) (= state573 #b1) (= state580 #b1)) (= state15 #b1))",
+    "mode": "clause_family_compression",
+    "schema": "guarded_implication",
+    "verdict": "parse_failed"
+  },
+  {
+    "candidate_id": "cfc_004",
+    "lemma": "(not (and (= state15 #b1) (or (= state559 #b0) (= state566 #b0) (= state573 #b0) (= state580 #b0))))",
+    "mode": "clause_family_compression",
+    "schema": "nary_mutex",
+    "verdict": "parse_failed"
+  },
+  {
+    "candidate_id": "cfc_005",
+    "lemma": "(=> (or (= state559 #b0) (= state566 #b0) (= state573 #b0) (= state580 #b0) (= state2002 #b0)) (= state15 #b0))",
+    "mode": "clause_family_compression",
+    "schema": "guarded_implication",
+    "verdict": "parse_failed"
+  },
+  {
+    "candidate_id": "cfc_006",
+    "lemma": "(=> (or (= state559 #b0) (= state566 #b0) (= state573 #b0) (= state580 #b0)) (and (= state15 #b0) (= o_wb_stall #b0)))",
+    "mode": "clause_family_compression",
+    "schema": "guarded_implication",
+    "verdict": "parse_failed"
+  },
+  {
+    "candidate_id": "cfc_007",
+    "lemma": "(=> (and (= o_wb_stall #b1) (or (= state559 #b0) (= state566 #b0) (= state573 #b0) (= state580 #b0))) (= state15 #b0))",
+    "mode": "clause_family_compression",
+    "schema": "guarded_implication",
+    "verdict": "parse_failed"
+  },
+  {
+    "candidate_id": "cfc_008",
+    "lemma": "(=> (= (bvconcat state559 state566 state573 state580) #b0000) (= state15 #b0))",
+    "mode": "clause_family_compression",
+    "schema": "range_bound",
+    "verdict": "parse_failed"
+  },
+  {
+    "candidate_id": "tcg_001",
+    "lemma": "(=> (= state559 #b0) (= state15 #b0))",
+    "mode": "transition_causal_guard",
+    "schema": "transition_causal_guard",
+    "verdict": "nontriviality_fail"
+  },
+  {
+    "candidate_id": "tcg_002",
+    "lemma": "(=> (= state566 #b0) (= state15 #b0))",
+    "mode": "transition_causal_guard",
+    "schema": "transition_causal_guard",
+    "verdict": "nontriviality_fail"
+  },
+  {
+    "candidate_id": "tcg_003",
+    "lemma": "(=> (= state573 #b0) (= state15 #b0))",
+    "mode": "transition_causal_guard",
+    "schema": "transition_causal_guard",
+    "verdict": "nontriviality_fail"
+  },
+  {
+    "candidate_id": "tcg_004",
+    "lemma": "(=> (= state580 #b0) (= state15 #b0))",
+    "mode": "transition_causal_guard",
+    "schema": "transition_causal_guard",
+    "verdict": "nontriviality_fail"
+  },
+  {
+    "candidate_id": "tcg_005",
+    "lemma": "(=> (or (= state559 #b0) (= state566 #b0)) (= state15 #b0))",
+    "mode": "transition_causal_guard",
+    "schema": "transition_causal_guard",
+    "verdict": "parse_failed"
+  },
+  {
+    "candidate_id": "tcg_006",
+    "lemma": "(=> (or (= state573 #b0) (= state580 #b0)) (= state15 #b0))",
+    "mode": "transition_causal_guard",
+    "schema": "transition_causal_guard",
+    "verdict": "parse_failed"
+  },
+  {
+    "candidate_id": "sample_001",
+    "lemma": "(=> (= state790 #b1) (= state15 #b0))",
+    "mode": "guarded_implication",
+    "schema": "guarded_implication",
+    "verdict": "nontriviality_fail"
+  },
+  {
+    "candidate_id": "sample_002",
+    "lemma": "(! (and (= state15 #b1) (= state1536 #b0001)))",
+    "mode": "protocol_invariant",
+    "schema": "nary_mutex",
+    "verdict": "parse_failed"
+  },
+  {
+    "candidate_id": "sample_003",
+    "lemma": "(= state559 #b0)",
+    "mode": "clause_family_compression",
+    "schema": "allowed_set",
+    "verdict": "nontriviality_fail"
+  },
+  {
+    "candidate_id": "sample_004",
+    "lemma": "(= state566 #b0)",
+    "mode": "clause_family_compression",
+    "schema": "allowed_set",
+    "verdict": "nontriviality_fail"
+  },
+  {
+    "candidate_id": "sample_005",
+    "lemma": "(=> (and (= state1536 #b0000) (= state1558 #b0)) (= state15 #b0))",
+    "mode": "protocol_invariant",
+    "schema": "guarded_implication",
+    "verdict": "nontriviality_fail"
+  },
+  {
+    "candidate_id": "sample_006",
+    "lemma": "(=> (= state79 #b1) (= state15 #b0))",
+    "mode": "protocol_invariant",
+    "schema": "guarded_implication",
+    "verdict": "nontriviality_fail"
+  },
+  {
+    "candidate_id": "sample_007",
+    "lemma": "(=> (and (= state2002 #b0) (= state790 #b0)) (= state15 #b0))",
+    "mode": "protocol_invariant",
+    "schema": "guarded_implication",
+    "verdict": "nontriviality_fail"
+  },
+  {
+    "candidate_id": "sample_002",
+    "lemma": "(=> (and (= state559 #b0) (= state566 #b0) (= state573 #b0) (= state580 #b0)) (= state15 #b0))",
+    "mode": "near_miss_repair",
+    "schema": "guarded_implication",
+    "verdict": "parse_failed"
+  },
+  {
+    "candidate_id": "sample_005",
+    "lemma": "(=> (= state2002 #b1) (= state15 #b0))",
+    "mode": "near_miss_repair",
+    "schema": "guarded_implication",
+    "verdict": "nontriviality_fail"
+  },
+  {
+    "candidate_id": "sample_006",
+    "lemma": "(=> (= state1536 #b0000) (= state15 #b0))",
+    "mode": "near_miss_repair",
+    "schema": "guarded_implication",
+    "verdict": "nontriviality_fail"
+  },
+  {
+    "candidate_id": "sample_007",
+    "lemma": "(not (and (= state15 #b1) (= state1558 #b1)))",
+    "mode": "near_miss_repair",
+    "schema": "nary_mutex",
+    "verdict": "parse_failed"
+  },
+  {
+    "candidate_id": "sample_008",
+    "lemma": "(=> (or (= state559 #b0) (= state790 #b1)) (= state15 #b0))",
+    "mode": "near_miss_repair",
+    "schema": "guarded_implication",
+    "verdict": "parse_failed"
+  },
+  {
+    "candidate_id": "sample_001",
+    "lemma": "(! (and (= state15 #b1) (= state559 #b0)))",
+    "mode": "nary_mutex",
+    "schema": "nary_mutex",
+    "verdict": "parse_failed"
+  },
+  {
+    "candidate_id": "sample_002",
+    "lemma": "(! (and (= state15 #b1) (= state566 #b0)))",
+    "mode": "nary_mutex",
+    "schema": "nary_mutex",
+    "verdict": "parse_failed"
+  },
+  {
+    "candidate_id": "sample_003",
+    "lemma": "(! (and (= state15 #b1) (= state573 #b0)))",
+    "mode": "nary_mutex",
+    "schema": "nary_mutex",
+    "verdict": "parse_failed"
+  },
+  {
+    "candidate_id": "sample_004",
+    "lemma": "(! (and (= state15 #b1) (= state580 #b0)))",
+    "mode": "nary_mutex",
+    "schema": "nary_mutex",
+    "verdict": "parse_failed"
+  },
+  {
+    "candidate_id": "sample_005",
+    "lemma": "(! (and (= state15 #b1) (= state559 #b0) (= state566 #b0)))",
+    "mode": "nary_mutex",
+    "schema": "nary_mutex",
+    "verdict": "parse_failed"
+  },
+  {
+    "candidate_id": "sample_006",
+    "lemma": "(! (and (= state15 #b1) (= state566 #b0) (= state573 #b0)))",
+    "mode": "nary_mutex",
+    "schema": "nary_mutex",
+    "verdict": "parse_failed"
+  },
+  {
+    "candidate_id": "sample_007",
+    "lemma": "(! (and (= state15 #b1) (= state573 #b0) (= state580 #b0)))",
+    "mode": "nary_mutex",
+    "schema": "nary_mutex",
+    "verdict": "parse_failed"
+  },
+  {
+    "candidate_id": "sample_008",
+    "lemma": "(! (and (= state15 #b1) (= state559 #b0) (= state566 #b0) (= state573 #b0) (= state580 #b0)))",
+    "mode": "nary_mutex",
+    "schema": "nary_mutex",
+    "verdict": "parse_failed"
+  },
+  {
+    "candidate_id": "sample_001",
+    "lemma": "(=> (= state15 #b1) (= state559 #b1))",
+    "mode": "guarded_implication",
+    "schema": "guarded_implication",
+    "verdict": "nontriviality_fail"
+  },
+  {
+    "candidate_id": "sample_002",
+    "lemma": "(=> (= state15 #b1) (and (= state559 #b1) (= state566 #b1)))",
+    "mode": "clause_family_compression",
+    "schema": "clause_family_compression",
+    "verdict": "parse_failed"
+  },
+  {
+    "candidate_id": "sample_003",
+    "lemma": "(! (and (= state15 #b1) (= state790 #b1)))",
+    "mode": "nary_mutex",
+    "schema": "nary_mutex",
+    "verdict": "parse_failed"
+  },
+  {
+    "candidate_id": "sample_004",
+    "lemma": "(! (and (= state15 #b1) (= state2002 #b1)))",
+    "mode": "nary_mutex",
+    "schema": "nary_mutex",
+    "verdict": "parse_failed"
+  },
+  {
+    "candidate_id": "sample_005",
+    "lemma": "(or (= state1536 #b0000) (= state1536 #b0001) (= state1536 #b0010) (= state1536 #b0011))",
+    "mode": "allowed_set",
+    "schema": "allowed_set",
+    "verdict": "parse_failed"
+  },
+  {
+    "candidate_id": "sample_006",
+    "lemma": "(<= state1536 #b0011)",
+    "mode": "range_bound",
+    "schema": "range_bound",
+    "verdict": "parse_failed"
+  },
+  {
+    "candidate_id": "sample_008",
+    "lemma": "(=> (and (= state1558 #b1) (= state79 #b0)) (= state15 #b0))",
+    "mode": "satellite_generalization",
+    "schema": "satellite_generalization",
+    "verdict": "nontriviality_fail"
+  }
+]

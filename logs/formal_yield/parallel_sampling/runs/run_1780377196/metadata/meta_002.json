@@ -1,0 +1,12 @@
+{
+  "index": 2,
+  "mode": "clause_family_compression",
+  "seed": 2,
+  "primer_hash": "0cf5b0822c28fbfc",
+  "payload_hash": "1ba7ae2ac046f305",
+  "thinking": "none",
+  "temperature": 0.8,
+  "tokens": 6565,
+  "latency_ms": 111808.54678153992,
+  "runtime_s": 111
+}

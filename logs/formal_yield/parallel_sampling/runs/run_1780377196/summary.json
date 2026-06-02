@@ -1,0 +1,104 @@
+{
+  "run_id": "run_1780377196",
+  "calls": 8,
+  "results": [
+    {
+      "index": 0,
+      "mode": "guarded_implication",
+      "seed": 0,
+      "primer_hash": "0cf5b0822c28fbfc",
+      "payload_hash": "0bc663f946b5f553",
+      "thinking": "none",
+      "temperature": 0.8,
+      "tokens": 7922,
+      "latency_ms": 144459.08904075623,
+      "runtime_s": 144
+    },
+    {
+      "index": 1,
+      "mode": "satellite_generalization",
+      "seed": 1,
+      "primer_hash": "0cf5b0822c28fbfc",
+      "payload_hash": "f946795a354851d3",
+      "thinking": "none",
+      "temperature": 0.8,
+      "tokens": 4586,
+      "latency_ms": 69827.44526863098,
+      "runtime_s": 69
+    },
+    {
+      "index": 2,
+      "mode": "clause_family_compression",
+      "seed": 2,
+      "primer_hash": "0cf5b0822c28fbfc",
+      "payload_hash": "1ba7ae2ac046f305",
+      "thinking": "none",
+      "temperature": 0.8,
+      "tokens": 6565,
+      "latency_ms": 111808.54678153992,
+      "runtime_s": 111
+    },
+    {
+      "index": 3,
+      "mode": "transition_causal_guard",
+      "seed": 3,
+      "primer_hash": "0cf5b0822c28fbfc",
+      "payload_hash": "649855d56de161ee",
+      "thinking": "none",
+      "temperature": 0.8,
+      "tokens": 4684,
+      "latency_ms": 75234.10606384277,
+      "runtime_s": 75
+    },
+    {
+      "index": 4,
+      "mode": "protocol_invariant",
+      "seed": 4,
+      "primer_hash": "0cf5b0822c28fbfc",
+      "payload_hash": "c2af5d3a60092dc1",
+      "thinking": "none",
+      "temperature": 0.8,
+      "tokens": 7306,
+      "latency_ms": 130297.68705368042,
+      "runtime_s": 130
+    },
+    {
+      "index": 5,
+      "mode": "near_miss_repair",
+      "seed": 5,
+      "primer_hash": "0cf5b0822c28fbfc",
+      "payload_hash": "83d4cea0123ff09f",
+      "thinking": "none",
+      "temperature": 0.8,
+      "tokens": 6887,
+      "latency_ms": 121222.9254245758,
+      "runtime_s": 121
+    },
+    {
+      "index": 6,
+      "mode": "nary_mutex",
+      "seed": 6,
+      "primer_hash": "0cf5b0822c28fbfc",
+      "payload_hash": "c781a41bdeac4098",
+      "thinking": "none",
+      "temperature": 0.8,
+      "tokens": 4691,
+      "latency_ms": 70374.66669082642,
+      "runtime_s": 70
+    },
+    {
+      "index": 7,
+      "mode": "diverse_explore",
+      "seed": 7,
+      "primer_hash": "0cf5b0822c28fbfc",
+      "payload_hash": "90c8cda6d801c9fc",
+      "thinking": "none",
+      "temperature": 0.8,
+      "tokens": 7172,
+      "latency_ms": 120209.92541313171,
+      "runtime_s": 120
+    }
+  ],
+  "thinking": "none",
+  "temperature": 0.8
+}

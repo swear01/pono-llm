@@ -1,0 +1,12 @@
+{
+  "index": 3,
+  "mode": "transition_causal_guard",
+  "seed": 3,
+  "primer_hash": "0cf5b0822c28fbfc",
+  "payload_hash": "649855d56de161ee",
+  "thinking": "none",
+  "temperature": 0.8,
+  "tokens": 4684,
+  "latency_ms": 75234.10606384277,
+  "runtime_s": 75
+}

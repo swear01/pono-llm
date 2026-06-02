@@ -361,12 +361,14 @@ def lemma_to_smt(lemma: str, vars_dict: Dict[str, bz.Term],
         return tm.mk_term(bz.Kind.OR, [not_guard, consequent])
 
     # (=> (and (= stateX V) (= stateY W)) (= stateZ U))  → guarded with conjunction
-    m = re.match(
-        r'\(\s*=>\s*\(\s*and\s*\(\s*=\s*(state\d+)\s+(.+?)\s*\)\s*'
-        r'\(\s*=\s*(state\d+)\s+(.+?)\s*\)\s*\)\s*'
-        r'\(\s*=\s*(state\d+)\s+(.+?)\s*\)\s*\)',
+    # Skip (=> (not (and ...)) — those are nary mutex variants
+    if not lemma_clean.startswith("(=> (not ("):
+      m = re.match(
+        r'\(\s*=>\s*\(\s*and\s*\(\s*=\s*(state\d+)\s+([^)]+)\s*\)\s*'
+        r'\(\s*=\s*(state\d+)\s+([^)]+)\s*\)\s*\)\s*'
+        r'\(\s*=\s*(state\d+)\s+([^)]+)\s*\)\s*\)',
         lemma_clean)
-    if m:
+      if m:
         g1 = _mk_eq(m.group(1), m.group(2).strip())
         g2 = _mk_eq(m.group(3), m.group(4).strip())
         cons = _mk_eq(m.group(5), m.group(6).strip())
