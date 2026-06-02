@@ -1,0 +1,171 @@
+{
+  "generalized_candidates": [
+    {
+      "candidate_id": "gen_001",
+      "source_artifact_id": "artifact_007",
+      "source_artifact_type": "frame_clause",
+      "generalization_operator": "guard_strengthening",
+      "original_artifact": "(or (or (or (or (or (or (or (not (= state15 #b0)) (not (= state81 #b1))) (not (= state636 #b0))) (not (= state666 #b0)))...",
+      "lemma": {
+        "schema": "guarded_implication_2",
+        "guards": [
+          { "var": "state15", "value": "0" },
+          { "var": "state636", "value": "0" }
+        ],
+        "consequent": { "var": "state81", "value": "0" }
+      },
+      "schema": "guarded_implication_2",
+      "variables": ["state15", "state636", "state81"],
+      "why_this_is_a_generalization": "Drops guard state666=0 and others from the full implication derived from the frame clause, strengthening the antecedent to achieve the same consequent, thereby proposing a stronger invariant.",
+      "why_may_be_inductive": "The original full clause was inductive; this stronger version may still hold in all reachable states because the dropped guards might be redundant in the context of the system dynamics.",
+      "why_may_have_proof_impact": "A smaller lemma can simplify the proof by reducing the number of literals that need to be tracked, potentially leading to faster convergence.",
+      "risk": "Medium – the stronger condition may be false in some reachable state, causing spurious counterexamples."
+    },
+    {
+      "candidate_id": "gen_002",
+      "source_artifact_id": "artifact_007",
+      "source_artifact_type": "frame_clause",
+      "generalization_operator": "guard_strengthening",
+      "original_artifact": "(or (or (or (or (or (or (or (not (= state15 #b0)) (not (= state81 #b1))) (not (= state636 #b0))) (not (= state666 #b0)))...",
+      "lemma": {
+        "schema": "guarded_implication_2",
+        "guards": [
+          { "var": "state15", "value": "0" },
+          { "var": "state666", "value": "0" }
+        ],
+        "consequent": { "var": "state81", "value": "0" }
+      },
+      "schema": "guarded_implication_2",
+      "variables": ["state15", "state666", "state81"],
+      "why_this_is_a_generalization": "Strengthens the guard set by keeping only state15=0 and state666=0 while still aiming to force state81=0, dropping state636=0 and other literals from the full implication.",
+      "why_may_be_inductive": "The system may ensure that whenever state15 and state666 are both low, state81 must be low regardless of other states, making the lemma inductive.",
+      "why_may_have_proof_impact": "Focuses on a smaller set of controlling variables, which can block bad states earlier in the proof.",
+      "risk": "Medium – the dropped guard state636=0 might be necessary to guarantee the consequent in some reachable configuration."
+    },
+    {
+      "candidate_id": "gen_003",
+      "source_artifact_id": "artifact_007",
+      "source_artifact_type": "frame_clause",
+      "generalization_operator": "guard_strengthening",
+      "original_artifact": "(or (or (or (or (or (or (or (not (= state15 #b0)) (not (= state81 #b1))) (not (= state636 #b0))) (not (= state666 #b0)))...",
+      "lemma": {
+        "schema": "guarded_implication_3",
+        "guards": [
+          { "var": "state15", "value": "0" },
+          { "var": "state636", "value": "0" },
+          { "var": "state666", "value": "0" }
+        ],
+        "consequent": { "var": "state81", "value": "0" }
+      },
+      "schema": "guarded_implication_3",
+      "variables": ["state15", "state636", "state666", "state81"],
+      "why_this_is_a_generalization": "A less drastic strengthening than gen_001/002; keeps three guards instead of all original guards, still strengthening relative to the full clause while retaining more context.",
+      "why_may_be_inductive": "These three variables together might capture the essential condition that forces state81=0 in all reachable states, while the full clause had additional redundant guards.",
+      "why_may_have_proof_impact": "Provides a balanced lemma that reduces complexity but retains safety, aiding the PDR algorithm's frame growth.",
+      "risk": "Low-Medium – more conservative than fewer guards, but still may omit necessary variables."
+    },
+    {
+      "candidate_id": "gen_004",
+      "source_artifact_id": "artifact_007",
+      "source_artifact_type": "frame_clause",
+      "generalization_operator": "guard_strengthening",
+      "original_artifact": "(or (or (or (or (or (or (or (not (= state15 #b0)) (not (= state81 #b1))) (not (= state636 #b0))) (not (= state666 #b0)))...",
+      "lemma": {
+        "schema": "single_guard_implication",
+        "guard": { "var": "state15", "value": "0" },
+        "consequent": { "var": "state81", "value": "0" }
+      },
+      "schema": "single_guard_implication",
+      "variables": ["state15", "state81"],
+      "why_this_is_a_generalization": "The ultimate guard strengthening: a simple implication that state15=0 directly forces state81=0, omitting all other context from the frame clause.",
+      "why_may_be_inductive": "If the state15 signal is a direct precursor or enable for state81, this implication could hold globally.",
+      "why_may_have_proof_impact": "Very compact; if true, it significantly simplifies the invariant and can drastically reduce the proof effort.",
+      "risk": "High – very likely too strong; state15=0 alone may not guarantee state81=0 in all reachable states (as noted, state15=0 fails), and this lemma might be refuted quickly."
+    },
+    {
+      "candidate_id": "gen_005",
+      "source_artifact_id": "artifact_008",
+      "source_artifact_type": "frame_clause",
+      "generalization_operator": "guard_strengthening",
+      "original_artifact": "(or (or (or (or (or (or (not (= state1373 #b0)) (not (= state1464 #b0))) (not (= state1501 #b0))) (not (= state1530 #b0))...",
+      "lemma": {
+        "schema": "guarded_implication_2",
+        "guards": [
+          { "var": "state1464", "value": "0" },
+          { "var": "state1501", "value": "0" }
+        ],
+        "consequent": { "var": "state1373", "value": "0" }
+      },
+      "schema": "guarded_implication_2",
+      "variables": ["state1464", "state1501", "state1373"],
+      "why_this_is_a_generalization": "Selects a subset of the literals from the second frame clause; by assuming state1464=0 and state1501=0, forces state1373=0, dropping e.g. state1530=0 and others.",
+      "why_may_be_inductive": "The original clause says at least one of these signals is high; this strengthens to say if two are low then the third must be low (which is equivalent to ‘not all three low’), a common invariant pattern.",
+      "why_may_have_proof_impact": "Introduces a relational property between three variables that can be easier to reason about than the full disjunction.",
+      "risk": "Medium – might be falsified if state1464 and state1501 can both be low while state1373 stays high in a reachable state."
+    },
+    {
+      "candidate_id": "gen_006",
+      "source_artifact_id": "artifact_008",
+      "source_artifact_type": "frame_clause",
+      "generalization_operator": "guard_strengthening",
+      "original_artifact": "(or (or (or (or (or (or (not (= state1373 #b0)) (not (= state1464 #b0))) (not (= state1501 #b0))) (not (= state1530 #b0))...",
+      "lemma": {
+        "schema": "guarded_implication_3",
+        "guards": [
+          { "var": "state1464", "value": "0" },
+          { "var": "state1501", "value": "0" },
+          { "var": "state1530", "value": "0" }
+        ],
+        "consequent": { "var": "state1373", "value": "0" }
+      },
+      "schema": "guarded_implication_3",
+      "variables": ["state1464", "state1501", "state1530", "state1373"],
+      "why_this_is_a_generalization": "Strengthens the original clause by using three specific guards instead of the full set; if these three are low, then state1373 must be low, which is stronger than the original ‘at least one of many is high’.",
+      "why_may_be_inductive": "The system may never reach a state where these four signals are all simultaneously low (or the pattern is preserved), making this an inductive lemma.",
+      "why_may_have_proof_impact": "Adds a focused invariant that can block spurious counterexamples in the frontier frames around these state variables.",
+      "risk": "Low-Medium – four-variable relation is still relatively small and often holds in hardware protocols."
+    },
+    {
+      "candidate_id": "gen_007",
+      "source_artifact_id": "artifact_008",
+      "source_artifact_type": "frame_clause",
+      "generalization_operator": "guard_strengthening",
+      "original_artifact": "(or (or (or (or (or (or (not (= state1373 #b0)) (not (= state1464 #b0))) (not (= state1501 #b0))) (not (= state1530 #b0))...",
+      "lemma": {
+        "schema": "nary_mutex_3",
+        "literals": [
+          { "var": "state1373", "value": "0" },
+          { "var": "state1464", "value": "0" },
+          { "var": "state1501", "value": "0" }
+        ]
+      },
+      "schema": "nary_mutex_3",
+      "variables": ["state1373", "state1464", "state1501"],
+      "why_this_is_a_generalization": "The original clause asserts that at least one of many variables is not zero; this mutex says at most one of three of them can be zero, i.e., at least two must be non-zero, which is a strict strengthening.",
+      "why_may_be_inductive": "Mutual exclusion between zeros often holds in control logic when signals are driven by a one-hot or priority encoder; may be an invariant relationship.",
+      "why_may_have_proof_impact": "A small mutual-exclusion invariant is very easy to verify and can propagate quickly through frames, making the proof more efficient.",
+      "risk": "Medium – may be too strong if in some reachable state two of these signals are zero simultaneously."
+    },
+    {
+      "candidate_id": "gen_008",
+      "source_artifact_id": "artifact_007",
+      "source_artifact_type": "frame_clause",
+      "generalization_operator": "guard_strengthening",
+      "original_artifact": "(or (or (or (or (or (or (or (not (= state15 #b0)) (not (= state81 #b1))) (not (= state636 #b0))) (not (= state666 #b0)))...",
+      "lemma": {
+        "schema": "nary_mutex_3",
+        "literals": [
+          { "var": "state15", "value": "0" },
+          { "var": "state81", "value": "0" },
+          { "var": "state636", "value": "0" }
+        ]
+      },
+      "schema": "nary_mutex_3",
+      "variables": ["state15", "state81", "state636"],
+      "why_this_is_a_generalization": "Transforms the disjunction into a stricter mutual-zero condition; says that no two of these three can be zero at the same time, which implies the original clause (since if they were all zero, the clause would be violated).",
+      "why_may_be_inductive": "These three signals may be mutually exclusive in their zero states due to the design, making this a stronger but still valid invariant.",
+      "why_may_have_proof_impact": "Provides a clean, local invariant about the proof-frontier variable state15 and related signals, directly assisting the IC3 algorithm.",
+      "risk": "Medium – if in any reachable state two of them are zero, the lemma is false."
+    }
+  ]
+}

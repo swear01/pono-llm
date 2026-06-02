@@ -388,6 +388,18 @@ def lemma_to_smt(lemma: str, vars_dict: Dict[str, bz.Term],
         violation = tm.mk_term(bz.Kind.AND, [a, b])
         return tm.mk_term(bz.Kind.NOT, [violation])
 
+    # (not (and (= stateX V) (= stateY W) (= stateZ U)))  → 3-var mutex
+    m = re.match(
+        r'\(\s*not\s*\(\s*and\s*\(\s*=\s*(state\d+)\s+([^)]+?)\s*\)\s*\(\s*=\s*(state\d+)\s+([^)]+?)\s*\)\s*'
+        r'\(\s*=\s*(state\d+)\s+([^)]+?)\s*\)\s*\)\s*\)',
+        lemma_clean)
+    if m:
+        a = _mk_eq(m.group(1), m.group(2))
+        b = _mk_eq(m.group(3), m.group(4))
+        c = _mk_eq(m.group(5), m.group(6))
+        if a is None or b is None or c is None: return None
+        return tm.mk_term(bz.Kind.NOT, [tm.mk_term(bz.Kind.AND, [a, b, c])])
+
     # Fallback: symbolic format
     lemma_nosp = lemma_clean.replace(" ", "")
     m = re.match(r"!\(\s*state(\d+)\s*&&\s*state(\d+)\s*\)", lemma_nosp)

@@ -1,0 +1,180 @@
+{
+  "generalized_candidates": [
+    {
+      "candidate_id": "cand_1",
+      "source_artifact_id": "artifact_010",
+      "source_artifact_type": "frame_clause",
+      "generalization_operator": "repair",
+      "original_artifact": "(or (not (= state1373 #b0)) (not (= state1464 #b0)) (not (= state1501 #b0)) (not (= state1530 #b0)))",
+      "lemma": {
+        "schema": "or_consequent_guard",
+        "guard": {"var": "state1373", "value": "0"},
+        "consequents": [
+          {"var": "state1464", "value": "1"},
+          {"var": "state1501", "value": "1"},
+          {"var": "state1530", "value": "1"}
+        ]
+      },
+      "schema": "or_consequent_guard",
+      "variables": ["state1373", "state1464", "state1501", "state1530"],
+      "why_this_is_a_generalization": "Reformulates the disjunction as an equivalent implication, dropping any additional disjuncts beyond the four listed, weakening the original clause.",
+      "why_may_be_inductive": "Subsets of frame clauses often remain inductive if dropped variables are not tightly coupled in the transition relation.",
+      "why_may_have_proof_impact": "A simpler, weaker invariant may be easier to prove and can help advance the proof frontier without over-constraining.",
+      "risk": "Medium: losing disjuncts could make the clause too weak to block counterexamples."
+    },
+    {
+      "candidate_id": "cand_2",
+      "source_artifact_id": "artifact_010",
+      "source_artifact_type": "frame_clause",
+      "generalization_operator": "repair",
+      "original_artifact": "(or (not (= state1373 #b0)) (not (= state1464 #b0)) (not (= state1501 #b0)) (not (= state1530 #b0)))",
+      "lemma": {
+        "schema": "or_consequent_guard",
+        "guard": {"var": "state1464", "value": "0"},
+        "consequents": [
+          {"var": "state1373", "value": "1"},
+          {"var": "state1501", "value": "1"},
+          {"var": "state1530", "value": "1"}
+        ]
+      },
+      "schema": "or_consequent_guard",
+      "variables": ["state1464", "state1373", "state1501", "state1530"],
+      "why_this_is_a_generalization": "Alternative reordering of the disjunction with state1464 as guard, still dropping extra original disjuncts.",
+      "why_may_be_inductive": "Symmetry in the variable roles suggests the inductive nature may be preserved regardless of which variable is chosen as guard.",
+      "why_may_have_proof_impact": "Different guard choice can affect propagation in IC3 and may interact better with other lemmas.",
+      "risk": "Low: structurally equivalent to cand_1, just a variable permutation."
+    },
+    {
+      "candidate_id": "cand_3",
+      "source_artifact_id": "artifact_010",
+      "source_artifact_type": "frame_clause",
+      "generalization_operator": "repair",
+      "original_artifact": "(or (not (= state1373 #b0)) (not (= state1464 #b0)) (not (= state1501 #b0)) (not (= state1530 #b0)))",
+      "lemma": {
+        "schema": "or_consequent_guard",
+        "guard": {"var": "state1501", "value": "0"},
+        "consequents": [
+          {"var": "state1373", "value": "1"},
+          {"var": "state1464", "value": "1"},
+          {"var": "state1530", "value": "1"}
+        ]
+      },
+      "schema": "or_consequent_guard",
+      "variables": ["state1501", "state1373", "state1464", "state1530"],
+      "why_this_is_a_generalization": "Another permutation with state1501 as guard, same generalization principle.",
+      "why_may_be_inductive": "Induction may succeed with this orientation if state1501 is more central in the transition relation.",
+      "why_may_have_proof_impact": "Could be more effective if state1501 often appears in counterexamples.",
+      "risk": "Low: similar to cand_1 and cand_2."
+    },
+    {
+      "candidate_id": "cand_4",
+      "source_artifact_id": "artifact_010",
+      "source_artifact_type": "frame_clause",
+      "generalization_operator": "repair",
+      "original_artifact": "(or (not (= state1373 #b0)) (not (= state1464 #b0)) (not (= state1501 #b0)) (not (= state1530 #b0)))",
+      "lemma": {
+        "schema": "or_consequent_guard",
+        "guard": {"var": "state1530", "value": "0"},
+        "consequents": [
+          {"var": "state1373", "value": "1"},
+          {"var": "state1464", "value": "1"},
+          {"var": "state1501", "value": "1"}
+        ]
+      },
+      "schema": "or_consequent_guard",
+      "variables": ["state1530", "state1373", "state1464", "state1501"],
+      "why_this_is_a_generalization": "Final permutation with state1530 as guard, still a valid weakening.",
+      "why_may_be_inductive": "May be inductive if state1530 is a key output variable that drives others.",
+      "why_may_have_proof_impact": "Might reduce effort in later proof frames.",
+      "risk": "Low."
+    },
+    {
+      "candidate_id": "cand_5",
+      "source_artifact_id": "artifact_010",
+      "source_artifact_type": "frame_clause",
+      "generalization_operator": "repair",
+      "original_artifact": "(or (not (= state1373 #b0)) (not (= state1464 #b0)) (not (= state1501 #b0)) (not (= state1530 #b0)))",
+      "lemma": {
+        "schema": "guarded_implication_3",
+        "guards": [
+          {"var": "state1373", "value": "0"},
+          {"var": "state1464", "value": "0"},
+          {"var": "state1501", "value": "0"}
+        ],
+        "consequent": {"var": "state1530", "value": "1"}
+      },
+      "schema": "guarded_implication_3",
+      "variables": ["state1373", "state1464", "state1501", "state1530"],
+      "why_this_is_a_generalization": "Converts disjunction into a guarded implication with state1530 as consequent, equivalent to the original four-variable clause but potentially stronger since it requires exactly three missing variables to trigger the fourth.",
+      "why_may_be_inductive": "Guarded implications often have stronger inductive properties because they explicitly capture dependencies.",
+      "why_may_have_proof_impact": "Can enable more precise contrapositive reasoning in IC3.",
+      "risk": "Medium: if the system allows two of the three guards to be 1 simultaneously without forcing the consequent, the lemma would still hold but may not be needed."
+    },
+    {
+      "candidate_id": "cand_6",
+      "source_artifact_id": "artifact_010",
+      "source_artifact_type": "frame_clause",
+      "generalization_operator": "repair",
+      "original_artifact": "(or (not (= state1373 #b0)) (not (= state1464 #b0)) (not (= state1501 #b0)) (not (= state1530 #b0)))",
+      "lemma": {
+        "schema": "guarded_implication_3",
+        "guards": [
+          {"var": "state1373", "value": "0"},
+          {"var": "state1464", "value": "0"},
+          {"var": "state1530", "value": "0"}
+        ],
+        "consequent": {"var": "state1501", "value": "1"}
+      },
+      "schema": "guarded_implication_3",
+      "variables": ["state1373", "state1464", "state1530", "state1501"],
+      "why_this_is_a_generalization": "Alternative grouping with state1501 as consequent.",
+      "why_may_be_inductive": "Different consequent may align better with the system's transition structure.",
+      "why_may_have_proof_impact": "Could be easier to propagate if state1501 is frequently a target of clause generalization.",
+      "risk": "Medium."
+    },
+    {
+      "candidate_id": "cand_7",
+      "source_artifact_id": "artifact_010",
+      "source_artifact_type": "frame_clause",
+      "generalization_operator": "repair",
+      "original_artifact": "(or (not (= state1373 #b0)) (not (= state1464 #b0)) (not (= state1501 #b0)) (not (= state1530 #b0)))",
+      "lemma": {
+        "schema": "guarded_implication_3",
+        "guards": [
+          {"var": "state1373", "value": "0"},
+          {"var": "state1501", "value": "0"},
+          {"var": "state1530", "value": "0"}
+        ],
+        "consequent": {"var": "state1464", "value": "1"}
+      },
+      "schema": "guarded_implication_3",
+      "variables": ["state1373", "state1501", "state1530", "state1464"],
+      "why_this_is_a_generalization": "Yet another permutation of the guarded implication covering the same set of variables.",
+      "why_may_be_inductive": "Symmetry across the variables suggests induction may hold similarly.",
+      "why_may_have_proof_impact": "Provides alternative hypothesis for the proof search.",
+      "risk": "Low."
+    },
+    {
+      "candidate_id": "cand_8",
+      "source_artifact_id": "artifact_010",
+      "source_artifact_type": "frame_clause",
+      "generalization_operator": "repair",
+      "original_artifact": "(or (not (= state1373 #b0)) (not (= state1464 #b0)) (not (= state1501 #b0)) (not (= state1530 #b0)))",
+      "lemma": {
+        "schema": "guarded_implication_3",
+        "guards": [
+          {"var": "state1464", "value": "0"},
+          {"var": "state1501", "value": "0"},
+          {"var": "state1530", "value": "0"}
+        ],
+        "consequent": {"var": "state1373", "value": "1"}
+      },
+      "schema": "guarded_implication_3",
+      "variables": ["state1464", "state1501", "state1530", "state1373"],
+      "why_this_is_a_generalization": "Final permutation with state1373 as consequent, completing all possible single-consequent reductions of the four-variable clause.",
+      "why_may_be_inductive": "If the original clause is inductive, this equivalent representation likely retains inductivity.",
+      "why_may_have_proof_impact": "Maximizes coverage of different guard/consequent splits for the prover.",
+      "risk": "Low: equivalent to original clause over these four variables."
+    }
+  ]
+}

@@ -1,0 +1,150 @@
+{
+  "generalized_candidates": [
+    {
+      "candidate_id": "cand_001",
+      "source_artifact_id": "artifact_001",
+      "source_artifact_type": "frame_clause",
+      "generalization_operator": "literal_deletion",
+      "original_artifact": "Original frame clause from artifact_001 (truncated)",
+      "lemma": "Mutual exclusion: at most one of state471=0, state490=0, state790=1 is true.",
+      "schema": "nary_mutex_3",
+      "literals": [
+        { "var": "state471", "value": "0" },
+        { "var": "state490", "value": "0" },
+        { "var": "state790", "value": "1" }
+      ],
+      "variables": ["state471", "state490", "state790"],
+      "why_this_is_a_generalization": "Deleted all literals except three, weakening the original clause.",
+      "why_may_be_inductive": "Shorter clauses are often more likely to be inductive in IC3.",
+      "why_may_have_proof_impact": "A compact mutex can propagate more easily through frames.",
+      "risk": "Low"
+    },
+    {
+      "candidate_id": "cand_002",
+      "source_artifact_id": "artifact_001",
+      "source_artifact_type": "frame_clause",
+      "generalization_operator": "literal_deletion",
+      "original_artifact": "Original frame clause from artifact_001 (truncated)",
+      "lemma": "If state471=0 then state790=0.",
+      "schema": "single_guard_implication",
+      "guard": { "var": "state471", "value": "0" },
+      "consequent": { "var": "state790", "value": "0" },
+      "variables": ["state471", "state790"],
+      "why_this_is_a_generalization": "Kept only two literals with opposite polarities, resulting in a weaker two‑literal clause.",
+      "why_may_be_inductive": "Binary implication is a common inductive lemma pattern.",
+      "why_may_have_proof_impact": "May help close the proof frontier involving state15 through chaining implications.",
+      "risk": "Low"
+    },
+    {
+      "candidate_id": "cand_003",
+      "source_artifact_id": "artifact_001",
+      "source_artifact_type": "frame_clause",
+      "generalization_operator": "literal_deletion",
+      "original_artifact": "Original frame clause from artifact_001 (truncated)",
+      "lemma": "If state790=0 then at least one of state471=1 or state490=1.",
+      "schema": "or_consequent_guard",
+      "guard": { "var": "state790", "value": "0" },
+      "consequents": [
+        { "var": "state471", "value": "1" },
+        { "var": "state490", "value": "1" }
+      ],
+      "variables": ["state790", "state471", "state490"],
+      "why_this_is_a_generalization": "Deleted all but three literals and expressed with a guard and two consequents, still weaker than the original.",
+      "why_may_be_inductive": "The form resembles a half‑clause that can be composed inductively.",
+      "why_may_have_proof_impact": "Encodes a useful case‑split for the proof engine.",
+      "risk": "Low"
+    },
+    {
+      "candidate_id": "cand_004",
+      "source_artifact_id": "artifact_002",
+      "source_artifact_type": "frame_clause",
+      "generalization_operator": "literal_deletion",
+      "original_artifact": "Original frame clause from artifact_002 (truncated)",
+      "lemma": "Mutual exclusion: at most one of state471=0, state476=0, state790=1 is true.",
+      "schema": "nary_mutex_3",
+      "literals": [
+        { "var": "state471", "value": "0" },
+        { "var": "state476", "value": "0" },
+        { "var": "state790", "value": "1" }
+      ],
+      "variables": ["state471", "state476", "state790"],
+      "why_this_is_a_generalization": "Removed all other literals, yielding a smaller disjunction.",
+      "why_may_be_inductive": "Short mutex clauses often hold inductively in hardware designs.",
+      "why_may_have_proof_impact": "Can prevent spurious combinations in the proof.",
+      "risk": "Low"
+    },
+    {
+      "candidate_id": "cand_005",
+      "source_artifact_id": "artifact_002",
+      "source_artifact_type": "frame_clause",
+      "generalization_operator": "literal_deletion",
+      "original_artifact": "Original frame clause from artifact_002 (truncated)",
+      "lemma": "If state476=0 then state790=0.",
+      "schema": "single_guard_implication",
+      "guard": { "var": "state476", "value": "0" },
+      "consequent": { "var": "state790", "value": "0" },
+      "variables": ["state476", "state790"],
+      "why_this_is_a_generalization": "Kept only two literals with complementary polarities, weakening the clause.",
+      "why_may_be_inductive": "Simple implications are often easy to inductively prove.",
+      "why_may_have_proof_impact": "Links state476 to state790, potentially connecting to the proof frontier.",
+      "risk": "Low"
+    },
+    {
+      "candidate_id": "cand_006",
+      "source_artifact_id": "artifact_002",
+      "source_artifact_type": "frame_clause",
+      "generalization_operator": "literal_deletion",
+      "original_artifact": "Original frame clause from artifact_002 (truncated)",
+      "lemma": "If state790=0 then at least one of state471=1 or state476=1.",
+      "schema": "or_consequent_guard",
+      "guard": { "var": "state790", "value": "0" },
+      "consequents": [
+        { "var": "state471", "value": "1" },
+        { "var": "state476", "value": "1" }
+      ],
+      "variables": ["state790", "state471", "state476"],
+      "why_this_is_a_generalization": "Deleted all but three literals, expressed as a guarded disjunction.",
+      "why_may_be_inductive": "Such conditional clauses often propagate well through frames.",
+      "why_may_have_proof_impact": "Provides a case‑split that can reduce the reachable state space.",
+      "risk": "Low"
+    },
+    {
+      "candidate_id": "cand_007",
+      "source_artifact_id": "artifact_003",
+      "source_artifact_type": "frame_clause",
+      "generalization_operator": "literal_deletion",
+      "original_artifact": "Original frame clause from artifact_003 (truncated)",
+      "lemma": "Mutual exclusion: at most one of state471=0, state478=0, state490=0 is true.",
+      "schema": "nary_mutex_3",
+      "literals": [
+        { "var": "state471", "value": "0" },
+        { "var": "state478", "value": "0" },
+        { "var": "state490", "value": "0" }
+      ],
+      "variables": ["state471", "state478", "state490"],
+      "why_this_is_a_generalization": "Kept only three literals, producing a weaker clause.",
+      "why_may_be_inductive": "Three‑literal mutex often generalizes well in IC3.",
+      "why_may_have_proof_impact": "Helps prune unreachable triples in the state space.",
+      "risk": "Low"
+    },
+    {
+      "candidate_id": "cand_008",
+      "source_artifact_id": "artifact_003",
+      "source_artifact_type": "frame_clause",
+      "generalization_operator": "literal_deletion",
+      "original_artifact": "Original frame clause from artifact_003 (truncated)",
+      "lemma": "Mutual exclusion: at most one of state471=0, state490=0, state1530=0 is true.",
+      "schema": "nary_mutex_3",
+      "literals": [
+        { "var": "state471", "value": "0" },
+        { "var": "state490", "value": "0" },
+        { "var": "state1530", "value": "0" }
+      ],
+      "variables": ["state471", "state490", "state1530"],
+      "why_this_is_a_generalization": "Deleted all other literals, yielding a compact three‑literal mutex.",
+      "why_may_be_inductive": "Short mutex clauses are typical candidates for PDR/IC3 generalization.",
+      "why_may_have_proof_impact": "Can reduce the number of necessary frames to reach a fixed point.",
+      "risk": "Low"
+    }
+  ]
+}
