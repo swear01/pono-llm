@@ -1,0 +1,10 @@
+{
+  "index": 5,
+  "mode": "near_miss_repair",
+  "diversity_seed": 5,
+  "primer_hash": "0cf5b0822c28fbfc",
+  "payload_hash": "83d4cea0123ff09f",
+  "prompt_path": "logs/formal_yield/parallel_sampling/prompts/prompt_005.txt",
+  "payload_path": "logs/formal_yield/parallel_sampling/payloads/payload_005.json",
+  "prompt_chars": 3565
+}

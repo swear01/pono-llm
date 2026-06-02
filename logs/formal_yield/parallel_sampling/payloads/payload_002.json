@@ -1,0 +1,10 @@
+{
+  "index": 2,
+  "mode": "clause_family_compression",
+  "diversity_seed": 2,
+  "primer_hash": "0cf5b0822c28fbfc",
+  "payload_hash": "1ba7ae2ac046f305",
+  "prompt_path": "logs/formal_yield/parallel_sampling/prompts/prompt_002.txt",
+  "payload_path": "logs/formal_yield/parallel_sampling/payloads/payload_002.json",
+  "prompt_chars": 3583
+}

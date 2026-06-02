@@ -1,0 +1,10 @@
+{
+  "index": 1,
+  "mode": "satellite_generalization",
+  "diversity_seed": 1,
+  "primer_hash": "0cf5b0822c28fbfc",
+  "payload_hash": "f946795a354851d3",
+  "prompt_path": "logs/formal_yield/parallel_sampling/prompts/prompt_001.txt",
+  "payload_path": "logs/formal_yield/parallel_sampling/payloads/payload_001.json",
+  "prompt_chars": 3581
+}

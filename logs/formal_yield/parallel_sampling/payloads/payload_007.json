@@ -1,0 +1,10 @@
+{
+  "index": 7,
+  "mode": "diverse_explore",
+  "diversity_seed": 7,
+  "primer_hash": "0cf5b0822c28fbfc",
+  "payload_hash": "90c8cda6d801c9fc",
+  "prompt_path": "logs/formal_yield/parallel_sampling/prompts/prompt_007.txt",
+  "payload_path": "logs/formal_yield/parallel_sampling/payloads/payload_007.json",
+  "prompt_chars": 3563
+}

@@ -1,0 +1,60 @@
+{
+  "modes": [
+    {
+      "name": "guarded_implication",
+      "instruction": "Propose candidate guarded implications. Use state15 or state17 as consequent with 1-2 antecedent variables as guards. Avoid direct 'state15=0'.",
+      "preferred_schemas": ["guarded_implication"],
+      "avoid": ["direct_frontier_claim", "bitwidth_tautology"],
+      "candidate_count": 8
+    },
+    {
+      "name": "satellite_generalization",
+      "instruction": "Look at frame clauses sharing state15 with varying satellite variables. Propose lemmas that generalize across satellites.",
+      "preferred_schemas": ["satellite_generalization", "guarded_implication"],
+      "avoid": ["pairwise_overlap_only"],
+      "candidate_count": 8
+    },
+    {
+      "name": "clause_family_compression",
+      "instruction": "Find repeated OR-clause patterns in frame clauses. Propose lemmas that could replace multiple clauses.",
+      "preferred_schemas": ["clause_family_compression", "nary_mutex"],
+      "avoid": ["source_clause_copy"],
+      "candidate_count": 8
+    },
+    {
+      "name": "transition_causal_guard",
+      "instruction": "Propose lemmas with guards derived from the transition logic. Use variable dependency information.",
+      "preferred_schemas": ["transition_causal_guard", "guarded_implication"],
+      "avoid": ["unguarded_frontier"],
+      "candidate_count": 8
+    },
+    {
+      "name": "protocol_invariant",
+      "instruction": "Propose bus-handshake or protocol-style invariants involving state790 (stall), state2002 (request), or state1536 (mode).",
+      "preferred_schemas": ["protocol_invariant", "guarded_implication"],
+      "avoid": ["state15_frontier"],
+      "candidate_count": 8
+    },
+    {
+      "name": "near_miss_repair",
+      "instruction": "Given previous near-miss failures (init-fail or one-step-fail), propose weakened or guarded variants.",
+      "preferred_schemas": ["near_miss_repair", "guarded_implication"],
+      "avoid": ["original_candidate_repeat", "vacuous_weakening"],
+      "candidate_count": 8
+    },
+    {
+      "name": "nary_mutex",
+      "instruction": "Propose mutual exclusion lemmas involving 2-3 variables. Look for pairs that IC3IA frame clauses suggest cannot co-occur.",
+      "preferred_schemas": ["nary_mutex"],
+      "avoid": ["bitwidth_tautology"],
+      "candidate_count": 8
+    },
+    {
+      "name": "diverse_explore",
+      "instruction": "Explore diverse lemma families. Try schemas not used by other modes. Be creative but conservative.",
+      "preferred_schemas": ["all"],
+      "avoid": ["bitwidth_tautology", "copied_from_other_modes"],
+      "candidate_count": 8
+    }
+  ]
+}
