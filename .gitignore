@@ -48,5 +48,8 @@ compile_commands.json
 # IDE settings
 .vscode/
 
+# Worktrees
+.worktrees/
+
 # Benchmark output
 bench_results/
