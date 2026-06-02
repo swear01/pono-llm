@@ -1,0 +1,477 @@
+[
+  {
+    "artifact_id": "artifact_001",
+    "artifact_type": "frame_clause",
+    "frame": 2,
+    "raw": "(or (or (or (or (or (or (or (or (or (not (= state471 #b0)) (not (= state490 #b0))) (not (= state790 #b1))) (not (= state867 #b0))) (not (= state1389 #",
+    "variables": [
+      "state1389",
+      "state1530",
+      "state1686",
+      "state1688",
+      "state471",
+      "state490",
+      "state790",
+      "state853",
+      "state867",
+      "state93"
+    ],
+    "lit_count": 10,
+    "why_selected": "high variable count frame clause",
+    "recommended_operators": [
+      "clause_lifting",
+      "literal_deletion"
+    ]
+  },
+  {
+    "artifact_id": "artifact_002",
+    "artifact_type": "frame_clause",
+    "frame": 2,
+    "raw": "(or (or (or (or (or (or (or (not (= state471 #b0)) (not (= state476 #b0))) (not (= state790 #b1))) (not (= state1530 #b0))) (not (= state1686 #b000000",
+    "variables": [
+      "state1530",
+      "state1686",
+      "state1688",
+      "state1738",
+      "state471",
+      "state476",
+      "state790",
+      "state93"
+    ],
+    "lit_count": 8,
+    "why_selected": "high variable count frame clause",
+    "recommended_operators": [
+      "clause_lifting",
+      "literal_deletion"
+    ]
+  },
+  {
+    "artifact_id": "artifact_003",
+    "artifact_type": "frame_clause",
+    "frame": 2,
+    "raw": "(or (or (or (or (or (or (or (not (= state471 #b0)) (not (= state478 #b0))) (not (= state490 #b0))) (not (= state1530 #b0))) (not (= state1605 #b0))) (",
+    "variables": [
+      "state15",
+      "state1530",
+      "state1605",
+      "state1626",
+      "state1645",
+      "state471",
+      "state478",
+      "state490"
+    ],
+    "lit_count": 8,
+    "why_selected": "high variable count frame clause",
+    "recommended_operators": [
+      "clause_lifting",
+      "literal_deletion"
+    ]
+  },
+  {
+    "artifact_id": "artifact_004",
+    "artifact_type": "frame_clause",
+    "frame": 3,
+    "raw": "(or (or (or (or (or (or (or (not (= state471 #b0)) (not (= state478 #b0))) (not (= state490 #b0))) (not (= state1530 #b0))) (not (= state1605 #b0))) (",
+    "variables": [
+      "state15",
+      "state1530",
+      "state1605",
+      "state1626",
+      "state1645",
+      "state471",
+      "state478",
+      "state490"
+    ],
+    "lit_count": 8,
+    "why_selected": "high variable count frame clause",
+    "recommended_operators": [
+      "clause_lifting",
+      "literal_deletion"
+    ]
+  },
+  {
+    "artifact_id": "artifact_005",
+    "artifact_type": "frame_clause",
+    "frame": 3,
+    "raw": "(or (or (or (or (or (or (or (not (= state79 #b0)) (not (= state210 #b00000000000000000))) (not (= state636 #b0))) (not (= state666 #b0))) (not (= stat",
+    "variables": [
+      "state106",
+      "state1373",
+      "state1530",
+      "state210",
+      "state636",
+      "state666",
+      "state79",
+      "state790"
+    ],
+    "lit_count": 8,
+    "why_selected": "high variable count frame clause",
+    "recommended_operators": [
+      "clause_lifting",
+      "literal_deletion"
+    ]
+  },
+  {
+    "artifact_id": "artifact_006",
+    "artifact_type": "frame_clause",
+    "frame": 3,
+    "raw": "(or (or (or (or (or (or (or (not (= state790 #b1)) (not (= state872 #b0))) (not (= state1530 #b0))) (not (= state1587 #b0))) (not (= state1688 #b00000",
+    "variables": [
+      "state1530",
+      "state1587",
+      "state1688",
+      "state1747",
+      "state1759",
+      "state790",
+      "state872",
+      "state93"
+    ],
+    "lit_count": 8,
+    "why_selected": "high variable count frame clause",
+    "recommended_operators": [
+      "clause_lifting",
+      "literal_deletion"
+    ]
+  },
+  {
+    "artifact_id": "artifact_007",
+    "artifact_type": "frame_clause",
+    "frame": 3,
+    "raw": "(or (or (or (or (or (or (or (not (= state15 #b0)) (not (= state81 #b1))) (not (= state636 #b0))) (not (= state666 #b0))) (not (= state872 #b0))) (not ",
+    "variables": [
+      "state15",
+      "state1528",
+      "state1740",
+      "state636",
+      "state666",
+      "state81",
+      "state872",
+      "state93"
+    ],
+    "lit_count": 8,
+    "why_selected": "high variable count frame clause",
+    "recommended_operators": [
+      "clause_lifting",
+      "literal_deletion"
+    ]
+  },
+  {
+    "artifact_id": "artifact_008",
+    "artifact_type": "frame_clause",
+    "frame": 2,
+    "raw": "(or (or (or (or (or (or (not (= state1373 #b0)) (not (= state1464 #b0))) (not (= state1501 #b0))) (not (= state1530 #b0))) (not (= state1612 #b0))) (n",
+    "variables": [
+      "state1373",
+      "state1464",
+      "state1501",
+      "state1530",
+      "state1612",
+      "state1619",
+      "state1647"
+    ],
+    "lit_count": 7,
+    "why_selected": "high variable count frame clause",
+    "recommended_operators": [
+      "clause_lifting",
+      "literal_deletion"
+    ]
+  },
+  {
+    "artifact_id": "artifact_009",
+    "artifact_type": "frame_clause",
+    "frame": 2,
+    "raw": "(or (or (or (or (or (or (not (= state1373 #b0)) (not (= state1464 #b0))) (not (= state1501 #b0))) (not (= state1530 #b0))) (not (= state1612 #b0))) (n",
+    "variables": [
+      "state1373",
+      "state1464",
+      "state1501",
+      "state1530",
+      "state1612",
+      "state1619",
+      "state1633"
+    ],
+    "lit_count": 7,
+    "why_selected": "high variable count frame clause",
+    "recommended_operators": [
+      "clause_lifting",
+      "literal_deletion"
+    ]
+  },
+  {
+    "artifact_id": "artifact_010",
+    "artifact_type": "frame_clause",
+    "frame": 3,
+    "raw": "(or (or (or (or (or (or (not (= state1373 #b0)) (not (= state1464 #b0))) (not (= state1501 #b0))) (not (= state1530 #b0))) (not (= state1612 #b0))) (n",
+    "variables": [
+      "state1373",
+      "state1464",
+      "state1501",
+      "state1530",
+      "state1612",
+      "state1619",
+      "state1647"
+    ],
+    "lit_count": 7,
+    "why_selected": "high variable count frame clause",
+    "recommended_operators": [
+      "clause_lifting",
+      "literal_deletion"
+    ]
+  },
+  {
+    "artifact_id": "artifact_011",
+    "artifact_type": "clause_family",
+    "family": "ternary_2sats",
+    "count": 289,
+    "frames": [
+      2,
+      3
+    ],
+    "top_satellites": [
+      [
+        "state785",
+        26
+      ],
+      [
+        "state483",
+        24
+      ],
+      [
+        "state469",
+        16
+      ],
+      [
+        "state872",
+        16
+      ],
+      [
+        "state879",
+        12
+      ]
+    ],
+    "why_selected": "repeated proof-local clause family",
+    "recommended_operators": [
+      "family_compression",
+      "satellite_generalization"
+    ]
+  },
+  {
+    "artifact_id": "artifact_012",
+    "artifact_type": "clause_family",
+    "family": "multi_4lits",
+    "count": 52,
+    "frames": [
+      2,
+      3
+    ],
+    "top_satellites": [
+      [
+        "state497",
+        8
+      ],
+      [
+        "state886",
+        7
+      ],
+      [
+        "state457",
+        7
+      ],
+      [
+        "state785",
+        7
+      ],
+      [
+        "state462",
+        6
+      ]
+    ],
+    "why_selected": "repeated proof-local clause family",
+    "recommended_operators": [
+      "family_compression",
+      "satellite_generalization"
+    ]
+  },
+  {
+    "artifact_id": "artifact_013",
+    "artifact_type": "clause_family",
+    "family": "multi_6lits",
+    "count": 17,
+    "frames": [
+      2,
+      3
+    ],
+    "top_satellites": [
+      [
+        "state858",
+        12
+      ],
+      [
+        "state886",
+        12
+      ],
+      [
+        "state1361",
+        10
+      ],
+      [
+        "state1368",
+        10
+      ],
+      [
+        "state1530",
+        5
+      ]
+    ],
+    "why_selected": "repeated proof-local clause family",
+    "recommended_operators": [
+      "family_compression",
+      "satellite_generalization"
+    ]
+  },
+  {
+    "artifact_id": "artifact_014",
+    "artifact_type": "clause_family",
+    "family": "multi_5lits",
+    "count": 13,
+    "frames": [
+      2,
+      3
+    ],
+    "top_satellites": [
+      [
+        "state1368",
+        8
+      ],
+      [
+        "state1389",
+        8
+      ],
+      [
+        "state886",
+        8
+      ],
+      [
+        "state478",
+        4
+      ],
+      [
+        "state483",
+        3
+      ]
+    ],
+    "why_selected": "repeated proof-local clause family",
+    "recommended_operators": [
+      "family_compression",
+      "satellite_generalization"
+    ]
+  },
+  {
+    "artifact_id": "artifact_015",
+    "artifact_type": "clause_family",
+    "family": "binary_state15_state531",
+    "count": 4,
+    "frames": [
+      3
+    ],
+    "top_satellites": [
+      [
+        "state531",
+        4
+      ]
+    ],
+    "why_selected": "repeated proof-local clause family",
+    "recommended_operators": [
+      "family_compression",
+      "satellite_generalization"
+    ]
+  },
+  {
+    "artifact_id": "artifact_016",
+    "artifact_type": "lifted_lemma",
+    "lemma": "(=> (and (= state469 #0) (= state471 #0)) (= state15 #0))",
+    "variables": [],
+    "why_selected": "solver-verified but proof-local \u2014 good generalization target",
+    "recommended_operators": [
+      "family_compression",
+      "satellite_generalization"
+    ]
+  },
+  {
+    "artifact_id": "artifact_017",
+    "artifact_type": "lifted_lemma",
+    "lemma": "(=> (and (= state469 #0) (= state497 #0)) (= state15 #0))",
+    "variables": [],
+    "why_selected": "solver-verified but proof-local \u2014 good generalization target",
+    "recommended_operators": [
+      "family_compression",
+      "satellite_generalization"
+    ]
+  },
+  {
+    "artifact_id": "artifact_018",
+    "artifact_type": "lifted_lemma",
+    "lemma": "(=> (and (= state469 #0) (= state636 #0)) (= state15 #0))",
+    "variables": [],
+    "why_selected": "solver-verified but proof-local \u2014 good generalization target",
+    "recommended_operators": [
+      "family_compression",
+      "satellite_generalization"
+    ]
+  },
+  {
+    "artifact_id": "artifact_019",
+    "artifact_type": "lifted_lemma",
+    "lemma": "(=> (and (= state469 #0) (= state872 #0)) (= state15 #0))",
+    "variables": [],
+    "why_selected": "solver-verified but proof-local \u2014 good generalization target",
+    "recommended_operators": [
+      "family_compression",
+      "satellite_generalization"
+    ]
+  },
+  {
+    "artifact_id": "artifact_020",
+    "artifact_type": "lifted_lemma",
+    "lemma": "(=> (and (= state469 #0) (= state879 #0)) (= state15 #0))",
+    "variables": [],
+    "why_selected": "solver-verified but proof-local \u2014 good generalization target",
+    "recommended_operators": [
+      "family_compression",
+      "satellite_generalization"
+    ]
+  },
+  {
+    "artifact_id": "artifact_021",
+    "artifact_type": "failed_candidate",
+    "lemma": "(=> (not (and (= state559 #b1) (= state566 #b1) (= state573 #b1) (= state580 #b1))) (= state15 #b0))",
+    "verdict": "parse_failed",
+    "why_selected": "failed pattern to learn from",
+    "recommended_operators": [
+      "repair",
+      "guard_strengthening"
+    ]
+  },
+  {
+    "artifact_id": "artifact_022",
+    "artifact_type": "failed_candidate",
+    "lemma": "(=> (or (= state559 #b0) (= state566 #b0) (= state573 #b0) (= state580 #b0)) (= state15 #b0))",
+    "verdict": "parse_failed",
+    "why_selected": "failed pattern to learn from",
+    "recommended_operators": [
+      "repair",
+      "guard_strengthening"
+    ]
+  },
+  {
+    "artifact_id": "artifact_023",
+    "artifact_type": "failed_candidate",
+    "lemma": "(=> (and (= state559 #b0) (= state566 #b0)) (= state15 #b0))",
+    "verdict": "nontriviality_fail",
+    "why_selected": "failed pattern to learn from",
+    "recommended_operators": [
+      "repair",
+      "guard_strengthening"
+    ]
+  }
+]

@@ -1,0 +1,13 @@
+{
+  "index": 4,
+  "mode": "transition_causal",
+  "primer_hash": "21b806a0204fb938",
+  "payload_hash": "6ca317d74e1cc199",
+  "prompt_path": "logs/formal_yield/generalization_sampling/prompts/prompt_004.txt",
+  "prompt_chars": 2967,
+  "artifact_ids": [
+    "artifact_013",
+    "artifact_014",
+    "artifact_015"
+  ]
+}

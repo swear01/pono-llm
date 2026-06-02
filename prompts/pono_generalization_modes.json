@@ -1,0 +1,8 @@
+{"modes": [
+  {"name": "clause_lifting", "operators": ["clause_lifting", "literal_deletion"], "instruction": "Take frame OR clauses and lift them to implications. Delete literals conservatively to generalize.", "preferred_artifact_types": ["frame_clause", "clause_family"], "candidate_count": 8},
+  {"name": "family_compression", "operators": ["family_compression", "satellite_generalization"], "instruction": "Take multiple lifted lemmas with same consequent and propose a broader generalization covering them all.", "preferred_artifact_types": ["lifted_lemma", "clause_family"], "candidate_count": 8},
+  {"name": "guard_strengthening", "operators": ["guard_strengthening"], "instruction": "Take failed candidates and propose stronger guards based on the failure context.", "preferred_artifact_types": ["failed_candidate"], "candidate_count": 8},
+  {"name": "repair", "operators": ["repair", "guard_strengthening"], "instruction": "Repair failed candidates. Weaken overly strong consequents. Add guards. Change schemas conservatively.", "preferred_artifact_types": ["failed_candidate", "lifted_lemma"], "candidate_count": 8},
+  {"name": "transition_causal", "operators": ["transition_causal"], "instruction": "Propose lemmas with guards derived from transition logic. Use known variable dependencies.", "preferred_artifact_types": ["frame_clause"], "candidate_count": 8},
+  {"name": "mixed_generalization", "operators": ["clause_lifting", "literal_deletion", "family_compression", "repair"], "instruction": "Mix operators. Lift clauses, delete literals, compress families, repair failures.", "preferred_artifact_types": ["frame_clause", "lifted_lemma", "failed_candidate"], "candidate_count": 8}
+]}

@@ -1,0 +1,821 @@
+[
+  {
+    "candidate_id": "c1",
+    "source_artifact_id": "artifact_001",
+    "source_artifact_type": "frame_clause",
+    "generalization_operator": "literal_deletion",
+    "original_artifact": "(or (or (or (or (or (or (or (or (or (not (= state471 #b0)) (not (= state490 #b0))) (not (= state790 #b1))) (not (= state",
+    "lemma": "(= state790 #b0)",
+    "schema": "allowed_set",
+    "variables": [
+      "state790"
+    ],
+    "why_this_is_a_generalization": "Deletes all literals except the one asserting state790=1 is false, which simplifies to state790=0.  The resulting single equality is logically weaker, covering more states than the original disjunction.",
+    "why_may_be_inductive": "state790 is a stall signal that likely remains stable when the design is idle; the value 0 may hold in many reachable states.",
+    "why_may_have_proof_impact": "A simple unconditional equality can directly prune the proof frontier and simplify many subsequent frame clauses.",
+    "risk": "medium",
+    "_source_file": "response_000.txt"
+  },
+  {
+    "candidate_id": "c2",
+    "source_artifact_id": "artifact_001",
+    "source_artifact_type": "frame_clause",
+    "generalization_operator": "clause_lifting",
+    "original_artifact": "(or (or (or (or (or (or (or (or (or (not (= state471 #b0)) (not (= state490 #b0))) (not (= state790 #b1))) (not (= state",
+    "lemma": "(=> (and (= state471 #b0) (= state490 #b0)) (= state790 #b0))",
+    "schema": "guarded_implication",
+    "variables": [
+      "state471",
+      "state490",
+      "state790"
+    ],
+    "why_this_is_a_generalization": "Selects the literals for state471=0, state490=0, and the negation of state790=1, discarding all other disjuncts, and re-expresses them as an implication.  The original clause implies this guarded relationship under fewer conditions.",
+    "why_may_be_inductive": "The condition state471=0 and state490=0 may represent a specific mode where the stall signal must be deasserted; this could be a stable invariant.",
+    "why_may_have_proof_impact": "Introduces a structured predicate linking three variables, which may help the solver propagate constraints more effectively than the raw clause.",
+    "risk": "medium",
+    "_source_file": "response_000.txt"
+  },
+  {
+    "candidate_id": "c3",
+    "source_artifact_id": "artifact_002",
+    "source_artifact_type": "frame_clause",
+    "generalization_operator": "literal_deletion",
+    "original_artifact": "(or (or (or (or (or (or (or (not (= state471 #b0)) (not (= state476 #b0))) (not (= state790 #b1))) (not (= state1530 #b0",
+    "lemma": "(! (and (= state471 #b0) (= state790 #b1)))",
+    "schema": "nary_mutex",
+    "variables": [
+      "state471",
+      "state790"
+    ],
+    "why_this_is_a_generalization": "Deletes the literals for state476 and state1530, leaving a smaller mutual exclusion between state471=0 and state790=1.  The original clause implies this weaker mutex.",
+    "why_may_be_inductive": "The pair state471 and state790 may be inherently exclusive in the design, making the mutex robust.",
+    "why_may_have_proof_impact": "A compact two-variable mutex can be easily combined with other facts to derive new lemmas.",
+    "risk": "low",
+    "_source_file": "response_000.txt"
+  },
+  {
+    "candidate_id": "c4",
+    "source_artifact_id": "artifact_002",
+    "source_artifact_type": "frame_clause",
+    "generalization_operator": "clause_lifting",
+    "original_artifact": "(or (or (or (or (or (or (or (not (= state471 #b0)) (not (= state476 #b0))) (not (= state790 #b1))) (not (= state1530 #b0",
+    "lemma": "(=> (and (= state471 #b0) (= state476 #b0)) (= state790 #b0))",
+    "schema": "guarded_implication",
+    "variables": [
+      "state471",
+      "state476",
+      "state790"
+    ],
+    "why_this_is_a_generalization": "Converts the disjunction into an implication by focusing on state471, state476 as guards and state790 as consequent, dropping the state1530 literal.  The original clause logically entails that when the guards hold, state790=0 must be true.",
+    "why_may_be_inductive": "The combination state471=0 and state476=0 may correspond to a safe configuration that forces the stall signal low; this could be an invariant.",
+    "why_may_have_proof_impact": "Provides a directed conditional relationship, which is useful for IC3 generalization and propagation.",
+    "risk": "medium",
+    "_source_file": "response_000.txt"
+  },
+  {
+    "candidate_id": "c5",
+    "source_artifact_id": "artifact_003",
+    "source_artifact_type": "frame_clause",
+    "generalization_operator": "literal_deletion",
+    "original_artifact": "(or (or (or (or (or (or (or (not (= state471 #b0)) (not (= state478 #b0))) (not (= state490 #b0))) (not (= state1530 #b0",
+    "lemma": "(! (and (= state471 #b0) (= state478 #b0) (= state490 #b0)))",
+    "schema": "nary_mutex",
+    "variables": [
+      "state471",
+      "state478",
+      "state490"
+    ],
+    "why_this_is_a_generalization": "Removes the state1530 literal, leaving a three-variable mutex.  The original clause implies this weaker mutual exclusion.",
+    "why_may_be_inductive": "The three variables may not be simultaneously zero in any valid operational mode; this might be a fundamental design constraint.",
+    "why_may_have_proof_impact": "A multi-variable mutex can block specific illegal state combinations near the frontier.",
+    "risk": "low",
+    "_source_file": "response_000.txt"
+  },
+  {
+    "candidate_id": "c6",
+    "source_artifact_id": "artifact_003",
+    "source_artifact_type": "frame_clause",
+    "generalization_operator": "clause_lifting",
+    "original_artifact": "(or (or (or (or (or (or (or (not (= state471 #b0)) (not (= state478 #b0))) (not (= state490 #b0))) (not (= state1530 #b0",
+    "lemma": "(=> (and (= state471 #b0) (= state478 #b0)) (= state490 #b1))",
+    "schema": "guarded_implication",
+    "variables": [
+      "state471",
+      "state478",
+      "state490"
+    ],
+    "why_this_is_a_generalization": "Picks the literals for state471=0, state478=0, and the negation of state490=0 (i.e., state490=1), discarding the state1530 disjunct.  The original clause implies that when the two guard variables are zero, state490 must be one.",
+    "why_may_be_inductive": "This conditional relationship likely reflects a mode-dependent logic that remains invariant across transitions.",
+    "why_may_have_proof_impact": "Extracts a clean implication, which can be used as a hint for the backend solver to strengthen induction.",
+    "risk": "medium",
+    "_source_file": "response_000.txt"
+  },
+  {
+    "candidate_id": "c7",
+    "source_artifact_id": "artifact_001",
+    "source_artifact_type": "frame_clause",
+    "generalization_operator": "literal_deletion",
+    "original_artifact": "(or (or (or (or (or (or (or (or (or (not (= state471 #b0)) (not (= state490 #b0))) (not (= state790 #b1))) (not (= state",
+    "lemma": "(! (and (= state490 #b0) (= state790 #b1)))",
+    "schema": "nary_mutex",
+    "variables": [
+      "state490",
+      "state790"
+    ],
+    "why_this_is_a_generalization": "Drops the state471 literal, keeping only the exclusion between state490=0 and state790=1.  The original clause implies this weaker mutex.",
+    "why_may_be_inductive": "state490 and state790 may be control and stall signals that are never active together.",
+    "why_may_have_proof_impact": "A two-variable mutex is easy to propagate and can quickly close many proof obligations.",
+    "risk": "low",
+    "_source_file": "response_000.txt"
+  },
+  {
+    "candidate_id": "c8",
+    "source_artifact_id": "artifact_001",
+    "source_artifact_type": "frame_clause",
+    "generalization_operator": "clause_lifting",
+    "original_artifact": "(or (or (or (or (or (or (or (or (or (not (= state471 #b0)) (not (= state490 #b0))) (not (= state790 #b1))) (not (= state",
+    "lemma": "(=> (= state471 #b0) (= state790 #b0))",
+    "schema": "guarded_implication",
+    "variables": [
+      "state471",
+      "state790"
+    ],
+    "why_this_is_a_generalization": "Retains only the state471=0 and state790=1 literals, dropping all others, and converts to an implication with a single guard.  The original clause entails that when state471=0, state790 must be 0.",
+    "why_may_be_inductive": "This straight-line dependency may hold throughout the reachable state space if state471 acts as a mode bit that disables the stall.",
+    "why_may_have_proof_impact": "A minimal guard-implication can directly replace complex clauses in the proof, accelerating propagation.",
+    "risk": "medium",
+    "_source_file": "response_000.txt"
+  },
+  {
+    "candidate_id": "gen_001",
+    "source_artifact_id": "artifact_004",
+    "source_artifact_type": "frame_clause",
+    "generalization_operator": "family_compression",
+    "original_artifact": "(or (or (or (or (or (or (or (not (= state471 #b0)) (not (= state478 #b0))) (not (= state490 #b0))) (not (= state1530 #b0))",
+    "lemma": "(! (and (= state471 #b0) (= state478 #b0) (= state490 #b0) (= state1530 #b0) (= state1558 #b0) (= state790 #b0)))",
+    "schema": "nary_mutex",
+    "variables": [
+      "state471",
+      "state478",
+      "state490",
+      "state1530",
+      "state1558",
+      "state790"
+    ],
+    "why_this_is_a_generalization": "Extends the original clause's forbidden zero pattern with cfg_speed and wb_stall, capturing a cross-concern invariant that likely subsumes multiple clause instances.",
+    "why_may_be_inductive": "Zero values on these control flags together may violate a protocol phase, and the conjunction appears in many frame lemmas; its negation is likely inductive relative to the design.",
+    "why_may_have_proof_impact": "Compressing a family of zero-patterns into one mutex reduces the clause count, helping PDR reduce the frontier faster.",
+    "risk": "medium",
+    "_source_file": "response_001.txt"
+  },
+  {
+    "candidate_id": "gen_002",
+    "source_artifact_id": "artifact_005",
+    "source_artifact_type": "frame_clause",
+    "generalization_operator": "satellite_generalization",
+    "original_artifact": "(or (or (or (or (or (or (or (not (= state79 #b0)) (not (= state210 #b00000000000000000))) (not (= state636 #b0))) (not (",
+    "lemma": "(>= state210 #b00000000000000001)",
+    "schema": "range_bound",
+    "variables": [
+      "state210"
+    ],
+    "why_this_is_a_generalization": "Lifts the condition that state210 cannot be all zeros (when other signals are also low) to an unconditional lower bound, covering all proof artifacts where state210=0 appears.",
+    "why_may_be_inductive": "The 17\u2011bit register likely holds a data or status word that is never all\u2011zeros in reachable states; the original clause merely needed a condition that can be proved inductively on its own.",
+    "why_may_have_proof_impact": "Removes combinational dependencies on state79 and state636, simplifying many proof obligations and potentially eliminating numerous clauses about state210.",
+    "risk": "low",
+    "_source_file": "response_001.txt"
+  },
+  {
+    "candidate_id": "gen_003",
+    "source_artifact_id": "artifact_005",
+    "source_artifact_type": "frame_clause",
+    "generalization_operator": "family_compression",
+    "original_artifact": "(or (or (or (or (or (or (or (not (= state79 #b0)) (not (= state210 #b00000000000000000))) (not (= state636 #b0))) (not (",
+    "lemma": "(! (and (= state79 #b0) (= state210 #b00000000000000000) (= state636 #b0) (= state1536 #b0000)))",
+    "schema": "nary_mutex",
+    "variables": [
+      "state79",
+      "state210",
+      "state636",
+      "state1536"
+    ],
+    "why_this_is_a_generalization": "Includes the DSPI mode register zero alongside the original zero values, compressing clauses that separately involve these variables into one mutual exclusion.",
+    "why_may_be_inductive": "The DSPI mode zero likely disables certain transfers; together with other idle signals the state is inconsistent with the design, and this \u2018all\u2011zero\u2019 forbidding is probably invariant.",
+    "why_may_have_proof_impact": "Merges different clause families (cfg_mode, dspi_mod, data path) reducing the number of lemmas PDR must track.",
+    "risk": "medium",
+    "_source_file": "response_001.txt"
+  },
+  {
+    "candidate_id": "gen_004",
+    "source_artifact_id": "artifact_006",
+    "source_artifact_type": "frame_clause",
+    "generalization_operator": "family_compression",
+    "original_artifact": "(or (or (or (or (or (or (or (not (= state790 #b1)) (not (= state872 #b0))) (not (= state1530 #b0))) (not (= state1587 #b",
+    "lemma": "(! (and (= state790 #b1) (= state872 #b0) (= state1530 #b0) (= state1587 #b0) (= state1558 #b0)))",
+    "schema": "nary_mutex",
+    "variables": [
+      "state790",
+      "state872",
+      "state1530",
+      "state1587",
+      "state1558"
+    ],
+    "why_this_is_a_generalization": "Adds cfg_speed to the original four\u2011signal zero conjunction, creating a single mutex that covers more proof artifacts that mention this set.",
+    "why_may_be_inductive": "The stall (wb_stall=1) and the zeroed internal/pipeline signals together denote an impossible execution state; its negation is inductive across many operation phases.",
+    "why_may_have_proof_impact": "One compact mutex replaces multiple longer clauses, accelerating the clause database reduction during propagation.",
+    "risk": "low",
+    "_source_file": "response_001.txt"
+  },
+  {
+    "candidate_id": "gen_005",
+    "source_artifact_id": "artifact_006",
+    "source_artifact_type": "frame_clause",
+    "generalization_operator": "satellite_generalization",
+    "original_artifact": "(or (or (or (or (or (or (or (not (= state790 #b1)) (not (= state872 #b0))) (not (= state1530 #b0))) (not (= state1587 #b",
+    "lemma": "(=> (and (= state790 #b1) (= state872 #b0)) (= state1530 #b1))",
+    "schema": "conjoined_implication",
+    "variables": [
+      "state790",
+      "state872",
+      "state1530"
+    ],
+    "why_this_is_a_generalization": "Converts a forbidden triple into a direct implication: when stall is high and a certain internal is low, another control must be high, generalizing over the role of state1587.",
+    "why_may_be_inductive": "The stall signal forces a specific handshake behavior; in that mode the two internal flags cannot both be low, likely an invariant along the pipeline.",
+    "why_may_have_proof_impact": "Provides a precise implication that can strengthen the frontier at the point where wb_stall=1 is discovered.",
+    "risk": "low",
+    "_source_file": "response_001.txt"
+  },
+  {
+    "candidate_id": "gen_006",
+    "source_artifact_id": "artifact_004",
+    "source_artifact_type": "frame_clause",
+    "generalization_operator": "satellite_generalization",
+    "original_artifact": "(or (or (or (or (or (or (or (not (= state471 #b0)) (not (= state478 #b0))) (not (= state490 #b0))) (not (= state1530 #b0))",
+    "lemma": "(=> (= state1536 #b0000) (= state1530 #b0))",
+    "schema": "guarded_implication",
+    "variables": [
+      "state1536",
+      "state1530"
+    ],
+    "why_this_is_a_generalization": "Extracts a simple guard from the DSPI mode register to a single internal state that appeared in the zero pattern, covering cases where the mode is zero irrespective of other signals.",
+    "why_may_be_inductive": "In the base mode (0000) the controller likely drives state1530 to zero; this guard\u2011value pair is small and should induct easily.",
+    "why_may_have_proof_impact": "Focuses the solver on state1536=0 as a cause for one of the frequently zero variables, potentially eliminating many clauses that mention state1530=0.",
+    "risk": "high",
+    "_source_file": "response_001.txt"
+  },
+  {
+    "candidate_id": "gen_007",
+    "source_artifact_id": "artifact_005",
+    "source_artifact_type": "frame_clause",
+    "generalization_operator": "family_compression",
+    "original_artifact": "(or (or (or (or (or (or (or (not (= state79 #b0)) (not (= state210 #b00000000000000000))) (not (= state636 #b0))) (not (",
+    "lemma": "(=> (and (= state79 #b0) (= state210 #b00000000000000000)) (= state636 #b1))",
+    "schema": "conjoined_implication",
+    "variables": [
+      "state79",
+      "state210",
+      "state636"
+    ],
+    "why_this_is_a_generalization": "Re\u2011expresses the mutex as an implication that when cfg_mode and data are zero, a status bit must be high, making the relation directional and more reusable.",
+    "why_may_be_inductive": "The combination of idle mode and all\u2011zero data may violate a valid transaction requirement; forcing state636=1 restores consistency, likely an invariant.",
+    "why_may_have_proof_impact": "Adds a precise rule that can resolve many clauses where only state636 remains to be forced.",
+    "risk": "low",
+    "_source_file": "response_001.txt"
+  },
+  {
+    "candidate_id": "gen_008",
+    "source_artifact_id": "artifact_006",
+    "source_artifact_type": "frame_clause",
+    "generalization_operator": "satellite_generalization",
+    "original_artifact": "(or (or (or (or (or (or (or (not (= state790 #b1)) (not (= state872 #b0))) (not (= state1530 #b0))) (not (= state1587 #b",
+    "lemma": "(=> (and (= state790 #b1) (= state1530 #b0)) (= state872 #b1))",
+    "schema": "conjoined_implication",
+    "variables": [
+      "state790",
+      "state1530",
+      "state872"
+    ],
+    "why_this_is_a_generalization": "Pivots the mutex to another implication: stall=1 and a control low forces the remaining internal high, complementing gen_005 and covering more proof artifacts.",
+    "why_may_be_inductive": "Symmetric to gen_005; in a stall condition these two internal flags cannot both be zero, so the implication is a two\u2011way invariant.",
+    "why_may_have_proof_impact": "Together with gen_005 provides bidirectional reasoning about state872 and state1530 under stall, cutting the search space significantly.",
+    "risk": "low",
+    "_source_file": "response_001.txt"
+  },
+  {
+    "candidate_id": "gen_001",
+    "source_artifact_id": "artifact_007",
+    "source_artifact_type": "frame_clause",
+    "generalization_operator": "guard_strengthening",
+    "original_artifact": "(or (or (or (or (or (or (or (not (= state15 #b0)) (not (= state81 #b1))) (not (= state636 #b0))) (not (= state666 #b0)))",
+    "lemma": "(! (and (= state15 #b0) (= state81 #b1)))",
+    "schema": "nary_mutex",
+    "variables": [
+      {
+        "name": "state15",
+        "value": "#b0"
+      },
+      {
+        "name": "state81",
+        "value": "#b1"
+      }
+    ],
+    "why_this_is_a_generalization": "Reduces the original forbidden combination from four variables to two, strengthening the clause by forbidding a larger set of states (any state with both conditions true is now excluded, regardless of state636/666).",
+    "why_may_be_inductive": "State15 is the proof-frontier and state81 may encode a dependent mode; their mutual exclusion may hold inductively across frames.",
+    "why_may_have_proof_impact": "A smaller mutex blocks more states in the frontier than the original clause, potentially accelerating convergence.",
+    "risk": "low",
+    "_source_file": "response_002.txt"
+  },
+  {
+    "candidate_id": "gen_002",
+    "source_artifact_id": "artifact_007",
+    "source_artifact_type": "frame_clause",
+    "generalization_operator": "guard_strengthening",
+    "original_artifact": "(or (or (or (or (or (or (or (not (= state15 #b0)) (not (= state81 #b1))) (not (= state636 #b0))) (not (= state666 #b0)))",
+    "lemma": "(! (and (= state81 #b1) (= state636 #b0)))",
+    "schema": "nary_mutex",
+    "variables": [
+      {
+        "name": "state81",
+        "value": "#b1"
+      },
+      {
+        "name": "state636",
+        "value": "#b0"
+      }
+    ],
+    "why_this_is_a_generalization": "Drops state15 and state666 from the forbidden set, resulting in a stronger condition that excludes all states where state81=1 and state636=0 simultaneously.",
+    "why_may_be_inductive": "State81 likely represents a control signal and state636 a status; their joint assertion could be unreachable in any frame.",
+    "why_may_have_proof_impact": "Eliminates many potential reachable states at once if true, reducing IC3 obligations.",
+    "risk": "low",
+    "_source_file": "response_002.txt"
+  },
+  {
+    "candidate_id": "gen_003",
+    "source_artifact_id": "artifact_007",
+    "source_artifact_type": "frame_clause",
+    "generalization_operator": "guard_strengthening",
+    "original_artifact": "(or (or (or (or (or (or (or (not (= state15 #b0)) (not (= state81 #b1))) (not (= state636 #b0))) (not (= state666 #b0)))",
+    "lemma": "(! (and (= state15 #b0) (= state666 #b0)))",
+    "schema": "nary_mutex",
+    "variables": [
+      {
+        "name": "state15",
+        "value": "#b0"
+      },
+      {
+        "name": "state666",
+        "value": "#b0"
+      }
+    ],
+    "why_this_is_a_generalization": "Omits state81 and state636, forming a stronger mutex that forbids co-occurrence of state15=0 and state666=0.",
+    "why_may_be_inductive": "Frontier variable state15=0 may be incompatible with state666=0 under certain configurations, a property that could hold inductively.",
+    "why_may_have_proof_impact": "Covers many additional counterexamples-to-induction by targeting a smaller subset of the original clause.",
+    "risk": "medium",
+    "_source_file": "response_002.txt"
+  },
+  {
+    "candidate_id": "gen_004",
+    "source_artifact_id": "artifact_008",
+    "source_artifact_type": "frame_clause",
+    "generalization_operator": "guard_strengthening",
+    "original_artifact": "(or (or (or (or (or (or (not (= state1373 #b0)) (not (= state1464 #b0))) (not (= state1501 #b0))) (not (= state1530 #b0))",
+    "lemma": "(! (and (= state1373 #b0) (= state1464 #b0)))",
+    "schema": "nary_mutex",
+    "variables": [
+      {
+        "name": "state1373",
+        "value": "#b0"
+      },
+      {
+        "name": "state1464",
+        "value": "#b0"
+      }
+    ],
+    "why_this_is_a_generalization": "Uses only the first two negated equalities of the frame clause, strengthening it by not requiring the others for mutual exclusion.",
+    "why_may_be_inductive": "These two state bits may represent a mutually exclusive pair in the design, and the property might persist in all reachable states.",
+    "why_may_have_proof_impact": "A compact mutex often suffices to block a whole family of bad states, improving proof efficiency.",
+    "risk": "low",
+    "_source_file": "response_002.txt"
+  },
+  {
+    "candidate_id": "gen_005",
+    "source_artifact_id": "artifact_008",
+    "source_artifact_type": "frame_clause",
+    "generalization_operator": "guard_strengthening",
+    "original_artifact": "(or (or (or (or (or (or (not (= state1373 #b0)) (not (= state1464 #b0))) (not (= state1501 #b0))) (not (= state1530 #b0))",
+    "lemma": "(! (and (= state1464 #b0) (= state1501 #b0)))",
+    "schema": "nary_mutex",
+    "variables": [
+      {
+        "name": "state1464",
+        "value": "#b0"
+      },
+      {
+        "name": "state1501",
+        "value": "#b0"
+      }
+    ],
+    "why_this_is_a_generalization": "Drops state1373 and state1530, producing a stronger mutex that forbids states with both state1464=0 and state1501=0.",
+    "why_may_be_inductive": "These bits could be correlated control flags; their joint zero state could be unreachable in any cycle of the design.",
+    "why_may_have_proof_impact": "A concise lemma can be introduced early in the proof and used across many frames.",
+    "risk": "low",
+    "_source_file": "response_002.txt"
+  },
+  {
+    "candidate_id": "gen_006",
+    "source_artifact_id": "artifact_008",
+    "source_artifact_type": "frame_clause",
+    "generalization_operator": "guard_strengthening",
+    "original_artifact": "(or (or (or (or (or (or (not (= state1373 #b0)) (not (= state1464 #b0))) (not (= state1501 #b0))) (not (= state1530 #b0))",
+    "lemma": "(! (and (= state1501 #b0) (= state1530 #b0)))",
+    "schema": "nary_mutex",
+    "variables": [
+      {
+        "name": "state1501",
+        "value": "#b0"
+      },
+      {
+        "name": "state1530",
+        "value": "#b0"
+      }
+    ],
+    "why_this_is_a_generalization": "Omits the first two conditions, resulting in a simpler and stronger forbidden pair.",
+    "why_may_be_inductive": "A mutually exclusive relationship between these two bits may reflect a design rule (e.g., arbitration) that holds across all states.",
+    "why_may_have_proof_impact": "Small mutexes often have high inductive strength and can quickly shrink the frontier.",
+    "risk": "medium",
+    "_source_file": "response_002.txt"
+  },
+  {
+    "candidate_id": "gen_007",
+    "source_artifact_id": "artifact_009",
+    "source_artifact_type": "frame_clause",
+    "generalization_operator": "guard_strengthening",
+    "original_artifact": "(or (or (or (or (or (or (not (= state1373 #b0)) (not (= state1464 #b0))) (not (= state1501 #b0))) (not (= state1530 #b0))",
+    "lemma": "(! (and (= state1373 #b0) (= state1501 #b0)))",
+    "schema": "nary_mutex",
+    "variables": [
+      {
+        "name": "state1373",
+        "value": "#b0"
+      },
+      {
+        "name": "state1501",
+        "value": "#b0"
+      }
+    ],
+    "why_this_is_a_generalization": "Creates a new pairing not directly adjacent in the original clause but still a subset, strengthening the guard.",
+    "why_may_be_inductive": "These two bits may belong to the same functional unit and their zero combination could be unreachable.",
+    "why_may_have_proof_impact": "Cross-variable subset lemmas sometimes capture invariant relationships missed by adjacent pairings.",
+    "risk": "medium",
+    "_source_file": "response_002.txt"
+  },
+  {
+    "candidate_id": "gen_008",
+    "source_artifact_id": "artifact_009",
+    "source_artifact_type": "frame_clause",
+    "generalization_operator": "guard_strengthening",
+    "original_artifact": "(or (or (or (or (or (or (not (= state1373 #b0)) (not (= state1464 #b0))) (not (= state1501 #b0))) (not (= state1530 #b0))",
+    "lemma": "(! (and (= state1373 #b0) (= state1530 #b0)))",
+    "schema": "nary_mutex",
+    "variables": [
+      {
+        "name": "state1373",
+        "value": "#b0"
+      },
+      {
+        "name": "state1530",
+        "value": "#b0"
+      }
+    ],
+    "why_this_is_a_generalization": "Further explores subset combinations from the same frame clause, each an independent strengthening.",
+    "why_may_be_inductive": "As with other pairs, a logical incompatibility may exist in the design, making this pair mutually exclusive.",
+    "why_may_have_proof_impact": "Offers another candidate to help converge the proof from a different angle.",
+    "risk": "medium",
+    "_source_file": "response_002.txt"
+  },
+  {
+    "candidate_id": "cand_004",
+    "source_artifact_id": "artifact_010",
+    "source_artifact_type": "frame_clause",
+    "generalization_operator": "repair",
+    "original_artifact": "(or (or (or (or (or (or (not (= state1373 #b0)) (not (= state1464 #b0))) (not (= state1501 #b0))) (not (= state1530 #b0)",
+    "lemma": "(= state1373 #b1)",
+    "schema": "allowed_set",
+    "variables": [
+      "state1373"
+    ],
+    "why_this_is_a_generalization": "Extracts a single literal from the disjunction, asserting that this particular state must be 1. This is a stronger claim but if true, it covers all frames where this state is relevant, potentially subsuming many clauses that required it among others.",
+    "why_may_be_inductive": "If state1373 is always 1 in all reachable states, it becomes a powerful invariant.",
+    "why_may_have_proof_impact": "A single-literal lemma can drastically simplify the proof when it holds inductively.",
+    "risk": "High: the original clause does not imply state1373=1 by itself; the lemma may fail in states where state1373=0 but another state is 1.",
+    "_source_file": "response_003.txt"
+  },
+  {
+    "candidate_id": "cand_005",
+    "source_artifact_id": "artifact_011",
+    "source_artifact_type": "clause_family",
+    "generalization_operator": "guard_strengthening",
+    "original_artifact": "",
+    "lemma": "(=> (= state1536 #b0000) (= state790 #b0))",
+    "schema": "guarded_implication",
+    "variables": [
+      "state1536",
+      "state790"
+    ],
+    "why_this_is_a_generalization": "Generalizes across a family of clauses involving o_dspi_mod and o_wb_stall by capturing a conditional relationship: when DSPI mode is 0 (idle), the bus stall signal is deasserted. This may encompass multiple specific frame clauses.",
+    "why_may_be_inductive": "It is plausible that in all reachable states where o_dspi_mod is idle, the controller does not stall.",
+    "why_may_have_proof_impact": "Provides a direct causal link that could simplify reasoning about stalls.",
+    "risk": "Medium: depends on the design's behavior; may need additional guards for other modes.",
+    "_source_file": "response_003.txt"
+  },
+  {
+    "candidate_id": "cand_006",
+    "source_artifact_id": "artifact_011",
+    "source_artifact_type": "clause_family",
+    "generalization_operator": "guard_strengthening",
+    "original_artifact": "",
+    "lemma": "(=> (and (= state1536 #b0000) (= state1558 #b0)) (= state790 #b0))",
+    "schema": "conjoined_implication",
+    "variables": [
+      "state1536",
+      "state1558",
+      "state790"
+    ],
+    "why_this_is_a_generalization": "Extends the previous guarded implication by also requiring cfg_speed=0, which may match a larger set of clauses where both mode and speed are low to prevent stall.",
+    "why_may_be_inductive": "In low-speed idle mode, stall is likely off.",
+    "why_may_have_proof_impact": "Offers a stronger, more contextual condition that could close more proof steps.",
+    "risk": "Low-medium; extra condition might be too restrictive to be usable broadly.",
+    "_source_file": "response_003.txt"
+  },
+  {
+    "candidate_id": "cand_007",
+    "source_artifact_id": "artifact_012",
+    "source_artifact_type": "clause_family",
+    "generalization_operator": "repair",
+    "original_artifact": "",
+    "lemma": "(! (and (= state79 #b1) (= state2002 #b1)))",
+    "schema": "nary_mutex",
+    "variables": [
+      "state79",
+      "state2002"
+    ],
+    "why_this_is_a_generalization": "Asserts mutual exclusion between cfg_mode=1 and r_pipe_req=1, possibly generalizing a family of clauses that prevent both being asserted simultaneously.",
+    "why_may_be_inductive": "Configuration mode may preclude pipeline requests by design.",
+    "why_may_have_proof_impact": "A simple mutex can be used repeatedly to prune the state space.",
+    "risk": "Medium; must be verified that the two signals are never both 1 in any reachable state.",
+    "_source_file": "response_003.txt"
+  },
+  {
+    "candidate_id": "cand_008",
+    "source_artifact_id": "artifact_012",
+    "source_artifact_type": "clause_family",
+    "generalization_operator": "guard_strengthening",
+    "original_artifact": "",
+    "lemma": "(=> (= state79 #b1) (= state2002 #b0))",
+    "schema": "guarded_implication",
+    "variables": [
+      "state79",
+      "state2002"
+    ],
+    "why_this_is_a_generalization": "Direct implication: when in config mode, pipe request is 0. This may unify multiple clauses that separately enforce this relationship.",
+    "why_may_be_inductive": "Standard behavior: configuration mode usually halts normal requests.",
+    "why_may_have_proof_impact": "A clean implication strengthens the proof by linking configuration state to pipeline activity.",
+    "risk": "Low if the design consistently enforces this rule.",
+    "_source_file": "response_003.txt"
+  },
+  {
+    "candidate_id": "gen_001",
+    "source_artifact_id": "artifact_013",
+    "source_artifact_type": "clause_family",
+    "generalization_operator": "transition_causal",
+    "original_artifact": "(=> (= state15 #b1) (= state2002 #b1))",
+    "lemma": "(=> (= state15 #b1) (= state1536 #b0100))",
+    "schema": "guarded_implication",
+    "variables": [
+      "state15",
+      "state1536"
+    ],
+    "why_this_is_a_generalization": "Broadens consequent from a request signal to a mode register, potentially covering multiple mode-dependent proof artifacts.",
+    "why_may_be_inductive": "state15 may imply a fixed DSPI mode under current verification assumptions; the register value would then be constant.",
+    "why_may_have_proof_impact": "state1536 appears in numerous frame clauses; a stable mode invariant can simplify successor-state reasoning.",
+    "risk": "The specific mode value #b0100 may not hold for all states where state15 is true; counterexample possible.",
+    "_source_file": "response_004.txt"
+  },
+  {
+    "candidate_id": "gen_002",
+    "source_artifact_id": "artifact_013",
+    "source_artifact_type": "clause_family",
+    "generalization_operator": "transition_causal",
+    "original_artifact": "(=> (= state15 #b1) (= state2002 #b1))",
+    "lemma": "(=> (= state15 #b1) (not (= state1558 #b1)))",
+    "schema": "nary_mutex",
+    "variables": [
+      "state15",
+      "state1558"
+    ],
+    "why_this_is_a_generalization": "Introduces a mutual-exclusion relationship between state15 and cfg_speed, generalizing beyond a single request signal.",
+    "why_may_be_inductive": "If state15 only holds in configuration modes where speed is not set, the mutex holds inductively.",
+    "why_may_have_proof_impact": "Prevents spurious counterexamples combining state15 with speed=1, tightening the proof frontier.",
+    "risk": "A simultaneous state15=1 and cfg_speed=1 may be reachable, violating mutual exclusion.",
+    "_source_file": "response_004.txt"
+  },
+  {
+    "candidate_id": "gen_003",
+    "source_artifact_id": "artifact_014",
+    "source_artifact_type": "clause_family",
+    "generalization_operator": "transition_causal",
+    "original_artifact": "(=> (and (= state15 #b1) (= state79 #b0)) (= state2002 #b1))",
+    "lemma": "(=> (and (= state15 #b1) (= state79 #b0)) (= state790 #b1))",
+    "schema": "conjoined_implication",
+    "variables": [
+      "state15",
+      "state79",
+      "state790"
+    ],
+    "why_this_is_a_generalization": "Lifts the consequent from a transient request to a stall signal, potentially stabilizing a wider set of proof obligations.",
+    "why_may_be_inductive": "In the guarded context, the stall may be forced true; this matches many frame clauses.",
+    "why_may_have_proof_impact": "state790 (o_wb_stall) is a frequent proof target; strengthening its antecedent conditions can prune many IC3 counterexamples.",
+    "risk": "Previous low-impact known lemma state2002=>state790 suggests this direction may be too weak; might not reduce frontier.",
+    "_source_file": "response_004.txt"
+  },
+  {
+    "candidate_id": "gen_004",
+    "source_artifact_id": "artifact_014",
+    "source_artifact_type": "clause_family",
+    "generalization_operator": "transition_causal",
+    "original_artifact": "(=> (and (= state15 #b1) (= state79 #b0)) (= state2002 #b1))",
+    "lemma": "(<= state1536 #b0111)",
+    "schema": "range_bound",
+    "variables": [
+      "state1536"
+    ],
+    "why_this_is_a_generalization": "Abandons state15 guard and imposes a universal bound on the mode register, capturing many mode restrictions simultaneously.",
+    "why_may_be_inductive": "If the DSPI mode never exceeds 7, this is an invariant for all reachable states; common in hardware.",
+    "why_may_have_proof_impact": "A global range bound can prevent many unreachable state-space explorations by the model checker.",
+    "risk": "Range bounds risk being trivial if the natural domain is already 0-15; may not add proof value.",
+    "_source_file": "response_004.txt"
+  },
+  {
+    "candidate_id": "gen_005",
+    "source_artifact_id": "artifact_014",
+    "source_artifact_type": "clause_family",
+    "generalization_operator": "transition_causal",
+    "original_artifact": "(=> (and (= state15 #b1) (= state79 #b0)) (= state2002 #b1))",
+    "lemma": "(=> (= state79 #b0) (= state2002 #b1))",
+    "schema": "guarded_implication",
+    "variables": [
+      "state79",
+      "state2002"
+    ],
+    "why_this_is_a_generalization": "Drops state15 from the antecedent, making the implication unconditional with respect to the proof frontier.",
+    "why_may_be_inductive": "If cfg_mode=0 inherently forces r_pipe_req, independent of state15, the lemma holds without state15.",
+    "why_may_have_proof_impact": "Eliminating state15 prevents frontier-specific fragility; many artifacts may be covered by a single invariant.",
+    "risk": "cfg_mode=0 may not globally force the request; one-step failure likely if state15 is indeed required.",
+    "_source_file": "response_004.txt"
+  },
+  {
+    "candidate_id": "gen_006",
+    "source_artifact_id": "artifact_015",
+    "source_artifact_type": "clause_family",
+    "generalization_operator": "transition_causal",
+    "original_artifact": "(= state1536 #b0101)",
+    "lemma": "(= state1536 #b0100)",
+    "schema": "allowed_set",
+    "variables": [
+      "state1536"
+    ],
+    "why_this_is_a_generalization": "Replaces a specific mode constant with another, possibly covering additional proof terms where only the bit pattern matters.",
+    "why_may_be_inductive": "If the proof requires mode 4 in many frames but not mode 5, this could be a better global invariant.",
+    "why_may_have_proof_impact": "state1536 appears in 230+ frame clauses; an allowed set can drastically reduce them.",
+    "risk": "The value may be incorrect; constant-value lemmas often fail one-step due to initial states.",
+    "_source_file": "response_004.txt"
+  },
+  {
+    "candidate_id": "gen_008",
+    "source_artifact_id": "artifact_015",
+    "source_artifact_type": "clause_family",
+    "generalization_operator": "transition_causal",
+    "original_artifact": "(= state1536 #b0101)",
+    "lemma": "(not (and (= state15 #b1) (= state1558 #b1)))",
+    "schema": "nary_mutex",
+    "variables": [
+      "state15",
+      "state1558"
+    ],
+    "why_this_is_a_generalization": "Introduces a mutual exclusion between the frontier and a speed configuration, generalizing from a single value to a relationship.",
+    "why_may_be_inductive": "If state15 only appears when speed is not set, this mutex holds inductively.",
+    "why_may_have_proof_impact": "Such mutex lemmas are effective at blocking many counterexample combinations effortlessly.",
+    "risk": "A state with both may exist; mutex must be checked thoroughly.",
+    "_source_file": "response_004.txt"
+  },
+  {
+    "candidate_id": "cand_1",
+    "source_artifact_id": "artifact_016",
+    "source_artifact_type": "lifted_lemma",
+    "generalization_operator": "literal_deletion",
+    "original_artifact": "(=> (and (= state469 #0) (= state471 #0)) (= state15 #0))",
+    "lemma": "(=> (= state469 #0) (= state15 #0))",
+    "schema": "guarded_implication",
+    "variables": [
+      "state469",
+      "state15"
+    ],
+    "why_this_is_a_generalization": "Dropped the condition state471=0, making the antecedent weaker and the implication more general\u2014it now applies whenever state469=0 regardless of state471.",
+    "why_may_be_inductive": "If state469=0 alone is sufficient to force state15=0 in the design, this lemma would hold inductively.",
+    "why_may_have_proof_impact": "Can cover infinitely many similar proof artifacts that require state469=0 and any other condition, potentially replacing multiple specific lemmas.",
+    "risk": "low",
+    "_source_file": "response_005.txt"
+  },
+  {
+    "candidate_id": "cand_2",
+    "source_artifact_id": "artifact_016",
+    "source_artifact_type": "lifted_lemma",
+    "generalization_operator": "literal_deletion",
+    "original_artifact": "(=> (and (= state469 #0) (= state471 #0)) (= state15 #0))",
+    "lemma": "(=> (= state471 #0) (= state15 #0))",
+    "schema": "guarded_implication",
+    "variables": [
+      "state471",
+      "state15"
+    ],
+    "why_this_is_a_generalization": "Dropped the condition state469=0, making the lemma depend only on state471=0, thus applying to more states.",
+    "why_may_be_inductive": "Possible that state471=0 is a direct enable for the property, independent of state469.",
+    "why_may_have_proof_impact": "A single unary guard lemma is simpler and may be more easily absorbed into the IC3 frame clauses.",
+    "risk": "medium",
+    "_source_file": "response_005.txt"
+  },
+  {
+    "candidate_id": "cand_4",
+    "source_artifact_id": "artifact_017",
+    "source_artifact_type": "lifted_lemma",
+    "generalization_operator": "literal_deletion",
+    "original_artifact": "(=> (and (= state469 #0) (= state497 #0)) (= state15 #0))",
+    "lemma": "(=> (= state497 #0) (= state15 #0))",
+    "schema": "guarded_implication",
+    "variables": [
+      "state497",
+      "state15"
+    ],
+    "why_this_is_a_generalization": "Eliminated the reliance on state469, leaving a direct implication from state497=0 to the target.",
+    "why_may_be_inductive": "State497 could be a dedicated control flag that, when zero, guarantees the safety property.",
+    "why_may_have_proof_impact": "A focused lemma like this may interact well with other invariants involving state497.",
+    "risk": "medium",
+    "_source_file": "response_005.txt"
+  },
+  {
+    "candidate_id": "cand_6",
+    "source_artifact_id": "artifact_018",
+    "source_artifact_type": "lifted_lemma",
+    "generalization_operator": "literal_deletion",
+    "original_artifact": "(=> (and (= state469 #0) (= state636 #0)) (= state15 #0))",
+    "lemma": "(=> (= state636 #0) (= state15 #0))",
+    "schema": "guarded_implication",
+    "variables": [
+      "state636",
+      "state15"
+    ],
+    "why_this_is_a_generalization": "Removed the state469 condition, letting the lemma state that state636=0 alone suffices.",
+    "why_may_be_inductive": "State636 might be a reset or idle signal that, when active low, ensures a safe output.",
+    "why_may_have_proof_impact": "By isolating single signals, it could accelerate convergence in IC3 by providing strong immediate inductiveness.",
+    "risk": "medium",
+    "_source_file": "response_005.txt"
+  },
+  {
+    "candidate_id": "cand_7",
+    "source_artifact_id": "artifact_016",
+    "source_artifact_type": "lifted_lemma",
+    "generalization_operator": "repair",
+    "original_artifact": "(=> (and (= state469 #0) (= state471 #0)) (= state15 #0))",
+    "lemma": "(=> (and (= state469 #b0) (= state471 #b0)) (= state15 #b0))",
+    "schema": "conjoined_implication",
+    "variables": [
+      "state469",
+      "state471",
+      "state15"
+    ],
+    "why_this_is_a_generalization": "Converts decimal 0 constants to binary #b0 for syntactic uniformity; logically equivalent but may improve parser compatibility.",
+    "why_may_be_inductive": "Semantically identical to original, so inductive status unchanged.",
+    "why_may_have_proof_impact": "Can serve as a canonical form for the lemma, possibly reducing clutter in large sets of invariants.",
+    "risk": "low",
+    "_source_file": "response_005.txt"
+  },
+  {
+    "candidate_id": "cand_8",
+    "source_artifact_id": "artifact_017",
+    "source_artifact_type": "lifted_lemma",
+    "generalization_operator": "repair",
+    "original_artifact": "(=> (and (= state469 #0) (= state497 #0)) (= state15 #0))",
+    "lemma": "(=> (and (= state469 #b0) (= state497 #b0)) (= state15 #b0))",
+    "schema": "conjoined_implication",
+    "variables": [
+      "state469",
+      "state497",
+      "state15"
+    ],
+    "why_this_is_a_generalization": "Rewriting decimal 0 to binary #b0 to follow standard bitvector constant representation without changing meaning.",
+    "why_may_be_inductive": "Preserves original semantics, so induction potential is identical.",
+    "why_may_have_proof_impact": "Minor formatting unification may help in automated proof-framework processing.",
+    "risk": "low",
+    "_source_file": "response_005.txt"
+  }
+]

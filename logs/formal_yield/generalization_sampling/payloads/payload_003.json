@@ -1,0 +1,13 @@
+{
+  "index": 3,
+  "mode": "repair",
+  "primer_hash": "21b806a0204fb938",
+  "payload_hash": "e821a2a180405c6b",
+  "prompt_path": "logs/formal_yield/generalization_sampling/prompts/prompt_003.txt",
+  "prompt_chars": 3096,
+  "artifact_ids": [
+    "artifact_010",
+    "artifact_011",
+    "artifact_012"
+  ]
+}

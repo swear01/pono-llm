@@ -1,0 +1,89 @@
+# Proof-Artifact-Guided Generalization Primer v1
+
+You are a proof-artifact-guided lemma generalization engine. Your job is NOT to invent lemmas from scratch. It is to GENERALIZE specific local proof artifacts into broader semantic lemmas.
+
+## Context
+
+qspiflash_dualflexpress_divfive-p040 (HWMCC '24, Quad SPI flash controller).
+IC3IA model checker. state15 is the proof-frontier variable.
+
+### Key Variables
+state15 (1-bit): IC3IA proof-frontier, appears in 230+ frame clauses
+state1536 (4-bit): o_dspi_mod (DSPI mode register)
+state790 (1-bit): o_wb_stall
+state2002 (1-bit): r_pipe_req
+state1558 (1-bit): cfg_speed
+state79 (1-bit): cfg_mode
+
+### Known Facts
+1. Direct "state15=0" or "state15!=1" fails one-step.
+2. Pairwise implications often low proof-impact.
+3. Clause-family lifting: 26/30 verified but proof-local.
+4. Free-form think-none sampling: 0/56 passed formal gates.
+5. The HARDLY constraint output: unsupported syntax and nontriviality failures.
+
+### Your Task
+For each source artifact, propose generalizations that:
+- Cover more proof artifacts than the source
+- Preserve formal correctness (will be checked by solver)
+- Use only allowed schemas and supported syntax
+
+### Required Metadata (every candidate MUST include):
+- source_artifact_id
+- source_artifact_type
+- generalization_operator
+- original_artifact (the source text)
+- lemma (the generalized form)
+- schema
+- why_this_is_a_generalization
+
+### Allowed Schemas
+- guarded_implication: (=> (= X V) (= Y W))
+- conjoined_implication: (=> (and (= X V) (= Y W)) (= Z U))
+- nary_mutex: (! (and (= X V) (= Y W)))
+- allowed_set: (= X V)
+- range_bound: (<= X V) or (>= X V)
+
+### Forbidden
+- Unsupported operators: (or ...), (not (and ...)) as antecedent
+- Bitwidth tautologies: (<= 1-bit N) with N>=1
+- Direct "state15=0" or "state15!=1"
+- Contradictory guards: (= X #b0) AND (= X #b1)
+- Duplicate guards: same variable twice
+- Low-impact known lemmas: state2002=>state790
+
+### Output Contract
+Return ONLY valid JSON. No markdown, no prose.
+See payload for exact artifact and operator context.
+
+
+=== DYNAMIC PAYLOAD START ===
+
+## Source Artifacts
+
+- [artifact_004] frame_clause: (or (or (or (or (or (or (or (not (= state471 #b0)) (not (= state478 #b0))) (not (= state490 #b0))) (not (= state1530 #b0
+- [artifact_005] frame_clause: (or (or (or (or (or (or (or (not (= state79 #b0)) (not (= state210 #b00000000000000000))) (not (= state636 #b0))) (not (
+- [artifact_006] frame_clause: (or (or (or (or (or (or (or (not (= state790 #b1)) (not (= state872 #b0))) (not (= state1530 #b0))) (not (= state1587 #b
+
+
+## Allowed Operators
+
+family_compression, satellite_generalization
+
+## Known Failures to Avoid
+
+- state15=0 (one-step fails)
+- (=> (not (and ...)) ...) — unsupported syntax
+- (=> (or ...) ...) — unsupported syntax
+- duplicate/contradictory antecedents fail nontriviality
+
+## Instructions
+
+Generalize the source artifacts above. Use ONLY the allowed operators listed.
+Every candidate MUST include source_artifact_id referencing one of the artifacts above.
+Return ONLY valid JSON with a "generalized_candidates" array.
+Each candidate must have: candidate_id, source_artifact_id, source_artifact_type,
+generalization_operator, original_artifact, lemma, schema, variables,
+why_this_is_a_generalization, why_may_be_inductive, why_may_have_proof_impact, risk.
+
+Generate 8 candidates.

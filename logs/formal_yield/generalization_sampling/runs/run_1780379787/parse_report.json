@@ -1,0 +1,1 @@
+{"raw": 48, "unique": 42, "ops": {"literal_deletion": 8, "clause_lifting": 4, "family_compression": 4, "satellite_generalization": 4, "guard_strengthening": 11, "repair": 4, "transition_causal": 7}}

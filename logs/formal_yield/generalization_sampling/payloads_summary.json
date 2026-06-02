@@ -1,0 +1,85 @@
+{
+  "n": 6,
+  "primer_hash": "21b806a0204fb938",
+  "primer_chars": 2061,
+  "payloads": [
+    {
+      "index": 0,
+      "mode": "clause_lifting",
+      "primer_hash": "21b806a0204fb938",
+      "payload_hash": "96b3a9f4f382061b",
+      "prompt_path": "logs/formal_yield/generalization_sampling/prompts/prompt_000.txt",
+      "prompt_chars": 3339,
+      "artifact_ids": [
+        "artifact_001",
+        "artifact_002",
+        "artifact_003"
+      ]
+    },
+    {
+      "index": 1,
+      "mode": "family_compression",
+      "primer_hash": "21b806a0204fb938",
+      "payload_hash": "60765aa885336ff2",
+      "prompt_path": "logs/formal_yield/generalization_sampling/prompts/prompt_001.txt",
+      "prompt_chars": 3351,
+      "artifact_ids": [
+        "artifact_004",
+        "artifact_005",
+        "artifact_006"
+      ]
+    },
+    {
+      "index": 2,
+      "mode": "guard_strengthening",
+      "primer_hash": "21b806a0204fb938",
+      "payload_hash": "0743253977850e3d",
+      "prompt_path": "logs/formal_yield/generalization_sampling/prompts/prompt_002.txt",
+      "prompt_chars": 3326,
+      "artifact_ids": [
+        "artifact_007",
+        "artifact_008",
+        "artifact_009"
+      ]
+    },
+    {
+      "index": 3,
+      "mode": "repair",
+      "primer_hash": "21b806a0204fb938",
+      "payload_hash": "e821a2a180405c6b",
+      "prompt_path": "logs/formal_yield/generalization_sampling/prompts/prompt_003.txt",
+      "prompt_chars": 3096,
+      "artifact_ids": [
+        "artifact_010",
+        "artifact_011",
+        "artifact_012"
+      ]
+    },
+    {
+      "index": 4,
+      "mode": "transition_causal",
+      "primer_hash": "21b806a0204fb938",
+      "payload_hash": "6ca317d74e1cc199",
+      "prompt_path": "logs/formal_yield/generalization_sampling/prompts/prompt_004.txt",
+      "prompt_chars": 2967,
+      "artifact_ids": [
+        "artifact_013",
+        "artifact_014",
+        "artifact_015"
+      ]
+    },
+    {
+      "index": 5,
+      "mode": "mixed_generalization",
+      "primer_hash": "21b806a0204fb938",
+      "payload_hash": "979dbcc246adf742",
+      "prompt_path": "logs/formal_yield/generalization_sampling/prompts/prompt_005.txt",
+      "prompt_chars": 3178,
+      "artifact_ids": [
+        "artifact_016",
+        "artifact_017",
+        "artifact_018"
+      ]
+    }
+  ]
+}
