@@ -106,13 +106,11 @@ No measurable proof impact on this benchmark.
 ## 6. What This Project Claims
 
 1. LLMs can infer transition-causal semantic relations from IC3IA trace context.
-2. Formal feedback can identify when an LLM lemma is too strong.
-3. Failure-aware repair can reformulate a rejected lemma into a weaker inductive
-   candidate.
-4. Cluster-conditioned batch prompting produces diverse semantic lemma candidates
-   across multiple variable groups and lemma families.
-5. Natural HWMCC sweet spots are rare; case mining with reset/trivial filters is
-   necessary for selecting LLM-suitable bottlenecks.
+2. Formal feedback can identify when an LLM lemma is too strong and guide repair.
+3. IC3IA proof artifacts can be systematically lifted into solver-verified lemmas via mechanical clause-family lifting (26/30 verified, 87% pass rate).
+4. Valid semantic lemmas can be discovered through closed-loop solver-guided synthesis (r_pipe_req ⇒ o_wb_stall).
+5. Proof-artifact-guided generalization harness can achieve 100% metadata traceability, linking every candidate to a source artifact and operator.
+6. Formal soundness and proof impact are distinct dimensions — a solver-verified lemma may have low proof-trace relevance.
 
 ---
 
