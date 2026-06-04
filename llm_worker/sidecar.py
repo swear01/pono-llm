@@ -149,6 +149,13 @@ def handle_one_request(
     snapshot_max_clauses: int = 0,
 ) -> tuple[int, int, float]:
     """Process one request line; thread-safe writes to resp/log files."""
+    benchmark_ctx = load_benchmark_context(request.get("benchmark_context_path", ""))
+    user_prompt = build_user_prompt(
+        request, benchmark_ctx, 0, snapshot_max_clauses=snapshot_max_clauses
+    )
+    user_prompt_bytes = len(user_prompt.encode("utf-8"))
+    system_prompt_bytes = len(system_prompt.encode("utf-8"))
+
     responses, token_count, latency_ms = process_request(
         client, request, system_prompt, snapshot_max_clauses=snapshot_max_clauses
     )
@@ -162,6 +169,8 @@ def handle_one_request(
             "parallel_samples": len(responses),
             "token_count": token_count,
             "latency_ms": latency_ms,
+            "user_prompt_bytes": user_prompt_bytes,
+            "system_prompt_bytes": system_prompt_bytes,
             "prompt_hash": hashlib.sha256(
                 json.dumps(request, sort_keys=True).encode()
             ).hexdigest()[:16],

@@ -189,6 +189,9 @@ class IC3Base : public SafetyProver
 
   void set_llm_generalizer(std::shared_ptr<LLMGeneralizer> gen);
 
+  /** Poll responses.jsonl once more before shutdown (async-cti). */
+  void final_llm_poll();
+
   void init_llm_symbol_registry(
       const std::unordered_map<std::string, std::string> & verilog_map);
 

@@ -216,7 +216,13 @@ ProverResult IC3Base::check_until(int k)
     }
   }
 
+  final_llm_poll();
   return ProverResult::UNKNOWN;
+}
+
+void IC3Base::final_llm_poll()
+{
+  process_llm_candidates();
 }
 
 bool IC3Base::witness(vector<UnorderedTermMap> & out)
@@ -1797,7 +1803,10 @@ void IC3Base::process_llm_candidates()
 
     size_t frame_idx = 0;
     smt::TermVec cube;
-    if (!llm_gen_->lookup_cti_meta(cti_id, frame_idx, cube)) continue;
+    if (!llm_gen_->lookup_cti_meta(cti_id, frame_idx, cube)) {
+      llm_gen_->stats_.num_lookup_miss++;
+      continue;
+    }
 
     const size_t current_attempt = llm_gen_->feedback_attempt(cti_id);
     bool accepted = false;
@@ -1806,7 +1815,10 @@ void IC3Base::process_llm_candidates()
 
       const size_t resp_attempt =
           resp.attempt ? resp.attempt : current_attempt;
-      if (resp_attempt != current_attempt) continue;
+      if (resp_attempt != current_attempt) {
+        llm_gen_->stats_.num_attempt_mismatch++;
+        continue;
+      }
 
       if (!validate_frame_response_vocab(resp)) {
         llm_gen_->stats_.num_vocab_fail++;
@@ -1829,6 +1841,7 @@ void IC3Base::process_llm_candidates()
       }
 
       if (!resp.has_block) {
+        llm_gen_->stats_.num_missing_block++;
         llm_gen_->add_feedback(cti_id, resp, "missing_block");
         llm_gen_->note_response_processed(cti_id, resp_attempt);
         continue;
@@ -1847,6 +1860,7 @@ void IC3Base::process_llm_candidates()
       std::string wit_val;
       if (check_intersects_initial_with_witness(
               check_cube.term, resp.block_disjuncts, wit_ref, wit_val)) {
+        llm_gen_->stats_.num_rejected_initial++;
         llm_gen_->add_feedback(
             cti_id, resp, "rejected_initial", wit_ref, wit_val);
         llm_gen_->note_response_processed(cti_id, resp_attempt);
@@ -1897,6 +1911,7 @@ void IC3Base::process_llm_candidates()
     size_t retry_frame = 0;
     smt::TermVec retry_cube;
     if (!llm_gen_->lookup_cti_meta(retry_cti_id, retry_frame, retry_cube)) {
+      llm_gen_->stats_.num_lookup_miss++;
       continue;
     }
     std::string snapshot = serialize_frame_snapshot_json(retry_frame);

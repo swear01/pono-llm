@@ -237,6 +237,7 @@ ProverResult check_prop(PonoOptions pono_options,
       && !pono_options.llm_log_path_.empty()) {
     auto ic3base = std::dynamic_pointer_cast<IC3Base>(prover);
     if (ic3base && ic3base->llm_gen_) {
+      ic3base->final_llm_poll();
       ic3base->llm_gen_->log_stats();
     }
   }

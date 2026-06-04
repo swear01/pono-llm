@@ -446,16 +446,28 @@ void LLMGeneralizer::log_stats() const
   logger.log(0, "  Parse failures:      {}", stats_.num_parse_fail);
   logger.log(0, "  Vocab failures:      {}", stats_.num_vocab_fail);
   logger.log(0, "  Induction failures:  {}", stats_.num_induction_fail);
+  logger.log(0, "  Rejected initial:    {}", stats_.num_rejected_initial);
+  logger.log(0, "  Missing block:       {}", stats_.num_missing_block);
+  logger.log(0, "  Lookup miss:         {}", stats_.num_lookup_miss);
+  logger.log(0, "  Attempt mismatch:    {}", stats_.num_attempt_mismatch);
   logger.log(0, "  Budget skips:        {}", stats_.num_budget_skip);
   logger.log(0, "  Predicates added:    {}", stats_.num_predicates_added);
+  const size_t rejected_total =
+      stats_.num_schema_fail + stats_.num_parse_fail + stats_.num_vocab_fail
+      + stats_.num_induction_fail + stats_.num_rejected_initial
+      + stats_.num_missing_block + stats_.num_lookup_miss
+      + stats_.num_attempt_mismatch;
   cerr << "LLM_STATS accepted=" << stats_.num_accepted << " rejected="
-       << (stats_.num_schema_fail + stats_.num_parse_fail + stats_.num_vocab_fail
-           + stats_.num_induction_fail)
+       << rejected_total
        << " errors=0 requests=" << stats_.num_requests
        << " candidates=" << stats_.num_candidates << " schema_fail="
        << stats_.num_schema_fail << " parse_fail=" << stats_.num_parse_fail
        << " vocab_fail=" << stats_.num_vocab_fail << " induction_fail="
-       << stats_.num_induction_fail << " budget_skip=" << stats_.num_budget_skip
+       << stats_.num_induction_fail << " rejected_initial="
+       << stats_.num_rejected_initial << " missing_block="
+       << stats_.num_missing_block << " lookup_miss=" << stats_.num_lookup_miss
+       << " attempt_mismatch=" << stats_.num_attempt_mismatch
+       << " budget_skip=" << stats_.num_budget_skip
        << " predicates_added=" << stats_.num_predicates_added << endl;
 }
 

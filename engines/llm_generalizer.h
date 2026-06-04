@@ -74,6 +74,10 @@ struct GeneralizationStats
   size_t num_parse_fail = 0;
   size_t num_vocab_fail = 0;
   size_t num_induction_fail = 0;
+  size_t num_rejected_initial = 0;
+  size_t num_missing_block = 0;
+  size_t num_lookup_miss = 0;
+  size_t num_attempt_mismatch = 0;
   size_t num_budget_skip = 0;
   size_t num_predicates_added = 0;
   size_t total_tokens = 0;
@@ -89,6 +93,10 @@ struct GeneralizationStats
     num_parse_fail = 0;
     num_vocab_fail = 0;
     num_induction_fail = 0;
+    num_rejected_initial = 0;
+    num_missing_block = 0;
+    num_lookup_miss = 0;
+    num_attempt_mismatch = 0;
     num_budget_skip = 0;
     num_predicates_added = 0;
     total_tokens = 0;

@@ -371,6 +371,24 @@ def run_phase_test(args: argparse.Namespace) -> bool:
     else:
         log("test_ic3_frame_schema.py not found, skipping")
 
+    thinking_test = root / "llm_worker" / "tests" / "test_deepseek_thinking.py"
+    if thinking_test.exists():
+        log("Running llm_worker/tests/test_deepseek_thinking.py ...")
+        r = subprocess.run(
+            [sys.executable, str(thinking_test)],
+            capture_output=True, text=True, timeout=60,
+            cwd=str(root),
+        )
+        if r.returncode != 0:
+            log("test_deepseek_thinking.py FAILED:")
+            log(r.stdout[-1000:])
+            log(r.stderr[-1000:])
+            ok = False
+        else:
+            log("test_deepseek_thinking.py PASSED")
+    else:
+        log("test_deepseek_thinking.py not found, skipping")
+
     prompt_fmt_test = root / "llm_worker" / "tests" / "test_prompt_format.py"
     if prompt_fmt_test.exists():
         log("Running llm_worker/tests/test_prompt_format.py ...")

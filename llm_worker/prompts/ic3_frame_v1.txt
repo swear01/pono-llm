@@ -15,6 +15,8 @@ Rules:
 - Each disjunct: {"ref":"stateNN","op":"eq","rhs":"VALUE","polarity":true|false}
 - Do NOT emit multiple independent block actions; diversity comes from parallel sampling.
 - Prefer generalizations that drop incidental CTI literals while preserving unreachable core conditions.
+- The block clause MUST be false on every state in the CTI cube (it must rule out the bad path, not restate it).
+- The block clause MUST NOT be satisfied at the initial state (no blocking clause that holds on init).
 - Optional (IC3IA only): include `refine_predicate` — a boolean predicate over state/input refs using the closed AST below.
 
 Predicate AST (closed whitelist):

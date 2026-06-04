@@ -207,8 +207,19 @@ Parallel = breadth; retry = depth. Both are used together.
 | Setting | Value |
 |---------|--------|
 | `reasoning_effort` | **`none`** (default, required for latency) |
+| `thinking` | When `reasoning_effort` is `none`, client sends `extra_body: {"thinking": {"type": "disabled"}}`. **Omitting `reasoning_effort` does not disable thinking** on `deepseek-v4-pro`. |
 | `temperature` | `0` serial repair; `0.7–0.9` parallel sampling |
-| Logging | `latency_ms`, `cached_tokens`, `prompt_hash`, `sample_id` |
+| Logging | `latency_ms`, `prompt_tokens`, `completion_tokens`, `reasoning_chars`, `user_prompt_bytes`, `prompt_hash`, `sample_id` |
+
+### Latency (measured 2026-06-04, `deepseek-v4-pro`, thinking disabled)
+
+| Prompt shape | user bytes | latency (typical) |
+|--------------|------------|-------------------|
+| full frame (~477 clauses) | ~22 KB | ~4–6 s |
+| last 50 clauses | ~5.5 KB | ~4–5 s |
+| CTI only | ~3.6 KB | ~4 s |
+
+With thinking enabled, the same prompts take **~90–220 s** (hidden `reasoning_content` dominates completion tokens). Target **~10 s/call** is met via `thinking.disabled`, not via `max_tokens` truncation.
 
 ### Environment (sidecar)
 

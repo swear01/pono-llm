@@ -60,16 +60,37 @@ pip install -r llm_worker/requirements.txt
 
 `requirements.txt` 含 `openai` 套件 — 這是 **HTTP client library**（OpenAI-compatible SDK），用來呼叫 DeepSeek API，**不是**使用 OpenAI 的模型。DeepSeek 提供與 OpenAI Chat Completions 相同格式的 REST API，官方建議用此 SDK 連線。
 
+## Thinking mode (latency)
+
+`reasoning_effort=none` (default from pono and sidecar) maps to DeepSeek API `thinking.type=disabled` in [`deepseek_client.py`](deepseek_client.py). Single-call latency on `deepseek-v4-pro` is typically **4–6 s** with compact prompts; with thinking enabled, calls often exceed **90 s** despite short visible JSON.
+
+Do **not** rely on omitting `reasoning_effort` to disable thinking.
+
+## Smoke (p040, isolated session)
+
+```bash
+export DEEPSEEK_API_KEY=sk-...
+chmod +x scripts/smoke_p040.sh
+
+# Uses mktemp under /tmp/pono_smoke_* — never shared /tmp/p040_*
+SNAPSHOT_MAX=50 PONO_TIMEOUT=600 ./scripts/smoke_p040.sh
+```
+
+Each run writes `requests.jsonl`, `responses.jsonl`, `llm_log.jsonl`, and `manifest.json` under a unique `RUN_DIR`. API usage scales with how long pono runs (many CTI requests); cost is acceptable for validation.
+
+Env overrides: `BTOR`, `SNAPSHOT_MAX`, `PONO_TIMEOUT`, `PARALLEL_SAMPLES`.
+
 ## Tests
 
 ```bash
 # 無 API
 python3 llm_worker/tests/test_ic3_frame_schema.py
 python3 llm_worker/tests/test_prompt_format.py
+python3 llm_worker/tests/test_deepseek_thinking.py
 python3 llm_worker/tests/test_sidecar_concurrency.py
 
 # 含 API（需 DEEPSEEK_API_KEY）
-python3 test_sidecar.py --with-llm
+python3 test_sidecar.py --client-only
 
 # 或一次跑內建 test phase
 python3 scripts/run_benchmarks.py --phase test

@@ -1,6 +1,6 @@
 # p040 Smoke：Session 隔離 + Latency 優化計畫
 
-**狀態：** 待確認實作（2026-06-04）
+**狀態：** 實作中（2026-06-04）；checkpoint commit `6e4c8e2`
 
 ---
 
@@ -62,19 +62,23 @@ messages[1] user    ← build_user_prompt() 產出（compact line text）
 3. **縮小 snapshot 不能穩定加速**：last50 input 更小但 **218s > 177s**（reasoning 更長）。
 4. sidecar 先前 log 的 **~54k tokens/request** 可能是 **K 個 sample token 加總** 或舊 prompt；單次 call 實測 total 約 **7k–19k**。
 
-### 要接近 10s（在不設 max_tokens 上限前提下）
+### thinking disabled A/B（2026-06-04，同模型 `deepseek-v4-pro`）
 
-| 方向 | 說明 |
-|------|------|
-| **換非 reasoning 模型** | 例如 `deepseek-chat`（需 smoke 驗證 JSON 品質）— 可能最有效 |
-| CTI-only prompt | 實測 **94s**，仍遠離 10s（reasoning 仍在） |
-| 縮 input | 有幫助但不決定性的；瓶頸在 reasoning 長度 |
+[`deepseek_client.py`](../../llm_worker/deepseek_client.py) 將 `reasoning_effort=none` 對應為 `extra_body.thinking.type=disabled`（**omit `reasoning_effort` 不等於關閉 thinking**）。
 
-### 計畫調整
+| 場景 | user bytes | prompt_tok | completion_tok | reasoning_chars | latency |
+|------|------------|------------|----------------|-----------------|---------|
+| full477 | 21999 | 10843 | 232 | 0 | **~4.6s** |
+| last50 | 5469 | 3327 | 223 | 0 | **~4.5s** |
+| cti_only | 3590 | 2512 | 201 | 0 | **~4.3s** |
 
-- sidecar log **必須**記錄 `prompt_tokens`、`completion_tokens`、`reasoning_chars`（若 API 回傳），方便每次 run 診斷。
-- smoke 腳本加 **`--model` 參數**，預設仍 `deepseek-v4-pro`；文件說明 latency 與模型選型關係。
-- **10s 目標**改為：先以 **非 reasoning 模型** 或 **CTI-only + chat 模型** 做 A/B；不指望 v4-pro + 全量 snapshot 達 10s。
+對照（thinking 預設開）：full477 **177s**，`reasoning_content` ~16k 字。
+
+### 10s 目標（已達成，不設 max_tokens 截斷）
+
+- **首要手段**：`--llm-reasoning-effort none` + client `thinking.disabled`（維持 `deepseek-v4-pro` 即可）。
+- **備選**：換 `deepseek-chat` 僅在 JSON 品質或 accept 率不足時再 A/B。
+- Smoke 會消耗 API 額度（可能數十～上百次 call）；成本可接受，用於 E2E 驗證。
 
 ---
 
@@ -139,7 +143,7 @@ RUN_DIR=$(mktemp -d /tmp/pono_smoke_XXXXXX)
 
 ### 10s 目標說明
 
-僅靠 input 壓到 ~5 KB 仍可能 >10s（模型固定延遲、output 長度）。目標是 **可量測的 latency 下降**；10s 作為 smoke 驗收目標，需乾淨 run 後依 token 分解再調 `--snapshot-max-clauses`。
+thinking disabled 後單次 call 約 **4–6s**（見上表）。Smoke 預設 `--snapshot-max-clauses 50` 降低 input；若仍積壓，調 `--max-inflight-requests` 或 pono 限流。
 
 ---
 
@@ -156,10 +160,14 @@ RUN_DIR=$(mktemp -d /tmp/pono_smoke_XXXXXX)
 
 ## 實作順序
 
-1. **`scripts/smoke_p040.sh`** — session 隔離 + manifest（優先）
-2. **sidecar log 擴充** — prompt/completion tokens、user/system bytes（不改 max_tokens）
-3. **乾淨 smoke** — 預設 `--snapshot-max-clauses 50`，量測 latency
-4. **可選** — C++ JSONL snapshot truncate、attempt=1 CTI-only、prompt 強化、stale 統計
+1. [x] **`scripts/smoke_p040.sh`** — session 隔離 + manifest
+2. [x] **thinking disabled** — `deepseek_client._apply_thinking_mode`
+3. [x] **sidecar log** — `prompt_tokens`、`completion_tokens`、`reasoning_chars`、`user_prompt_bytes`
+4. [x] **乾淨 smoke** — `RUN_DIR=/tmp/pono_smoke_nzE4wB`（2026-06-04）：88 API calls，latency ~4.5–6s；pono `requests=145` / `candidates=1`（積壓根因已確認）
+5. [x] **C++ 統計** — `lookup_miss`、`rejected_initial`、`missing_block`、`attempt_mismatch`；`final_llm_poll()` + `pono.cpp` exit drain
+6. [x] **prompt** — block 須在 CTI 下 false、不可滿足 initial
+7. [x] **smoke drain** — `DRAIN_SEC` 等待 sidecar 追平、`MAX_INFLIGHT=8`
+8. [ ] **重跑 smoke** — 驗證 `candidates` 接近 `responses` 行數
 
 ---
 
@@ -167,4 +175,5 @@ RUN_DIR=$(mktemp -d /tmp/pono_smoke_XXXXXX)
 
 - 單次 run 的 JSONL 僅一種 request 格式，無舊 run 污染。
 - sidecar log 可讀取每 call 的 user bytes 與 prompt/completion tokens。
-- 477-clause 場景：user prompt ≤22 KB（全量）或 ≤6 KB（last 50）；latency 較現狀 ~120s 可量化下降。
+- 477-clause 場景：thinking disabled 時 latency **<10s/call**；`llm_log.jsonl` 中 `reasoning_chars=0`。
+- Smoke 不共用 `/tmp/p040_*`；JSONL 僅一種 compact request 格式。

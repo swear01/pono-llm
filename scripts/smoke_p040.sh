@@ -30,9 +30,11 @@ fi
 SNAPSHOT_MAX="${SNAPSHOT_MAX:-50}"
 PONO_TIMEOUT="${PONO_TIMEOUT:-600}"
 PARALLEL_SAMPLES="${PARALLEL_SAMPLES:-1}"
+MAX_INFLIGHT="${MAX_INFLIGHT:-8}"
+DRAIN_SEC="${DRAIN_SEC:-600}"
 
 echo "RUN_DIR=$RUN_DIR"
-echo "snapshot_max_clauses=$SNAPSHOT_MAX parallel_samples=$PARALLEL_SAMPLES"
+echo "snapshot_max_clauses=$SNAPSHOT_MAX parallel_samples=$PARALLEL_SAMPLES max_inflight=$MAX_INFLIGHT drain_sec=$DRAIN_SEC"
 
 python3 -u "$ROOT/llm_worker/sidecar.py" \
   --req-path "$REQ" \
@@ -40,7 +42,7 @@ python3 -u "$ROOT/llm_worker/sidecar.py" \
   --log-path "$LOG" \
   --prompt-dir "$ROOT/llm_worker/prompts/" \
   --poll-interval 0.5 \
-  --max-inflight-requests 4 \
+  --max-inflight-requests "$MAX_INFLIGHT" \
   --snapshot-max-clauses "$SNAPSHOT_MAX" \
   >"$SIDECAR_LOG" 2>&1 &
 SIDECAR_PID=$!
@@ -57,7 +59,22 @@ timeout "$PONO_TIMEOUT" "$ROOT/build/pono" -e ic3ia -k 5 \
   --llm-log "$LOG" \
   "$BTOR" >"$PONO_OUT" 2>"$PONO_ERR" || true
 
-kill "$SIDECAR_PID" 2>/dev/null || true
+echo "--- draining sidecar (up to ${DRAIN_SEC}s) ---"
+deadline=$((SECONDS + DRAIN_SEC))
+while (( SECONDS < deadline )); do
+  req_n=0
+  log_n=0
+  [[ -f "$REQ" ]] && req_n=$(wc -l <"$REQ" | tr -d ' ')
+  [[ -f "$LOG" ]] && log_n=$(wc -l <"$LOG" | tr -d ' ')
+  if (( req_n > 0 && log_n >= req_n )); then
+    echo "sidecar caught up: requests=$req_n llm_log=$log_n"
+    break
+  fi
+  echo "  waiting: requests=$req_n llm_log=$log_n"
+  sleep 2
+done
+
+kill -TERM "$SIDECAR_PID" 2>/dev/null || true
 wait "$SIDECAR_PID" 2>/dev/null || true
 
 python3 - <<PY
@@ -71,6 +88,7 @@ manifest = {
     "resp_path": "$RESP",
     "btor": "$BTOR",
     "snapshot_max_clauses": int("$SNAPSHOT_MAX"),
+    "max_inflight": int("$MAX_INFLIGHT"),
 }
 (run_dir / "manifest.json").write_text(json.dumps(manifest, indent=2) + "\n")
 print("manifest:", run_dir / "manifest.json")
@@ -82,6 +100,10 @@ echo "--- LLM_STATS ---"
 grep LLM_STATS "$PONO_ERR" || true
 echo "--- sidecar tail ---"
 tail -8 "$SIDECAR_LOG" || true
+echo "--- counts ---"
+echo "requests: $(wc -l <"$REQ" 2>/dev/null || echo 0)"
+echo "responses: $(wc -l <"$RESP" 2>/dev/null || echo 0)"
+echo "llm_log: $(wc -l <"$LOG" 2>/dev/null || echo 0)"
 echo "--- llm_log sample ---"
 head -1 "$LOG" 2>/dev/null | python3 -m json.tool 2>/dev/null || true
 echo "Artifacts kept in $RUN_DIR"
