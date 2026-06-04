@@ -1,17 +1,17 @@
 /*********************                                                  */
 /*! \file llm_generalizer.cpp
-** \brief LLM-guided lemma generalization for IC3/IC3-IA
+** \brief IC3 Frame v1 online LLM JSONL protocol
 **/
 
 #include "engines/llm_generalizer.h"
 
 #include <cassert>
 #include <fstream>
+#include <functional>
 #include <iomanip>
 #include <sstream>
 #include <stdexcept>
 #include <sys/stat.h>
-#include <sys/types.h>
 
 #include "utils/logger.h"
 
@@ -20,61 +20,36 @@ using namespace std;
 
 namespace pono {
 
-static std::vector<size_t> parse_size_array_field(const std::string & line,
-                                                  const std::string & field)
-{
-  std::vector<size_t> out;
-  size_t pos = line.find("\"" + field + "\"");
-  if (pos == std::string::npos) return out;
-  pos = line.find("[", pos);
-  if (pos == std::string::npos) return out;
-  size_t end = line.find("]", pos);
-  if (end == std::string::npos) return out;
-  std::string arr = line.substr(pos + 1, end - pos - 1);
-  std::stringstream ss(arr);
-  std::string item;
-  while (std::getline(ss, item, ',')) {
-    size_t first = item.find_first_of("0123456789");
-    if (first == std::string::npos) continue;
-    size_t last = item.find_last_of("0123456789");
-    out.push_back(
-        static_cast<size_t>(std::stoul(item.substr(first, last - first + 1))));
-  }
-  return out;
-}
+namespace {
 
-static std::string parse_string_field(const std::string & line,
-                                      const std::string & field)
+static void ensure_dir_for_file(const string & path)
 {
-  size_t pos = line.find("\"" + field + "\"");
-  if (pos == std::string::npos) return "";
-  pos = line.find(":", pos);
-  if (pos == std::string::npos) return "";
-  pos = line.find("\"", pos);
-  if (pos == std::string::npos) return "";
-  size_t end = line.find("\"", pos + 1);
-  if (end == std::string::npos) return "";
-  return line.substr(pos + 1, end - pos - 1);
-}
-
-static void ensure_dir_exists(const std::string & path)
-{
-  if (path.empty()) return;
-  std::string cur;
-  for (char c : path) {
+  size_t pos = path.find_last_of('/');
+  if (pos == string::npos) return;
+  string dir = path.substr(0, pos);
+  string cur;
+  for (char c : dir) {
     cur.push_back(c);
-    if (c == '/') {
-      if (cur.size() > 1) mkdir(cur.c_str(), 0775);
-    }
+    if (c == '/') mkdir(cur.c_str(), 0775);
   }
-  mkdir(path.c_str(), 0775);
 }
+
+static string extract_state_ref(const string & name)
+{
+  size_t pos = name.find("state");
+  if (pos == string::npos) return name;
+  size_t end = pos + 5;
+  while (end < name.size() && isdigit(static_cast<unsigned char>(name[end]))) {
+    ++end;
+  }
+  if (end > pos + 5) return name.substr(pos, end - pos);
+  return name;
+}
+
+}  // namespace
 
 LLMGeneralizer::LLMGeneralizer(PonoOptions opts, const SmtSolver & solver)
-      : opts_(opts),
-      solver_(solver),
-      last_response_pos_(0),
-      offline_records_loaded_(false)
+    : opts_(opts), solver_(solver)
 {
   request_path_ = opts_.llm_request_path_.empty()
                       ? "/tmp/pono_llm_requests.jsonl"
@@ -84,8 +59,10 @@ LLMGeneralizer::LLMGeneralizer(PonoOptions opts, const SmtSolver & solver)
                        : opts_.llm_response_path_;
   log_path_ = opts_.llm_log_path_.empty() ? "/tmp/pono_llm_log.jsonl"
                                           : opts_.llm_log_path_;
-  replay_dir_ = opts_.llm_replay_dir_.empty() ? "llm_replay/default"
-                                              : opts_.llm_replay_dir_;
+  size_t slash = request_path_.find_last_of('/');
+  benchmark_context_path_ =
+      (slash == string::npos ? "/tmp" : request_path_.substr(0, slash))
+      + "/pono_benchmark_context.json";
   stats_.reset();
 }
 
@@ -99,573 +76,92 @@ bool LLMGeneralizer::is_async_cti() const
   return opts_.llm_gen_mode_ == LLM_GEN_ASYNC_CTI;
 }
 
-bool LLMGeneralizer::is_seed_only() const
+string LLMGeneralizer::make_cti_id(size_t frame_idx,
+                                   const vector<CTILiteral> & literals) const
 {
-  return opts_.llm_gen_mode_ == LLM_GEN_SEED_ONLY;
-}
-
-bool LLMGeneralizer::is_offline_dump() const
-{
-  return opts_.llm_gen_mode_ == LLM_GEN_OFFLINE_DUMP;
-}
-
-bool LLMGeneralizer::is_offline_check() const
-{
-  return opts_.llm_gen_mode_ == LLM_GEN_OFFLINE_CHECK;
-}
-
-std::string LLMGeneralizer::make_cti_id(
-    size_t frame_idx, const std::vector<CTILiteral> & literals) const
-{
-  std::string raw = "frame" + std::to_string(frame_idx) + ":";
-  for (const auto & lit : literals) {
-    raw += std::to_string(lit.id) + "=" + lit.varname + "=" + lit.value + ";";
+  ostringstream oss;
+  oss << "cti_f" << frame_idx << "_";
+  for (size_t i = 0; i < literals.size() && i < 8; ++i) {
+    oss << literal_ref(literals[i]) << "=" << literals[i].value << ";";
   }
-
-  uint64_t hash = 1469598103934665603ULL;  // FNV-1a
-  for (unsigned char c : raw) {
-    hash ^= static_cast<uint64_t>(c);
-    hash *= 1099511628211ULL;
-  }
-
-  std::ostringstream out;
-  out << "frame" << frame_idx << ":" << std::hex << hash;
-  return out.str();
+  return oss.str();
 }
 
-void LLMGeneralizer::load_offline_records()
+void LLMGeneralizer::set_symbol_registry(
+    const unordered_map<string, SymbolRegistryEntry> & registry)
 {
-  if (offline_records_loaded_) return;
-  offline_records_loaded_ = true;
-
-  auto load_file = [&](const std::string & path,
-                       std::unordered_map<std::string, LLMIdCandidate> & dst) {
-    std::ifstream fin(path);
-    if (!fin.is_open()) return;
-    std::string line;
-    while (std::getline(fin, line)) {
-      if (line.empty() || line[0] != '{') continue;
-      LLMIdCandidate cand;
-      cand.cti_id = parse_string_field(line, "cti_id");
-      cand.mode = parse_string_field(line, "mode");
-      cand.confidence = parse_string_field(line, "confidence");
-      cand.short_reason = parse_string_field(line, "short_reason");
-      cand.keep_ids = parse_size_array_field(line, "keep_ids");
-      if (cand.keep_ids.empty()) {
-        cand.keep_ids = parse_size_array_field(line, "base_keep_ids");
-      }
-      cand.drop_ids = parse_size_array_field(line, "drop_ids");
-      cand.add_back_ids = parse_size_array_field(line, "add_back_ids");
-      if (!cand.cti_id.empty()) dst[cand.cti_id] = cand;
-    }
-  };
-
-  load_file(replay_dir_ + "/proposals.jsonl", proposals_);
-  load_file(replay_dir_ + "/repairs.jsonl", repairs_);
+  symbol_registry_ = registry;
 }
 
-bool LLMGeneralizer::get_proposal(const std::string & cti_id,
-                                  LLMIdCandidate & out) const
+void LLMGeneralizer::write_benchmark_context(const string & benchmark_name,
+                                            const string & bad_expr)
 {
-  auto it = proposals_.find(cti_id);
-  if (it == proposals_.end()) return false;
-  out = it->second;
-  return true;
-}
-
-bool LLMGeneralizer::get_repair(const std::string & cti_id,
-                                LLMIdCandidate & out) const
-{
-  auto it = repairs_.find(cti_id);
-  if (it == repairs_.end()) return false;
-  out = it->second;
-  return true;
-}
-
-void LLMGeneralizer::write_offline_cti_context(const CTIContext & ctx)
-{
-  ensure_dir_exists(replay_dir_);
-  std::ofstream fout(replay_dir_ + "/cti_contexts.jsonl", std::ios::app);
-  if (!fout.is_open()) {
-    logger.log(
-        0, "LLMGeneralizer: cannot write offline CTI contexts in {}", replay_dir_);
-    return;
-  }
-
-  fout << "{\"schema_version\":1,";
-  fout << "\"cti_id\":\"" << escape_json(ctx.cti_id) << "\",";
-  fout << "\"frame\":" << ctx.frame_idx << ",";
-  fout << "\"property\":\"" << escape_json(ctx.property_name) << "\",";
-  fout << "\"literals\":[";
-  for (size_t i = 0; i < ctx.literals.size(); ++i) {
-    const auto & lit = ctx.literals[i];
-    if (i) fout << ",";
-    fout << "{\"id\":" << lit.id << ",";
-    fout << "\"expr\":\"" << escape_json(lit.expr) << "\",";
-    fout << "\"varname\":\"" << escape_json(lit.varname) << "\",";
-    fout << "\"value\":\"" << escape_json(lit.value) << "\",";
-    fout << "\"kind\":\"" << escape_json(lit.kind) << "\",";
-    fout << "\"signals\":[";
-    for (size_t j = 0; j < lit.signals.size(); ++j) {
-      if (j) fout << ",";
-      fout << "\"" << escape_json(lit.signals[j]) << "\"";
-    }
-    fout << "]}";
-  }
-  fout << "]}\n";
-  stats_.num_requests++;
-}
-
-void LLMGeneralizer::write_static_context(
-    const std::string & benchmark_name,
-    const std::string & bad_expr,
-    const std::vector<CTILiteral> & states,
-    const std::vector<CTILiteral> & inputs,
-    const std::vector<std::string> & state_updates)
-{
-  ensure_dir_exists(replay_dir_);
-  std::ofstream fout(replay_dir_ + "/static_context.json");
-  if (!fout.is_open()) {
-    logger.log(
-        0, "LLMGeneralizer: cannot write static context in {}", replay_dir_);
-    return;
-  }
-
-  fout << "{\n";
-  fout << "  \"schema_version\": 1,\n";
-  fout << "  \"benchmark\": \"" << escape_json(benchmark_name) << "\",\n";
-  fout << "  \"property\": {\"bad_expr\": \"" << escape_json(bad_expr)
-       << "\"},\n";
-
-  auto emit_lits = [&](const char * name,
-                       const std::vector<CTILiteral> & vars) {
-    fout << "  \"" << name << "\": [";
-    for (size_t i = 0; i < vars.size(); ++i) {
-      if (i) fout << ",";
-      fout << "{\"name\":\"" << escape_json(vars[i].varname)
-           << "\",\"width\":1}";
-    }
-    fout << "],\n";
-  };
-
-  emit_lits("states", states);
-  emit_lits("inputs", inputs);
-  fout << "  \"state_updates\": [";
-  for (size_t i = 0; i < state_updates.size(); ++i) {
-    if (i) fout << ",";
-    fout << "\"" << escape_json(state_updates[i]) << "\"";
-  }
-  fout << "],\n";
-  fout << "  \"notes\": [\"All LLM candidates are checked on the full "
-          "transition system.\"]\n";
-  fout << "}\n";
-}
-
-void LLMGeneralizer::write_replay_result(const std::string & cti_id,
-                                         const std::string & status,
-                                         size_t frame_idx,
-                                         size_t original_size,
-                                         size_t candidate_size,
-                                         const std::string & reason)
-{
-  ensure_dir_exists(replay_dir_);
-  const bool repair_status = status.find("repair_") == 0;
-  const std::string out_path =
-      replay_dir_
-      + (repair_status ? "/repair_replay_results.jsonl"
-                       : "/proposal_replay_results.jsonl");
-  std::ofstream fout(out_path, std::ios::app);
+  if (benchmark_context_written_) return;
+  benchmark_name_ = benchmark_name;
+  bad_expr_ = bad_expr;
+  ensure_dir_for_file(benchmark_context_path_);
+  ofstream fout(benchmark_context_path_);
   if (!fout.is_open()) return;
-
-  fout << "{\"schema_version\":1,";
-  fout << "\"cti_id\":\"" << escape_json(cti_id) << "\",";
-  fout << "\"status\":\"" << escape_json(status) << "\",";
-  fout << "\"frame\":" << frame_idx << ",";
-  fout << "\"original_size\":" << original_size << ",";
-  fout << "\"candidate_size\":" << candidate_size << ",";
-  fout << "\"reason\":\"" << escape_json(reason) << "\"}\n";
+  fout << "{";
+  fout << "\"schema_version\":1,";
+  fout << "\"type\":\"benchmark_context\",";
+  fout << "\"benchmark\":\"" << escape_json(benchmark_name) << "\",";
+  fout << "\"bad_property\":\"" << escape_json(bad_expr) << "\",";
+  fout << "\"symbol_registry\":{";
+  bool first = true;
+  for (const auto & kv : symbol_registry_) {
+    if (!first) fout << ",";
+    first = false;
+    fout << "\"" << escape_json(kv.first) << "\":{";
+    fout << "\"kind\":\"" << escape_json(kv.second.kind) << "\",";
+    fout << "\"width\":" << kv.second.width << ",";
+    fout << "\"btor2_line\":" << kv.second.btor2_line << ",";
+    if (kv.second.verilog.empty()) {
+      fout << "\"verilog\":null";
+    } else {
+      fout << "\"verilog\":\"" << escape_json(kv.second.verilog) << "\"";
+    }
+    fout << "}";
+  }
+  fout << "}}";
+  fout.close();
+  benchmark_context_written_ = true;
 }
 
-void LLMGeneralizer::write_repair_request(
-    const CTIContext & ctx,
-    const LLMIdCandidate & failed,
-    const std::vector<LLMWitnessDiff> & diffs)
+string LLMGeneralizer::literal_ref(const CTILiteral & lit) const
 {
-  ensure_dir_exists(replay_dir_);
-  std::ofstream fout(replay_dir_ + "/repair_requests.jsonl", std::ios::app);
-  if (!fout.is_open()) return;
-
-  fout << "{\"schema_version\":1,";
-  fout << "\"cti_id\":\"" << escape_json(ctx.cti_id) << "\",";
-  fout << "\"frame\":" << ctx.frame_idx << ",";
-  fout << "\"failed_keep_ids\":[";
-  for (size_t i = 0; i < failed.keep_ids.size(); ++i) {
-    if (i) fout << ",";
-    fout << failed.keep_ids[i];
-  }
-  fout << "],\"failed_drop_ids\":[";
-  for (size_t i = 0; i < failed.drop_ids.size(); ++i) {
-    if (i) fout << ",";
-    fout << failed.drop_ids[i];
-  }
-  fout << "],\"sat_witness_diff\":[";
-  for (size_t i = 0; i < diffs.size(); ++i) {
-    if (i) fout << ",";
-    fout << "{\"literal_id\":" << diffs[i].literal_id << ",";
-    fout << "\"cti_literal\":\"" << escape_json(diffs[i].cti_literal)
-         << "\",";
-    fout << "\"witness_value\":\"" << escape_json(diffs[i].witness_value)
-         << "\",";
-    fout << "\"effect\":\"" << escape_json(diffs[i].effect) << "\"}";
-  }
-  fout << "]}\n";
+  return extract_state_ref(lit.varname);
 }
 
 string LLMGeneralizer::escape_json(const string & s) const
 {
-  ostringstream out;
+  ostringstream oss;
   for (char c : s) {
     switch (c) {
-      case '"': out << "\\\""; break;
-      case '\\': out << "\\\\"; break;
-      case '\n': out << "\\n"; break;
-      case '\r': out << "\\r"; break;
-      case '\t': out << "\\t"; break;
-      default: out << c;
+      case '"': oss << "\\\""; break;
+      case '\\': oss << "\\\\"; break;
+      case '\n': oss << "\\n"; break;
+      case '\r': oss << "\\r"; break;
+      case '\t': oss << "\\t"; break;
+      default: oss << c;
     }
   }
-  return out.str();
-}
-
-void LLMGeneralizer::write_cti_context(const CTIContext & ctx)
-{
-  // Cap: don't send more than 50 CTI contexts per benchmark
-  if (stats_.num_requests >= 50) {
-    return;
-  }
-
-  // Dedup: skip duplicate CTI contexts (same literals with same values)
-  std::string ctx_hash;
-  for (const auto & lit : ctx.literals) {
-    ctx_hash += lit.varname + lit.value;
-  }
-  if (sent_ctx_hashes_.count(ctx_hash)) {
-    return;
-  }
-  sent_ctx_hashes_.insert(ctx_hash);
-
-  ofstream fout(request_path_, ios::app);
-  if (!fout.is_open()) {
-    logger.log(0, "LLMGeneralizer: cannot open request file {}", request_path_);
-    return;
-  }
-
-  ostringstream json;
-  json << "{";
-  json << "\"frame_idx\":" << ctx.frame_idx << ",";
-  json << "\"property\":\"" << escape_json(ctx.property_name) << "\",";
-  json << "\"literals\":[";
-  for (size_t i = 0; i < ctx.literals.size(); ++i) {
-    if (i > 0) json << ",";
-    json << "{\"varname\":\"" << escape_json(ctx.literals[i].varname) << "\",";
-    json << "\"value\":\"" << escape_json(ctx.literals[i].value) << "\"}";
-  }
-  json << "],";
-  json << "\"candidate_language\":\""
-       << (opts_.llm_candidate_language_ == LLMCandidateLanguage::CUBE_SUBSET
-               ? "cube-subset"
-               : (opts_.llm_candidate_language_ == LLMCandidateLanguage::QF_SMT
-                      ? "qf-smt"
-                      : "predicate-relation"))
-       << "\",";
-  json << "\"model\":\""
-       << escape_json(opts_.llm_model_.empty() ? "deepseek-v4-pro"
-                                               : opts_.llm_model_)
-       << "\"";
-  json << "}";
-  json << "\n";
-
-  fout << json.str();
-  fout.close();
-
-  stats_.num_requests++;
-  logger.log(1,
-             "LLMGeneralizer: wrote CTI context for frame {} ({} literals)",
-             ctx.frame_idx,
-             ctx.literals.size());
-}
-
-// Find matching ] for array parsing, skipping brackets inside string literals
-static size_t find_matching_bracket(const string & line, size_t open_pos)
-{
-  int depth = 0;
-  bool in_string = false;
-  for (size_t i = open_pos; i < line.size(); ++i) {
-    if (line[i] == '"') {
-      in_string = !in_string;
-    } else if (!in_string) {
-      if (line[i] == '[') depth++;
-      else if (line[i] == ']') {
-        depth--;
-        if (depth == 0) return i;
-      }
-    }
-  }
-  return string::npos;
-}
-
-vector<LLMCandidate> LLMGeneralizer::poll_candidates()
-{
-  vector<LLMCandidate> candidates;
-
-  ifstream fin(response_path_);
-  if (!fin.is_open()) {
-    return candidates;
-  }
-
-  fin.seekg(last_response_pos_);
-
-  string line;
-  while (getline(fin, line)) {
-    if (line.empty() || line[0] != '{') continue;
-
-    try {
-    LLMCandidate cand;
-    cand.type = LLMCandidate::CUBE_SUBSET;
-    cand.frame_hint = 0;
-
-    // minimal JSON parsing for the expected schema
-    size_t pos = 0;
-
-    // parse type
-    pos = line.find("\"type\"");
-    if (pos != string::npos) {
-      pos = line.find("\"", pos + 7);
-      if (pos != string::npos) {
-        size_t end = line.find("\"", pos + 1);
-        string type_str = line.substr(pos + 1, end - pos - 1);
-        if (type_str == "cube_subset" || type_str == "cube-subset") {
-          cand.type = LLMCandidate::CUBE_SUBSET;
-        } else if (type_str == "qf_smt_formula" || type_str == "qf-smt") {
-          cand.type = LLMCandidate::QF_SMT;
-        } else if (type_str == "predicate_relation"
-                   || type_str == "predicate-relation") {
-          cand.type = LLMCandidate::PREDICATE_RELATION;
-        }
-      }
-    }
-
-    // parse frame_hint
-    pos = line.find("\"frame_hint\"");
-    if (pos != string::npos) {
-      pos = line.find(":", pos);
-      if (pos != string::npos) {
-        try {
-          cand.frame_hint = stoul(line.substr(pos + 1));
-        } catch (...) {
-          cand.frame_hint = 0;
-        }
-      }
-    }
-
-    // parse keep_literals array (with proper bracket counting for nested [])
-    pos = line.find("\"keep_literals\"");
-    if (pos != string::npos) {
-      pos = line.find("[", pos);
-      if (pos != string::npos) {
-        size_t end = find_matching_bracket(line, pos);
-        if (end != string::npos) {
-          string arr = line.substr(pos + 1, end - pos - 1);
-          size_t start = 0;
-          while (true) {
-            start = arr.find("\"", start);
-            if (start == string::npos) break;
-            size_t e = arr.find("\"", start + 1);
-            if (e == string::npos) break;
-            cand.keep_literals.push_back(arr.substr(start + 1, e - start - 1));
-            start = e + 1;
-          }
-        }
-      }
-    }
-
-    // parse drop_literals array
-    pos = line.find("\"drop_literals\"");
-    if (pos != string::npos) {
-      pos = line.find("[", pos);
-      if (pos != string::npos) {
-        size_t end = find_matching_bracket(line, pos);
-        if (end != string::npos) {
-          string arr = line.substr(pos + 1, end - pos - 1);
-          size_t start = 0;
-          while (true) {
-            start = arr.find("\"", start);
-            if (start == string::npos) break;
-            size_t e = arr.find("\"", start + 1);
-            if (e == string::npos) break;
-            cand.drop_literals.push_back(arr.substr(start + 1, e - start - 1));
-            start = e + 1;
-          }
-        }
-      }
-    }
-
-    // parse formula (for qf-smt mode)
-    pos = line.find("\"formula\"");
-    if (pos != string::npos) {
-      pos = line.find("\"", pos + 9);
-      if (pos != string::npos) {
-        size_t end = line.find("\"", pos + 1);
-        cand.formula = line.substr(pos + 1, end - pos - 1);
-      }
-    }
-
-    // parse used_symbols array
-    pos = line.find("\"used_symbols\"");
-    if (pos != string::npos) {
-      pos = line.find("[", pos);
-      if (pos != string::npos) {
-        size_t end = line.find("]", pos);
-        string arr = line.substr(pos + 1, end - pos - 1);
-        size_t start = 0;
-        while (true) {
-          start = arr.find("\"", start);
-          if (start == string::npos) break;
-          size_t e = arr.find("\"", start + 1);
-          if (e == string::npos) break;
-          cand.used_symbols.push_back(arr.substr(start + 1, e - start - 1));
-          start = e + 1;
-        }
-      }
-    }
-
-    // parse rationale
-    pos = line.find("\"rationale\"");
-    if (pos != string::npos) {
-      pos = line.find("\"", pos + 11);
-      if (pos != string::npos) {
-        size_t end = line.find("\"", pos + 1);
-        cand.rationale = line.substr(pos + 1, end - pos - 1);
-      }
-    }
-
-    candidates.push_back(cand);
-    } catch (const std::exception & e) {
-      logger.log(1,
-                 "LLMGeneralizer: error parsing candidate: {}",
-                 e.what());
-    } catch (...) {
-      logger.log(1, "LLMGeneralizer: unknown error parsing candidate");
-    }
-  }
-
-  last_response_pos_ = fin.tellg();
-  fin.close();
-
-  stats_.num_candidates += candidates.size();
-  if (!candidates.empty()) {
-    logger.log(1,
-               "LLMGeneralizer: polled {} candidate(s)",
-               candidates.size());
-  }
-
-  return candidates;
-}
-
-void LLMGeneralizer::log_stats() const
-{
-  logger.log(0, "=== LLM Generalization Statistics ===");
-  logger.log(0, "  Requests sent:       {}", stats_.num_requests);
-  logger.log(0, "  Candidates received: {}", stats_.num_candidates);
-  logger.log(0, "  Accepted:            {}", stats_.num_accepted);
-  logger.log(0, "  Schema failures:     {}", stats_.num_schema_fail);
-  logger.log(0, "  Parse failures:      {}", stats_.num_parse_fail);
-  logger.log(0, "  Vocabulary failures: {}", stats_.num_vocab_fail);
-  logger.log(0, "  Induction failures:  {}", stats_.num_induction_fail);
-  logger.log(0, "  Subsumption failures:{}", stats_.num_subsumption_fail);
-  logger.log(0, "  Budget skips:        {}", stats_.num_budget_skip);
-  logger.log(0, "  Total tokens:        {}", stats_.total_tokens);
-  logger.log(0, "  Accepted budget:     {}", stats_.accepted_budget);
-  logger.log(0,
-             "LLM_STATS accepted={} rejected={} errors={} "
-             "requests={} candidates={} "
-             "schema_fail={} parse_fail={} vocab_fail={} "
-             "induction_fail={} subsumption_fail={} budget_skip={}",
-             stats_.num_accepted,
-             stats_.num_schema_fail + stats_.num_parse_fail
-                 + stats_.num_vocab_fail + stats_.num_induction_fail
-                 + stats_.num_subsumption_fail + stats_.num_budget_skip,
-             stats_.num_schema_fail + stats_.num_parse_fail
-                 + stats_.num_vocab_fail,
-             stats_.num_requests,
-             stats_.num_candidates,
-             stats_.num_schema_fail,
-             stats_.num_parse_fail,
-             stats_.num_vocab_fail,
-             stats_.num_induction_fail,
-             stats_.num_subsumption_fail,
-             stats_.num_budget_skip);
-}
-
-void LLMGeneralizer::store_cti_cube_for_frame(
-    size_t frame_idx,
-    const TermVec & cube_children,
-    const std::vector<std::string> & names)
-{
-  last_cti_cube_ = cube_children;
-  frame_stored_cubes_[frame_idx].push_back(cube_children);
-  frame_stored_names_[frame_idx].push_back(names);
-}
-
-TermVec LLMGeneralizer::find_cti_cube_by_frame(
-    size_t frame_idx,
-    std::vector<std::string> * out_names)
-{
-  auto it = frame_stored_cubes_.find(frame_idx);
-  if (it != frame_stored_cubes_.end() && !it->second.empty()) {
-    TermVec cube = it->second.front();
-    it->second.erase(it->second.begin());
-    if (out_names) {
-      auto nit = frame_stored_names_.find(frame_idx);
-      if (nit != frame_stored_names_.end() && !nit->second.empty()) {
-        *out_names = nit->second.front();
-        nit->second.erase(nit->second.begin());
-      }
-    }
-    return cube;
-  }
-  return last_cti_cube_;
-}
-
-void LLMGeneralizer::retry_pending_candidates()
-{
-  // IC3Base::process_llm_candidates handles this via drain_pending_candidates
-}
-
-void LLMGeneralizer::store_pending_candidate(const LLMCandidate & cand)
-{
-  pending_llm_candidates_.push_back(cand);
-}
-
-std::vector<LLMCandidate> LLMGeneralizer::drain_pending_candidates()
-{
-  std::vector<LLMCandidate> ret;
-  ret.swap(pending_llm_candidates_);
-  return ret;
-}
-
-bool LLMGeneralizer::has_pending_candidates() const
-{
-  return !pending_llm_candidates_.empty();
+  return oss.str();
 }
 
 void LLMGeneralizer::buffer_cti_context(size_t frame_idx,
-                                         const CTIContext & ctx)
+                                        const CTIContext & ctx,
+                                        const TermVec & cube_children)
 {
-  BufferedCTI bcti;
-  bcti.ctx = ctx;
-  bcti.cube_children = last_cti_cube_;
-  frame_cti_buffer_[frame_idx].push_back(bcti);
+  BufferedCTI b;
+  b.ctx = ctx;
+  b.cube_children = cube_children;
+  frame_cti_buffer_[frame_idx].push_back(b);
+
+  StoredCTI stored;
+  stored.ctx = ctx;
+  stored.cube = cube_children;
+  cti_store_[ctx.cti_id] = stored;
 }
 
 bool LLMGeneralizer::has_buffered_cti(size_t frame_idx) const
@@ -674,67 +170,293 @@ bool LLMGeneralizer::has_buffered_cti(size_t frame_idx) const
   return it != frame_cti_buffer_.end() && !it->second.empty();
 }
 
-void LLMGeneralizer::flush_frame_batch(size_t frame_idx)
+size_t LLMGeneralizer::feedback_attempt(const string & cti_id) const
 {
-  auto it = frame_cti_buffer_.find(frame_idx);
-  if (it == frame_cti_buffer_.end() || it->second.empty()) return;
+  auto it = attempt_by_cti_.find(cti_id);
+  if (it == attempt_by_cti_.end()) return 1;
+  return it->second;
+}
 
-  const auto & ctis = it->second;
-  stats_.num_requests++;
+namespace {
 
+static string sample_group_key(const string & cti_id, size_t attempt)
+{
+  return cti_id + "#" + std::to_string(attempt);
+}
+
+static string serialize_response_for_feedback(
+    const IC3FrameResponse & rejected,
+    const function<string(const string &)> & escape)
+{
+  ostringstream out;
+  out << "{";
+  out << "\"source_cti_id\":\"" << escape(rejected.source_cti_id) << "\",";
+  out << "\"sample_id\":" << rejected.sample_id << ",";
+  out << "\"attempt\":" << rejected.attempt << ",";
+  out << "\"has_block\":" << (rejected.has_block ? "true" : "false") << ",";
+  out << "\"has_refine_predicate\":"
+      << (rejected.has_refine_predicate ? "true" : "false") << ",";
+  out << "\"rationale\":\"" << escape(rejected.rationale) << "\"";
+  out << "}";
+  return out.str();
+}
+
+}  // namespace
+
+void LLMGeneralizer::register_outstanding_samples(const string & cti_id,
+                                                  size_t attempt)
+{
+  outstanding_samples_[sample_group_key(cti_id, attempt)] =
+      opts_.llm_parallel_samples_;
+}
+
+void LLMGeneralizer::note_response_processed(const string & cti_id,
+                                             size_t attempt)
+{
+  auto it = outstanding_samples_.find(sample_group_key(cti_id, attempt));
+  if (it != outstanding_samples_.end() && it->second > 0) {
+    it->second--;
+  }
+}
+
+bool LLMGeneralizer::all_parallel_samples_received(const string & cti_id,
+                                                   size_t attempt) const
+{
+  auto it = outstanding_samples_.find(sample_group_key(cti_id, attempt));
+  if (it == outstanding_samples_.end()) return true;
+  return it->second == 0;
+}
+
+void LLMGeneralizer::add_feedback(const string & cti_id,
+                                  const IC3FrameResponse & rejected,
+                                  const string & reason,
+                                  const string & witness_ref,
+                                  const string & witness_next)
+{
+  LLMFeedbackEntry fb;
+  fb.reason = reason;
+  fb.rejected_json =
+      serialize_response_for_feedback(rejected,
+                                      [this](const string & s) {
+                                        return escape_json(s);
+                                      });
+  fb.witness_ref = witness_ref;
+  fb.witness_next_value = witness_next;
+  feedback_by_cti_[cti_id].push_back(fb);
+}
+
+void LLMGeneralizer::finish_attempt(const string & cti_id, size_t frame_idx)
+{
+  if (is_cti_accepted(cti_id)) return;
+  size_t attempt = feedback_attempt(cti_id);
+  if (attempt >= opts_.llm_max_attempts_) return;
+  attempt_by_cti_[cti_id] = attempt + 1;
+  retry_queue_.push_back(cti_id);
+  (void)frame_idx;
+}
+
+void LLMGeneralizer::mark_accepted(const string & cti_id)
+{
+  accepted_cti_ids_.insert(cti_id);
+  outstanding_samples_[sample_group_key(cti_id, feedback_attempt(cti_id))] = 0;
+}
+
+bool LLMGeneralizer::is_cti_accepted(const string & cti_id) const
+{
+  return accepted_cti_ids_.count(cti_id) > 0;
+}
+
+void LLMGeneralizer::serialize_frame_request(
+    ostream & out,
+    const CTIContext & ctx,
+    size_t attempt,
+    const vector<LLMFeedbackEntry> & feedback,
+    const string & frame_snapshot_json)
+{
+  out << "{";
+  out << "\"schema_version\":1,";
+  out << "\"type\":\"ic3_frame_request\",";
+  out << "\"frame_idx\":" << ctx.frame_idx << ",";
+  out << "\"cti_id\":\"" << escape_json(ctx.cti_id) << "\",";
+  out << "\"attempt\":" << attempt << ",";
+  out << "\"max_attempts\":" << opts_.llm_max_attempts_ << ",";
+  out << "\"parallel_group\":\"" << escape_json(ctx.cti_id + "_a" + std::to_string(attempt))
+      << "\",";
+  out << "\"parallel_samples\":" << opts_.llm_parallel_samples_ << ",";
+  out << "\"reasoning_effort\":\"" << escape_json(opts_.llm_reasoning_effort_) << "\",";
+  out << "\"model\":\""
+      << escape_json(opts_.llm_model_.empty() ? "deepseek-v4-pro" : opts_.llm_model_)
+      << "\",";
+  out << "\"benchmark_context_path\":\"" << escape_json(benchmark_context_path_)
+      << "\",";
+
+  out << "\"cti\":{\"cube\":{\"literals\":[";
+  for (size_t i = 0; i < ctx.literals.size(); ++i) {
+    if (i > 0) out << ",";
+    const auto & lit = ctx.literals[i];
+    string ref = literal_ref(lit);
+    string rhs = lit.value;
+    if (rhs == "true") rhs = "1";
+    if (rhs == "false") rhs = "0";
+    bool pol = (lit.value == "true" || lit.value == "1");
+    out << "{\"atom\":{";
+    out << "\"ref\":\"" << escape_json(ref) << "\",";
+    out << "\"rhs\":\"" << escape_json(rhs) << "\"},";
+    out << "\"polarity\":" << (pol ? "true" : "false") << "}";
+  }
+  out << "]}},";
+
+  if (!frame_snapshot_json.empty()) {
+    out << "\"frame_snapshot\":" << frame_snapshot_json << ",";
+  } else {
+    out << "\"frame_snapshot\":{\"frame_idx\":" << ctx.frame_idx
+        << ",\"clauses\":[]},";
+  }
+
+  out << "\"feedback\":[";
+  for (size_t i = 0; i < feedback.size(); ++i) {
+    if (i > 0) out << ",";
+    out << "{\"reason\":\"" << escape_json(feedback[i].reason) << "\",";
+    out << "\"rejected_json\":\"" << escape_json(feedback[i].rejected_json)
+        << "\",";
+    out << "\"witness\":{";
+    out << "\"ref\":\"" << escape_json(feedback[i].witness_ref) << "\",";
+    out << "\"next_value\":\"" << escape_json(feedback[i].witness_next_value)
+        << "\"}}";
+  }
+  out << "]}";
+}
+
+void LLMGeneralizer::write_request_for_cti(const CTIContext & ctx,
+                                           const string & frame_snapshot_json)
+{
+  size_t attempt = feedback_attempt(ctx.cti_id);
+  if (attempt > opts_.llm_max_attempts_) return;
+
+  string req_id = ctx.cti_id + "#" + std::to_string(attempt);
+  if (sent_request_ids_.count(req_id)) return;
+  sent_request_ids_.insert(req_id);
+
+  if (!attempt_by_cti_.count(ctx.cti_id)) {
+    attempt_by_cti_[ctx.cti_id] = 1;
+  }
+
+  ensure_dir_for_file(request_path_);
   ofstream fout(request_path_, ios::app);
   if (!fout.is_open()) {
     logger.log(0, "LLMGeneralizer: cannot open request file {}", request_path_);
     return;
   }
 
-  ostringstream json;
-  json << "{";
-  json << "\"frame_idx\":" << frame_idx << ",";
-  json << "\"batch_size\":" << ctis.size() << ",";
-  json << "\"model\":\""
-       << escape_json(opts_.llm_model_.empty() ? "deepseek-v4-pro"
-                                               : opts_.llm_model_)
-       << "\",";
-  json << "\"candidate_language\":\""
-       << (opts_.llm_candidate_language_ == LLMCandidateLanguage::CUBE_SUBSET
-               ? "cube-subset"
-               : (opts_.llm_candidate_language_ == LLMCandidateLanguage::QF_SMT
-                      ? "qf-smt"
-                      : "predicate-relation"))
-       << "\",";
-  json << "\"cti_contexts\":[";
-  for (size_t j = 0; j < ctis.size(); ++j) {
-    if (j > 0) json << ",";
-    const auto & ctx = ctis[j].ctx;
-    json << "{";
-    json << "\"property\":\""
-         << escape_json(ctx.property_name.size() > 200
-                            ? ctx.property_name.substr(0, 197) + "..."
-                            : ctx.property_name)
-         << "\",";
-    json << "\"literals\":[";
-    for (size_t k = 0; k < ctx.literals.size(); ++k) {
-      if (k > 0) json << ",";
-      json << "{\"varname\":\"" << escape_json(ctx.literals[k].varname)
-           << "\",";
-      json << "\"value\":\"" << escape_json(ctx.literals[k].value) << "\"}";
-    }
-    json << "]}";
-  }
-  json << "]";
-  json << "}";
-  json << "\n";
+  vector<LLMFeedbackEntry> fb;
+  auto fb_it = feedback_by_cti_.find(ctx.cti_id);
+  if (fb_it != feedback_by_cti_.end()) fb = fb_it->second;
 
-  fout << json.str();
-  fout.close();
+  serialize_frame_request(fout, ctx, attempt, fb, frame_snapshot_json);
+  fout << "\n";
+  register_outstanding_samples(ctx.cti_id, attempt);
+  stats_.num_requests++;
+}
+
+void LLMGeneralizer::flush_frame_batch(size_t frame_idx,
+                                       const string & frame_snapshot_json)
+{
+  auto it = frame_cti_buffer_.find(frame_idx);
+  if (it == frame_cti_buffer_.end() || it->second.empty()) return;
+
+  for (const auto & buffered : it->second) {
+    write_request_for_cti(buffered.ctx, frame_snapshot_json);
+  }
 
   frame_cti_buffer_.erase(it);
+  logger.log(1, "LLMGeneralizer: flushed frame {} CTI requests", frame_idx);
+}
 
-  logger.log(1,
-             "LLMGeneralizer: flushed frame {} batch ({} CTIs)",
-             frame_idx,
-             ctis.size());
+void LLMGeneralizer::take_retry_queue(vector<string> & out)
+{
+  out.clear();
+  out.swap(retry_queue_);
+}
+
+void LLMGeneralizer::write_retry_request(const string & cti_id,
+                                         const string & frame_snapshot_json)
+{
+  if (is_cti_accepted(cti_id)) return;
+  auto store_it = cti_store_.find(cti_id);
+  if (store_it == cti_store_.end()) return;
+  write_request_for_cti(store_it->second.ctx, frame_snapshot_json);
+}
+
+void LLMGeneralizer::flush_retries(const string & frame_snapshot_json)
+{
+  if (retry_queue_.empty()) return;
+
+  vector<string> pending;
+  pending.swap(retry_queue_);
+
+  for (const string & cti_id : pending) {
+    if (is_cti_accepted(cti_id)) continue;
+    auto store_it = cti_store_.find(cti_id);
+    if (store_it == cti_store_.end()) continue;
+    write_request_for_cti(store_it->second.ctx, frame_snapshot_json);
+  }
+}
+
+vector<IC3FrameResponse> LLMGeneralizer::poll_responses()
+{
+  vector<IC3FrameResponse> responses;
+  ifstream fin(response_path_);
+  if (!fin.is_open()) return responses;
+
+  fin.seekg(last_response_pos_);
+  string line;
+  while (getline(fin, line)) {
+    if (line.empty() || line[0] != '{') continue;
+    IC3FrameResponse resp = parse_ic3_frame_response_line(line);
+    if (!resp.valid) {
+      stats_.num_schema_fail++;
+      logger.log(1, "LLM response schema fail: {}", resp.error_msg);
+      continue;
+    }
+    stats_.num_candidates++;
+    responses.push_back(resp);
+  }
+  last_response_pos_ = fin.tellg();
+  return responses;
+}
+
+bool LLMGeneralizer::lookup_cti_meta(const string & cti_id,
+                                     size_t & out_frame_idx,
+                                     TermVec & out_cube) const
+{
+  auto it = cti_store_.find(cti_id);
+  if (it == cti_store_.end()) return false;
+  out_frame_idx = it->second.ctx.frame_idx;
+  out_cube = it->second.cube;
+  return true;
+}
+
+void LLMGeneralizer::log_stats() const
+{
+  logger.log(0, "LLM Generalization Statistics:");
+  logger.log(0, "  Requests sent:       {}", stats_.num_requests);
+  logger.log(0, "  Candidates received: {}", stats_.num_candidates);
+  logger.log(0, "  Accepted:            {}", stats_.num_accepted);
+  logger.log(0, "  Schema failures:     {}", stats_.num_schema_fail);
+  logger.log(0, "  Parse failures:      {}", stats_.num_parse_fail);
+  logger.log(0, "  Vocab failures:      {}", stats_.num_vocab_fail);
+  logger.log(0, "  Induction failures:  {}", stats_.num_induction_fail);
+  logger.log(0, "  Budget skips:        {}", stats_.num_budget_skip);
+  logger.log(0, "  Predicates added:    {}", stats_.num_predicates_added);
+  cerr << "LLM_STATS accepted=" << stats_.num_accepted << " rejected="
+       << (stats_.num_schema_fail + stats_.num_parse_fail + stats_.num_vocab_fail
+           + stats_.num_induction_fail)
+       << " errors=0 requests=" << stats_.num_requests
+       << " candidates=" << stats_.num_candidates << " schema_fail="
+       << stats_.num_schema_fail << " parse_fail=" << stats_.num_parse_fail
+       << " vocab_fail=" << stats_.num_vocab_fail << " induction_fail="
+       << stats_.num_induction_fail << " budget_skip=" << stats_.num_budget_skip
+       << " predicates_added=" << stats_.num_predicates_added << endl;
 }
 
 }  // namespace pono

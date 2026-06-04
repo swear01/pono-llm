@@ -1,13 +1,6 @@
 /*********************                                                  */
 /*! \file llm_generalizer.h
-** \verbatim
-** \brief LLM-guided lemma generalization for IC3/IC3-IA
-**
-** Provides JSONL-based communication with a Python sidecar that calls
-** an LLM (e.g. DeepSeek V4 Pro) to propose generalized lemmas from CTI
-** contexts. All candidate lemmas must pass SMT-based validation before
-** being inserted into frames.
-** \endverbatim
+** \brief IC3 Frame v1 online LLM integration (JSONL sidecar protocol)
 **/
 #pragma once
 
@@ -19,6 +12,7 @@
 #include <unordered_set>
 #include <vector>
 
+#include "engines/ic3_frame_ast.h"
 #include "options/options.h"
 #include "smt-switch/smt.h"
 
@@ -41,76 +35,50 @@ struct CTIContext
   size_t frame_idx;
   std::vector<CTILiteral> literals;
   std::string property_name;
-  std::vector<CTILiteral> frame_lemmas;  // optional: nearby frame lemmas
 };
 
-struct LLMCandidate
+struct SymbolRegistryEntry
 {
-  enum Type
-  {
-    CUBE_SUBSET = 0,
-    QF_SMT,
-    PREDICATE_RELATION
-  };
-
-  Type type;
-  size_t frame_hint;
-  std::vector<std::string> keep_literals;
-  std::vector<std::string> drop_literals;
-  std::string formula;
-  std::vector<std::string> used_symbols;
-  std::string rationale;
-
-  // parsed SMT term (if applicable)
-  smt::Term parsed_term;
+  std::string kind;
+  size_t width = 0;
+  size_t btor2_line = 0;
+  std::string verilog;
 };
 
-struct LLMIdCandidate
+struct LLMFeedbackEntry
 {
-  std::string cti_id;
-  std::vector<size_t> keep_ids;
-  std::vector<size_t> drop_ids;
-  std::vector<size_t> add_back_ids;
-  std::string mode;
-  std::string confidence;
-  std::string short_reason;
-};
-
-struct LLMWitnessDiff
-{
-  size_t literal_id;
-  std::string cti_literal;
-  std::string witness_value;
-  std::string effect;
+  std::string reason;
+  std::string rejected_json;
+  std::string witness_ref;
+  std::string witness_next_value;
 };
 
 struct LLMValidationResult
 {
-  bool schema_ok;
-  bool parse_ok;
-  bool vocab_ok;
-  bool init_ok;
-  bool induction_ok;
-  bool subsumption_ok;
-  bool budget_ok;
-  size_t legal_frame;
+  bool schema_ok = false;
+  bool parse_ok = false;
+  bool vocab_ok = false;
+  bool init_ok = false;
+  bool induction_ok = false;
+  bool budget_ok = true;
+  size_t legal_frame = 0;
   std::string error_msg;
 };
 
 struct GeneralizationStats
 {
-  size_t num_requests;
-  size_t num_candidates;
-  size_t num_accepted;
-  size_t num_schema_fail;
-  size_t num_parse_fail;
-  size_t num_vocab_fail;
-  size_t num_induction_fail;
-  size_t num_subsumption_fail;
-  size_t num_budget_skip;
-  size_t total_tokens;
-  size_t accepted_budget;
-  double total_llm_time_ms;
+  size_t num_requests = 0;
+  size_t num_candidates = 0;
+  size_t num_accepted = 0;
+  size_t num_schema_fail = 0;
+  size_t num_parse_fail = 0;
+  size_t num_vocab_fail = 0;
+  size_t num_induction_fail = 0;
+  size_t num_budget_skip = 0;
+  size_t num_predicates_added = 0;
+  size_t total_tokens = 0;
+  size_t accepted_budget = 0;
+  double total_llm_time_ms = 0.0;
 
   void reset()
   {
@@ -121,8 +89,8 @@ struct GeneralizationStats
     num_parse_fail = 0;
     num_vocab_fail = 0;
     num_induction_fail = 0;
-    num_subsumption_fail = 0;
     num_budget_skip = 0;
+    num_predicates_added = 0;
     total_tokens = 0;
     accepted_budget = 0;
     total_llm_time_ms = 0.0;
@@ -134,73 +102,68 @@ class LLMGeneralizer
  public:
   LLMGeneralizer(PonoOptions opts, const smt::SmtSolver & solver);
 
-  void write_cti_context(const CTIContext & ctx);
-
-  std::vector<LLMCandidate> poll_candidates();
-
   bool enabled() const;
   bool is_async_cti() const;
-  bool is_seed_only() const;
-  bool is_offline_dump() const;
-  bool is_offline_check() const;
 
-  std::string replay_dir() const { return replay_dir_; }
   std::string make_cti_id(size_t frame_idx,
                           const std::vector<CTILiteral> & literals) const;
 
-  void write_static_context(const std::string & benchmark_name,
-                            const std::string & bad_expr,
-                            const std::vector<CTILiteral> & states,
-                            const std::vector<CTILiteral> & inputs,
-                            const std::vector<std::string> & state_updates);
-  void write_offline_cti_context(const CTIContext & ctx);
+  void set_symbol_registry(
+      const std::unordered_map<std::string, SymbolRegistryEntry> & registry);
 
-  void load_offline_records();
-  bool get_proposal(const std::string & cti_id, LLMIdCandidate & out) const;
-  bool get_repair(const std::string & cti_id, LLMIdCandidate & out) const;
+  void write_benchmark_context(const std::string & benchmark_name,
+                               const std::string & bad_expr);
 
-  void write_replay_result(const std::string & cti_id,
-                           const std::string & status,
-                           size_t frame_idx,
-                           size_t original_size,
-                           size_t candidate_size,
-                           const std::string & reason);
-  void write_repair_request(const CTIContext & ctx,
-                            const LLMIdCandidate & failed,
-                            const std::vector<LLMWitnessDiff> & diffs);
+  void buffer_cti_context(size_t frame_idx,
+                          const CTIContext & ctx,
+                          const smt::TermVec & cube_children);
+  void flush_frame_batch(size_t frame_idx,
+                         const std::string & frame_snapshot_json);
+  void flush_retries(const std::string & frame_snapshot_json);
+  void take_retry_queue(std::vector<std::string> & out);
+  void write_retry_request(const std::string & cti_id,
+                           const std::string & frame_snapshot_json);
+  void register_outstanding_samples(const std::string & cti_id, size_t attempt);
+  void note_response_processed(const std::string & cti_id, size_t attempt);
+  bool all_parallel_samples_received(const std::string & cti_id,
+                                     size_t attempt) const;
+  bool has_buffered_cti(size_t frame_idx) const;
+
+  std::vector<IC3FrameResponse> poll_responses();
+
+  bool lookup_cti_meta(const std::string & cti_id,
+                       size_t & out_frame_idx,
+                       smt::TermVec & out_cube) const;
+
+  void add_feedback(const std::string & cti_id,
+                    const IC3FrameResponse & rejected,
+                    const std::string & reason,
+                    const std::string & witness_ref = "",
+                    const std::string & witness_next = "");
+
+  void finish_attempt(const std::string & cti_id, size_t frame_idx);
+
+  void mark_accepted(const std::string & cti_id);
+  bool is_cti_accepted(const std::string & cti_id) const;
+
+  size_t feedback_attempt(const std::string & cti_id) const;
 
   const GeneralizationStats & stats() const { return stats_; }
   void log_stats() const;
 
-  // Store CTI cube + simplified names per frame for candidate lookup
-  void store_cti_cube_for_frame(size_t frame_idx,
-                                const smt::TermVec & cube_children,
-                                const std::vector<std::string> & names);
-  const smt::TermVec & last_cti_cube() const { return last_cti_cube_; }
-
-  // Lookup a CTI cube by frame index (returns first, removes from store)
-  smt::TermVec find_cti_cube_by_frame(
-      size_t frame_idx,
-      std::vector<std::string> * out_names = nullptr);
-
-  // Retry pending candidates that previously couldn't be matched
-  void retry_pending_candidates();
-
-  // Pending candidate queue for unmatched LLM candidates (Bug fix: retry)
-  void store_pending_candidate(const LLMCandidate & cand);
-  std::vector<LLMCandidate> drain_pending_candidates();
-  bool has_pending_candidates() const;
-
-  // Multi-CTI batching: buffer CTIs per frame, flush as one LLM request
-  void buffer_cti_context(size_t frame_idx, const CTIContext & ctx);
-  void flush_frame_batch(size_t frame_idx);
-  bool has_buffered_cti(size_t frame_idx) const;
-
   GeneralizationStats stats_;
 
  private:
-  void write_json(const CTIContext & ctx);
   std::string escape_json(const std::string & s) const;
+  std::string literal_ref(const CTILiteral & lit) const;
+  void serialize_frame_request(std::ostream & out,
+                               const CTIContext & ctx,
+                               size_t attempt,
+                               const std::vector<LLMFeedbackEntry> & feedback,
+                               const std::string & frame_snapshot_json);
+
+  void write_request_for_cti(const CTIContext & ctx,
+                             const std::string & frame_snapshot_json);
 
   PonoOptions opts_;
   smt::SmtSolver solver_;
@@ -208,32 +171,36 @@ class LLMGeneralizer
   std::string request_path_;
   std::string response_path_;
   std::string log_path_;
-  std::string replay_dir_;
-  std::streampos last_response_pos_;
-  bool offline_records_loaded_;
+  std::string benchmark_context_path_;
+  std::streampos last_response_pos_ = 0;
 
-  // Stored CTI cube children for candidate pairing
-  smt::TermVec last_cti_cube_;
+  bool benchmark_context_written_ = false;
+  std::string benchmark_name_;
+  std::string bad_expr_;
 
-  // Multi-CTI batching: buffer CTIs per frame before sending to LLM
-  struct BufferedCTI {
+  std::unordered_map<std::string, SymbolRegistryEntry> symbol_registry_;
+
+  struct BufferedCTI
+  {
     CTIContext ctx;
     smt::TermVec cube_children;
   };
   std::map<size_t, std::vector<BufferedCTI>> frame_cti_buffer_;
 
-  // Per-frame CTI cube storage for candidate matching (Bug fix: no eviction)
-  std::map<size_t, std::vector<smt::TermVec>> frame_stored_cubes_;
-  std::map<size_t, std::vector<std::vector<std::string>>> frame_stored_names_;
+  struct StoredCTI
+  {
+    CTIContext ctx;
+    smt::TermVec cube;
+  };
+  std::unordered_map<std::string, StoredCTI> cti_store_;
 
-  // Pending candidates that couldn't be matched yet (Bug fix: retry later)
-  std::vector<LLMCandidate> pending_llm_candidates_;
+  std::unordered_map<std::string, std::vector<LLMFeedbackEntry>> feedback_by_cti_;
+  std::unordered_map<std::string, size_t> attempt_by_cti_;
 
-  // Dedup set to avoid sending duplicate CTI contexts
-  std::unordered_set<std::string> sent_ctx_hashes_;
-
-  std::unordered_map<std::string, LLMIdCandidate> proposals_;
-  std::unordered_map<std::string, LLMIdCandidate> repairs_;
+  std::unordered_set<std::string> sent_request_ids_;
+  std::unordered_set<std::string> accepted_cti_ids_;
+  std::vector<std::string> retry_queue_;
+  std::unordered_map<std::string, size_t> outstanding_samples_;
 };
 
 }  // namespace pono

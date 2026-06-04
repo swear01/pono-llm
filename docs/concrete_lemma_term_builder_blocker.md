@@ -1,44 +1,39 @@
+> **HISTORICAL / RESEARCH RECORD (2026-06-03)** — Not the active runtime integration path. Legacy code **will be deleted** with IC3 Frame v1. See [`ic3_frame_v1_integration.md`](ic3_frame_v1_integration.md) and [`DOC_INDEX.md`](DOC_INDEX.md).
+
 # Concrete Lemma Term Builder Dry-Run
 
-## Status: Blocked
+> **SUPERSEDED (2026-06-03).** Term construction is not the blocker; injection is
+> implemented via `reset_solver()` concrete assert. See
+> [`docs/llm_injection_capability_audit.md`](llm_injection_capability_audit.md).
 
-Term construction is NOT the blocker. The concrete solver has all state
-variables via `conc_ts_.lookup("state469")`. The term building code is
-well-understood (see audit). The blocker is at the injection layer:
-bitvector→Boolean predicate mapping for `constrain_frame()`.
+## Status: Blocker Resolved (Different Path)
+
+Term construction was never the hard problem. The original blocker was choosing an
+injection interface (`constrain_frame()` vs raw assert). The adopted path:
+
+- Build concrete BV terms from `conc_ts_.lookup()`
+- `assert_formula()` in `IC3IA::reset_solver()`
+- Opt-in via `PONO_LLM_ASSERT_LIFTED_LEMMAS`
 
 ## What Works
 
-Building the concrete SMT term for a lifted lemma is straightforward:
-
 ```cpp
-// Pseudocode — compiles with existing APIs
-Term s = conc_ts_.lookup(varname);       // get state variable term
-Sort bvs = s->get_sort();                // get bitvector sort
-Term bv0 = solver_->make_term(0, bvs);    // #b0 of correct width
-Term eq = solver_->make_term(Equal, s, bv0);  // (= stateN #b0)
-Term impl = solver_->make_term(Implies, conj, conseq); // full lemma
+Term s = conc_ts_.lookup(varname);
+Sort bvs = s->get_sort();
+Term bv0 = solver_->make_term(0, bvs);
+Term eq = solver_->make_term(Equal, s, bv0);
+Term impl = solver_->make_term(Implies, conj, conseq);
+solver_->assert_formula(impl);
 ```
 
-All 26 lifted lemmas use variables that exist in `conc_ts_` since
-BTOR2 node IDs match state variable names 1:1.
+All 25 injectable lifted lemmas use variables present in `conc_ts_`.
 
-## What's Missing
+## Remaining Gap (Not Term Building)
 
-The step from concrete term → IC3Formula → constrain_frame():
+The **predicate abstraction path** (`constrain_frame()` / `add_predicate()`) remains unimplemented. Current injection bypasses IC3IA labels and asserts concrete formulas directly.
 
-1. `constrain_frame()` expects `IC3Formula` with children from `predlbls_`
-   (Boolean predicate labels), not bitvector equality terms.
-2. To convert `(= state469 #b0)` → predicate label, IC3IA must either:
-   a. Already have this as a predicate (check `predset_`), or
-   b. Create a new predicate via `add_predicate()`
-3. `add_predicate()` asserts `Equal(label, predicate_term)` on the solver,
-   creating the Boolean abstraction.
+## Decision (Updated)
 
-## Decision
+**concrete_lemma_term_builder_resolved_via_reset_solver**
 
-**concrete_lemma_term_builder_blocked**
-
-The term building itself works. The injection path requires predicate
-abstraction which is already documented. Use offline replay (WP5) for
-impact estimation without C++ changes.
+Use offline replay for frame-overlap estimates; use live injection for runtime experiments with claim boundaries in [`reset_solver_injection_claim_boundary.md`](reset_solver_injection_claim_boundary.md).

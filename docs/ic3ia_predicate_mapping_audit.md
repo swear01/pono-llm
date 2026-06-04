@@ -1,3 +1,6 @@
+> **ACTIVE for v1 (2026-06-03)** — `stateNN` / predicate mapping for `symbol_registry`.  
+> Spec: [`ic3_frame_v1_integration.md`](ic3_frame_v1_integration.md)
+
 # IC3IA Predicate Mapping Audit
 
 ## Summary

@@ -1,5 +1,9 @@
 # 研究計畫書：基於 IC3-IA 與非同步 LLM 輔助泛化之硬體形式化驗證框架
 
+> **2026-06-03 對齊 IC3 Frame v1：** 線上 CTI → structured JSON → `constrain_frame` / `add_predicate`。  
+> Legacy `cube_subset` / Path 1 injection **將直接刪除**。現行規格：[`ic3_frame_v1_integration.md`](ic3_frame_v1_integration.md)  
+> **以下正文為 2026-05-14 原始研究計畫正文（historical），cube-subset / qf-smt 描述已 obsolete。**
+
 **Asynchronous LLM-Guided Generalization for Word-Level IC3-IA in Hardware Model Checking**
 
 **版本日期：2026-05-14**  

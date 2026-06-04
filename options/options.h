@@ -114,34 +114,13 @@ const std::unordered_map<std::string, JusticeTranslator> str2livenessalg({
 enum LLMGenMode
 {
   LLM_GEN_NONE = 0,
-  LLM_GEN_SEED_ONLY,
-  LLM_GEN_ASYNC_CTI,
-  LLM_GEN_OFFLINE_DUMP,
-  LLM_GEN_OFFLINE_CHECK
+  LLM_GEN_ASYNC_CTI
 };
 
 const std::unordered_map<std::string, LLMGenMode> str2llmgenmode({
     { "none", LLM_GEN_NONE },
-    { "seed-only", LLM_GEN_SEED_ONLY },
     { "async-cti", LLM_GEN_ASYNC_CTI },
-    { "offline-dump", LLM_GEN_OFFLINE_DUMP },
-    { "offline-check", LLM_GEN_OFFLINE_CHECK },
 });
-
-// LLM candidate language option
-enum class LLMCandidateLanguage
-{
-  CUBE_SUBSET = 0,
-  QF_SMT,
-  PREDICATE_RELATION
-};
-
-const std::unordered_map<std::string, LLMCandidateLanguage>
-    str2llmcandidatelanguage(
-        { { "cube-subset", LLMCandidateLanguage::CUBE_SUBSET },
-          { "qf-smt", LLMCandidateLanguage::QF_SMT },
-          { "predicate-relation",
-            LLMCandidateLanguage::PREDICATE_RELATION } });
 
 /*************************************** Options class
  * ************************************************/
@@ -240,13 +219,14 @@ class PonoOptions
         klive_check_lasso_in_cex_(default_klive_check_lasso_in_cex_),
         klive_lockstep_bmc_(default_klive_lockstep_bmc_),
         llm_gen_mode_(default_llm_gen_mode_),
-        llm_candidate_language_(default_llm_candidate_language_),
         llm_accepted_budget_(default_llm_accepted_budget_),
+        llm_parallel_samples_(default_llm_parallel_samples_),
+        llm_max_attempts_(default_llm_max_attempts_),
+        llm_reasoning_effort_(default_llm_reasoning_effort_),
         llm_model_(default_llm_model_),
         llm_log_path_(default_llm_log_path_),
         llm_request_path_(default_llm_request_path_),
-        llm_response_path_(default_llm_response_path_),
-        llm_replay_dir_(default_llm_replay_dir_)
+        llm_response_path_(default_llm_response_path_)
   {
   }
 
@@ -427,15 +407,16 @@ class PonoOptions
   bool klive_check_lasso_in_cex_;
   bool klive_lockstep_bmc_;
 
-  // LLM generalization options
+  // LLM generalization options (IC3 Frame v1)
   LLMGenMode llm_gen_mode_;
-  LLMCandidateLanguage llm_candidate_language_;
-  size_t llm_accepted_budget_;  // max accepted LLM lemmas per benchmark
+  size_t llm_accepted_budget_;
+  size_t llm_parallel_samples_;
+  size_t llm_max_attempts_;
+  std::string llm_reasoning_effort_;
   std::string llm_model_;
   std::string llm_log_path_;
-  std::string llm_request_path_;   // JSONL request output path
-  std::string llm_response_path_;  // JSONL response poll path
-  std::string llm_replay_dir_;     // directory for offline replay artifacts
+  std::string llm_request_path_;
+  std::string llm_response_path_;
 
  private:
   // Default options
@@ -529,14 +510,14 @@ class PonoOptions
   static const bool default_klive_check_lasso_in_cex_ = true;
   static const bool default_klive_lockstep_bmc_ = true;
   static const LLMGenMode default_llm_gen_mode_ = LLM_GEN_NONE;
-  static const LLMCandidateLanguage default_llm_candidate_language_ =
-      LLMCandidateLanguage::CUBE_SUBSET;
   static const size_t default_llm_accepted_budget_ = 50;
+  static const size_t default_llm_parallel_samples_ = 3;
+  static const size_t default_llm_max_attempts_ = 2;
+  inline static const std::string default_llm_reasoning_effort_ = "none";
   inline static const std::string default_llm_model_;
   inline static const std::string default_llm_log_path_;
   inline static const std::string default_llm_request_path_;
   inline static const std::string default_llm_response_path_;
-  inline static const std::string default_llm_replay_dir_;
 };
 
 // Useful functions for printing etc...

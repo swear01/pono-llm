@@ -1,16 +1,11 @@
 #!/usr/bin/env python3
 """
-End-to-end test for LLM sidecar with a real API call.
+End-to-end test for IC3 Frame v1 LLM sidecar.
 
 Usage:
-    # Dry-run (no API key needed)
     python3 test_sidecar.py
-
-    # With real LLM API call
-    DEEPSEEK_API_KEY=sk-or-xxx python3 test_sidecar.py --with-llm
-
-    # Test just the client directly
-    DEEPSEEK_API_KEY=sk-or-xxx python3 test_sidecar.py --client-only
+    python3 test_sidecar.py --with-llm   # requires DEEPSEEK_API_KEY
+    python3 test_sidecar.py --client-only
 """
 
 import json
@@ -24,48 +19,31 @@ sys.path.insert(0, str(Path(__file__).parent))
 
 
 def test_client_direct():
-    """Test DeepSeekClient directly with a real API call."""
     print("=== Test: DeepSeekClient direct API call ===\n")
 
     from llm_worker.deepseek_client import DeepSeekClient, get_api_key
 
     api_key = get_api_key()
     if not api_key:
-        print("  SKIP: No API key set (DEEPSEEK_API_KEY or OPENROUTER_API_KEY)")
+        print("  SKIP: No API key set")
         return
 
     client = DeepSeekClient(api_key)
-    print(f"  Provider: {client.provider}")
-    print(f"  Model: {client.model_name}")
-    print(f"  Base URL: {client.base_url}")
-
-    prompt = """You are testing an API connection. Reply with EXACTLY this JSON:
-{"status": "ok", "message": "hello from LLM"}
-Do not include markdown fencing, just the raw JSON."""
-
-    try:
-        response, tokens, latency_ms = client.call(prompt)
-        print(f"\n  Tokens: {tokens}")
-        print(f"  Latency: {latency_ms:.0f}ms")
-        print(f"  Raw response: {response}")
-
-        data = json.loads(response)
-        assert data.get("status") == "ok"
-        print("  Status: ok")
-        print("  PASS")
-    except Exception as e:
-        print(f"  FAIL: {e}")
-        raise
+    prompt = '{"status": "ok", "message": "hello from LLM"}'
+    response, tokens, latency_ms = client.call(
+        f'Reply with EXACTLY this JSON and nothing else:\n{prompt}'
+    )
+    data = json.loads(response)
+    assert data.get("status") == "ok"
+    print(f"  PASS ({tokens} tokens, {latency_ms:.0f}ms)")
 
 
 def test_sidecar_with_llm():
-    """Test the full sidecar pipeline with a real LLM call."""
-    print("\n=== Test: Sidecar pipeline with real LLM ===\n")
+    print("\n=== Test: Sidecar IC3 Frame v1 pipeline ===\n")
 
     from llm_worker.deepseek_client import get_api_key
 
-    api_key = get_api_key()
-    if not api_key:
+    if not get_api_key():
         print("  SKIP: No API key set")
         return
 
@@ -73,28 +51,54 @@ def test_sidecar_with_llm():
     req_path = os.path.join(tmpdir, "requests.jsonl")
     resp_path = os.path.join(tmpdir, "responses.jsonl")
     log_path = os.path.join(tmpdir, "log.jsonl")
+    ctx_path = os.path.join(tmpdir, "benchmark_context.json")
 
-    # Write a test CTI request
-    ctx = {
+    with open(ctx_path, "w") as f:
+        json.dump({
+            "schema_version": 1,
+            "type": "benchmark_context",
+            "benchmark": "test",
+            "bad_property": "b0",
+            "symbol_registry": {
+                "state1": {"kind": "state", "width": 1, "btor2_line": 1, "verilog": "valid"}
+            },
+        }, f)
+
+    request = {
+        "schema_version": 1,
+        "type": "ic3_frame_request",
         "frame_idx": 3,
-        "property": "b0",
-        "literals": [
-            {"varname": "valid", "value": "true"},
-            {"varname": "ready", "value": "false"},
-            {"varname": "state", "value": "BUSY"},
-            {"varname": "counter", "value": "3"},
-            {"varname": "fifo_empty", "value": "false"},
-        ],
-        "candidate_language": "cube-subset",
+        "cti_id": "cti_f3_state1=true;",
+        "attempt": 1,
+        "max_attempts": 2,
+        "parallel_samples": 1,
+        "reasoning_effort": "none",
+        "benchmark_context_path": ctx_path,
+        "symbol_registry": {
+            "state1": {"kind": "state", "width": 1, "btor2_line": 1, "verilog": "valid"}
+        },
+        "cti": {
+            "cube": {
+                "form": "and",
+                "literals": [
+                    {
+                        "id": 0,
+                        "form": "literal",
+                        "atom": {"ref": "state1", "op": "eq", "rhs": "1"},
+                        "polarity": True,
+                    }
+                ],
+            }
+        },
+        "frame_snapshot": {"frame_idx": 3, "clauses": []},
+        "feedback": [],
     }
 
     from llm_worker.jsonl_protocol import write_request_test
-    write_request_test(req_path, ctx)
+    write_request_test(req_path, request)
 
     sidecar_path = Path(__file__).parent / "llm_worker" / "sidecar.py"
     prompt_dir = Path(__file__).parent / "llm_worker" / "prompts"
-
-    env = os.environ.copy()
 
     result = subprocess.run(
         [
@@ -104,74 +108,42 @@ def test_sidecar_with_llm():
             "--log-path", log_path,
             "--poll-interval", "0.5",
             "--max-requests", "1",
-            "--candidate-language", "cube-subset",
             "--prompt-dir", str(prompt_dir),
         ],
-        capture_output=True, text=True, timeout=60,
-        env=env,
+        capture_output=True, text=True, timeout=120,
+        env=os.environ.copy(),
     )
 
-    print(f"  stdout: {result.stdout[-500:]}")
+    print(result.stdout[-500:] if result.stdout else "")
     if result.stderr:
-        print(f"  stderr: {result.stderr[-500:]}")
+        print(result.stderr[-500:])
 
-    # Check response file
-    if os.path.exists(resp_path):
-        with open(resp_path) as f:
-            resp_line = f.readline().strip()
-            if resp_line:
-                candidate = json.loads(resp_line)
-                print(f"\n  Response type: {candidate.get('type')}")
-                print(f"  Keep count: {len(candidate.get('keep_literals', []))}")
-                print(f"  Drop count: {len(candidate.get('drop_literals', []))}")
-                print(f"  Keep: {candidate.get('keep_literals')}")
-                print(f"  Drop: {candidate.get('drop_literals')}")
-                print(f"  Rationale: {candidate.get('rationale', '')[:200]}")
-                print("  PASS (response written)")
-            else:
-                print("  FAIL: No response line")
-    else:
-        print("  FAIL: No response file created")
-
-    # Check log file
-    if os.path.exists(log_path):
-        with open(log_path) as f:
-            log_line = f.readline().strip()
-            if log_line:
-                log_entry = json.loads(log_line)
-                print(f"\n  Log tokens: {log_entry.get('token_count')}")
-                print(f"  Log latency: {log_entry.get('latency_ms', 0):.0f}ms")
+    assert os.path.exists(resp_path), "No response file"
+    with open(resp_path) as f:
+        line = f.readline().strip()
+        assert line, "Empty response"
+        resp = json.loads(line)
+        assert resp.get("type") == "ic3_frame_response"
+        assert resp.get("source_cti_id") == request["cti_id"]
+        print(f"  Response disjuncts: {resp.get('block_disjuncts')}")
+        print("  PASS")
 
 
 def main():
     import argparse
     parser = argparse.ArgumentParser()
-    parser.add_argument("--with-llm", action="store_true",
-                        help="Run tests with real LLM API calls")
-    parser.add_argument("--client-only", action="store_true",
-                        help="Only test the DeepSeekClient directly")
+    parser.add_argument("--with-llm", action="store_true")
+    parser.add_argument("--client-only", action="store_true")
     args = parser.parse_args()
-
-    print("Pono LLM Sidecar -- API Integration Tests")
-    print("=" * 50)
 
     if args.client_only:
         test_client_direct()
         return 0
-
     if args.with_llm:
         test_client_direct()
         test_sidecar_with_llm()
     else:
-        print("Dry-run: set DEEPSEEK_API_KEY and use --with-llm for API tests")
-        from llm_worker.deepseek_client import get_api_key
-        api_key = get_api_key()
-        if api_key:
-            print("  (API key found, try --with-llm)")
-        else:
-            print("  (no API key found, set DEEPSEEK_API_KEY or OPENROUTER_API_KEY)")
-
-    print("\nDone.")
+        print("Dry-run: use --with-llm for API tests")
     return 0
 
 

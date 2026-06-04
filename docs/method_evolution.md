@@ -1,5 +1,7 @@
 # Method Evolution
 
+> **2026-06-03:** Methods 1–8 are **historical offline research**. Runtime integration is **IC3 Frame v1** — online, frame-native, legacy code **to be deleted**. See [`ic3_frame_v1_integration.md`](ic3_frame_v1_integration.md).
+
 ## 1. LLM Direct Generation
 
 **What**: Batch prompt with CTI clusters → LLM proposes semantic lemma candidates.

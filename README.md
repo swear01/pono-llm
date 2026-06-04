@@ -132,6 +132,40 @@ pip install './build/python[test]'
 pytest ./tests
 ```
 
+## LLM-assisted IC3 integration (pono-llm fork)
+
+This fork adds online LLM-guided frame generalization for IC3/IC3IA.
+
+**Canonical spec:** [`docs/ic3_frame_v1_integration.md`](docs/ic3_frame_v1_integration.md)  
+**Architecture:** [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md)  
+**Doc index:** [`docs/DOC_INDEX.md`](docs/DOC_INDEX.md)
+
+Legacy paths (`cube_subset`, `qf_smt`, `PONO_LLM_ASSERT_LIFTED_LEMMAS`) have been **removed**. See [`docs/ic3_frame_v1_integration.md`](docs/ic3_frame_v1_integration.md).
+
+```bash
+export DEEPSEEK_API_KEY=sk-...   # required for sidecar
+
+pip install -r llm_worker/requirements.txt
+
+# Terminal 1: sidecar
+python3 llm_worker/sidecar.py \
+  --req-path /tmp/pono_llm_requests.jsonl \
+  --resp-path /tmp/pono_llm_responses.jsonl \
+  --log-path /tmp/pono_llm_log.jsonl \
+  --prompt-dir llm_worker/prompts/
+
+# Terminal 2: Pono IC3IA
+build/pono -e ic3ia --llm-gen-mode async-cti \
+  --llm-parallel-samples 3 --llm-reasoning-effort none \
+  --llm-req-path /tmp/pono_llm_requests.jsonl \
+  --llm-resp-path /tmp/pono_llm_responses.jsonl \
+  design.btor2
+
+# Tests
+python3 scripts/run_benchmarks.py --phase test
+# Includes make check, tests/python (if ./configure.sh --python), schema + sidecar tests
+```
+
 ## Documentation
 
 To generate documentation from the C++ source files, install [Doxygen](https://www.doxygen.nl/index.html), configure with `./configure.sh --docs`, then build the `docs` target:

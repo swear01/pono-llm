@@ -1,3 +1,5 @@
+> **HISTORICAL / RESEARCH RECORD (2026-06-03)** — Not the active runtime path. See [`ic3_frame_v1_integration.md`](../ic3_frame_v1_integration.md).
+
 # CTI Simplification + Benchmark Filtering — Implementation Plan
 
 > **For agentic workers:** Use `subagent-driven-development` or `executing-plans` to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.

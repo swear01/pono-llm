@@ -1,82 +1,47 @@
+> **HISTORICAL / RESEARCH RECORD (2026-06-03)** — Not the active runtime integration path. Legacy code **will be deleted** with IC3 Frame v1. See [`ic3_frame_v1_integration.md`](ic3_frame_v1_integration.md) and [`DOC_INDEX.md`](DOC_INDEX.md).
+
 # Concrete Solver Assertion Injection Audit
 
-## Summary
+> **SUPERSEDED (2026-06-03).** The `constrain_frame()` path remains blocked, but
+> **concrete assertion via `IC3IA::reset_solver()` is implemented.** See
+> [`docs/llm_injection_capability_audit.md`](llm_injection_capability_audit.md).
 
-Concrete solver assertion injection for lifted lemmas is **technically feasible**
-but requires the same IC3IA predicate abstraction mapping as predicate injection,
-making it blocked by the same underlying challenge.
+## Summary (Updated)
 
-## Candidate Injection Points
+Concrete solver assertion injection for lifted lemmas is **implemented** as an opt-in
+prototype. The originally recommended `constrain_frame()` + `IC3Formula` path is still
+blocked by predicate abstraction requirements.
 
-| Location | File/function | Can access BTOR2 state vars? | Can assert formula? | Risk |
-|---|---|---|---|---|
-| In `check_until()`, between init and while loop | `ic3base.cpp:178-189` | Yes (`conc_ts_.lookup()`) | Yes (`solver_->assert_formula()`) | Medium — needs `reset_solver` override |
-| In `IC3IA::initialize()` after super::initialize() | `ic3ia.cpp:175` | Yes | Yes | Medium — too early, predicates not yet added |
-| In `constrain_frame()` | `ic3base.cpp:876` | Requires abstraction | Yes (correct way) | **Low** — existing mechanism |
-| Override `reset_solver()` | `ic3ia.cpp:395` | Yes | Yes | Medium — re-assert on every reset |
-| Raw assert after solver is set up | Anywhere | Yes (state vars in conc_ts_) | Yes | **High** — lost on reset_solver |
+## Candidate Injection Points (Historical)
+
+| Location | Status |
+|---|---|
+| `constrain_frame()` | Still blocked — needs Boolean predicate labels |
+| Override `reset_solver()` | **Adopted** — `engines/ic3ia.cpp` |
+| Raw assert without reset override | Unsound — avoided |
 
 ## Required Term Construction
 
-Building `(=> (and (= state469 #b0) (= state471 #b0)) (= state15 #b0))`:
+Building `(=> (and (= state469 #b0) (= state471 #b0)) (= state15 #b0))` works as documented below. This code path is live in production prototype.
 
-```cpp
-Term s469 = conc_ts_.lookup("state469");
-Term s471 = conc_ts_.lookup("state471");
-Term s15  = conc_ts_.lookup("state15");
-Sort bv1 = s469->get_sort();
-Term bv0 = solver_->make_term(0, bv1);
-Term eq469 = solver_->make_term(Equal, s469, bv0);
-Term eq471 = solver_->make_term(Equal, s471, bv0);
-Term eq15  = solver_->make_term(Equal, s15, bv0);
-Term ante = solver_->make_term(And, TermVec{eq469, eq471});
-Term impl = solver_->make_term(Implies, ante, eq15);
-```
+## Original Decision
 
-This produces a valid SMT term in the concrete solver.
+**concrete_injection_blocked_missing_term_mapping** — applied to `constrain_frame()` only.
 
-## Recommended Minimal Injection Point
+## Current Decision
 
-Use `constrain_frame()` with the lifted lemma converted to an `IC3Formula`.
-This is the same mechanism that `process_llm_candidates()` uses and is
-integrated with the solver context management.
+**concrete_injection_via_reset_solver_prototype**
 
-## Decision
+Limited to 2-guard `#b0` triplets from text files. Not full formula integration.
 
-**concrete_injection_blocked_missing_term_mapping**
+## Blockers (Frame Path Only)
 
-The blocker is NOT term construction — the concrete solver has the state
-variables. The blocker is that `constrain_frame()` expects `IC3Formula` with
-children that are Boolean predicate labels (for IC3IA) or state variables
-(for bit-level IC3). The lifted lemmas use BTOR2-level bitvector state
-variables that need to be converted to Boolean predicates for IC3IA frame
-insertion.
-
-Specifically, `constrain_frame()` calls `constrain_frame_label()`:
-```cpp
-solver_->assert_formula(
-    solver_->make_term(Implies, frame_labels_.at(i), constraint.term));
-```
-
-The `constraint.term` must be a formula over Boolean predicate labels. The
-bitvector equality terms `(= state469 #b0)` are NOT Boolean labels — they
-are concrete bitvector equalities. IC3IA would need to abstract them first.
-
-## Blockers
-
-1. Bitvector→Boolean predicate abstraction mapping not available at insertion time.
+1. Bitvector→Boolean predicate abstraction mapping not available at `constrain_frame()` insertion time.
 2. `constrain_frame()` interface requires `IC3Formula` with Boolean children.
-3. Raw `assert_formula()` is unsound without `reset_solver()` override.
-4. `reset_solver()` override requires maintenance burden.
+3. Raw `assert_formula()` without `reset_solver()` override is unsound — resolved by override.
 
-## Next Patch
+## Next Patch (Frame Path — Still Future)
 
-Option A: Add lemma through `IC3IA::add_predicate()` which already handles
-term mapping. This requires the lemma to be expressed as a predicate expression
-that IC3IA can abstract. The lemma `(=> (and A B) C)` would be decomposed
-into `(or (not A) (not B) C)` and added as a disjunction.
-
-Option B: Add lemma as a concrete assumption at `check_until()` entry, with
-a `reset_solver()` override to re-assert it. Simpler but more invasive.
-
-Option C: Offline replay (no C++ change). See Work Package 5.
+Option A: `IC3IA::add_predicate()` with lemma decomposed to disjunction.
+Option B: Concrete assumption at `check_until()` entry (superseded by implemented Option in reset_solver).
+Option C: Offline replay — still useful; see WP5.

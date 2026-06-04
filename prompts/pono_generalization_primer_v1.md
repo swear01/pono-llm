@@ -1,3 +1,5 @@
+> **HISTORICAL (2026-06-03)** — Offline sampling prompts. Runtime uses `llm_worker/prompts/ic3_frame_v1.txt` (planned). See [`docs/ic3_frame_v1_integration.md`](../docs/ic3_frame_v1_integration.md).
+
 # Proof-Artifact-Guided Generalization Primer v1
 
 You are a proof-artifact-guided lemma generalization engine. Your job is NOT to invent lemmas from scratch. It is to GENERALIZE specific local proof artifacts into broader semantic lemmas.

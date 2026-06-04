@@ -122,13 +122,14 @@ enum optionIndex
   KLIVE_NO_CHECK_LASSO_IN_CEX,
   KLIVE_NO_LOCKSTEP_BMC,
   LLM_GEN_MODE,
-  LLM_CANDIDATE_LANGUAGE,
   LLM_ACCEPTED_BUDGET,
+  LLM_PARALLEL_SAMPLES,
+  LLM_MAX_ATTEMPTS,
+  LLM_REASONING_EFFORT,
   LLM_MODEL,
   LLM_LOG_PATH,
   LLM_REQUEST_PATH,
   LLM_RESPONSE_PATH,
-  LLM_REPLAY_DIR,
 };
 
 struct Arg : public option::Arg
@@ -784,22 +785,31 @@ const option::Descriptor usage[] = {
     "",
     "llm-gen-mode",
     Arg::NonEmpty,
-    "  --llm-gen-mode \tLLM generalization mode: none (default), seed-only, "
-    "async-cti, offline-dump, offline-check" },
-  { LLM_CANDIDATE_LANGUAGE,
-    0,
-    "",
-    "llm-candidate-language",
-    Arg::NonEmpty,
-    "  --llm-candidate-language \tLLM output restriction level: cube-subset "
-    "(default), qf-smt, predicate-relation" },
+    "  --llm-gen-mode \tLLM mode: none (default), async-cti" },
   { LLM_ACCEPTED_BUDGET,
     0,
     "",
     "llm-accepted-budget",
     Arg::Numeric,
-    "  --llm-accepted-budget \tMax accepted LLM lemmas per benchmark (default: "
-    "50)" },
+    "  --llm-accepted-budget \tMax accepted LLM frame actions (default: 50)" },
+  { LLM_PARALLEL_SAMPLES,
+    0,
+    "",
+    "llm-parallel-samples",
+    Arg::Numeric,
+    "  --llm-parallel-samples \tParallel LLM samples per CTI (default: 3)" },
+  { LLM_MAX_ATTEMPTS,
+    0,
+    "",
+    "llm-max-attempts",
+    Arg::Numeric,
+    "  --llm-max-attempts \tMax feedback retries per CTI (default: 2)" },
+  { LLM_REASONING_EFFORT,
+    0,
+    "",
+    "llm-reasoning-effort",
+    Arg::NonEmpty,
+    "  --llm-reasoning-effort \tLLM reasoning effort (default: none)" },
   { LLM_MODEL,
     0,
     "",
@@ -824,12 +834,6 @@ const option::Descriptor usage[] = {
     "llm-resp-path",
     Arg::NonEmpty,
     "  --llm-resp-path \tPath for JSONL candidate response input" },
-  { LLM_REPLAY_DIR,
-    0,
-    "",
-    "llm-replay-dir",
-    Arg::NonEmpty,
-    "  --llm-replay-dir \tDirectory for offline LLM replay artifacts" },
   { 0, 0, 0, 0, 0, 0 }
 };
 /*********************************** end Option Handling setup
@@ -1172,24 +1176,22 @@ ProverResult PonoOptions::parse_and_set_options(int argc,
           }
           break;
         }
-        case LLM_CANDIDATE_LANGUAGE: {
-          auto it = str2llmcandidatelanguage.find(opt.arg);
-          if (it != str2llmcandidatelanguage.end()) {
-            llm_candidate_language_ = it->second;
-          } else {
-            throw PonoException("Unknown --llm-candidate-language option: "
-                                + std::string(opt.arg));
-          }
-          break;
-        }
         case LLM_ACCEPTED_BUDGET:
           llm_accepted_budget_ = std::stoul(opt.arg);
+          break;
+        case LLM_PARALLEL_SAMPLES:
+          llm_parallel_samples_ = std::stoul(opt.arg);
+          break;
+        case LLM_MAX_ATTEMPTS:
+          llm_max_attempts_ = std::stoul(opt.arg);
+          break;
+        case LLM_REASONING_EFFORT:
+          llm_reasoning_effort_ = opt.arg;
           break;
         case LLM_MODEL: llm_model_ = opt.arg; break;
         case LLM_LOG_PATH: llm_log_path_ = opt.arg; break;
         case LLM_REQUEST_PATH: llm_request_path_ = opt.arg; break;
         case LLM_RESPONSE_PATH: llm_response_path_ = opt.arg; break;
-        case LLM_REPLAY_DIR: llm_replay_dir_ = opt.arg; break;
         case UNKNOWN_OPTION:
           // not possible because Arg::Unknown returns ARG_ILLEGAL
           // which aborts the parse with an error

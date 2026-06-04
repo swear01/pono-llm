@@ -72,6 +72,7 @@
 #include "core/proverresult.h"
 #include "core/refineresult.h"
 #include "core/ts.h"
+#include "engines/ic3_frame_ast.h"
 #include "engines/llm_generalizer.h"
 #include "engines/prover.h"
 #include "options/options.h"
@@ -187,6 +188,9 @@ class IC3Base : public SafetyProver
   size_t witness_length() const override;
 
   void set_llm_generalizer(std::shared_ptr<LLMGeneralizer> gen);
+
+  void init_llm_symbol_registry(
+      const std::unordered_map<std::string, std::string> & verilog_map);
 
   std::shared_ptr<LLMGeneralizer> llm_gen_;
 
@@ -426,7 +430,10 @@ class IC3Base : public SafetyProver
   bool rel_ind_check(size_t i,
                      const IC3Formula & c,
                      IC3Formula & out,
-                     bool get_pred = true);
+                     bool get_pred = true,
+                     const std::vector<IC3FrameDisjunct> * witness_refs = nullptr,
+                     std::string * witness_ref_out = nullptr,
+                     std::string * witness_val_out = nullptr);
 
   // Helper methods
 
@@ -626,61 +633,37 @@ class IC3Base : public SafetyProver
    */
   smt::Term smart_not(const smt::Term & t) const;
 
-  // LLM-guided generalization methods
+  // LLM-guided generalization (IC3 Frame v1)
 
-  /** Process any available LLM candidate lemmas (non-blocking)
-   *  Called at sync points in the IC3 main loop
-   */
+  std::string format_llm_term_value(const smt::Term & val) const;
+
+  bool try_extract_witness_from_refs(
+      const std::vector<IC3FrameDisjunct> & refs,
+      bool use_next_state,
+      std::string & ref_out,
+      std::string & val_out) const;
+
+  bool check_intersects_initial_with_witness(
+      const smt::Term & t,
+      const std::vector<IC3FrameDisjunct> & refs,
+      std::string & ref_out,
+      std::string & val_out);
+
   void process_llm_candidates();
 
-  /** Capture a CTI context for LLM generalization
-   *  @param frame_idx the frame index
-   *  @param cube the CTI cube (conjunction of literals)
-   */
   void capture_cti_context(size_t frame_idx, const IC3Formula & cube);
-  void write_llm_static_context_once();
-  void process_offline_llm_for_cti(const CTIContext & ctx,
-                                   const IC3Formula & cube);
-  void process_pending_offline_llm_cti();
-  IC3Formula cube_from_keep_ids(const IC3Formula & cube,
-                                const std::vector<size_t> & keep_ids) const;
-  IC3Formula blocking_from_keep_ids(
-      const IC3Formula & cube, const std::vector<size_t> & keep_ids) const;
-  bool check_llm_candidate_with_witness(
-      size_t frame_idx,
-      const IC3Formula & candidate_cube,
-      const CTIContext & ctx,
-      const std::vector<size_t> & dropped_ids,
-      std::vector<LLMWitnessDiff> & witness_diffs);
 
-  /** Validate a single LLM candidate lemma and insert if it passes
-   *  @param cand the candidate lemma
-   *  @return validation result
-   */
-  LLMValidationResult validate_llm_candidate(const LLMCandidate & cand);
+  std::vector<CTILiteral> collect_cti_literals(
+      const IC3Formula & cube) const;
 
-  /** Collect literals from a current-state IC3Formula
-   *  @param cube the IC3Formula (must be conjunction)
-   *  @return vector of CTILiteral
-   */
-  std::vector<CTILiteral> collect_cti_literals(const IC3Formula & cube) const;
+  IC3Formula build_block_clause_from_disjuncts(
+      const std::vector<IC3FrameDisjunct> & disjuncts) const;
 
-  /** Convert a cube-subset candidate to a blocking IC3Formula
-   *  @param cube the original CTI cube
-   *  @param cand the candidate with keep/drop lists
-   *  @return the blocking IC3Formula (disjunction)
-   */
-  IC3Formula cube_subset_to_blocking(const IC3Formula & cube,
-                                     const LLMCandidate & cand) const;
-  IC3Formula cube_subset_to_blocking(
-      const IC3Formula & cube,
-      const LLMCandidate & cand,
-      const std::vector<std::string> & precomputed_names) const;
+  bool validate_frame_response_vocab(const IC3FrameResponse & resp) const;
 
-  bool llm_static_context_written_ = false;
-  bool pending_offline_cti_ = false;
-  CTIContext pending_offline_ctx_;
-  IC3Formula pending_offline_cube_;
+  virtual bool try_apply_llm_refine_predicate(const smt::Term & pred);
+
+  std::string serialize_frame_snapshot_json(size_t frame_idx) const;
 };
 
 }  // namespace pono

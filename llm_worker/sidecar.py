@@ -1,316 +1,301 @@
 #!/usr/bin/env python3
 """
-Pono LLM Sidecar -- Asynchronous DeepSeek V4 Pro integration for IC3 lemma generalization.
+Pono LLM Sidecar -- IC3 Frame v1 online integration.
 
-Reads CTI context requests from a JSONL file (written by Pono C++),
-calls DeepSeek V4 Pro API for lemma generalization suggestions,
-writes candidates back to a JSONL response file (polled by Pono C++).
+Reads ic3_frame_request from JSONL (written by Pono C++),
+calls LLM API with parallel K samples,
+writes ic3_frame_response lines (polled by Pono C++).
 
 Usage:
     python sidecar.py --req-path /tmp/pono_llm_requests.jsonl \
                       --resp-path /tmp/pono_llm_responses.jsonl \
-                      --log-path /tmp/pono_llm_log.jsonl \
-                      --candidate-language cube-subset \
-                      --prompt-dir llm_worker/prompts/
+                      --log-path /tmp/pono_llm_log.jsonl
 """
 
 import argparse
+import hashlib
 import json
 import os
+import threading
 import time
-import hashlib
+from concurrent.futures import Future, ThreadPoolExecutor, as_completed
 from pathlib import Path
+from typing import Optional
 
 from deepseek_client import DeepSeekClient
-from jsonl_protocol import read_request, write_response, CTIContext, LLMCandidate
+from ic3_frame_schema import normalize_response, validate_request, validate_response
+from jsonl_protocol import append_log_line, read_requests_batch, write_response
+from prompt_format import format_cti_literals, format_frame_snapshot
 
 
-def load_prompt(name: str, prompt_dir: str) -> str:
-    path = Path(prompt_dir) / f"{name}.txt"
+def load_prompt(prompt_dir: str) -> str:
+    path = Path(prompt_dir) / "ic3_frame_v1.txt"
     if path.exists():
         return path.read_text()
     return ""
 
 
-def build_cube_subset_prompt(ctx: CTIContext, template: str) -> str:
-    """Build a prompt for cube-subset generalization."""
-    lit_lines = []
-    for lit in ctx["literals"]:
-        lit_lines.append(f"  {lit['varname']} = {lit['value']}")
-    literals_text = "\n".join(lit_lines)
-
-    prop_name = ctx.get("property", "(unknown)")
-    frame_idx = ctx.get("frame_idx", 0)
-
-    if template:
-        return template.format(
-            property_name=prop_name,
-            frame_idx=frame_idx,
-            literals=literals_text,
-        )
-
-    return f"""You are a hardware verification assistant. Given a counterexample-to-induction (CTI) cube from a PDR/IC3 model checker, suggest which literals to KEEP and which to DROP to form a generalized blocking clause.
-
-Property being checked: {prop_name}
-CTI found at frame: {frame_idx}
-
-CTI cube literals:
-{literals_text}
-
-Analyze the semantic relationships among these signals and identify:
-1. Which literals represent the core semantic condition (KEEP these)
-2. Which literals are incidental details like exact counter values, specific FSM states, or datapath artifacts (DROP these)
-
-Respond with a JSON object:
-{{
-  "type": "cube_subset",
-  "frame_hint": {frame_idx},
-  "keep_literals": ["varname = value", ...],
-  "drop_literals": ["varname = value", ...],
-  "rationale": "Brief explanation"
-}}"""
+def load_benchmark_context(path: str) -> dict:
+    if not path or not os.path.exists(path):
+        return {}
+    with open(path) as f:
+        return json.load(f)
 
 
-def build_multi_cti_prompt(ctx: CTIContext) -> str:
-    """Build a prompt for multi-CTI batch generalization.
-    The request has cti_contexts array with multiple CTI cubes from the same frame."""
-    frame_idx = ctx.get("frame_idx", 0)
-    batch_size = ctx.get("batch_size", len(ctx.get("cti_contexts", [])))
-    cti_contexts = ctx.get("cti_contexts", [])
-
-    cti_blocks = []
-    for i, cti in enumerate(cti_contexts, 1):
-        lit_lines = [f"    {l['varname']} = {l['value']}" for l in cti["literals"]]
-        cti_blocks.append(
-            f"CTI #{i} ({len(cti['literals'])} literals):\n" + "\n".join(lit_lines)
-        )
-    cti_text = "\n\n".join(cti_blocks)
-
-    return f"""You are a hardware verification assistant. Below are {batch_size} counterexample-to-induction (CTI) cubes from frame {frame_idx} of a PDR/IC3 model checker. All CTIs come from the same frame and violate the same property.
-
-Your task: identify the COMMON CORE literals that appear across all CTIs. These common literals likely represent the essential unreachable condition. Drop literals that differ across CTIs or are incidental details.
-
-CTI cubes:
-{cti_text}
-
-Guidelines:
-- Literals present in ALL CTIs with identical values: likely CORE → KEEP
-- Literals present in some CTIs but not others: incidental → DROP
-- Literals with different values across CTIs: data-dependent → DROP
-- Primary input literals: usually DROP unless they gate critical state transitions
-
-Respond with a JSON object containing keep_literals and drop_literals in the EXACT format shown in the CTIs:
-{{
-  "type": "cube_subset",
-  "frame_hint": {frame_idx},
-  "keep_literals": ["varname = value", ...],
-  "drop_literals": ["varname = value", ...],
-  "rationale": "Brief explanation of which patterns are core vs incidental"
-}}"""
+def build_user_prompt(
+    req: dict,
+    benchmark_ctx: dict,
+    sample_id: int,
+    snapshot_max_clauses: int = 0,
+) -> str:
+    parts = [
+        f"frame_idx: {req.get('frame_idx')}",
+        f"cti_id: {req.get('cti_id')}",
+        f"attempt: {req.get('attempt', 1)}",
+        f"sample_id: {sample_id}",
+        "",
+        format_cti_literals(req.get("cti", {})),
+        "",
+        format_frame_snapshot(
+            req.get("frame_snapshot", {}),
+            max_clauses=snapshot_max_clauses,
+        ),
+    ]
+    feedback = req.get("feedback") or []
+    if feedback:
+        parts.extend(["", "Previous failures (feedback):", json.dumps(feedback, indent=2)])
+    if benchmark_ctx:
+        parts.extend([
+            "",
+            "Benchmark context (reference):",
+            json.dumps({
+                "benchmark": benchmark_ctx.get("benchmark"),
+                "bad_property": benchmark_ctx.get("bad_property"),
+            }, separators=(",", ":")),
+        ])
+    parts.extend([
+        "",
+        "Respond with ic3_frame_response JSON only.",
+        f"Set source_cti_id to {req.get('cti_id')!r} and sample_id to {sample_id}.",
+    ])
+    return "\n".join(parts)
 
 
 def process_request(
     client: DeepSeekClient,
-    ctx: CTIContext,
-    candidate_language: str,
-    prompt_dir: str,
-    default_model: str = "",
+    req: dict,
+    system_prompt: str,
+    snapshot_max_clauses: int = 0,
 ) -> tuple:
-    """Process a single CTI context through the LLM.
+    ok, err = validate_request(req)
+    if not ok:
+        raise ValueError(f"Invalid request: {err}")
 
-    Returns:
-        (candidates_list, token_count, latency_ms)
-        candidates_list is always a list (possibly of one element).
-    """
-    # Template-guided mode: expects a full context bundle
-    if candidate_language == "template-guided":
-        from template_prompt import build_template_prompt
-        prompt = build_template_prompt(ctx)
-        response_text, token_count, latency_ms = client.call(
-            prompt, model_name=default_model or None
+    benchmark_ctx = load_benchmark_context(req.get("benchmark_context_path", ""))
+    parallel_samples = int(req.get("parallel_samples", 1))
+    reasoning_effort = req.get("reasoning_effort", "none")
+    model_name = req.get("model") or None
+    cti_id = req.get("cti_id", "")
+    attempt = int(req.get("attempt", 1))
+
+    total_tokens = 0
+    total_latency = 0.0
+
+    def _call_sample(sample_id: int):
+        user_prompt = build_user_prompt(
+            req, benchmark_ctx, sample_id, snapshot_max_clauses=snapshot_max_clauses
+        )
+        text, tokens, latency_ms = client.call(
+            user_prompt,
+            system_prompt=system_prompt,
+            model_name=model_name,
+            reasoning_effort=reasoning_effort,
+            temperature=0.8,
         )
         try:
-            result = json.loads(response_text)
-            candidates = result.get("candidates", [])
-            # Fallback: if LLM returned a single object (non-compliant), wrap it
-            if not candidates and "lemma" in result:
-                candidates = [result]
-            for cand in candidates:
-                cand.setdefault("type", "template_lemma")
-        except (json.JSONDecodeError, KeyError, IndexError):
-            candidates = [{
-                "type": "template_lemma",
-                "lemma": "",
-                "schema": "unknown",
-                "rationale": "LLM response was not valid JSON",
-            }]
-        return candidates, token_count, latency_ms
+            raw = json.loads(text)
+        except json.JSONDecodeError:
+            raw = {"block_disjuncts": [], "rationale": "LLM response was not valid JSON"}
+        normalized = normalize_response(raw, cti_id, sample_id, attempt)
+        valid, verr = validate_response(normalized)
+        if not valid:
+            normalized["rationale"] = f"{normalized.get('rationale', '')} [{verr}]"
+        return sample_id, normalized, tokens, latency_ms
 
-    # Detect multi-CTI batch requests
-    if "cti_contexts" in ctx:
-        prompt = build_multi_cti_prompt(ctx)
-    elif candidate_language == "cube-subset":
-        template = load_prompt("cube_subset", prompt_dir)
-        prompt = build_cube_subset_prompt(ctx, template)
-    elif candidate_language == "qf-smt":
-        template = load_prompt("qf_smt", prompt_dir)
-        prompt = template.format(**ctx) if template else str(ctx)
-    else:
-        raise ValueError(f"Unknown candidate language: {candidate_language}")
+    responses = []
+    with ThreadPoolExecutor(max_workers=parallel_samples) as pool:
+        futs = [pool.submit(_call_sample, sid) for sid in range(parallel_samples)]
+        by_id = {}
+        for fut in as_completed(futs):
+            sample_id, normalized, tokens, latency_ms = fut.result()
+            by_id[sample_id] = (normalized, tokens, latency_ms)
+        for sample_id in range(parallel_samples):
+            normalized, tokens, latency_ms = by_id[sample_id]
+            responses.append(normalized)
+            total_tokens += tokens
+            total_latency += latency_ms
 
-    model_name = ctx.get("model", "") or default_model or None
-    response_text, token_count, latency_ms = client.call(prompt, model_name=model_name)
+    return responses, total_tokens, total_latency / max(parallel_samples, 1)
 
-    try:
-        candidate = json.loads(response_text)
-        candidate.setdefault("type", "cube_subset")
-        candidate.setdefault("frame_hint", ctx.get("frame_idx", 0))
-        candidate.setdefault("keep_literals", [])
-        candidate.setdefault("drop_literals", [])
-        candidate.setdefault("used_symbols", [])
-        candidate.setdefault("formula", "")
-        candidate.setdefault("rationale", "")
-    except json.JSONDecodeError:
-        candidate = {
-            "type": "cube_subset",
-            "frame_hint": ctx.get("frame_idx", 0),
-            "keep_literals": [],
-            "drop_literals": [],
-            "rationale": "LLM response was not valid JSON",
+
+def handle_one_request(
+    client: DeepSeekClient,
+    request: dict,
+    system_prompt: str,
+    resp_path: str,
+    log_path: str,
+    write_lock: threading.Lock,
+    request_index: int,
+    snapshot_max_clauses: int = 0,
+) -> tuple[int, int, float]:
+    """Process one request line; thread-safe writes to resp/log files."""
+    responses, token_count, latency_ms = process_request(
+        client, request, system_prompt, snapshot_max_clauses=snapshot_max_clauses
+    )
+    with write_lock:
+        for resp in responses:
+            write_response(resp_path, resp)
+        log_entry = {
+            "timestamp": time.time(),
+            "request_index": request_index,
+            "cti_id": request.get("cti_id"),
+            "parallel_samples": len(responses),
+            "token_count": token_count,
+            "latency_ms": latency_ms,
+            "prompt_hash": hashlib.sha256(
+                json.dumps(request, sort_keys=True).encode()
+            ).hexdigest()[:16],
         }
+        stats = getattr(client, "last_call_stats", None) or {}
+        if stats:
+            log_entry.update({
+                "thinking_mode": stats.get("thinking_mode"),
+                "prompt_tokens": stats.get("prompt_tokens"),
+                "completion_tokens": stats.get("completion_tokens"),
+                "reasoning_chars": stats.get("reasoning_chars"),
+            })
+        append_log_line(log_path, log_entry)
+    return len(responses), token_count, latency_ms
 
-    return [candidate], token_count, latency_ms
+
+def drain_completed(
+    inflight: dict[Future, int],
+) -> list[tuple[int, int, float, Optional[Exception]]]:
+    """Collect finished futures. Returns (responses, tokens, latency, error)."""
+    done: list[tuple[int, int, float, Optional[Exception]]] = []
+    finished = [fut for fut in list(inflight) if fut.done()]
+    for fut in finished:
+        req_index = inflight.pop(fut)
+        try:
+            n_resp, tokens, lat = fut.result()
+            done.append((n_resp, tokens, lat, None))
+            print(
+                f"[sidecar] req #{req_index}: wrote {n_resp} responses, "
+                f"{tokens} tokens, {lat:.0f}ms avg"
+            )
+        except Exception as e:
+            done.append((0, 0, 0.0, e))
+            print(f"[sidecar] req #{req_index} error: {e}")
+            import traceback
+            traceback.print_exc()
+    return done
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Pono LLM Sidecar")
-    parser.add_argument(
-        "--req-path",
-        default="/tmp/pono_llm_requests.jsonl",
-        help="Path to JSONL request file (written by Pono)",
-    )
-    parser.add_argument(
-        "--resp-path",
-        default="/tmp/pono_llm_responses.jsonl",
-        help="Path to JSONL response file (polled by Pono)",
-    )
-    parser.add_argument(
-        "--log-path",
-        default="/tmp/pono_llm_log.jsonl",
-        help="Path to JSONL log file",
-    )
-    parser.add_argument(
-        "--candidate-language",
-        default="cube-subset",
-        choices=["cube-subset", "qf-smt", "predicate-relation", "template-guided"],
-        help="LLM output restriction level",
-    )
-    parser.add_argument(
-        "--prompt-dir",
-        default="llm_worker/prompts/",
-        help="Directory containing prompt templates",
-    )
-    parser.add_argument(
-        "--poll-interval",
-        type=float,
-        default=1.0,
-        help="Poll interval in seconds",
-    )
-    parser.add_argument(
-        "--max-requests",
-        type=int,
-        default=0,
-        help="Maximum number of requests to process (0 = unlimited)",
-    )
-    parser.add_argument(
-        "--model",
-        default="",
-        help="Model name override (default: use model from request or deepseek-v4-pro)",
-    )
+    parser = argparse.ArgumentParser(description="Pono LLM Sidecar (IC3 Frame v1)")
+    parser.add_argument("--req-path", default="/tmp/pono_llm_requests.jsonl")
+    parser.add_argument("--resp-path", default="/tmp/pono_llm_responses.jsonl")
+    parser.add_argument("--log-path", default="/tmp/pono_llm_log.jsonl")
+    parser.add_argument("--prompt-dir", default="llm_worker/prompts/")
+    parser.add_argument("--poll-interval", type=float, default=1.0)
+    parser.add_argument("--max-requests", type=int, default=0,
+                        help="Max total requests to process (0=unlimited)")
+    parser.add_argument("--max-inflight-requests", type=int, default=4,
+                        help="Max concurrent request lines in flight")
+    parser.add_argument("--snapshot-max-clauses", type=int, default=0,
+                        help="Max frame clauses in prompt (0=all, compact line format)")
+    parser.add_argument("--model", default="")
     args = parser.parse_args()
 
-    api_key = os.environ.get("DEEPSEEK_API_KEY") or os.environ.get("OPENROUTER_API_KEY")
+    api_key = os.environ.get("DEEPSEEK_API_KEY")
     if not api_key:
-        print("[sidecar] ERROR: DEEPSEEK_API_KEY or OPENROUTER_API_KEY environment variable not set")
+        print("[sidecar] ERROR: DEEPSEEK_API_KEY not set")
         return 1
 
     client = DeepSeekClient(api_key, model_name=args.model or None)
+    system_prompt = load_prompt(args.prompt_dir)
+    write_lock = threading.Lock()
 
-    print(f"[sidecar] Started, polling {args.req_path}")
+    print(f"[sidecar] IC3 Frame v1, polling {args.req_path}")
     print(f"[sidecar] Writing responses to {args.resp_path}")
-    print(f"[sidecar] Logging to {args.log_path}")
-    print(f"[sidecar] Candidate language: {args.candidate_language}")
+    print(f"[sidecar] max_inflight_requests={args.max_inflight_requests}")
+    print(f"[sidecar] snapshot_max_clauses={args.snapshot_max_clauses}")
 
     processed_count = 0
+    submitted_count = 0
     last_position = 0
+    inflight: dict[Future, int] = {}
 
     try:
-        while True:
-            if args.max_requests > 0 and processed_count >= args.max_requests:
-                print(f"[sidecar] Reached max requests ({args.max_requests}), exiting")
-                break
+        with ThreadPoolExecutor(max_workers=args.max_inflight_requests) as request_pool:
+            while True:
+                for _, _, _, err in drain_completed(inflight):
+                    if err is None:
+                        processed_count += 1
 
-            try:
-                request, new_position = read_request(args.req_path, last_position)
-            except FileNotFoundError:
+                if args.max_requests > 0 and processed_count >= args.max_requests:
+                    if not inflight:
+                        break
+
+                slots = args.max_inflight_requests - len(inflight)
+                if slots > 0:
+                    if args.max_requests > 0:
+                        slots = min(slots, args.max_requests - submitted_count)
+                    if slots > 0:
+                        try:
+                            requests, last_position = read_requests_batch(
+                                args.req_path, last_position, max_lines=slots
+                            )
+                        except FileNotFoundError:
+                            requests = []
+
+                        for request in requests:
+                            req_type = request.get("type", "")
+                            if req_type != "ic3_frame_request":
+                                print(f"[sidecar] Skipping non-v1 request type: {req_type}")
+                                submitted_count += 1
+                                processed_count += 1
+                                continue
+
+                            req_index = submitted_count
+                            submitted_count += 1
+                            fut = request_pool.submit(
+                                handle_one_request,
+                                client,
+                                request,
+                                system_prompt,
+                                args.resp_path,
+                                args.log_path,
+                                write_lock,
+                                req_index,
+                                args.snapshot_max_clauses,
+                            )
+                            inflight[fut] = req_index
+
+                if args.max_requests > 0 and processed_count >= args.max_requests and not inflight:
+                    break
+
                 time.sleep(args.poll_interval)
-                continue
 
-            if request is None:
-                time.sleep(args.poll_interval)
-                continue
-
-            last_position = new_position
-            print(f"[sidecar] Processing request #{processed_count + 1}")
-
-            try:
-                candidates, token_count, latency_ms = process_request(
-                    client,
-                    request,
-                    args.candidate_language,
-                    args.prompt_dir,
-                    default_model=args.model,
-                )
-
-                for cand in candidates:
-                    write_response(args.resp_path, cand)
-                candidate = candidates[0] if candidates else {}
-
-                # Log the interaction
-                log_entry = {
-                    "timestamp": time.time(),
-                    "request_index": processed_count,
-                    "prompt_hash": hashlib.sha256(
-                        json.dumps(request, sort_keys=True).encode()
-                    ).hexdigest()[:16],
-                    "response_hash": hashlib.sha256(
-                        json.dumps(candidate, sort_keys=True).encode()
-                    ).hexdigest()[:16],
-                    "token_count": token_count,
-                    "latency_ms": latency_ms,
-                    "candidate_count": len(candidates),
-                    "candidate_type": candidate.get("type"),
-                    "keep_count": len(candidate.get("keep_literals", [])),
-                    "drop_count": len(candidate.get("drop_literals", [])),
-                }
-                with open(args.log_path, "a") as log_f:
-                    log_f.write(json.dumps(log_entry) + "\n")
-
-                processed_count += 1
-                print(
-                    f"[sidecar] Response written ({len(candidates)} candidates), "
-                    f"{token_count} tokens, {latency_ms:.0f}ms latency"
-                )
-
-            except Exception as e:
-                print(f"[sidecar] Error processing request: {e}")
-                import traceback
-                traceback.print_exc()
-                processed_count += 1
-                time.sleep(args.poll_interval)
+            while inflight:
+                for _, _, _, err in drain_completed(inflight):
+                    if err is None:
+                        processed_count += 1
+                if inflight:
+                    time.sleep(args.poll_interval)
 
     except KeyboardInterrupt:
-        print(f"\n[sidecar] Stopped after processing {processed_count} requests")
+        print(f"\n[sidecar] Stopped after {processed_count} requests")
 
     return 0
 

@@ -1,3 +1,5 @@
+> **HISTORICAL / RESEARCH RECORD (2026-06-03)** — Not the active runtime integration path. Legacy code **will be deleted** with IC3 Frame v1. See [`ic3_frame_v1_integration.md`](ic3_frame_v1_integration.md) and [`DOC_INDEX.md`](DOC_INDEX.md).
+
 # Case Study: qspiflash_dualflexpress_divfive-p040
 
 > First closed-loop formal-feedback-guided semantic lemma repair

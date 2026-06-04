@@ -1,6 +1,9 @@
 # Current Progress Summary
 
-## One-Sentence Summary
+> **2026-06-03:** Integration pivot to **IC3 Frame v1** (online, frame-native). Legacy runtime **to be deleted**.  
+> **Spec:** [`ic3_frame_v1_integration.md`](ic3_frame_v1_integration.md)
+
+## One-Sentence Summary (historical offline result)
 
 Closed-loop solver-guided synthesis discovered and cross-validated a
 nontrivial semantic lemma (`r_pipe_req ⇒ o_wb_stall`) for the qspiflash

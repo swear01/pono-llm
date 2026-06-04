@@ -3,7 +3,7 @@
 Unified benchmark runner for pono + LLM evaluation.
 
 Phases:
-  test     - Run built-in tests (make check + test_sidecar.py)
+  test     - Run built-in tests (make check + tests/python + schema + sidecar)
   download - Download HWMCC benchmarks (2020/2024/2025)
   baseline - Run baseline pono on all filtered benchmarks
   llm      - Run +LLM pono on interesting (medium/slow/timeout) benchmarks
@@ -285,8 +285,25 @@ def collect_btor2_files(root: pathlib.Path) -> list[pathlib.Path]:
 # ── Phase: test ──────────────────────────────────────────────────────────
 
 
+def _can_import_pono(root: pathlib.Path) -> bool:
+    """Return True if pono Python bindings are importable."""
+    build_python = root / "build" / "python"
+    if not build_python.is_dir():
+        return False
+    env = os.environ.copy()
+    env["PYTHONPATH"] = str(build_python) + os.pathsep + env.get("PYTHONPATH", "")
+    r = subprocess.run(
+        [sys.executable, "-c", "import pono"],
+        capture_output=True,
+        text=True,
+        cwd=str(root),
+        env=env,
+    )
+    return r.returncode == 0
+
+
 def run_phase_test(args: argparse.Namespace) -> bool:
-    """Run built-in tests: make check and test_sidecar.py."""
+    """Run built-in tests: make check, schema tests, optional sidecar E2E."""
     log("=== Phase: test ===")
     root = repo_root()
     build_dir = root / "build"
@@ -306,22 +323,111 @@ def run_phase_test(args: argparse.Namespace) -> bool:
     else:
         log("make check PASSED")
 
-    sidecar_test = root / "test_sidecar.py"
-    if sidecar_test.exists():
-        log("Running test_sidecar.py --with-llm ...")
-        env = os.environ.copy()
+    python_tests = root / "tests" / "python"
+    if python_tests.is_dir():
+        if _can_import_pono(root):
+            log("Running pytest tests/python ...")
+            env = os.environ.copy()
+            build_python = root / "build" / "python"
+            env["PYTHONPATH"] = str(build_python) + os.pathsep + env.get("PYTHONPATH", "")
+            r = subprocess.run(
+                [sys.executable, "-m", "pytest", str(python_tests), "-q"],
+                capture_output=True,
+                text=True,
+                timeout=600,
+                cwd=str(root),
+                env=env,
+            )
+            if r.returncode != 0:
+                log("pytest tests/python FAILED:")
+                log(r.stdout[-2000:] if len(r.stdout) > 2000 else r.stdout)
+                log(r.stderr[-2000:] if len(r.stderr) > 2000 else r.stderr)
+                ok = False
+            else:
+                log("pytest tests/python PASSED")
+        else:
+            log(
+                "SKIP tests/python (Python bindings not built; "
+                "run ./configure.sh --python)"
+            )
+    else:
+        log("tests/python not found, skipping")
+
+    schema_test = root / "llm_worker" / "tests" / "test_ic3_frame_schema.py"
+    if schema_test.exists():
+        log("Running llm_worker/tests/test_ic3_frame_schema.py ...")
         r = subprocess.run(
-            [sys.executable, str(sidecar_test), "--with-llm"],
-            capture_output=True, text=True, timeout=300,
-            env=env, cwd=str(root),
+            [sys.executable, str(schema_test)],
+            capture_output=True, text=True, timeout=60,
+            cwd=str(root),
         )
-        if "PASS" not in r.stdout and r.returncode != 0:
-            log("test_sidecar.py FAILED:")
+        if r.returncode != 0:
+            log("test_ic3_frame_schema.py FAILED:")
             log(r.stdout[-1000:])
             log(r.stderr[-1000:])
             ok = False
         else:
-            log("test_sidecar.py PASSED")
+            log("test_ic3_frame_schema.py PASSED")
+    else:
+        log("test_ic3_frame_schema.py not found, skipping")
+
+    prompt_fmt_test = root / "llm_worker" / "tests" / "test_prompt_format.py"
+    if prompt_fmt_test.exists():
+        log("Running llm_worker/tests/test_prompt_format.py ...")
+        r = subprocess.run(
+            [sys.executable, str(prompt_fmt_test)],
+            capture_output=True, text=True, timeout=60,
+            cwd=str(root),
+        )
+        if r.returncode != 0:
+            log("test_prompt_format.py FAILED:")
+            log(r.stdout[-1000:])
+            log(r.stderr[-1000:])
+            ok = False
+        else:
+            log("test_prompt_format.py PASSED")
+    else:
+        log("test_prompt_format.py not found, skipping")
+
+    concurrency_test = root / "llm_worker" / "tests" / "test_sidecar_concurrency.py"
+    if concurrency_test.exists():
+        log("Running llm_worker/tests/test_sidecar_concurrency.py ...")
+        r = subprocess.run(
+            [sys.executable, str(concurrency_test)],
+            capture_output=True,
+            text=True,
+            timeout=60,
+            cwd=str(root),
+        )
+        if r.returncode != 0:
+            log("test_sidecar_concurrency.py FAILED:")
+            log(r.stdout[-1000:])
+            log(r.stderr[-1000:])
+            ok = False
+        else:
+            log("test_sidecar_concurrency.py PASSED")
+    else:
+        log("test_sidecar_concurrency.py not found, skipping")
+
+    sidecar_test = root / "test_sidecar.py"
+    if sidecar_test.exists():
+        if not os.environ.get("DEEPSEEK_API_KEY"):
+            log("SKIP test_sidecar.py --with-llm (DEEPSEEK_API_KEY not set)")
+        else:
+            log("Running test_sidecar.py --with-llm ...")
+            env = os.environ.copy()
+            r = subprocess.run(
+                [sys.executable, str(sidecar_test), "--with-llm"],
+                capture_output=True, text=True, timeout=300,
+                env=env, cwd=str(root),
+            )
+            if "PASS" not in r.stdout and r.returncode != 0:
+                log("test_sidecar.py FAILED:")
+                log(r.stdout[-1000:])
+                log(r.stderr[-1000:])
+                ok = False
+            else:
+                log("test_sidecar.py PASSED")
     else:
         log("test_sidecar.py not found, skipping")
 
@@ -749,7 +855,6 @@ def run_pono(
     else:
         cmd.extend([
             "--llm-gen-mode", "async-cti",
-            "--llm-candidate-language", "cube-subset",
             "--llm-accepted-budget", str(accepted_budget),
             "--llm-req-path", req_path,
             "--llm-resp-path", resp_path,
@@ -931,7 +1036,6 @@ def _run_one_llm(job_data: dict) -> RunResult:
             "--req-path", req_path,
             "--resp-path", resp_path,
             "--log-path", log_path,
-            "--candidate-language", "cube-subset",
             "--prompt-dir", prompt_dir,
             "--poll-interval", "0.5",
             "--max-requests", str(job_data.get("llm_max_requests", 50)),

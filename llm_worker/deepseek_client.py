@@ -1,16 +1,13 @@
 """
-DeepSeek V4 Pro API client via OpenRouter (or direct DeepSeek API).
+DeepSeek API client (OpenAI-compatible HTTP API).
 
-Supports both:
-- OpenRouter:    base_url="https://openrouter.ai/api/v1"
-- DeepSeek direct: base_url="https://api.deepseek.com/v1"
-
-Reads API key from DEEPSEEK_API_KEY or OPENROUTER_API_KEY env variable.
+Reads API key from DEEPSEEK_API_KEY environment variable.
+Uses the official `openai` Python package as HTTP client (not OpenAI models).
 """
 
+import json
 import os
 import time
-import json
 
 try:
     from openai import OpenAI
@@ -18,74 +15,26 @@ except ImportError:
     OpenAI = None
 
 
-# OpenRouter model IDs for DeepSeek V4
-# See: https://openrouter.ai/models
-#   deepseek/deepseek-v4-pro      — DeepSeek V4 Pro (paid)
-#   deepseek/deepseek-v4-flash    — DeepSeek V4 Flash (paid)
-#   deepseek/deepseek-v4-flash:free — DeepSeek V4 Flash (free)
-DEFAULT_MODEL = "deepseek/deepseek-v4-pro"
-# Fallback: direct DeepSeek model name
-DEEPSEEK_DIRECT_MODEL = "deepseek-v4-pro"
+DEEPSEEK_BASE_URL = "https://api.deepseek.com/v1"
+DEFAULT_MODEL = "deepseek-v4-pro"
 
 
 def get_api_key():
-    """Get API key from env, trying multiple common names."""
-    for var in ("DEEPSEEK_API_KEY", "OPENROUTER_API_KEY", "OPENAI_API_KEY"):
-        key = os.environ.get(var)
-        if key:
-            return key
-    return None
-
-
-def detect_provider(api_key: str):
-    """Detect whether we're using OpenRouter or direct DeepSeek.
-
-    OpenRouter keys typically start with 'sk-or-'.
-    Direct DeepSeek keys typically start with 'sk-'.
-    """
-    if api_key and api_key.startswith("sk-or-"):
-        return "openrouter"
-    return "deepseek-direct"
-
-
-def get_base_url(provider: str):
-    if provider == "openrouter":
-        return "https://openrouter.ai/api/v1"
-    return "https://api.deepseek.com/v1"
-
-
-def get_model_name(provider: str, requested_model: str = None):
-    """Resolve model name based on provider.
-
-    OpenRouter uses 'deepseek/deepseek-chat' as the canonical ID.
-    Direct DeepSeek uses 'deepseek-chat'.
-    """
-    if requested_model:
-        return requested_model
-    if provider == "openrouter":
-        return DEFAULT_MODEL
-    return DEEPSEEK_DIRECT_MODEL
+    """Return DEEPSEEK_API_KEY from the environment."""
+    return os.environ.get("DEEPSEEK_API_KEY")
 
 
 class DeepSeekClient:
-    """Client for DeepSeek V4 Pro via OpenRouter or direct API.
+    """Client for DeepSeek chat completions via OpenAI-compatible SDK."""
 
-    Uses OpenAI-compatible interface.
-    """
-
-    def __init__(self,
-                 api_key: str = None,
-                 model_name: str = None,
-                 provider: str = None):
+    def __init__(self, api_key: str = None, model_name: str = None):
         self.api_key = api_key or get_api_key()
         if not self.api_key:
             raise RuntimeError(
-                "No API key found. Set DEEPSEEK_API_KEY or OPENROUTER_API_KEY "
-                "environment variable.")
+                "No API key found. Set DEEPSEEK_API_KEY environment variable.")
 
-        self.provider = provider or detect_provider(self.api_key)
-        self.model_name = get_model_name(self.provider, model_name)
-        self.base_url = get_base_url(self.provider)
+        self.model_name = model_name or DEFAULT_MODEL
+        self.base_url = DEEPSEEK_BASE_URL
         self._client = None
 
         if OpenAI is not None:
@@ -94,12 +43,33 @@ class DeepSeekClient:
                 base_url=self.base_url,
             )
 
-        print(f"[deepseek] provider={self.provider} "
-              f"base_url={self.base_url} "
-              f"model={self.model_name}")
+        print(f"[deepseek] base_url={self.base_url} model={self.model_name}")
+        self.last_call_stats = {}
 
-    def call(self, prompt: str, system_prompt: str = None, model_name: str = None):
-        """Call LLM API with a prompt.
+    def _apply_thinking_mode(self, kwargs: dict, reasoning_effort: str = None) -> str:
+        """Map reasoning_effort to DeepSeek V4 thinking API.
+
+        Official API: reasoning_effort is only high|max (no 'none').
+        Non-thinking: extra_body thinking.type=disabled (see api-docs thinking_mode).
+        """
+        effort = (reasoning_effort or "none").lower()
+        if effort in ("none", "", "off", "disabled"):
+            kwargs["extra_body"] = {"thinking": {"type": "disabled"}}
+            return "disabled"
+        kwargs["extra_body"] = {"thinking": {"type": "enabled"}}
+        if effort in ("high", "max", "low", "medium", "xhigh"):
+            kwargs["reasoning_effort"] = effort
+        else:
+            kwargs["reasoning_effort"] = "high"
+        return effort
+
+    def call(self,
+             prompt: str,
+             system_prompt: str = None,
+             model_name: str = None,
+             reasoning_effort: str = None,
+             temperature: float = None):
+        """Call DeepSeek API with a prompt.
 
         Returns:
             tuple: (response_json_text, token_count, latency_ms)
@@ -110,33 +80,32 @@ class DeepSeekClient:
                 "You are a hardware verification assistant specializing in "
                 "formal verification and lemma generalization for PDR/IC3. "
                 "Respond ONLY with valid JSON, no other text.")
+        temp = 0.3 if temperature is None else temperature
 
         if self._client is not None:
-            return self._call_openai(prompt, system_prompt, model)
-        else:
-            return self._call_direct(prompt, system_prompt, model)
+            return self._call_openai(prompt, system_prompt, model, temp, reasoning_effort)
+        return self._call_direct(prompt, system_prompt, model, temp, reasoning_effort)
 
-    def _call_openai(self, prompt: str, system_prompt: str, model_name: str):
-        """Use OpenAI-compatible client."""
+    def _call_openai(self,
+                     prompt: str,
+                     system_prompt: str,
+                     model_name: str,
+                     temperature: float,
+                     reasoning_effort: str = None):
         start = time.time()
-        extra = {}
-        if self.provider == "openrouter":
-            extra["extra_headers"] = {
-                "HTTP-Referer": "https://github.com/pono-llm",
-                "X-Title": "pono-llm",
-            }
+        kwargs = {
+            "model": model_name,
+            "messages": [
+                {"role": "system", "content": system_prompt},
+                {"role": "user", "content": prompt},
+            ],
+            "temperature": temperature,
+            "max_tokens": 32768,
+        }
+        thinking_mode = self._apply_thinking_mode(kwargs, reasoning_effort)
 
         try:
-            response = self._client.chat.completions.create(
-                model=model_name,
-                messages=[
-                    {"role": "system", "content": system_prompt},
-                    {"role": "user", "content": prompt},
-                ],
-                temperature=0.3,
-                max_tokens=32768,
-                **extra,
-            )
+            response = self._client.chat.completions.create(**kwargs)
         except Exception as e:
             elapsed = (time.time() - start) * 1000
             raise RuntimeError(f"API call failed after {elapsed:.0f}ms: {e}")
@@ -145,42 +114,64 @@ class DeepSeekClient:
 
         choice = response.choices[0]
         text = choice.message.content or ""
-        # DeepSeek V4 reasoning models may leave content empty; fallback to reasoning_content
-        reasoning = getattr(choice.message, 'reasoning_content', None)
+        reasoning = getattr(choice.message, "reasoning_content", None) or ""
         if not text.strip() and reasoning:
             text = reasoning
-        token_count = response.usage.total_tokens if response.usage else 0
+        usage = response.usage
+        prompt_tokens = getattr(usage, "prompt_tokens", 0) or 0
+        completion_tokens = getattr(usage, "completion_tokens", 0) or 0
+        token_count = getattr(usage, "total_tokens", 0) or 0
 
-        # OpenRouter returns finish_reason, check for errors
-        finish = getattr(choice, 'finish_reason', 'stop')
-        if finish not in ('stop', 'length', None):
+        self.last_call_stats = {
+            "thinking_mode": thinking_mode,
+            "prompt_tokens": prompt_tokens,
+            "completion_tokens": completion_tokens,
+            "total_tokens": token_count,
+            "reasoning_chars": len(reasoning),
+            "content_chars": len(text),
+            "latency_ms": elapsed,
+        }
+
+        finish = getattr(choice, "finish_reason", "stop")
+        if finish not in ("stop", "length", None):
             raise RuntimeError(
                 f"API returned finish_reason={finish}: {text[:200]}")
 
         return extract_json(text), token_count, elapsed
 
-    def _call_direct(self, prompt: str, system_prompt: str, model_name: str):
+    def _call_direct(self,
+                     prompt: str,
+                     system_prompt: str,
+                     model_name: str,
+                     temperature: float,
+                     reasoning_effort: str = None):
         """Direct HTTP call when openai package is not available."""
-        import urllib.request
         import urllib.error
+        import urllib.request
 
-        body = json.dumps({
+        payload = {
             "model": model_name,
             "messages": [
                 {"role": "system", "content": system_prompt},
                 {"role": "user", "content": prompt},
             ],
-            "temperature": 0.3,
+            "temperature": temperature,
             "max_tokens": 32768,
-        }).encode()
+        }
+        thinking_mode = "disabled"
+        effort = (reasoning_effort or "none").lower()
+        if effort in ("none", "", "off", "disabled"):
+            payload["thinking"] = {"type": "disabled"}
+        else:
+            payload["thinking"] = {"type": "enabled"}
+            thinking_mode = effort if effort in ("high", "max") else "high"
+            payload["reasoning_effort"] = thinking_mode
+        body = json.dumps(payload).encode()
 
         headers = {
             "Authorization": f"Bearer {self.api_key}",
             "Content-Type": "application/json",
         }
-        if self.provider == "openrouter":
-            headers["HTTP-Referer"] = "https://github.com/pono-llm"
-            headers["X-Title"] = "pono-llm"
 
         url = f"{self.base_url}/chat/completions"
         req = urllib.request.Request(url, data=body, headers=headers)
@@ -192,20 +183,30 @@ class DeepSeekClient:
             elapsed = (time.time() - start) * 1000
 
             if "error" in data:
-                raise RuntimeError(
-                    f"API error: {data['error']}")
+                raise RuntimeError(f"API error: {data['error']}")
 
             choice = data["choices"][0]
-            text = choice["message"].get("content", "") or ""
-            # DeepSeek V4 reasoning models: fallback to reasoning_content if content empty
-            if not text.strip():
-                reasoning = choice["message"].get("reasoning_content", "")
-                if reasoning:
-                    text = reasoning
-            token_count = data.get("usage", {}).get("total_tokens", 0)
+            msg = choice["message"]
+            text = msg.get("content", "") or ""
+            reasoning = msg.get("reasoning_content", "") or ""
+            if not text.strip() and reasoning:
+                text = reasoning
+            usage = data.get("usage", {})
+            prompt_tokens = usage.get("prompt_tokens", 0)
+            completion_tokens = usage.get("completion_tokens", 0)
+            token_count = usage.get("total_tokens", 0)
+            self.last_call_stats = {
+                "thinking_mode": thinking_mode,
+                "prompt_tokens": prompt_tokens,
+                "completion_tokens": completion_tokens,
+                "total_tokens": token_count,
+                "reasoning_chars": len(reasoning),
+                "content_chars": len(text),
+                "latency_ms": elapsed,
+            }
 
             finish = choice.get("finish_reason", "stop")
-            if finish not in ('stop', 'length', None):
+            if finish not in ("stop", "length", None):
                 raise RuntimeError(
                     f"API returned finish_reason={finish}: {text[:200]}")
 
@@ -221,10 +222,8 @@ class DeepSeekClient:
 
 
 def extract_json(text: str) -> str:
-    """Extract JSON object from LLM response. Strips markdown fencing.
-    Searches for a JSON object containing expected candidate fields."""
+    """Extract JSON object from LLM response. Strips markdown fencing."""
     text = text.strip()
-    # Strip markdown code fences
     if text.startswith("```"):
         lines = text.split("\n")
         if lines[0].startswith("```"):
@@ -233,33 +232,29 @@ def extract_json(text: str) -> str:
             lines = lines[:-1]
         text = "\n".join(lines).strip()
 
-    # If text starts with '{', try it directly
     if text.startswith("{") and text.endswith("}"):
         return text
 
-    # Search for a JSON object containing candidate keys
-    for marker in ('"candidates"', '"batch_id"', '"keep_literals"', '"drop_literals"', '"type"'):
+    for marker in ('"block_disjuncts"', '"source_cti_id"', '"type"', '"actions"'):
         idx = text.find(marker)
         if idx == -1:
             continue
-        # Find the enclosing '{' before this marker
         depth = 0
         start = idx
         while start > 0:
             start -= 1
-            if text[start] == '}':
+            if text[start] == "}":
                 depth += 1
-            elif text[start] == '{':
+            elif text[start] == "{":
                 if depth == 0:
                     break
                 depth -= 1
-        # Find the matching '}'
         depth = 0
         end = start
         for i in range(start, len(text)):
-            if text[i] == '{':
+            if text[i] == "{":
                 depth += 1
-            elif text[i] == '}':
+            elif text[i] == "}":
                 depth -= 1
                 if depth == 0:
                     end = i + 1

@@ -1,3 +1,5 @@
+> **HISTORICAL / RESEARCH RECORD (2026-06-03)** — Not the active runtime integration path. Legacy code **will be deleted** with IC3 Frame v1. See [`ic3_frame_v1_integration.md`](ic3_frame_v1_integration.md) and [`DOC_INDEX.md`](DOC_INDEX.md).
+
 # p040 Injection k=10 Experiment — Blocked
 
 ## Reason
@@ -9,9 +11,14 @@ this session.
 
 ## What We Have at k=5
 
-The saturation experiment at k=5 already shows measurable reduction:
-- top_5_by_score: -31.8% CTIs, -26.0% frame clauses
-- The effect is consistent and reproducible
+Single-run saturation experiment at k=5 observed:
+- top_5_by_score: -31.8% CTIs, -26.0% frame clauses (one run vs baseline CTIs=1175)
+
+**This is NOT established as reproducible.** Later runs show IC3IA artifact counts
+vary widely at identical config (779–1175 CTIs). See
+[`docs/p040_saturation_repro_audit.md`](p040_saturation_repro_audit.md) and
+[`docs/reset_solver_injection_claim_boundary.md`](reset_solver_injection_claim_boundary.md).
+Do not claim stable artifact reduction from injection.
 
 ## Recommended Approach
 

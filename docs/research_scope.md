@@ -1,6 +1,10 @@
 # Formal-Feedback-Guided Semantic Lemma Repair for Word-Level IC3IA Traces
 
-> Working title. Last updated: 2026-05-28.
+> **2026-06-03 pivot:** Runtime integration is **IC3 Frame v1** ([`ic3_frame_v1_integration.md`](ic3_frame_v1_integration.md)).  
+> Path 1 injection and offline mining as proof loop **will be deleted** (not deprecated).  
+> Sections below describe the **historical** research scope.
+
+> Working title. Last updated: 2026-06-03.
 >
 > **Gist**: https://gist.github.com/swear01/cb8df13821ab1376f08cc144bc74b68b
 > — update after each major phase completion (new results, blocker resolved, pipeline milestone).
@@ -119,7 +123,10 @@ No measurable proof impact on this benchmark.
 1. **No Pono runtime speedup claim.**
 2. **No claim that generated lemmas unlock previously unsolved benchmarks.**
 3. **No full Pono frame-level `rel_ind_check` integration.**
-4. **No injection of generated lemmas into Pono's IC3IA frames.**
+4. **No full IC3 frame-level `rel_ind_check` integration.** A limited opt-in
+   **concrete assertion prototype** exists in `IC3IA::reset_solver()` (25 injectable
+   lifted lemmas; closed-loop/mutex not supported). See
+   `docs/llm_injection_capability_audit.md`.
 5. **No replacement of Pono's existing clause generalization.**
 
 These are explicitly listed as future work.
@@ -216,8 +223,10 @@ These are explicitly listed as future work.
 2. **Pono `rel_ind_check` integration** — call Pono's relative induction check
    from the formal gate pipeline (requires frame dump first).
 
-3. **Lemma injection into IC3IA frames** — add accepted lemmas to IC3IA proof
-   search and measure impact (requires rel_ind_check first).
+3. **Full IC3 frame / predicate lemma integration** — `rel_ind_check` and
+   `constrain_frame()` / `add_predicate()` paths remain future work. A separate
+   **concrete assert prototype** (`reset_solver`, limited grammar) is implemented;
+   see `docs/llm_injection_capability_audit.md`.
 
 ### C. Future (research direction)
 

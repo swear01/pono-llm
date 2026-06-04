@@ -1,4 +1,10 @@
+> **HISTORICAL / RESEARCH RECORD (2026-06-03)** — Not the active runtime integration path. Legacy code **will be deleted** with IC3 Frame v1. See [`ic3_frame_v1_integration.md`](ic3_frame_v1_integration.md) and [`DOC_INDEX.md`](DOC_INDEX.md).
+
 # Minimal Lifted Lemma Injection Plan
+
+> **Partially superseded (2026-06-03).** The `add_predicate()` path was not adopted.
+> Implemented path: concrete assert in `IC3IA::reset_solver()`. See
+> [`docs/llm_injection_capability_audit.md`](llm_injection_capability_audit.md).
 
 ## Goal
 
@@ -29,7 +35,16 @@ Only inject lemmas that were independently validated by:
 - Induction check: UNSAT
 - Under the offline Bitwuzla pipeline with 88% transition coverage
 
-## Opt-In Interface
+## Opt-In Interface (Implemented)
+
+```bash
+PONO_LLM_ASSERT_LIFTED_LEMMAS=1
+PONO_LLM_LEMMA_LIST=logs/formal_yield/lemma_lists/top_5_by_score.txt
+```
+
+Text file format: `ant_var1 ant_var2 cons_var` (one line per lemma, all `#b0`).
+
+**Planned but not implemented:**
 
 ```bash
 PONO_LLM_INJECT_LEMMAS=1
@@ -39,40 +54,16 @@ PONO_LLM_LEMMA_SUBSET=top_5_by_score
 
 When env var is not set, behavior is unchanged.
 
-## Current Blocker
+## Current Blocker (Updated)
 
-The 26 verified lemmas use the `(=> (and (= stateA #0) (= stateB #0)) (= state15 #0))`
-format with variables `stateA`, `stateB`, `state15` that are BTOR2 node IDs.
-These variables exist in the BTOR2 file and are accessible in Pono's concrete
-transition system.
+**Grammar too narrow**, not term mapping:
 
-However, IC3IA operates on an ABSTRACT transition system where these
-state variables become predicate labels. The phrase `(= state469 #b0)` is a
-1-bit Boolean predicate in the abstract solver. In the concrete solver,
-state469 corresponds to a bitvector state variable.
+- C++ accepts only 2-guard `#b0` triplets (25/26 lifted lemmas)
+- Single implication (`lift_025`) and closed-loop lemma (`#b1`) not injectable
+- No nary mutex or SMT formula loader
 
-The injection must translate the lifted lemma from the BTOR2-level format
-into the IC3IA abstract predicate format. This requires mapping
-`stateA` → `concrete predicate expression` → `abstract label`.
-
-Without this mapping at injection time, the lemma cannot be added as an
-IC3IA predicate. The mapping EXISTS in the predicate dump but is not
-available at Pono runtime.
-
-## Alternative: Concrete Solver Injection
-
-Instead of adding to IC3IA, add the lemma as a concrete assertion:
-```
-solver_->assert_formula(lemma_term)
-```
-This is simpler and doesn't require predicate mapping. The solver will
-handle the translation.
-
-## Recommended Path
-
-For a quick experiment: add lemma as concrete assumption (not IC3IA predicate).
-This is the simpler path and still provides useful signal about whether
-the lemma helps convergence.
+The original predicate-mapping blocker applied to `add_predicate()` / `constrain_frame()`.
+The adopted concrete-assert path bypasses that layer.
 
 ## Remaining Risk
 

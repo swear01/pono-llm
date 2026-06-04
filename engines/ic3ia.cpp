@@ -43,6 +43,7 @@
 #include "smt/available_solvers.h"
 #include "utils/logger.h"
 #include "utils/term_analysis.h"
+#include "utils/term_analysis.h"
 
 #include <fstream>
 #include <cstdlib>
@@ -407,58 +408,6 @@ void IC3IA::reset_solver()
     solver_->assert_formula(solver_->make_term(Equal, nlbl, npred));
   }
 
-  // Opt-in concrete lifted lemma assertions
-  // Reads lemma list from text file (one lemma per line):
-  //   ant_var1 ant_var2 cons_var
-  // All values are #b0 (false / zero).
-  {
-    const char * env = std::getenv("PONO_LLM_ASSERT_LIFTED_LEMMAS");
-    if (env && std::string(env) != "0" && std::string(env) != "") {
-      static std::vector<std::vector<std::string>> loaded_lemmas;
-      static bool loaded = false;
-
-      if (!loaded) {
-        loaded = true;
-        const char * file_env = std::getenv("PONO_LLM_LEMMA_LIST");
-        std::string path = file_env ? file_env : "logs/formal_yield/lemma_list.txt";
-
-        std::ifstream infile(path);
-        std::string line;
-        while (std::getline(infile, line)) {
-          if (line.empty() || line[0] == '#') continue;
-          std::istringstream iss(line);
-          std::vector<std::string> words;
-          std::string w;
-          while (iss >> w) words.push_back(w);
-          if (words.size() >= 3) loaded_lemmas.push_back(words);
-        }
-        std::cerr << "[PONO_LLM] loaded " << loaded_lemmas.size()
-                  << " lifted lemmas from " << path << std::endl;
-      }
-
-      if (loaded_lemmas.empty()) return;
-
-      auto mk_eq_bv0 = [this](const std::string & varname) -> Term {
-        Term sv = conc_ts_.lookup(varname);
-        if (!sv) return Term();
-        Term bv0 = solver_->make_term(0, sv->get_sort());
-        return solver_->make_term(Equal, sv, bv0);
-      };
-
-      int asserted = 0;
-      for (const auto & l : loaded_lemmas) {
-        if (l.size() < 3) continue;
-        Term eq1 = mk_eq_bv0(l[0]);
-        Term eq2 = mk_eq_bv0(l[1]);
-        Term eqC = mk_eq_bv0(l[2]);
-        if (eq1 && eq2 && eqC) {
-          Term ante = solver_->make_term(And, TermVec{eq1, eq2});
-          solver_->assert_formula(solver_->make_term(Implies, ante, eqC));
-          asserted++;
-        }
-      }
-    }
-  }
 }
 
 bool IC3IA::is_global_label(const Term & l) const
@@ -649,6 +598,32 @@ void dump_predicate_map(const smt::Term & lbl, const smt::Term & pred) {
 }
 
 }  // namespace
+
+bool IC3IA::try_apply_llm_refine_predicate(const Term & pred)
+{
+  if (!pred) return false;
+  if (!ts_.only_curr(pred)) {
+    logger.log(1, "LLM refine_predicate: not only_curr");
+    return false;
+  }
+  if (pred->get_sort() != boolsort_) {
+    logger.log(1, "LLM refine_predicate: not boolean");
+    return false;
+  }
+  if (!pred->is_symbolic_const() && !is_predicate(pred, boolsort_)) {
+    logger.log(1, "LLM refine_predicate: not a predicate shape");
+    return false;
+  }
+  if (predset_.find(pred) != predset_.end()) {
+    logger.log(1, "LLM refine_predicate: duplicate predicate");
+    return false;
+  }
+  if (check_intersects_initial(solver_->make_term(Not, pred))) {
+    logger.log(1, "LLM refine_predicate: intersects initial");
+    return false;
+  }
+  return add_predicate(pred);
+}
 
 bool IC3IA::add_predicate(const Term & pred)
 {

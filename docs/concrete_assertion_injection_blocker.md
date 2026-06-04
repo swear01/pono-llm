@@ -1,36 +1,47 @@
+> **HISTORICAL — Path 1 was implemented then scheduled for deletion (2026-06-03).**  
+> Not the active runtime path. See [`ic3_frame_v1_integration.md`](ic3_frame_v1_integration.md).
+
 # Concrete Assertion Injection — Blocked
 
-## Status
+> **Archive note:** This doc originally recorded blockers. Path 1 (`reset_solver` assert) was later implemented (Task 107A) and is now **scheduled for deletion** with IC3 Frame v1 — not maintained as production integration.
 
-Not implemented. Both injection paths are blocked:
+## Status (Historical)
 
-1. **IC3IA predicate injection**: requires `lbl2pred_` mapping to convert
-   bitvector equality `(= state469 #b0)` → Boolean predicate label.
-   Mapping exists but not accessible at injection time without C++ changes.
+This document originally recorded both injection paths as blocked. As of Task 107A:
 
-2. **Concrete solver assertion**: requires `constrain_frame()` interface
-   which expects `IC3Formula` with Boolean children. Raw `assert_formula()`
-   works but requires `reset_solver()` override.
+1. **IC3IA predicate / frame injection** — still blocked (requires `lbl2pred_` / `constrain_frame()` mapping).
+2. **Concrete solver assertion via `reset_solver()`** — **implemented** (opt-in, limited grammar).
+
+## Current Working Command
+
+```bash
+PONO_LLM_ASSERT_LIFTED_LEMMAS=1 \
+PONO_LLM_LEMMA_LIST=logs/formal_yield/lemma_lists/top_5_by_score.txt \
+build/pono -e ic3ia -k 5 qspiflash_dualflexpress_divfive-p040.btor2
+```
+
+## Original Blocked Paths (Archive)
+
+### IC3IA predicate injection
+
+Requires `lbl2pred_` mapping to convert bitvector equality `(= state469 #b0)` → Boolean predicate label. Mapping exists but not used at injection time.
+
+### constrain_frame() injection
+
+Expects `IC3Formula` with Boolean children. Raw `assert_formula()` without `reset_solver()` override would be lost on reset — solved by overriding `IC3IA::reset_solver()`.
 
 ## Recommended Alternative: Offline Replay (WP5)
 
-Without C++ changes, the best available method to estimate injection impact
-is offline replay: compare frame clauses against injected lemmas using the
-existing JSONL dump infrastructure.
+Still valid for impact estimation without running Pono: [`llm_worker/offline_injection_replay.py`](../llm_worker/offline_injection_replay.py).
 
-## Ready-to-Run Command (when unblocked)
+## Deprecated Ready-to-Run Command
+
+The env vars below were never implemented:
 
 ```bash
 PONO_LLM_CONCRETE_ASSERT_LEMMAS=1 \
 PONO_LLM_LEMMA_FILE=logs/formal_yield/lifted_lemma_injection_dryrun.json \
-PONO_LLM_LEMMA_SUBSET=one_best_candidate \
-build/pono -e ic3ia -k 5 qspiflash_dualflexpress_divfive-p040.btor2
+PONO_LLM_LEMMA_SUBSET=one_best_candidate
 ```
 
-## Required C++ Patch
-
-1. Add `constrain_frame()` call in `check_until()` at `ic3base.cpp:189`
-2. Convert lemma term via `ic3formula_conjunction()` → `ic3formula_negate()`
-3. Call `constrain_frame(0, lemma_formula, true)`
-4. Gate with `std::getenv("PONO_LLM_CONCRETE_ASSERT_LEMMAS")`
-5. Override `IC3IA::reset_solver()` to re-assert concrete terms
+Use `PONO_LLM_ASSERT_LIFTED_LEMMAS` + `PONO_LLM_LEMMA_LIST` instead.

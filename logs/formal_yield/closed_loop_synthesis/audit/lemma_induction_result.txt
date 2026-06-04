@@ -1,4 +1,0 @@
-Lemma: (=> (= state2002 1) (= state790 1))
-Query: L(s) ∧ T(s,i,s') ∧ ¬L(s')
-Transition constraints: 217
-Result: unsat

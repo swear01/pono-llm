@@ -1,3 +1,6 @@
+> **ACTIVE for v1 (2026-06-03)** — Nondeterminism audit; relevant to E2E evaluation.  
+> Spec: [`ic3_frame_v1_integration.md`](ic3_frame_v1_integration.md)
+
 # IC3IA Nondeterminism Audit
 
 ## Random Seed Control

@@ -1,3 +1,6 @@
+> **ACTIVE for v1 (2026-06-03)** — Symbol shortlist / Verilog mapping notes for harness Layer 2.  
+> Spec: [`ic3_frame_v1_integration.md`](ic3_frame_v1_integration.md)
+
 # Mapping Spike for Solver-Validation Shortlist
 
 ## Summary

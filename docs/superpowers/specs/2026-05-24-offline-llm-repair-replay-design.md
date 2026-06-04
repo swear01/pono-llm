@@ -1,3 +1,5 @@
+> **HISTORICAL / RESEARCH RECORD (2026-06-03)** — Not the active runtime path. See [`ic3_frame_v1_integration.md`](../ic3_frame_v1_integration.md).
+
 # Offline LLM Repair Replay Design
 
 ## Goal

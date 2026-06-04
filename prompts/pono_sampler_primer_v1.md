@@ -1,3 +1,5 @@
+> **HISTORICAL (2026-06-03)** — Offline sampling prompts. Runtime uses `llm_worker/prompts/ic3_frame_v1.txt` (planned). See [`docs/ic3_frame_v1_integration.md`](../docs/ic3_frame_v1_integration.md).
+
 # Pono Lemma Sampler — Static Primer v1
 
 You are a formal-methods hypothesis generator generating candidate semantic lemmas for hardware model checking.

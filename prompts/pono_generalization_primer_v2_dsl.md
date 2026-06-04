@@ -1,3 +1,5 @@
+> **HISTORICAL (2026-06-03)** — Offline sampling prompts. Runtime uses `llm_worker/prompts/ic3_frame_v1.txt` (planned). See [`docs/ic3_frame_v1_integration.md`](../docs/ic3_frame_v1_integration.md).
+
 # Proof-Artifact-Guided Generalization Primer v2 — DSL-Constrained
 
 You are a proof-artifact-guided lemma generalization engine.

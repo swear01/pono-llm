@@ -1,3 +1,6 @@
+> **ACTIVE for v1 (2026-06-03)** — C++ dump reference for harness implementation.  
+> Spec: [`ic3_frame_v1_integration.md`](ic3_frame_v1_integration.md)
+
 # C++ Dump Implementation Reference
 
 > **Status**: Specified, not compiled. See Phase C blocker below.

@@ -17,6 +17,7 @@
 #include <cassert>
 #include <csignal>
 #include <iostream>
+#include <unordered_map>
 
 #ifdef WITH_PROFILING
 #include <gperftools/profiler.h>
@@ -53,7 +54,9 @@ ProverResult check_prop(PonoOptions pono_options,
                         Term & prop,
                         TransitionSystem & ts,
                         const SmtSolver & s,
-                        std::vector<UnorderedTermMap> & cex)
+                        std::vector<UnorderedTermMap> & cex,
+                        const std::unordered_map<std::string, std::string> *
+                            verilog_map = nullptr)
 {
   // get property name before it is rewritten
   const string prop_name = ts.get_name(prop);
@@ -157,6 +160,11 @@ ProverResult check_prop(PonoOptions pono_options,
         auto llm_gen =
             std::make_shared<LLMGeneralizer>(pono_options, s);
         ic3base->set_llm_generalizer(llm_gen);
+        if (verilog_map) {
+          ic3base->init_llm_symbol_registry(*verilog_map);
+        } else {
+          ic3base->init_llm_symbol_registry({});
+        }
         logger.log(
             1, "LLM generalizer initialized for engine {}", to_string(eng));
       } else {
@@ -382,7 +390,7 @@ int main(int argc, char ** argv)
           }
         }
       } else {
-        res = check_prop(pono_options, prop, fts, s, cex);
+        res = check_prop(pono_options, prop, fts, s, cex, &btor_enc.get_symbol_map());
       }
       // we assume that a prover never returns 'ERROR'
       assert(res != ERROR);

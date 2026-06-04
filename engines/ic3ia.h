@@ -135,6 +135,8 @@ class IC3IA : public IC3
    */
   bool add_predicate(const smt::Term & pred);
 
+  bool try_apply_llm_refine_predicate(const smt::Term & pred) override;
+
   /** Register a state variable mapping in to_solver_
    *  This is a bit ugly but it's needed because symbols aren't created in
    * to_solver_ so it needs the mapping from interpolator_ symbols to solver_

@@ -1,3 +1,6 @@
+> **HISTORICAL — legacy `cube_subset` bugs (2026-06-03).** Code path **will be deleted** with IC3 Frame v1.  
+> See [`ic3_frame_v1_integration.md`](ic3_frame_v1_integration.md). Below documents pre-v1 failures.
+
 # LLM-Guided Lemma Generalization: Bug Analysis
 
 ## Summary

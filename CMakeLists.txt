@@ -247,6 +247,7 @@ set(
   "${PROJECT_SOURCE_DIR}/engines/kinduction.cpp"
   "${PROJECT_SOURCE_DIR}/engines/kliveness.cpp"
   "${PROJECT_SOURCE_DIR}/engines/llm_generalizer.cpp"
+  "${PROJECT_SOURCE_DIR}/engines/ic3_frame_ast.cpp"
   "${PROJECT_SOURCE_DIR}/engines/mbic3.cpp"
   "${PROJECT_SOURCE_DIR}/engines/syguspdr.cpp"
   "${PROJECT_SOURCE_DIR}/frontends/btor2_encoder.cpp"

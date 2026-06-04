@@ -1,3 +1,6 @@
+> **ACTIVE for v1 harness (2026-06-03)** — Dump format reused for live `frame_snapshot` (Layer 3).  
+> Spec: [`ic3_frame_v1_integration.md`](ic3_frame_v1_integration.md)
+
 # Pono IC3IA Frame / CTI Dump Format
 
 ## Opt-in

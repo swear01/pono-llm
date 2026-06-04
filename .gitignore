@@ -53,3 +53,6 @@ compile_commands.json
 
 # Benchmark output
 bench_results/
+
+# Legacy offline LLM research artifacts (removed from repo)
+logs/formal_yield/

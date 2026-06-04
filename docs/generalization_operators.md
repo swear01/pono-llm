@@ -1,3 +1,6 @@
+> **ACTIVE for v1 (2026-06-03)** — `operator` field values in `ic3_frame_response`.  
+> Spec: [`ic3_frame_v1_integration.md`](ic3_frame_v1_integration.md)
+
 # Generalization Operators
 
 Each operator transforms a proof artifact into a candidate lemma.

@@ -1,5 +1,8 @@
 # Pono Integration: Future Work
 
+> **SUPERSEDED by v1 spec (2026-06-03).** Active checklist: [`ic3_frame_v1_integration.md`](ic3_frame_v1_integration.md) § Implementation checklist.  
+> Content below is **historical** (pre-v1 offline pipeline).
+
 ## Current Status (2026-05-29)
 
 ### Main Result

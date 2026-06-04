@@ -20,7 +20,9 @@
 #include <cassert>
 #include <cstddef>
 #include <set>
+#include <sstream>
 #include <stdexcept>
+#include <unordered_map>
 #include <vector>
 
 #include "core/prop.h"
@@ -474,7 +476,8 @@ ProverResult IC3Base::step(int i)
   // Flush batched CTI contexts for this frame to LLM
   if (llm_gen_ && llm_gen_->is_async_cti()
       && llm_gen_->has_buffered_cti(frontier_idx())) {
-    llm_gen_->flush_frame_batch(frontier_idx());
+    string snapshot = serialize_frame_snapshot_json(frontier_idx());
+    llm_gen_->flush_frame_batch(frontier_idx(), snapshot);
   }
 
   process_llm_candidates();  // poll for LLM candidates after blocking phase
@@ -550,7 +553,10 @@ ProverResult IC3Base::step_01()
 bool IC3Base::rel_ind_check(size_t i,
                             const IC3Formula & c,
                             IC3Formula & out,
-                            bool get_pred)
+                            bool get_pred,
+                            const vector<IC3FrameDisjunct> * witness_refs,
+                            string * witness_ref_out,
+                            string * witness_val_out)
 {
   assert(i > 0);
   assert(i < frames_.size());
@@ -634,6 +640,11 @@ bool IC3Base::rel_ind_check(size_t i,
     out = c;
   }
 
+  if (r.is_sat() && witness_refs && witness_ref_out && witness_val_out) {
+    try_extract_witness_from_refs(
+        *witness_refs, true, *witness_ref_out, *witness_val_out);
+  }
+
   pop_solver_context();
   assert(!solver_context_);
 
@@ -667,10 +678,6 @@ bool IC3Base::block_all()
     assert(goal.term);            // expecting non-null
     assert(proof_goals.empty());  // bad should be the first goal each iteration
     proof_goals.new_proof_goal(goal, frontier_idx(), nullptr);
-
-    // Offline replay checks need a clean solver context, so run them after
-    // reaches_bad has popped its SAT-query context.
-    process_pending_offline_llm_cti();
 
     // Poll for LLM candidates after capturing CTI contexts
     process_llm_candidates();
@@ -976,6 +983,60 @@ bool IC3Base::check_intersects_initial(const Term & t)
   return check_intersects(init_label_, t);
 }
 
+string IC3Base::format_llm_term_value(const Term & val) const
+{
+  if (!val || !val->is_value()) return "";
+  Sort sort = val->get_sort();
+  if (sort->get_sort_kind() == BOOL) {
+    return val == solver_true_ ? "1" : "0";
+  }
+  return val->to_string();
+}
+
+bool IC3Base::try_extract_witness_from_refs(
+    const vector<IC3FrameDisjunct> & refs,
+    bool use_next_state,
+    string & ref_out,
+    string & val_out) const
+{
+  assert(solver_context_ > 0);
+  for (const auto & d : refs) {
+    if (d.ref.empty()) continue;
+    try {
+      Term sym = ts_.lookup(d.ref);
+      Term query = use_next_state ? ts_.next(sym) : sym;
+      Term model_val = solver_->get_value(query);
+      string formatted = format_llm_term_value(model_val);
+      if (formatted.empty()) continue;
+      ref_out = d.ref;
+      val_out = formatted;
+      return true;
+    } catch (...) {
+      continue;
+    }
+  }
+  return false;
+}
+
+bool IC3Base::check_intersects_initial_with_witness(
+    const Term & t,
+    const vector<IC3FrameDisjunct> & refs,
+    string & ref_out,
+    string & val_out)
+{
+  assert(solver_context_ == 0);
+  push_solver_context();
+  solver_->assert_formula(init_label_);
+  solver_->assert_formula(t);
+  Result r = check_sat();
+  const bool intersects = r.is_sat();
+  if (intersects) {
+    try_extract_witness_from_refs(refs, false, ref_out, val_out);
+  }
+  pop_solver_context();
+  return intersects;
+}
+
 void IC3Base::fix_if_intersects_initial(TermVec & to_keep, const TermVec & rem)
 {
   // TODO: there's a tricky issue here. The reducer doesn't have the label
@@ -1278,6 +1339,58 @@ void IC3Base::set_llm_generalizer(std::shared_ptr<LLMGeneralizer> gen)
   llm_gen_ = gen;
 }
 
+static string extract_state_ref_name(const string & name)
+{
+  size_t pos = name.find("state");
+  if (pos == string::npos) return name;
+  size_t end = pos + 5;
+  while (end < name.size() && isdigit(static_cast<unsigned char>(name[end]))) {
+    ++end;
+  }
+  if (end > pos + 5) return name.substr(pos, end - pos);
+  return name;
+}
+
+static void fill_cti_literal_from_term(const smt::Term & child, CTILiteral & lit)
+{
+  smt::Term inner = child;
+  bool polarity = true;
+  if (child->get_op() == smt::Not) {
+    inner = *(child->begin());
+    polarity = false;
+  }
+
+  smt::Op op = inner->get_op();
+  if (op.prim_op == smt::Equal) {
+    auto it = inner->begin();
+    if (it != inner->end()) {
+      smt::Term lhs = *it;
+      smt::Term rhs = *std::next(it);
+      lit.varname = extract_state_ref_name(lhs->to_string());
+      lit.value = rhs->to_string();
+      if (lit.value == "true") lit.value = "1";
+      if (lit.value == "false") lit.value = "0";
+      lit.expr = lit.varname + " = " + lit.value;
+      if (!polarity) lit.expr = "not (" + lit.expr + ")";
+      return;
+    }
+  }
+  if (inner->is_symbol() || inner->is_symbolic_const()) {
+    lit.varname = extract_state_ref_name(inner->to_string());
+    if (inner->get_sort()->get_sort_kind() == smt::BOOL) {
+      lit.value = polarity ? "true" : "false";
+    } else {
+      lit.value = polarity ? "1" : "0";
+    }
+    lit.expr = lit.varname + " = " + lit.value;
+    return;
+  }
+
+  lit.varname = simplify_cti_literal(child);
+  lit.expr = lit.varname;
+  lit.value = polarity ? "true" : "false";
+}
+
 std::vector<CTILiteral> IC3Base::collect_cti_literals(
     const IC3Formula & cube) const
 {
@@ -1287,16 +1400,7 @@ std::vector<CTILiteral> IC3Base::collect_cti_literals(
     CTILiteral lit;
     lit.id = lits.size();
     lit.term = child;
-    if (child->get_op() == smt::Not) {
-      smt::Term inner = *(child->begin());
-      lit.varname = simplify_cti_literal(inner);
-      lit.expr = lit.varname + " = false";
-      lit.value = "false";
-    } else {
-      lit.varname = simplify_cti_literal(child);
-      lit.expr = lit.varname + " = true";
-      lit.value = "true";
-    }
+    fill_cti_literal_from_term(child, lit);
     // Truncate very long simplified strings
     if (lit.varname.size() > 200) {
       lit.varname = lit.varname.substr(0, 197) + "...";
@@ -1311,52 +1415,123 @@ std::vector<CTILiteral> IC3Base::collect_cti_literals(
   return lits;
 }
 
-void IC3Base::write_llm_static_context_once()
+void IC3Base::init_llm_symbol_registry(
+    const unordered_map<string, string> & verilog_map)
 {
-  if (!llm_gen_ || llm_static_context_written_) return;
-  if (!llm_gen_->is_offline_dump() && !llm_gen_->is_offline_check()) return;
-
-  std::vector<CTILiteral> states;
-  std::vector<CTILiteral> inputs;
-
+  if (!llm_gen_) return;
+  unordered_map<string, SymbolRegistryEntry> registry;
   for (const auto & sv : ts_.statevars()) {
-    CTILiteral lit;
-    lit.id = states.size();
-    lit.varname = simplify_cti_literal(sv);
-    lit.expr = lit.varname;
-    lit.kind = "state";
-    lit.signals.push_back(lit.varname);
-    lit.term = sv;
-    states.push_back(lit);
+    string name = simplify_cti_literal(sv);
+    SymbolRegistryEntry e;
+    e.kind = "state";
+    e.width = sv->get_sort()->get_width();
+    size_t pos = name.find("state");
+    if (pos != string::npos) {
+      try {
+        e.btor2_line = stoul(name.substr(pos + 5));
+      } catch (...) {
+        e.btor2_line = 0;
+      }
+    }
+    auto it = verilog_map.find(name);
+    if (it != verilog_map.end()) e.verilog = it->second;
+    registry[name] = e;
   }
-
   for (const auto & iv : ts_.inputvars()) {
-    CTILiteral lit;
-    lit.id = inputs.size();
-    lit.varname = simplify_cti_literal(iv);
-    lit.expr = lit.varname;
-    lit.kind = "input";
-    lit.signals.push_back(lit.varname);
-    lit.term = iv;
-    inputs.push_back(lit);
+    string name = simplify_cti_literal(iv);
+    SymbolRegistryEntry e;
+    e.kind = "input";
+    e.width = iv->get_sort()->get_width();
+    auto it = verilog_map.find(name);
+    if (it != verilog_map.end()) e.verilog = it->second;
+    registry[name] = e;
   }
-
-  std::vector<std::string> updates;
-  for (const auto & kv : ts_.state_updates()) {
-    updates.push_back(simplify_cti_literal(kv.first) + "' = "
-                      + simplify_cti_literal(kv.second));
-    if (updates.size() >= 200) break;
-  }
-
-  std::string bad_expr = simplify_cti_literal(bad_);
-  llm_gen_->write_static_context(
-      "pono-benchmark", bad_expr, states, inputs, updates);
-  llm_static_context_written_ = true;
+  llm_gen_->set_symbol_registry(registry);
+  string bad_expr = simplify_cti_literal(bad_);
+  llm_gen_->write_benchmark_context(options_.filename_, bad_expr);
 }
 
-namespace {
+IC3Formula IC3Base::build_block_clause_from_disjuncts(
+    const vector<IC3FrameDisjunct> & disjuncts) const
+{
+  TermVec children;
+  for (const auto & d : disjuncts) {
+    try {
+      Term sym = ts_.lookup(d.ref);
+      Sort sort = sym->get_sort();
+      Term val;
+      if (sort->get_sort_kind() == BOOL) {
+        if (d.rhs == "true" || d.rhs == "1") val = solver_->make_term(true);
+        else if (d.rhs == "false" || d.rhs == "0")
+          val = solver_->make_term(false);
+        else throw runtime_error("invalid bool rhs");
+      } else {
+        string s = d.rhs;
+        if (s.rfind("#b", 0) == 0) {
+          val = solver_->make_term(s.substr(2), sort);
+        } else {
+          val = solver_->make_term(stoul(s), sort);
+        }
+      }
+      Term lit;
+      if (d.op == "eq" || d.op.empty()) {
+        lit = solver_->make_term(Equal, sym, val);
+      } else if (d.op == "ne") {
+        lit = solver_->make_term(Distinct, sym, val);
+      } else {
+        throw runtime_error("unsupported op");
+      }
+      if (!d.polarity) lit = solver_->make_term(Not, lit);
+      children.push_back(lit);
+    } catch (const exception & e) {
+      logger.log(1, "IC3Frame block build failed: {}", e.what());
+      return IC3Formula();
+    }
+  }
+  if (children.empty()) return IC3Formula();
+  Term t = children.size() == 1 ? children[0] : solver_->make_term(Or, children);
+  return IC3Formula(t, children, true);
+}
 
-std::string cti_json_escape(const std::string & s) {
+bool IC3Base::validate_frame_response_vocab(
+    const IC3FrameResponse & resp) const
+{
+  for (const auto & d : resp.block_disjuncts) {
+    try {
+      ts_.lookup(d.ref);
+    } catch (...) {
+      return false;
+    }
+  }
+  if (resp.has_refine_predicate) {
+    vector<string> pred_refs;
+    collect_predicate_refs(resp.refine_predicate, pred_refs);
+    for (const auto & ref : pred_refs) {
+      try {
+        ts_.lookup(ref);
+      } catch (...) {
+        return false;
+      }
+    }
+  }
+  for (const auto & sym : resp.symbols_used) {
+    try {
+      ts_.lookup(sym);
+    } catch (...) {
+      return false;
+    }
+  }
+  return true;
+}
+
+bool IC3Base::try_apply_llm_refine_predicate(const Term & pred)
+{
+  (void)pred;
+  return false;
+}
+
+static std::string cti_json_escape(const std::string & s)
+{
   std::string out;
   out.reserve(s.size());
   for (char c : s) {
@@ -1369,6 +1544,8 @@ std::string cti_json_escape(const std::string & s) {
   }
   return out;
 }
+
+namespace {
 
 void dump_ic3ia_cti(const CTIContext & ctx, const smt::TermVec & children) {
   const char * env = std::getenv("PONO_LLM_DUMP_IC3IA");
@@ -1522,496 +1699,208 @@ void IC3Base::capture_cti_context(size_t frame_idx, const IC3Formula & cube)
   dump_ic3ia_cti(ctx, cube.children);
 
   if (!llm_gen_) return;
-  if (!llm_gen_->is_async_cti() && !llm_gen_->is_offline_dump()
-      && !llm_gen_->is_offline_check()) {
-    return;
-  }
-
-  write_llm_static_context_once();
-
-  // Store the cube children + simplified names for later candidate pairing
-  std::vector<std::string> names;
-  names.reserve(ctx.literals.size());
-  for (const auto & lit : ctx.literals) {
-    names.push_back(lit.varname);
-  }
-  llm_gen_->store_cti_cube_for_frame(frame_idx, cube.children, names);
-
-  if (llm_gen_->is_async_cti()) {
-    // Buffer CTI context per frame for multi-CTI batching
-    llm_gen_->buffer_cti_context(frame_idx, ctx);
-  } else if (llm_gen_->is_offline_dump()) {
-    llm_gen_->write_offline_cti_context(ctx);
-  } else if (llm_gen_->is_offline_check()) {
-    llm_gen_->write_offline_cti_context(ctx);
-    pending_offline_ctx_ = ctx;
-    pending_offline_cube_ = cube;
-    pending_offline_cti_ = true;
-  }
+  if (!llm_gen_->is_async_cti()) return;
+  llm_gen_->buffer_cti_context(frame_idx, ctx, cube.children);
 }
 
-void IC3Base::process_pending_offline_llm_cti()
+static bool term_to_disjunct_json(const smt::Term & term,
+                                  const smt::Term & inner,
+                                  bool polarity,
+                                  ostringstream & out)
 {
-  if (!pending_offline_cti_) return;
-  assert(!solver_context_);
-  pending_offline_cti_ = false;
-  process_offline_llm_for_cti(pending_offline_ctx_, pending_offline_cube_);
-}
-
-IC3Formula IC3Base::cube_from_keep_ids(
-    const IC3Formula & cube, const std::vector<size_t> & keep_ids) const
-{
-  std::set<size_t> keep(keep_ids.begin(), keep_ids.end());
-  TermVec children;
-  for (size_t i = 0; i < cube.children.size(); ++i) {
-    if (keep.count(i)) children.push_back(cube.children[i]);
-  }
-  return ic3formula_conjunction(children);
-}
-
-IC3Formula IC3Base::blocking_from_keep_ids(
-    const IC3Formula & cube, const std::vector<size_t> & keep_ids) const
-{
-  std::set<size_t> keep(keep_ids.begin(), keep_ids.end());
-  TermVec children;
-  for (size_t i = 0; i < cube.children.size(); ++i) {
-    if (keep.count(i)) children.push_back(smart_not(cube.children[i]));
-  }
-  return ic3formula_disjunction(children);
-}
-
-bool IC3Base::check_llm_candidate_with_witness(
-    size_t frame_idx,
-    const IC3Formula & candidate_cube,
-    const CTIContext & ctx,
-    const std::vector<size_t> & dropped_ids,
-    std::vector<LLMWitnessDiff> & witness_diffs)
-{
-  witness_diffs.clear();
-  assert(frame_idx > 0);
-  assert(frame_idx < frames_.size());
-  assert(!candidate_cube.disjunction);
-  assert(!solver_context_);
-
-  push_solver_context();
-  assert_frame_labels(frame_idx - 1);
-  solver_->assert_formula(solver_->make_term(Not, candidate_cube.term));
-  assert_trans_label();
-
-  assumps_.clear();
-  for (const auto & cc : candidate_cube.children) {
-    Term ccnext = ts_.next(cc);
-    Term lbl = label(ccnext);
-    if (lbl != ccnext && !is_global_label(lbl)) {
-      solver_->assert_formula(solver_->make_term(Implies, lbl, ccnext));
-    }
-    assumps_.push_back(lbl);
-  }
-
-  Result r = check_sat_assuming(assumps_);
-  if (r.is_sat()) {
-    for (size_t id : dropped_ids) {
-      if (id >= ctx.literals.size()) continue;
-      Term lit_next = ts_.next(ctx.literals[id].term);
-      Term val = solver_->get_value(lit_next);
-      std::string val_s = simplify_cti_literal(val);
-      if (val_s == "false" || val_s == "#b0" || val_s == "0") {
-        LLMWitnessDiff diff;
-        diff.literal_id = id;
-        diff.cti_literal = ctx.literals[id].expr;
-        diff.witness_value = simplify_cti_literal(lit_next) + " = " + val_s;
-        diff.effect = "Adding this literal back excludes the SAT witness.";
-        witness_diffs.push_back(diff);
-      }
+  smt::Op op = inner->get_op();
+  if (op.prim_op == smt::Equal) {
+    auto it = inner->begin();
+    if (it != inner->end()) {
+      smt::Term lhs = *it;
+      smt::Term rhs = *std::next(it);
+    string ref = extract_state_ref_name(lhs->to_string());
+    string rhs_s = rhs->to_string();
+    if (rhs_s == "true") rhs_s = "1";
+    if (rhs_s == "false") rhs_s = "0";
+    out << "{\"atom\":{";
+    out << "\"ref\":\"" << cti_json_escape(ref) << "\",";
+    out << "\"rhs\":\"" << cti_json_escape(rhs_s) << "\"},";
+    out << "\"polarity\":" << (polarity ? "true" : "false") << "}";
+    return true;
     }
   }
-
-  pop_solver_context();
-  assert(!solver_context_);
-  assert(!r.is_unknown());
-  return r.is_unsat();
+  if (inner->is_symbol() || inner->is_symbolic_const()) {
+    string ref = extract_state_ref_name(inner->to_string());
+    string rhs_s = polarity ? "1" : "0";
+    out << "{\"atom\":{";
+    out << "\"ref\":\"" << cti_json_escape(ref) << "\",";
+    out << "\"rhs\":\"" << rhs_s << "\"},";
+    out << "\"polarity\":" << (polarity ? "true" : "false") << "}";
+    return true;
+  }
+  (void)term;
+  return false;
 }
 
-void IC3Base::process_offline_llm_for_cti(const CTIContext & ctx,
-                                          const IC3Formula & cube)
+std::string IC3Base::serialize_frame_snapshot_json(size_t frame_idx) const
 {
-  if (!llm_gen_ || !llm_gen_->is_offline_check()) return;
-  assert(!solver_context_);
-  llm_gen_->load_offline_records();
-
-  LLMIdCandidate proposal;
-  if (!llm_gen_->get_proposal(ctx.cti_id, proposal)) return;
-  if (proposal.keep_ids.empty()) {
-    llm_gen_->write_replay_result(ctx.cti_id,
-                                  "rejected_schema",
-                                  ctx.frame_idx,
-                                  cube.children.size(),
-                                  0,
-                                  "empty keep_ids");
-    return;
-  }
-
-  IC3Formula candidate_cube = cube_from_keep_ids(cube, proposal.keep_ids);
-  IC3Formula blocking = blocking_from_keep_ids(cube, proposal.keep_ids);
-  if (candidate_cube.children.empty() || blocking.children.empty()) {
-    llm_gen_->write_replay_result(ctx.cti_id,
-                                  "rejected_schema",
-                                  ctx.frame_idx,
-                                  cube.children.size(),
-                                  0,
-                                  "empty candidate cube");
-    return;
-  }
-
-  if (check_intersects_initial(candidate_cube.term)) {
-    llm_gen_->write_replay_result(ctx.cti_id,
-                                  "rejected_initial",
-                                  ctx.frame_idx,
-                                  cube.children.size(),
-                                  candidate_cube.children.size(),
-                                  "candidate cube intersects initial states");
-    return;
-  }
-
-  std::vector<LLMWitnessDiff> diffs;
-  bool ok = check_llm_candidate_with_witness(
-      ctx.frame_idx, candidate_cube, ctx, proposal.drop_ids, diffs);
-  if (ok) {
-    constrain_frame(ctx.frame_idx, blocking, true);
-    llm_gen_->stats_.num_accepted++;
-    llm_gen_->write_replay_result(ctx.cti_id,
-                                  "accepted_initial",
-                                  ctx.frame_idx,
-                                  cube.children.size(),
-                                  candidate_cube.children.size(),
-                                  proposal.short_reason);
-    return;
-  }
-
-  llm_gen_->stats_.num_induction_fail++;
-  llm_gen_->write_replay_result(
-      ctx.cti_id,
-      "sat_failed_initial",
-      ctx.frame_idx,
-      cube.children.size(),
-      candidate_cube.children.size(),
-      "proposal included a reachable one-step successor");
-  if (!diffs.empty()) {
-    llm_gen_->write_repair_request(ctx, proposal, diffs);
-  }
-
-  LLMIdCandidate repair;
-  if (!llm_gen_->get_repair(ctx.cti_id, repair)) return;
-
-  std::set<size_t> repaired_keep(proposal.keep_ids.begin(),
-                                 proposal.keep_ids.end());
-  for (size_t id : repair.add_back_ids) {
-    repaired_keep.insert(id);
-  }
-  std::vector<size_t> repaired_keep_ids(repaired_keep.begin(),
-                                        repaired_keep.end());
-
-  IC3Formula repaired_cube = cube_from_keep_ids(cube, repaired_keep_ids);
-  IC3Formula repaired_blocking = blocking_from_keep_ids(cube, repaired_keep_ids);
-  if (repaired_cube.children.empty() || repaired_blocking.children.empty()) {
-    llm_gen_->write_replay_result(ctx.cti_id,
-                                  "repair_rejected_schema",
-                                  ctx.frame_idx,
-                                  cube.children.size(),
-                                  0,
-                                  "empty repaired candidate cube");
-    return;
-  }
-  if (check_intersects_initial(repaired_cube.term)) {
-    llm_gen_->write_replay_result(ctx.cti_id,
-                                  "repair_rejected_initial",
-                                  ctx.frame_idx,
-                                  cube.children.size(),
-                                  repaired_cube.children.size(),
-                                  "repaired candidate intersects initial states");
-    return;
-  }
-
-  std::vector<size_t> remaining_drop;
-  for (size_t id : proposal.drop_ids) {
-    if (!repaired_keep.count(id)) remaining_drop.push_back(id);
-  }
-
-  std::vector<LLMWitnessDiff> repair_diffs;
-  bool repair_ok = check_llm_candidate_with_witness(
-      ctx.frame_idx, repaired_cube, ctx, remaining_drop, repair_diffs);
-  if (repair_ok) {
-    constrain_frame(ctx.frame_idx, repaired_blocking, true);
-    llm_gen_->stats_.num_accepted++;
-    llm_gen_->write_replay_result(ctx.cti_id,
-                                  "repair_accepted",
-                                  ctx.frame_idx,
-                                  cube.children.size(),
-                                  repaired_cube.children.size(),
-                                  repair.short_reason);
-  } else {
-    llm_gen_->write_replay_result(
-        ctx.cti_id,
-        "repair_sat_failed",
-        ctx.frame_idx,
-        cube.children.size(),
-        repaired_cube.children.size(),
-        "repair still includes a reachable successor");
-  }
-}
-
-IC3Formula IC3Base::cube_subset_to_blocking(const IC3Formula & cube,
-                                            const LLMCandidate & cand) const
-{
-  return cube_subset_to_blocking(cube, cand, {});
-}
-
-IC3Formula IC3Base::cube_subset_to_blocking(
-    const IC3Formula & cube,
-    const LLMCandidate & cand,
-    const std::vector<std::string> & precomputed_names) const
-{
-  // Extract variable names from "varname = value" keep_literals
-  std::set<std::string> keep_varnames;
-  logger.log(0, "LLM diagnostic: cand.keep_literals size={}", cand.keep_literals.size());
-  for (size_t li = 0; li < cand.keep_literals.size() && li < 3; ++li) {
-    logger.log(0, "  raw keep[{}]: [{}]", li, cand.keep_literals[li].substr(0, 120));
-  }
-  for (const auto & lit_str : cand.keep_literals) {
-    size_t eq_pos = lit_str.rfind(" = ");
-    if (eq_pos != std::string::npos) {
-      keep_varnames.insert(lit_str.substr(0, eq_pos));
-    } else {
-      keep_varnames.insert(lit_str);
-    }
-  }
-  TermVec block_children;
-  bool use_precomputed =
-      !precomputed_names.empty()
-      && precomputed_names.size() == cube.children.size();
-  for (size_t i = 0; i < cube.children.size(); ++i) {
-    std::string name;
-    if (use_precomputed) {
-      name = precomputed_names[i];
-    } else {
-      const auto & child = cube.children[i];
-      if (child->get_op() == smt::Not) {
-        smt::Term inner = *(child->begin());
-        name = simplify_cti_literal(inner);
-      } else {
-        name = simplify_cti_literal(child);
-      }
-    }
-    if (keep_varnames.find(name) != keep_varnames.end()) {
-      block_children.push_back(smart_not(cube.children[i]));
-    }
-  }
-  if (block_children.empty()) {
-    // Diagnostic: show what was compared
-    logger.log(0, "LLM candidate: no keep_literals matched cube children");
-    logger.log(0, "  keep_varnames ({} items):", keep_varnames.size());
-    for (const auto & kv : keep_varnames) {
-      logger.log(0, "    KEEP: [{}]", kv.substr(0, 150));
-    }
-    logger.log(0, "  cube names (first 3 of {}):", cube.children.size());
-    size_t shown = 0;
-    for (size_t i = 0; i < cube.children.size() && shown < 3; ++i) {
-      std::string n;
-      if (use_precomputed) {
-        n = precomputed_names[i];
-      } else {
-        const auto & child = cube.children[i];
+  ostringstream out;
+  out << "{\"frame_idx\":" << frame_idx << ",\"clauses\":[";
+  if (frame_idx < frames_.size()) {
+    bool first_clause = true;
+    for (const auto & clause : frames_.at(frame_idx)) {
+      if (!first_clause) out << ",";
+      first_clause = false;
+      out << "{\"disjuncts\":[";
+      bool first_disj = true;
+      for (const auto & child : clause.children) {
+        if (!first_disj) out << ",";
+        first_disj = false;
+        smt::Term inner = child;
+        bool polarity = true;
         if (child->get_op() == smt::Not) {
-          n = simplify_cti_literal(*(child->begin()));
+          inner = *(child->begin());
+          polarity = false;
+        }
+        ostringstream disj;
+        if (!term_to_disjunct_json(child, inner, polarity, disj)) {
+          out << "{\"atom\":{\"ref\":\"\",\"rhs\":\"\"},";
+          out << "\"polarity\":true,\"expr\":\""
+              << cti_json_escape(simplify_cti_literal(child)) << "\"}";
         } else {
-          n = simplify_cti_literal(child);
+          out << disj.str();
         }
       }
-      logger.log(0, "    CUBE[{}]: [{}]", i, n.substr(0, 150));
-      ++shown;
-    }
-    return IC3Formula();
-  }
-  return ic3formula_disjunction(block_children);
-}
-
-LLMValidationResult IC3Base::validate_llm_candidate(const LLMCandidate & cand)
-{
-  LLMValidationResult res;
-  res.schema_ok = true;
-  res.parse_ok = false;
-  res.vocab_ok = false;
-  res.init_ok = false;
-  res.induction_ok = false;
-  res.subsumption_ok = false;
-  res.budget_ok = true;
-  res.legal_frame = 0;
-
-  // budget check
-  if (llm_gen_->stats().accepted_budget
-      >= options_.llm_accepted_budget_) {
-    res.budget_ok = false;
-    res.error_msg = "Accepted budget exceeded";
-    return res;
-  }
-
-  if (cand.type == LLMCandidate::CUBE_SUBSET) {
-    // For cube-subset, we don't parse a formula; the keep/drop lists
-    // are used to construct the blocking clause directly.
-    // Schema check: must have keep_literals or drop_literals
-    if (cand.keep_literals.empty() && cand.drop_literals.empty()) {
-      res.schema_ok = false;
-      res.error_msg = "cube-subset candidate has no keep_literals or drop_literals";
-      return res;
-    }
-    res.parse_ok = true;
-    res.vocab_ok = true;  // vocabulary checked during conversion
-  } else if (cand.type == LLMCandidate::QF_SMT) {
-    if (cand.formula.empty()) {
-      res.schema_ok = false;
-      res.error_msg = "qf-smt candidate has no formula";
-      return res;
-    }
-    // Parse would use solver_->make_term() from string -- not directly supported
-    // by smt-switch. For now, mark as parse failure for qf-smt mode
-    // (qf-smt will be implemented in Phase 2)
-    res.parse_ok = false;
-    res.error_msg = "qf-smt parsing not yet implemented";
-    return res;
-  } else {
-    // predicate-relation: Phase 3
-    res.parse_ok = false;
-    res.error_msg = "predicate-relation not yet implemented";
-    return res;
-  }
-
-  // vocabulary check: verify all symbols exist in the transition system
-  for (const auto & sym : cand.used_symbols) {
-    try {
-      ts_.lookup(sym);
-    } catch (...) {
-      res.vocab_ok = false;
-      res.error_msg = "Unknown symbol: " + sym;
-      return res;
+      out << "]}";
     }
   }
-
-  res.vocab_ok = true;
-  return res;
+  out << "]}";
+  return out.str();
 }
 
 void IC3Base::process_llm_candidates()
 {
   if (!llm_gen_ || !llm_gen_->enabled()) return;
 
-  auto candidates = llm_gen_->poll_candidates();
+  auto responses = llm_gen_->poll_responses();
+  if (responses.empty()) return;
 
-  // Merge pending candidates from previous attempts
-  auto pending = llm_gen_->drain_pending_candidates();
-  candidates.insert(candidates.end(), pending.begin(), pending.end());
+  std::unordered_map<std::string, std::vector<IC3FrameResponse>> grouped;
+  for (auto & resp : responses) {
+    grouped[resp.source_cti_id].push_back(resp);
+  }
 
-  if (candidates.empty()) return;
+  for (auto & entry : grouped) {
+    const std::string & cti_id = entry.first;
+    if (llm_gen_->is_cti_accepted(cti_id)) continue;
 
-  for (auto & cand : candidates) {
-    try {
-      LLMValidationResult vres = validate_llm_candidate(cand);
+    if (llm_gen_->stats_.accepted_budget >= options_.llm_accepted_budget_) {
+      llm_gen_->stats_.num_budget_skip++;
+      continue;
+    }
 
-      if (!vres.schema_ok) {
-        llm_gen_->stats_.num_schema_fail++;
-        logger.log(1, "LLM candidate schema fail: {}", vres.error_msg);
-        continue;
-      }
-      if (!vres.parse_ok) {
-        llm_gen_->stats_.num_parse_fail++;
-        logger.log(1, "LLM candidate parse fail: {}", vres.error_msg);
-        continue;
-      }
-      if (!vres.vocab_ok) {
+    size_t frame_idx = 0;
+    smt::TermVec cube;
+    if (!llm_gen_->lookup_cti_meta(cti_id, frame_idx, cube)) continue;
+
+    const size_t current_attempt = llm_gen_->feedback_attempt(cti_id);
+    bool accepted = false;
+    for (auto & resp : entry.second) {
+      if (llm_gen_->is_cti_accepted(cti_id)) break;
+
+      const size_t resp_attempt =
+          resp.attempt ? resp.attempt : current_attempt;
+      if (resp_attempt != current_attempt) continue;
+
+      if (!validate_frame_response_vocab(resp)) {
         llm_gen_->stats_.num_vocab_fail++;
-        logger.log(1, "LLM candidate vocab fail: {}", vres.error_msg);
-        continue;
-      }
-      if (!vres.budget_ok) {
-        llm_gen_->stats_.num_budget_skip++;
-        logger.log(1, "LLM candidate budget skip: {}", vres.error_msg);
+        llm_gen_->add_feedback(cti_id, resp, "vocab_fail");
+        llm_gen_->note_response_processed(cti_id, resp_attempt);
         continue;
       }
 
-      // Lookup CTI cube by candidate's frame_hint (per-frame map, no eviction)
-      std::vector<std::string> precomp_names;
-      TermVec cube_vec =
-          llm_gen_->find_cti_cube_by_frame(cand.frame_hint, &precomp_names);
+      if (resp.has_refine_predicate) {
+        Term pred = build_predicate_term(solver_, ts_, resp.refine_predicate);
+        if (!pred) {
+          llm_gen_->stats_.num_parse_fail++;
+          llm_gen_->add_feedback(cti_id, resp, "predicate_parse_fail");
+        } else if (try_apply_llm_refine_predicate(pred)) {
+          llm_gen_->stats_.num_predicates_added++;
+          logger.log(1, "IC3Frame refine_predicate added: {}", pred);
+        } else {
+          llm_gen_->add_feedback(cti_id, resp, "predicate_rejected");
+        }
+      }
 
-      if (cand.type != LLMCandidate::CUBE_SUBSET) {
-        logger.log(1,
-                   "LLM candidate: qf-smt/predicate-relation not yet supported");
+      if (!resp.has_block) {
+        llm_gen_->add_feedback(cti_id, resp, "missing_block");
+        llm_gen_->note_response_processed(cti_id, resp_attempt);
         continue;
       }
 
-      if (cube_vec.empty()) {
-        // No matching CTI cube yet — store in pending queue, retry next time
-        llm_gen_->store_pending_candidate(cand);
-        continue;
-      }
-
-      IC3Formula cti_cube = ic3formula_conjunction(cube_vec);
-      IC3Formula blocking =
-          precomp_names.empty()
-              ? cube_subset_to_blocking(cti_cube, cand)
-              : cube_subset_to_blocking(cti_cube, cand, precomp_names);
-
+      IC3Formula blocking = build_block_clause_from_disjuncts(resp.block_disjuncts);
       if (blocking.children.empty()) {
-        logger.log(1, "LLM candidate: empty blocking clause, skipping");
+        llm_gen_->stats_.num_parse_fail++;
+        llm_gen_->add_feedback(cti_id, resp, "empty_block_clause");
+        llm_gen_->note_response_processed(cti_id, resp_attempt);
         continue;
-      }
-
-      size_t target_frame = cand.frame_hint;
-      if (target_frame == 0 || target_frame >= frames_.size()) {
-        target_frame = frontier_idx();
-      }
-      if (target_frame >= frames_.size()) {
-        target_frame = frames_.size() - 1;
-      }
-      if (target_frame == 0) {
-        target_frame = 1;
       }
 
       IC3Formula check_cube = ic3formula_negate(blocking);
-
-      if (check_intersects_initial(check_cube.term)) {
-        logger.log(1, "LLM candidate: blocks initial states, skipping");
+      std::string wit_ref;
+      std::string wit_val;
+      if (check_intersects_initial_with_witness(
+              check_cube.term, resp.block_disjuncts, wit_ref, wit_val)) {
+        llm_gen_->add_feedback(
+            cti_id, resp, "rejected_initial", wit_ref, wit_val);
+        llm_gen_->note_response_processed(cti_id, resp_attempt);
         continue;
       }
 
       IC3Formula out;
-      bool inductive = rel_ind_check(target_frame, check_cube, out, false);
-      if (!inductive) {
+      wit_ref.clear();
+      wit_val.clear();
+      if (!rel_ind_check(frame_idx,
+                         check_cube,
+                         out,
+                         false,
+                         &resp.block_disjuncts,
+                         &wit_ref,
+                         &wit_val)) {
         llm_gen_->stats_.num_induction_fail++;
-        logger.log(1,
-                   "LLM candidate: failed relative induction at frame {}",
-                   target_frame);
+        llm_gen_->add_feedback(
+            cti_id, resp, "induction_failed", wit_ref, wit_val);
+        llm_gen_->note_response_processed(cti_id, resp_attempt);
         continue;
       }
 
-      vres.induction_ok = true;
-      vres.legal_frame = target_frame;
-
-      constrain_frame(target_frame, blocking, true);
-
+      constrain_frame(frame_idx, blocking, true);
       llm_gen_->stats_.num_accepted++;
       llm_gen_->stats_.accepted_budget++;
-
+      llm_gen_->mark_accepted(cti_id);
+      llm_gen_->note_response_processed(cti_id, resp_attempt);
+      accepted = true;
       logger.log(1,
-                 "LLM candidate ACCEPTED: inserted blocking clause at frame {} "
-                 "(size={})",
-                 target_frame,
+                 "IC3Frame response ACCEPTED at frame {} (disjuncts={})",
+                 frame_idx,
                  blocking.children.size());
-      logger.log(1, "  Rationale: {}", cand.rationale);
-    } catch (const std::exception & e) {
-      logger.log(0, "LLM candidate: exception: {}", e.what());
-    } catch (...) {
-      logger.log(0, "LLM candidate: unknown exception");
+      logger.log(1, "  Rationale: {}", resp.rationale);
+      break;
     }
+
+    if (!accepted && !llm_gen_->is_cti_accepted(cti_id)
+        && llm_gen_->all_parallel_samples_received(cti_id, current_attempt)) {
+      llm_gen_->finish_attempt(cti_id, frame_idx);
+    }
+  }
+
+  std::vector<std::string> retries;
+  llm_gen_->take_retry_queue(retries);
+  for (const std::string & retry_cti_id : retries) {
+    if (llm_gen_->is_cti_accepted(retry_cti_id)) continue;
+    size_t retry_frame = 0;
+    smt::TermVec retry_cube;
+    if (!llm_gen_->lookup_cti_meta(retry_cti_id, retry_frame, retry_cube)) {
+      continue;
+    }
+    std::string snapshot = serialize_frame_snapshot_json(retry_frame);
+    llm_gen_->write_retry_request(retry_cti_id, snapshot);
   }
 }
 

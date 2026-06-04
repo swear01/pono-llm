@@ -1,3 +1,5 @@
+> **HISTORICAL / RESEARCH RECORD (2026-06-03)** — Not the active runtime path. See [`ic3_frame_v1_integration.md`](../ic3_frame_v1_integration.md).
+
 # Template-Guided Semantic Lemma Generation — MVP v0 + v0.5
 
 > **Goal:** Prove LLM can generate nontrivial, schema-valid, semantically plausible lemma candidates that are NOT merely CTI cube subsets.
