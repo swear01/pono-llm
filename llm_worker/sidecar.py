@@ -25,7 +25,13 @@ from typing import Optional
 from deepseek_client import DeepSeekClient
 from ic3_frame_schema import normalize_response, validate_request, validate_response
 from jsonl_protocol import append_log_line, read_requests_batch, write_response
-from prompt_format import format_cti_literals, format_frame_snapshot
+from prompt_format import (
+    format_cti_batch_all,
+    format_cti_literals,
+    format_frame_snapshot,
+)
+
+V1_REQUEST_TYPES = frozenset({"ic3_frame_request", "ic3_frame_batch_request"})
 
 
 def load_prompt(prompt_dir: str) -> str:
@@ -42,12 +48,57 @@ def load_benchmark_context(path: str) -> dict:
         return json.load(f)
 
 
+def build_batch_user_prompt(
+    req: dict,
+    benchmark_ctx: dict,
+    sample_id: int,
+    snapshot_max_clauses: int = 0,
+) -> str:
+    batch_id = req.get("batch_id", "")
+    parts = [
+        f"batch_id: {batch_id}",
+        f"frame_idx: {req.get('frame_idx')}",
+        f"attempt: {req.get('attempt', 1)}",
+        f"sample_id: {sample_id}",
+        "",
+        format_cti_batch_all(req.get("cti_entries") or []),
+        "",
+        format_frame_snapshot(
+            req.get("frame_snapshot", {}),
+            max_clauses=snapshot_max_clauses,
+        ),
+    ]
+    feedback = req.get("feedback") or []
+    if feedback:
+        parts.extend(["", "Previous failures (feedback):", json.dumps(feedback, indent=2)])
+    if benchmark_ctx:
+        parts.extend([
+            "",
+            "Benchmark context (reference):",
+            json.dumps({
+                "benchmark": benchmark_ctx.get("benchmark"),
+                "bad_property": benchmark_ctx.get("bad_property"),
+            }, separators=(",", ":")),
+        ])
+    parts.extend([
+        "",
+        "Respond with ic3_frame_response JSON only.",
+        "Output exactly ONE block_disjuncts (one OR-clause) covering all listed CTI cubes.",
+        f"Set source_cti_id to {batch_id!r} and sample_id to {sample_id}.",
+    ])
+    return "\n".join(parts)
+
+
 def build_user_prompt(
     req: dict,
     benchmark_ctx: dict,
     sample_id: int,
     snapshot_max_clauses: int = 0,
 ) -> str:
+    if req.get("type") == "ic3_frame_batch_request":
+        return build_batch_user_prompt(
+            req, benchmark_ctx, sample_id, snapshot_max_clauses=snapshot_max_clauses
+        )
     parts = [
         f"frame_idx: {req.get('frame_idx')}",
         f"cti_id: {req.get('cti_id')}",
@@ -95,8 +146,12 @@ def process_request(
     parallel_samples = int(req.get("parallel_samples", 1))
     reasoning_effort = req.get("reasoning_effort", "none")
     model_name = req.get("model") or None
-    cti_id = req.get("cti_id", "")
+    source_id = req.get("batch_id") or req.get("cti_id", "")
     attempt = int(req.get("attempt", 1))
+    if req.get("type") == "ic3_frame_batch_request":
+        temperature = float(req.get("temperature", 0.5))
+    else:
+        temperature = float(req.get("temperature", 0.8))
 
     total_tokens = 0
     total_latency = 0.0
@@ -110,13 +165,13 @@ def process_request(
             system_prompt=system_prompt,
             model_name=model_name,
             reasoning_effort=reasoning_effort,
-            temperature=0.8,
+            temperature=temperature,
         )
         try:
             raw = json.loads(text)
         except json.JSONDecodeError:
             raw = {"block_disjuncts": [], "rationale": "LLM response was not valid JSON"}
-        normalized = normalize_response(raw, cti_id, sample_id, attempt)
+        normalized = normalize_response(raw, source_id, sample_id, attempt)
         valid, verr = validate_response(normalized)
         if not valid:
             normalized["rationale"] = f"{normalized.get('rationale', '')} [{verr}]"
@@ -165,7 +220,10 @@ def handle_one_request(
         log_entry = {
             "timestamp": time.time(),
             "request_index": request_index,
+            "request_type": request.get("type"),
+            "batch_id": request.get("batch_id"),
             "cti_id": request.get("cti_id"),
+            "cti_total": len(request.get("cti_entries") or []),
             "parallel_samples": len(responses),
             "token_count": token_count,
             "latency_ms": latency_ms,
@@ -270,7 +328,7 @@ def main():
 
                         for request in requests:
                             req_type = request.get("type", "")
-                            if req_type != "ic3_frame_request":
+                            if req_type not in V1_REQUEST_TYPES:
                                 print(f"[sidecar] Skipping non-v1 request type: {req_type}")
                                 submitted_count += 1
                                 processed_count += 1

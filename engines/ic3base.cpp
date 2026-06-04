@@ -484,6 +484,15 @@ ProverResult IC3Base::step(int i)
       && llm_gen_->has_buffered_cti(frontier_idx())) {
     string snapshot = serialize_frame_snapshot_json(frontier_idx());
     llm_gen_->flush_frame_batch(frontier_idx(), snapshot);
+    if (options_.llm_sync_after_flush_ && options_.llm_batch_cti_) {
+      const string & bid = llm_gen_->last_flushed_batch_id();
+      if (!bid.empty()) {
+        llm_gen_->wait_for_batch_responses(bid,
+                                           options_.llm_parallel_samples_,
+                                           static_cast<unsigned>(
+                                               options_.llm_batch_wait_sec_));
+      }
+    }
   }
 
   process_llm_candidates();  // poll for LLM candidates after blocking phase
@@ -1803,7 +1812,12 @@ void IC3Base::process_llm_candidates()
 
     size_t frame_idx = 0;
     smt::TermVec cube;
-    if (!llm_gen_->lookup_cti_meta(cti_id, frame_idx, cube)) {
+    if (cti_id.rfind("batch_", 0) == 0) {
+      if (!llm_gen_->lookup_batch_meta(cti_id, frame_idx)) {
+        llm_gen_->stats_.num_lookup_miss++;
+        continue;
+      }
+    } else if (!llm_gen_->lookup_cti_meta(cti_id, frame_idx, cube)) {
       llm_gen_->stats_.num_lookup_miss++;
       continue;
     }
@@ -1910,7 +1924,12 @@ void IC3Base::process_llm_candidates()
     if (llm_gen_->is_cti_accepted(retry_cti_id)) continue;
     size_t retry_frame = 0;
     smt::TermVec retry_cube;
-    if (!llm_gen_->lookup_cti_meta(retry_cti_id, retry_frame, retry_cube)) {
+    if (retry_cti_id.rfind("batch_", 0) == 0) {
+      if (!llm_gen_->lookup_batch_meta(retry_cti_id, retry_frame)) {
+        llm_gen_->stats_.num_lookup_miss++;
+        continue;
+      }
+    } else if (!llm_gen_->lookup_cti_meta(retry_cti_id, retry_frame, retry_cube)) {
       llm_gen_->stats_.num_lookup_miss++;
       continue;
     }

@@ -47,6 +47,13 @@ Example with optional predicate:
   "rationale": "brief explanation"
 }
 
+## Batch mode (ic3_frame_batch_request)
+- Input lists ALL CTI cubes from this blocking round (cti_total=N).
+- Read every cube; you may ignore outlier CTIs mentally, but output ONE conclusion.
+- Output exactly ONE block_disjuncts (one OR-clause, at most 8 disjuncts).
+- The block must be false on EVERY listed CTI cube and must not hold on initial state.
+- Set source_cti_id to batch_id from the request (not individual cti_id).
+
 Response format (block only):
 {
   "schema_version": 1,

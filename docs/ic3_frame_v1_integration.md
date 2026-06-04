@@ -108,6 +108,34 @@ Sidecar flag `--snapshot-max-clauses N` (default `0` = all clauses): when `N>0`,
 
 ---
 
+## Request: `ic3_frame_batch_request` v1 (default)
+
+After each `block_all` phase, Pono flushes **one** batch line containing all CTIs buffered for that frame. The LLM reads every cube and returns **one** `block_disjuncts` (parallel K samples). Response `source_cti_id` is the `batch_id` (e.g. `batch_f2_a1`), not per-CTI ids.
+
+| Field | Notes |
+|-------|--------|
+| `batch_id` | `batch_f{frame}_a{attempt}` |
+| `cti_entries[]` | `{cti_id, cti}` per buffered CTI, buffer order preserved |
+| `temperature` | `0.5` in request; sidecar uses it for API calls |
+| `parallel_samples` | K (default 3) |
+
+**Execution modes (only two supported):**
+
+| Mode | Flags | Behavior |
+|------|-------|----------|
+| **Full sync (default)** | (none) | After flush, pono waits for K responses then ingests; stats reliable |
+| **Full async** | `--no-llm-sync-after-flush` | Same batch request; no wait; rely on poll + sidecar drain at end |
+
+`--no-llm-batch-cti` (legacy per-CTI, ~N requests per flush) is **debug-only**, not used in smoke/benchmarks.
+
+**Pono flags:** `--llm-batch-wait-sec 120` (sync wait timeout).
+
+**Feedback:** keyed by `batch_f{frame}` so attempt 2 (`batch_f2_a2`) still sees failures from attempt 1.
+
+**Accept semantics:** one `rel_ind_check` per accepted sample; batch accept does **not** mark individual `cti_id` entries as accepted (they may be buffered again in later rounds).
+
+---
+
 ## Response: `ic3_frame_response` v1
 
 ```json

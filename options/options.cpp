@@ -130,6 +130,9 @@ enum optionIndex
   LLM_LOG_PATH,
   LLM_REQUEST_PATH,
   LLM_RESPONSE_PATH,
+  LLM_NO_BATCH_CTI,
+  LLM_NO_SYNC_AFTER_FLUSH,
+  LLM_BATCH_WAIT_SEC,
 };
 
 struct Arg : public option::Arg
@@ -834,6 +837,24 @@ const option::Descriptor usage[] = {
     "llm-resp-path",
     Arg::NonEmpty,
     "  --llm-resp-path \tPath for JSONL candidate response input" },
+  { LLM_NO_BATCH_CTI,
+    0,
+    "",
+    "no-llm-batch-cti",
+    Arg::None,
+    "  --no-llm-batch-cti \t[debug] Per-CTI requests instead of batch (legacy)" },
+  { LLM_NO_SYNC_AFTER_FLUSH,
+    0,
+    "",
+    "no-llm-sync-after-flush",
+    Arg::None,
+    "  --no-llm-sync-after-flush \tFull-async mode: batch without post-flush wait" },
+  { LLM_BATCH_WAIT_SEC,
+    0,
+    "",
+    "llm-batch-wait-sec",
+    Arg::Numeric,
+    "  --llm-batch-wait-sec \tSeconds to wait for batch responses (default: 120)" },
   { 0, 0, 0, 0, 0, 0 }
 };
 /*********************************** end Option Handling setup
@@ -1192,6 +1213,11 @@ ProverResult PonoOptions::parse_and_set_options(int argc,
         case LLM_LOG_PATH: llm_log_path_ = opt.arg; break;
         case LLM_REQUEST_PATH: llm_request_path_ = opt.arg; break;
         case LLM_RESPONSE_PATH: llm_response_path_ = opt.arg; break;
+        case LLM_NO_BATCH_CTI: llm_batch_cti_ = false; break;
+        case LLM_NO_SYNC_AFTER_FLUSH: llm_sync_after_flush_ = false; break;
+        case LLM_BATCH_WAIT_SEC:
+          llm_batch_wait_sec_ = std::stoul(opt.arg);
+          break;
         case UNKNOWN_OPTION:
           // not possible because Arg::Unknown returns ARG_ILLEGAL
           // which aborts the parse with an error

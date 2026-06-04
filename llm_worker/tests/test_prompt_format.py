@@ -6,7 +6,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from prompt_format import format_cti_literals, format_frame_snapshot
+from prompt_format import format_cti_batch_all, format_cti_literals, format_frame_snapshot
 
 
 def _sample_cti():
@@ -92,6 +92,18 @@ def test_format_frame_snapshot_last_n():
     assert "showing last 3 of 10" in text
     assert "!state7=0" in text
     assert "!state0=0" not in text
+
+
+def test_format_cti_batch_all():
+    entries = [
+        {"cti_id": "f1_a", "cti": _sample_cti()},
+        {"cti_id": "f1_b", "cti": _sample_cti()},
+    ]
+    text = format_cti_batch_all(entries)
+    assert "cti_total=2" in text
+    assert "[f1_a]" in text
+    assert "[f1_b]" in text
+    assert "!state15=0" in text
 
 
 def test_p040_fixture_sizes_if_available():

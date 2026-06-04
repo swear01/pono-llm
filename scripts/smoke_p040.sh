@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 # p040 IC3 Frame v1 smoke — isolated session (no shared /tmp/p040_*).
+# Modes: default = batch + sync wait; full-async = NO_SYNC=1 (adds --no-llm-sync-after-flush).
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
@@ -29,9 +30,10 @@ fi
 
 SNAPSHOT_MAX="${SNAPSHOT_MAX:-50}"
 PONO_TIMEOUT="${PONO_TIMEOUT:-600}"
-PARALLEL_SAMPLES="${PARALLEL_SAMPLES:-1}"
+PARALLEL_SAMPLES="${PARALLEL_SAMPLES:-3}"
 MAX_INFLIGHT="${MAX_INFLIGHT:-8}"
 DRAIN_SEC="${DRAIN_SEC:-600}"
+NO_SYNC="${NO_SYNC:-0}"
 
 echo "RUN_DIR=$RUN_DIR"
 echo "snapshot_max_clauses=$SNAPSHOT_MAX parallel_samples=$PARALLEL_SAMPLES max_inflight=$MAX_INFLIGHT drain_sec=$DRAIN_SEC"
@@ -48,6 +50,11 @@ python3 -u "$ROOT/llm_worker/sidecar.py" \
 SIDECAR_PID=$!
 sleep 2
 
+PONO_EXTRA=()
+if [[ "$NO_SYNC" == "1" ]]; then
+  PONO_EXTRA+=(--no-llm-sync-after-flush)
+fi
+
 timeout "$PONO_TIMEOUT" "$ROOT/build/pono" -e ic3ia -k 5 \
   --llm-gen-mode async-cti \
   --llm-parallel-samples "$PARALLEL_SAMPLES" \
@@ -57,6 +64,7 @@ timeout "$PONO_TIMEOUT" "$ROOT/build/pono" -e ic3ia -k 5 \
   --llm-req-path "$REQ" \
   --llm-resp-path "$RESP" \
   --llm-log "$LOG" \
+  "${PONO_EXTRA[@]}" \
   "$BTOR" >"$PONO_OUT" 2>"$PONO_ERR" || true
 
 echo "--- draining sidecar (up to ${DRAIN_SEC}s) ---"
@@ -92,6 +100,27 @@ manifest = {
 }
 (run_dir / "manifest.json").write_text(json.dumps(manifest, indent=2) + "\n")
 print("manifest:", run_dir / "manifest.json")
+
+req_path = Path("$REQ")
+log_path = Path("$LOG")
+if req_path.exists():
+    types = []
+    for line in req_path.read_text().splitlines():
+        line = line.strip()
+        if not line:
+            continue
+        types.append(json.loads(line).get("type"))
+    if types:
+        assert all(t == "ic3_frame_batch_request" for t in types), types[:5]
+        assert len(types) < 80, f"too many batch requests: {len(types)}"
+        print(f"batch requests OK: n={len(types)}")
+if log_path.exists():
+    for line in log_path.read_text().splitlines():
+        e = json.loads(line)
+        if e.get("request_type") == "ic3_frame_batch_request":
+            assert e.get("cti_total", 0) >= 1
+            print(f"llm_log batch cti_total={e.get('cti_total')}")
+            break
 PY
 
 echo "--- pono result ---"

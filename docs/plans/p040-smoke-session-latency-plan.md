@@ -167,7 +167,7 @@ thinking disabled 後單次 call 約 **4–6s**（見上表）。Smoke 預設 `-
 5. [x] **C++ 統計** — `lookup_miss`、`rejected_initial`、`missing_block`、`attempt_mismatch`；`final_llm_poll()` + `pono.cpp` exit drain
 6. [x] **prompt** — block 須在 CTI 下 false、不可滿足 initial
 7. [x] **smoke drain** — `DRAIN_SEC` 等待 sidecar 追平、`MAX_INFLIGHT=8`
-8. [ ] **重跑 smoke** — 驗證 `candidates` 接近 `responses` 行數
+8. [ ] **Batch smoke** — 見 [batch-cti-single-conclusion-plan.md](batch-cti-single-conclusion-plan.md)：`PARALLEL_SAMPLES=3`、`requests`≈frame 輪數、`cti_total` in log、sync on 時 `candidates`≈requests×K
 
 ---
 

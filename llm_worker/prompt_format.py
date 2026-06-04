@@ -98,3 +98,18 @@ def format_frame_snapshot(frame_snapshot: dict, max_clauses: int = 0) -> str:
         out.append(note)
     out.extend(lines)
     return "\n".join(out)
+
+
+def format_cti_batch_all(entries: list[dict]) -> str:
+    """Compact listing of all CTI cubes in a blocking-round batch."""
+    lines = [f"All CTI cubes this blocking round (cti_total={len(entries)}):"]
+    for ent in entries:
+        cid = ent.get("cti_id", "?")
+        lit_text = format_cti_literals(ent.get("cti") or {})
+        body_lines = lit_text.split("\n")
+        if len(body_lines) > 1:
+            body = " | ".join(body_lines[1:])
+        else:
+            body = body_lines[0] if body_lines else "(empty)"
+        lines.append(f"[{cid}] {body}")
+    return "\n".join(lines)

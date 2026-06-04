@@ -226,7 +226,10 @@ class PonoOptions
         llm_model_(default_llm_model_),
         llm_log_path_(default_llm_log_path_),
         llm_request_path_(default_llm_request_path_),
-        llm_response_path_(default_llm_response_path_)
+        llm_response_path_(default_llm_response_path_),
+        llm_batch_cti_(default_llm_batch_cti_),
+        llm_sync_after_flush_(default_llm_sync_after_flush_),
+        llm_batch_wait_sec_(default_llm_batch_wait_sec_)
   {
   }
 
@@ -417,6 +420,9 @@ class PonoOptions
   std::string llm_log_path_;
   std::string llm_request_path_;
   std::string llm_response_path_;
+  bool llm_batch_cti_;
+  bool llm_sync_after_flush_;
+  size_t llm_batch_wait_sec_;
 
  private:
   // Default options
@@ -518,6 +524,9 @@ class PonoOptions
   inline static const std::string default_llm_log_path_;
   inline static const std::string default_llm_request_path_;
   inline static const std::string default_llm_response_path_;
+  static const bool default_llm_batch_cti_ = true;
+  static const bool default_llm_sync_after_flush_ = true;
+  static const size_t default_llm_batch_wait_sec_ = 120;
 };
 
 // Useful functions for printing etc...

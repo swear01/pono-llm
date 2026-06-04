@@ -6,12 +6,15 @@
 #include "engines/llm_generalizer.h"
 
 #include <cassert>
+#include <chrono>
 #include <fstream>
 #include <functional>
 #include <iomanip>
 #include <sstream>
 #include <stdexcept>
 #include <sys/stat.h>
+#include <thread>
+#include <unordered_set>
 
 #include "utils/logger.h"
 
@@ -32,6 +35,15 @@ static void ensure_dir_for_file(const string & path)
     cur.push_back(c);
     if (c == '/') mkdir(cur.c_str(), 0775);
   }
+}
+
+/** Stable feedback key for batch IDs (batch_f2_a1 -> batch_f2). */
+static string batch_feedback_key(const string & batch_id)
+{
+  if (batch_id.rfind("batch_", 0) != 0) return batch_id;
+  size_t pos = batch_id.rfind("_a");
+  if (pos != string::npos && pos > 6) return batch_id.substr(0, pos);
+  return batch_id;
 }
 
 static string extract_state_ref(const string & name)
@@ -242,7 +254,7 @@ void LLMGeneralizer::add_feedback(const string & cti_id,
                                       });
   fb.witness_ref = witness_ref;
   fb.witness_next_value = witness_next;
-  feedback_by_cti_[cti_id].push_back(fb);
+  feedback_by_cti_[batch_feedback_key(cti_id)].push_back(fb);
 }
 
 void LLMGeneralizer::finish_attempt(const string & cti_id, size_t frame_idx)
@@ -259,11 +271,33 @@ void LLMGeneralizer::mark_accepted(const string & cti_id)
 {
   accepted_cti_ids_.insert(cti_id);
   outstanding_samples_[sample_group_key(cti_id, feedback_attempt(cti_id))] = 0;
+  if (cti_id.rfind("batch_", 0) == 0) {
+    batch_store_.erase(cti_id);
+  }
 }
 
 bool LLMGeneralizer::is_cti_accepted(const string & cti_id) const
 {
   return accepted_cti_ids_.count(cti_id) > 0;
+}
+
+void LLMGeneralizer::append_cti_cube_json(ostream & out, const CTIContext & ctx) const
+{
+  out << "\"cti\":{\"cube\":{\"literals\":[";
+  for (size_t i = 0; i < ctx.literals.size(); ++i) {
+    if (i > 0) out << ",";
+    const auto & lit = ctx.literals[i];
+    string ref = literal_ref(lit);
+    string rhs = lit.value;
+    if (rhs == "true") rhs = "1";
+    if (rhs == "false") rhs = "0";
+    bool pol = (lit.value == "true" || lit.value == "1");
+    out << "{\"atom\":{";
+    out << "\"ref\":\"" << escape_json(ref) << "\",";
+    out << "\"rhs\":\"" << escape_json(rhs) << "\"},";
+    out << "\"polarity\":" << (pol ? "true" : "false") << "}";
+  }
+  out << "]}}";
 }
 
 void LLMGeneralizer::serialize_frame_request(
@@ -290,21 +324,8 @@ void LLMGeneralizer::serialize_frame_request(
   out << "\"benchmark_context_path\":\"" << escape_json(benchmark_context_path_)
       << "\",";
 
-  out << "\"cti\":{\"cube\":{\"literals\":[";
-  for (size_t i = 0; i < ctx.literals.size(); ++i) {
-    if (i > 0) out << ",";
-    const auto & lit = ctx.literals[i];
-    string ref = literal_ref(lit);
-    string rhs = lit.value;
-    if (rhs == "true") rhs = "1";
-    if (rhs == "false") rhs = "0";
-    bool pol = (lit.value == "true" || lit.value == "1");
-    out << "{\"atom\":{";
-    out << "\"ref\":\"" << escape_json(ref) << "\",";
-    out << "\"rhs\":\"" << escape_json(rhs) << "\"},";
-    out << "\"polarity\":" << (pol ? "true" : "false") << "}";
-  }
-  out << "]}},";
+  append_cti_cube_json(out, ctx);
+  out << ",";
 
   if (!frame_snapshot_json.empty()) {
     out << "\"frame_snapshot\":" << frame_snapshot_json << ",";
@@ -358,18 +379,187 @@ void LLMGeneralizer::write_request_for_cti(const CTIContext & ctx,
   stats_.num_requests++;
 }
 
+void LLMGeneralizer::serialize_batch_request(
+    ostream & out,
+    const string & batch_id,
+    size_t frame_idx,
+    size_t attempt,
+    const vector<BufferedCTI> & buffered,
+    const vector<LLMFeedbackEntry> & feedback,
+    const string & frame_snapshot_json)
+{
+  out << "{";
+  out << "\"schema_version\":1,";
+  out << "\"type\":\"ic3_frame_batch_request\",";
+  out << "\"batch_id\":\"" << escape_json(batch_id) << "\",";
+  out << "\"frame_idx\":" << frame_idx << ",";
+  out << "\"attempt\":" << attempt << ",";
+  out << "\"max_attempts\":" << opts_.llm_max_attempts_ << ",";
+  out << "\"parallel_group\":\"" << escape_json(batch_id) << "\",";
+  out << "\"parallel_samples\":" << opts_.llm_parallel_samples_ << ",";
+  out << "\"temperature\":0.5,";
+  out << "\"reasoning_effort\":\"" << escape_json(opts_.llm_reasoning_effort_) << "\",";
+  out << "\"model\":\""
+      << escape_json(opts_.llm_model_.empty() ? "deepseek-v4-pro" : opts_.llm_model_)
+      << "\",";
+  out << "\"benchmark_context_path\":\"" << escape_json(benchmark_context_path_)
+      << "\",";
+
+  out << "\"cti_entries\":[";
+  for (size_t i = 0; i < buffered.size(); ++i) {
+    if (i > 0) out << ",";
+    out << "{\"cti_id\":\"" << escape_json(buffered[i].ctx.cti_id) << "\",";
+    append_cti_cube_json(out, buffered[i].ctx);
+    out << "}";
+  }
+  out << "],";
+
+  if (!frame_snapshot_json.empty()) {
+    out << "\"frame_snapshot\":" << frame_snapshot_json << ",";
+  } else {
+    out << "\"frame_snapshot\":{\"frame_idx\":" << frame_idx
+        << ",\"clauses\":[]},";
+  }
+
+  out << "\"feedback\":[";
+  for (size_t i = 0; i < feedback.size(); ++i) {
+    if (i > 0) out << ",";
+    out << "{\"reason\":\"" << escape_json(feedback[i].reason) << "\",";
+    out << "\"rejected_json\":\"" << escape_json(feedback[i].rejected_json)
+        << "\",";
+    out << "\"witness\":{";
+    out << "\"ref\":\"" << escape_json(feedback[i].witness_ref) << "\",";
+    out << "\"next_value\":\"" << escape_json(feedback[i].witness_next_value)
+        << "\"}}";
+  }
+  out << "]}";
+}
+
+void LLMGeneralizer::write_batch_request(size_t frame_idx,
+                                        const string & frame_snapshot_json,
+                                        const vector<BufferedCTI> & buffered,
+                                        size_t attempt_arg)
+{
+  if (buffered.empty()) return;
+
+  size_t attempt = attempt_arg > 0 ? attempt_arg : 1;
+  string batch_id = "batch_f" + std::to_string(frame_idx) + "_a"
+                    + std::to_string(attempt);
+
+  if (!attempt_by_cti_.count(batch_id)) {
+    attempt_by_cti_[batch_id] = attempt;
+  }
+
+  if (attempt > opts_.llm_max_attempts_) return;
+
+  string req_id = batch_id + "#" + std::to_string(attempt);
+  if (sent_request_ids_.count(req_id)) return;
+  sent_request_ids_.insert(req_id);
+
+  BatchMeta meta;
+  meta.frame_idx = frame_idx;
+  for (const auto & b : buffered) {
+    StoredCTI stored;
+    stored.ctx = b.ctx;
+    stored.cube = b.cube_children;
+    meta.ctis.push_back(stored);
+  }
+  batch_store_[batch_id] = meta;
+
+  ensure_dir_for_file(request_path_);
+  ofstream fout(request_path_, ios::app);
+  if (!fout.is_open()) {
+    logger.log(0, "LLMGeneralizer: cannot open request file {}", request_path_);
+    return;
+  }
+
+  vector<LLMFeedbackEntry> fb;
+  auto fb_it = feedback_by_cti_.find(batch_feedback_key(batch_id));
+  if (fb_it != feedback_by_cti_.end()) fb = fb_it->second;
+
+  serialize_batch_request(fout, batch_id, frame_idx, attempt, buffered, fb,
+                          frame_snapshot_json);
+  fout << "\n";
+  register_outstanding_samples(batch_id, attempt);
+  stats_.num_requests++;
+  last_flushed_batch_id_ = batch_id;
+  logger.log(1,
+             "LLMGeneralizer: batch request {} ({} CTIs, frame {})",
+             batch_id,
+             buffered.size(),
+             frame_idx);
+}
+
 void LLMGeneralizer::flush_frame_batch(size_t frame_idx,
                                        const string & frame_snapshot_json)
 {
   auto it = frame_cti_buffer_.find(frame_idx);
-  if (it == frame_cti_buffer_.end() || it->second.empty()) return;
+  if (it == frame_cti_buffer_.end() || it->second.empty()) {
+    last_flushed_batch_id_.clear();
+    return;
+  }
 
-  for (const auto & buffered : it->second) {
-    write_request_for_cti(buffered.ctx, frame_snapshot_json);
+  if (opts_.llm_batch_cti_) {
+    write_batch_request(frame_idx, frame_snapshot_json, it->second);
+  } else {
+    for (const auto & buffered : it->second) {
+      write_request_for_cti(buffered.ctx, frame_snapshot_json);
+    }
+    logger.log(1, "LLMGeneralizer: flushed frame {} CTI requests", frame_idx);
   }
 
   frame_cti_buffer_.erase(it);
-  logger.log(1, "LLMGeneralizer: flushed frame {} CTI requests", frame_idx);
+}
+
+bool LLMGeneralizer::wait_for_batch_responses(const string & batch_id,
+                                              size_t expected_samples,
+                                              unsigned timeout_sec)
+{
+  using clock = chrono::steady_clock;
+  auto deadline = clock::now() + chrono::seconds(timeout_sec);
+  const streampos wait_pos = last_response_pos_;
+
+  while (clock::now() < deadline) {
+    unordered_set<size_t> samples;
+    ifstream fin(response_path_);
+    if (fin) {
+      fin.seekg(wait_pos);
+      string line;
+      while (getline(fin, line)) {
+        if (line.empty() || line[0] != '{') continue;
+        IC3FrameResponse resp = parse_ic3_frame_response_line(line);
+        if (!resp.valid) continue;
+        if (resp.source_cti_id == batch_id) {
+          samples.insert(resp.sample_id);
+        }
+      }
+    }
+    if (samples.size() >= expected_samples) {
+      logger.log(1,
+                 "LLMGeneralizer: batch {} received {}/{} samples",
+                 batch_id,
+                 samples.size(),
+                 expected_samples);
+      return true;
+    }
+    this_thread::sleep_for(chrono::milliseconds(200));
+  }
+
+  stats_.num_batch_timeout++;
+  logger.log(0,
+               "LLMGeneralizer: batch {} wait timeout ({}s)",
+               batch_id,
+               timeout_sec);
+  return false;
+}
+
+bool LLMGeneralizer::lookup_batch_meta(const string & batch_id,
+                                       size_t & out_frame_idx) const
+{
+  auto it = batch_store_.find(batch_id);
+  if (it == batch_store_.end()) return false;
+  out_frame_idx = it->second.frame_idx;
+  return true;
 }
 
 void LLMGeneralizer::take_retry_queue(vector<string> & out)
@@ -382,6 +572,23 @@ void LLMGeneralizer::write_retry_request(const string & cti_id,
                                          const string & frame_snapshot_json)
 {
   if (is_cti_accepted(cti_id)) return;
+
+  if (cti_id.rfind("batch_", 0) == 0) {
+    auto it = batch_store_.find(cti_id);
+    if (it == batch_store_.end()) return;
+    vector<BufferedCTI> buffered;
+    for (const auto & stored : it->second.ctis) {
+      BufferedCTI b;
+      b.ctx = stored.ctx;
+      b.cube_children = stored.cube;
+      buffered.push_back(b);
+    }
+    size_t attempt = feedback_attempt(cti_id);
+    write_batch_request(
+        it->second.frame_idx, frame_snapshot_json, buffered, attempt);
+    return;
+  }
+
   auto store_it = cti_store_.find(cti_id);
   if (store_it == cti_store_.end()) return;
   write_request_for_cti(store_it->second.ctx, frame_snapshot_json);
@@ -468,7 +675,8 @@ void LLMGeneralizer::log_stats() const
        << stats_.num_missing_block << " lookup_miss=" << stats_.num_lookup_miss
        << " attempt_mismatch=" << stats_.num_attempt_mismatch
        << " budget_skip=" << stats_.num_budget_skip
-       << " predicates_added=" << stats_.num_predicates_added << endl;
+       << " predicates_added=" << stats_.num_predicates_added
+       << " batch_timeouts=" << stats_.num_batch_timeout << endl;
 }
 
 }  // namespace pono

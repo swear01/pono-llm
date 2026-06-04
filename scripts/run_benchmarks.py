@@ -861,6 +861,8 @@ def run_pono(
     log_path: str = "",
     accepted_budget: int = 50,
     memory_limit_gb: float = 40.0,
+    llm_parallel_samples: int = 3,
+    llm_reasoning_effort: str = "none",
 ) -> RunResult:
     """Run pono on a single benchmark. Returns RunResult."""
     cmd = [
@@ -874,6 +876,8 @@ def run_pono(
         cmd.extend([
             "--llm-gen-mode", "async-cti",
             "--llm-accepted-budget", str(accepted_budget),
+            "--llm-parallel-samples", str(llm_parallel_samples),
+            "--llm-reasoning-effort", llm_reasoning_effort,
             "--llm-req-path", req_path,
             "--llm-resp-path", resp_path,
             "--llm-log", log_path,
@@ -1057,6 +1061,8 @@ def _run_one_llm(job_data: dict) -> RunResult:
             "--prompt-dir", prompt_dir,
             "--poll-interval", "0.5",
             "--max-requests", str(job_data.get("llm_max_requests", 50)),
+            "--max-inflight-requests", str(job_data.get("llm_max_inflight", 8)),
+            "--snapshot-max-clauses", str(job_data.get("snapshot_max_clauses", 50)),
             "--model", llm_model,
         ],
         stdout=subprocess.DEVNULL,
@@ -1072,7 +1078,25 @@ def _run_one_llm(job_data: dict) -> RunResult:
         req_path=req_path, resp_path=resp_path, log_path=log_path,
         accepted_budget=accepted_budget,
         memory_limit_gb=job_data.get("memory_limit", 40.0),
+        llm_parallel_samples=job_data.get("llm_parallel_samples", 3),
+        llm_reasoning_effort=job_data.get("llm_reasoning_effort", "none"),
     )
+
+    # Drain sidecar before stopping
+    drain_sec = job_data.get("drain_sec", 120)
+    deadline = time.time() + drain_sec
+    while time.time() < deadline:
+        req_n = 0
+        log_n = 0
+        if os.path.isfile(req_path):
+            with open(req_path) as f:
+                req_n = sum(1 for _ in f)
+        if os.path.isfile(log_path):
+            with open(log_path) as f:
+                log_n = sum(1 for _ in f)
+        if req_n > 0 and log_n >= req_n:
+            break
+        time.sleep(2)
 
     # Stop sidecar
     try:

@@ -5,7 +5,12 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 
-from llm_worker.ic3_frame_schema import normalize_response, validate_response
+from llm_worker.ic3_frame_schema import (
+    normalize_response,
+    validate_batch_request,
+    validate_request,
+    validate_response,
+)
 
 
 def test_block_only_response():
@@ -89,6 +94,17 @@ def test_invalid_predicate_form():
     ok, err = validate_response(resp)
     assert not ok
     assert "unsupported" in err or "missing" in err
+
+
+def test_validate_batch_via_validate_request():
+    req = {
+        "type": "ic3_frame_batch_request",
+        "batch_id": "batch_f2_a1",
+        "frame_idx": 2,
+        "cti_entries": [{"cti_id": "x", "cti": {"cube": {"literals": []}}}],
+    }
+    ok, err = validate_request(req)
+    assert ok, err
 
 
 def test_feedback_witness_request_shape():

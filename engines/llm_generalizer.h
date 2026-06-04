@@ -80,6 +80,7 @@ struct GeneralizationStats
   size_t num_attempt_mismatch = 0;
   size_t num_budget_skip = 0;
   size_t num_predicates_added = 0;
+  size_t num_batch_timeout = 0;
   size_t total_tokens = 0;
   size_t accepted_budget = 0;
   double total_llm_time_ms = 0.0;
@@ -99,6 +100,7 @@ struct GeneralizationStats
     num_attempt_mismatch = 0;
     num_budget_skip = 0;
     num_predicates_added = 0;
+    num_batch_timeout = 0;
     total_tokens = 0;
     accepted_budget = 0;
     total_llm_time_ms = 0.0;
@@ -137,7 +139,16 @@ class LLMGeneralizer
                                      size_t attempt) const;
   bool has_buffered_cti(size_t frame_idx) const;
 
+  std::string last_flushed_batch_id() const { return last_flushed_batch_id_; }
+
+  bool wait_for_batch_responses(const std::string & batch_id,
+                                size_t expected_samples,
+                                unsigned timeout_sec);
+
   std::vector<IC3FrameResponse> poll_responses();
+
+  bool lookup_batch_meta(const std::string & batch_id,
+                         size_t & out_frame_idx) const;
 
   bool lookup_cti_meta(const std::string & cti_id,
                        size_t & out_frame_idx,
@@ -161,6 +172,24 @@ class LLMGeneralizer
 
   GeneralizationStats stats_;
 
+  struct BufferedCTI
+  {
+    CTIContext ctx;
+    smt::TermVec cube_children;
+  };
+
+  struct StoredCTI
+  {
+    CTIContext ctx;
+    smt::TermVec cube;
+  };
+
+  struct BatchMeta
+  {
+    size_t frame_idx = 0;
+    std::vector<StoredCTI> ctis;
+  };
+
  private:
   std::string escape_json(const std::string & s) const;
   std::string literal_ref(const CTILiteral & lit) const;
@@ -172,6 +201,21 @@ class LLMGeneralizer
 
   void write_request_for_cti(const CTIContext & ctx,
                              const std::string & frame_snapshot_json);
+
+  void append_cti_cube_json(std::ostream & out, const CTIContext & ctx) const;
+
+  void serialize_batch_request(std::ostream & out,
+                               const std::string & batch_id,
+                               size_t frame_idx,
+                               size_t attempt,
+                               const std::vector<BufferedCTI> & buffered,
+                               const std::vector<LLMFeedbackEntry> & feedback,
+                               const std::string & frame_snapshot_json);
+
+  void write_batch_request(size_t frame_idx,
+                           const std::string & frame_snapshot_json,
+                           const std::vector<BufferedCTI> & buffered,
+                           size_t attempt = 0);
 
   PonoOptions opts_;
   smt::SmtSolver solver_;
@@ -188,18 +232,7 @@ class LLMGeneralizer
 
   std::unordered_map<std::string, SymbolRegistryEntry> symbol_registry_;
 
-  struct BufferedCTI
-  {
-    CTIContext ctx;
-    smt::TermVec cube_children;
-  };
   std::map<size_t, std::vector<BufferedCTI>> frame_cti_buffer_;
-
-  struct StoredCTI
-  {
-    CTIContext ctx;
-    smt::TermVec cube;
-  };
   std::unordered_map<std::string, StoredCTI> cti_store_;
 
   std::unordered_map<std::string, std::vector<LLMFeedbackEntry>> feedback_by_cti_;
@@ -209,6 +242,9 @@ class LLMGeneralizer
   std::unordered_set<std::string> accepted_cti_ids_;
   std::vector<std::string> retry_queue_;
   std::unordered_map<std::string, size_t> outstanding_samples_;
+
+  std::unordered_map<std::string, BatchMeta> batch_store_;
+  std::string last_flushed_batch_id_;
 };
 
 }  // namespace pono

@@ -3,9 +3,27 @@
 from typing import Any, Dict, List, Tuple
 
 
+def validate_batch_request(req: Dict[str, Any]) -> Tuple[bool, str]:
+    if req.get("type") != "ic3_frame_batch_request":
+        return False, "type must be ic3_frame_batch_request"
+    for key in ("batch_id", "frame_idx", "cti_entries"):
+        if key not in req:
+            return False, f"missing {key}"
+    entries = req.get("cti_entries") or []
+    if not entries:
+        return False, "cti_entries empty"
+    for i, ent in enumerate(entries):
+        if not ent.get("cti_id") or "cti" not in ent:
+            return False, f"cti_entries[{i}] invalid"
+    return True, ""
+
+
 def validate_request(req: Dict[str, Any]) -> Tuple[bool, str]:
-    if req.get("type") != "ic3_frame_request":
-        return False, "type must be ic3_frame_request"
+    req_type = req.get("type")
+    if req_type == "ic3_frame_batch_request":
+        return validate_batch_request(req)
+    if req_type != "ic3_frame_request":
+        return False, f"unknown request type: {req_type}"
     if "frame_idx" not in req:
         return False, "missing frame_idx"
     if "cti_id" not in req:
