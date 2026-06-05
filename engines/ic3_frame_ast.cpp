@@ -75,6 +75,22 @@ static bool parse_bool_field(const string & obj, const string & field, bool def)
   return def;
 }
 
+/** JSON number field (e.g. "sample_id": 1). Do not use parse_string_field. */
+static size_t parse_uint_field(const string & line,
+                               const string & field,
+                               size_t def = 0)
+{
+  size_t pos = line.find("\"" + field + "\"");
+  if (pos == string::npos) return def;
+  pos = line.find(":", pos);
+  if (pos == string::npos) return def;
+  try {
+    return stoul(line.substr(pos + 1));
+  } catch (...) {
+    return def;
+  }
+}
+
 static size_t parse_size_field(const string & obj, const string & field, size_t def)
 {
   size_t pos = obj.find("\"" + field + "\"");
@@ -403,47 +419,11 @@ IC3FrameResponse parse_ic3_frame_response_line(const string & line)
   }
 
   res.source_cti_id = parse_string_field(line, "source_cti_id");
-  string sample = parse_string_field(line, "sample_id");
-  if (!sample.empty()) {
-    try {
-      res.sample_id = stoul(sample);
-    } catch (...) {
-      res.sample_id = 0;
-    }
-  } else {
-    size_t pos = line.find("\"sample_id\"");
-    if (pos != string::npos) {
-      pos = line.find(":", pos);
-      if (pos != string::npos) {
-        try {
-          res.sample_id = stoul(line.substr(pos + 1));
-        } catch (...) {
-        }
-      }
-    }
-  }
+  res.sample_id = parse_uint_field(line, "sample_id", 0);
 
   res.rationale = parse_string_field(line, "rationale");
 
-  string attempt_str = parse_string_field(line, "attempt");
-  if (!attempt_str.empty()) {
-    try {
-      res.attempt = stoul(attempt_str);
-    } catch (...) {
-      res.attempt = 0;
-    }
-  } else {
-    size_t attempt_pos = line.find("\"attempt\"");
-    if (attempt_pos != string::npos) {
-      attempt_pos = line.find(":", attempt_pos);
-      if (attempt_pos != string::npos) {
-        try {
-          res.attempt = stoul(line.substr(attempt_pos + 1));
-        } catch (...) {
-        }
-      }
-    }
-  }
+  res.attempt = parse_uint_field(line, "attempt", 0);
 
   size_t pos = line.find("\"block_disjuncts\"");
   if (pos != string::npos) {

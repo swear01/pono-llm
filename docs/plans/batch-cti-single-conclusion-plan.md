@@ -330,6 +330,11 @@ bool LLMGeneralizer::wait_for_batch_responses(
 
 注意：`wait` **不**更新 `last_response_pos_`；`poll_responses` 負責消費。
 
+**P0 修復（2026-06-05）：**
+
+1. **真正根因**：[`ic3_frame_ast.cpp`](engines/ic3_frame_ast.cpp) `parse_string_field` 無法解析數字 `sample_id`，誤讀 `"attempt"` → 三筆 response 皆 `sample_id=0` → wait 永遠只數到 1/3 → timeout。修復：`parse_uint_field`。
+2. **防禦性**：[`llm_generalizer.cpp`](engines/llm_generalizer.cpp) `poll`/`wait` streampos（`safe_response_offset`、`wait` 全檔掃描）。
+
 **Retry：**
 
 ```cpp

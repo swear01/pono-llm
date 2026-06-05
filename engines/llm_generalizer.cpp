@@ -58,6 +58,17 @@ static string extract_state_ref(const string & name)
   return name;
 }
 
+/** tellg() returns -1 at EOF; seekg(-1) fails and breaks append-only polling. */
+static bool response_offset_valid(streampos pos)
+{
+  return static_cast<long long>(pos) >= 0;
+}
+
+static streampos safe_response_offset(streampos pos)
+{
+  return response_offset_valid(pos) ? pos : streampos(0);
+}
+
 }  // namespace
 
 LLMGeneralizer::LLMGeneralizer(PonoOptions opts, const SmtSolver & solver)
@@ -517,13 +528,13 @@ bool LLMGeneralizer::wait_for_batch_responses(const string & batch_id,
 {
   using clock = chrono::steady_clock;
   auto deadline = clock::now() + chrono::seconds(timeout_sec);
-  const streampos wait_pos = last_response_pos_;
-
   while (clock::now() < deadline) {
     unordered_set<size_t> samples;
     ifstream fin(response_path_);
     if (fin) {
-      fin.seekg(wait_pos);
+      // Full-file scan: batch_id filter is cheap; avoids stale streampos on append.
+      fin.clear();
+      fin.seekg(0);
       string line;
       while (getline(fin, line)) {
         if (line.empty() || line[0] != '{') continue;
@@ -615,9 +626,13 @@ vector<IC3FrameResponse> LLMGeneralizer::poll_responses()
   ifstream fin(response_path_);
   if (!fin.is_open()) return responses;
 
-  fin.seekg(last_response_pos_);
+  const streampos read_pos = safe_response_offset(last_response_pos_);
+  fin.clear();
+  fin.seekg(read_pos);
   string line;
+  bool advanced = false;
   while (getline(fin, line)) {
+    advanced = true;
     if (line.empty() || line[0] != '{') continue;
     IC3FrameResponse resp = parse_ic3_frame_response_line(line);
     if (!resp.valid) {
@@ -628,7 +643,14 @@ vector<IC3FrameResponse> LLMGeneralizer::poll_responses()
     stats_.num_candidates++;
     responses.push_back(resp);
   }
-  last_response_pos_ = fin.tellg();
+  if (advanced) {
+    fin.clear();
+    fin.seekg(0, ios::end);
+    const streampos end_pos = fin.tellg();
+    if (response_offset_valid(end_pos)) {
+      last_response_pos_ = end_pos;
+    }
+  }
   return responses;
 }
 
