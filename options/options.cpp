@@ -133,6 +133,12 @@ enum optionIndex
   LLM_NO_BATCH_CTI,
   LLM_NO_SYNC_AFTER_FLUSH,
   LLM_BATCH_WAIT_SEC,
+  LLM_SNAPSHOT_MAX_CLAUSES,
+  LLM_CLAUSE_DIGEST_MAX_SAMPLES,
+  LLM_NO_CTI_DIGEST,
+  LLM_CTI_DIGEST_MAX_CUBES,
+  LLM_CTI_DIGEST_TOP_LITS,
+  LLM_BATCH_MAX_JSON_BYTES,
 };
 
 struct Arg : public option::Arg
@@ -855,6 +861,42 @@ const option::Descriptor usage[] = {
     "llm-batch-wait-sec",
     Arg::Numeric,
     "  --llm-batch-wait-sec \tSeconds to wait for batch responses (default: 120)" },
+  { LLM_SNAPSHOT_MAX_CLAUSES,
+    0,
+    "",
+    "llm-snapshot-max-clauses",
+    Arg::Numeric,
+    "  --llm-snapshot-max-clauses \tMax frame clauses in LLM snapshot; 0=digest mode (default: 0)" },
+  { LLM_CLAUSE_DIGEST_MAX_SAMPLES,
+    0,
+    "",
+    "llm-clause-digest-max-samples",
+    Arg::Numeric,
+    "  --llm-clause-digest-max-samples \tRAP-ranked sample clauses in digest mode (default: 12)" },
+  { LLM_NO_CTI_DIGEST,
+    0,
+    "",
+    "no-llm-cti-digest",
+    Arg::None,
+    "  --no-llm-cti-digest \tSend full cti_entries instead of statistical digest" },
+  { LLM_CTI_DIGEST_MAX_CUBES,
+    0,
+    "",
+    "llm-cti-digest-max-cubes",
+    Arg::Numeric,
+    "  --llm-cti-digest-max-cubes \tRepresentative sample cubes in digest (default: 32)" },
+  { LLM_CTI_DIGEST_TOP_LITS,
+    0,
+    "",
+    "llm-cti-digest-top-lits",
+    Arg::Numeric,
+    "  --llm-cti-digest-top-lits \tTop literal stats in digest (default: 40)" },
+  { LLM_BATCH_MAX_JSON_BYTES,
+    0,
+    "",
+    "llm-batch-max-json-bytes",
+    Arg::Numeric,
+    "  --llm-batch-max-json-bytes \tEnable CTI digest when batch JSON exceeds N bytes (default: 500000)" },
   { 0, 0, 0, 0, 0, 0 }
 };
 /*********************************** end Option Handling setup
@@ -1217,6 +1259,22 @@ ProverResult PonoOptions::parse_and_set_options(int argc,
         case LLM_NO_SYNC_AFTER_FLUSH: llm_sync_after_flush_ = false; break;
         case LLM_BATCH_WAIT_SEC:
           llm_batch_wait_sec_ = std::stoul(opt.arg);
+          break;
+        case LLM_SNAPSHOT_MAX_CLAUSES:
+          llm_snapshot_max_clauses_ = std::stoul(opt.arg);
+          break;
+        case LLM_CLAUSE_DIGEST_MAX_SAMPLES:
+          llm_clause_digest_max_samples_ = std::stoul(opt.arg);
+          break;
+        case LLM_NO_CTI_DIGEST: llm_cti_digest_ = false; break;
+        case LLM_CTI_DIGEST_MAX_CUBES:
+          llm_cti_digest_max_cubes_ = std::stoul(opt.arg);
+          break;
+        case LLM_CTI_DIGEST_TOP_LITS:
+          llm_cti_digest_top_lits_ = std::stoul(opt.arg);
+          break;
+        case LLM_BATCH_MAX_JSON_BYTES:
+          llm_batch_max_json_bytes_ = std::stoul(opt.arg);
           break;
         case UNKNOWN_OPTION:
           // not possible because Arg::Unknown returns ARG_ILLEGAL

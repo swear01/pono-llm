@@ -68,7 +68,7 @@ def test_format_frame_snapshot_compact():
             }
         ],
     }
-    text = format_frame_snapshot(snap)
+    text = format_frame_snapshot(snap, max_clauses=50)
     assert "frame_idx=2" in text
     assert "state93=1 | !state538=0" in text
     assert "clause_id" not in text

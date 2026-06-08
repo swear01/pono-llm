@@ -12,8 +12,16 @@ def validate_batch_request(req: Dict[str, Any]) -> Tuple[bool, str]:
     entries = req.get("cti_entries") or []
     if not entries:
         return False, "cti_entries empty"
+    digest = req.get("cti_digest")
+    if digest is not None:
+        if not isinstance(digest, dict):
+            return False, "cti_digest must be object"
+        if not digest.get("cti_total"):
+            return False, "cti_digest missing cti_total"
     for i, ent in enumerate(entries):
-        if not ent.get("cti_id") or "cti" not in ent:
+        if not ent.get("cti_id"):
+            return False, f"cti_entries[{i}] missing cti_id"
+        if "cti" not in ent and "literals" not in ent:
             return False, f"cti_entries[{i}] invalid"
     return True, ""
 

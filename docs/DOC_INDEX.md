@@ -4,7 +4,7 @@
 **Architecture:** [`ARCHITECTURE.md`](ARCHITECTURE.md)  
 **Handoff:** [`HANDOFF_CURRENT_STATE.md`](HANDOFF_CURRENT_STATE.md)
 
-Last updated: 2026-06-03 (logs/formal_yield removed; witness feedback enabled)
+Last updated: 2026-06-07 (baseline patch/resume; stdout fix;真 error 語意)
 
 > **Note:** `logs/formal_yield/` was removed from the repo (legacy offline artifacts). HISTORICAL docs may still reference that path; see `.gitignore`.
 
@@ -25,13 +25,17 @@ Last updated: 2026-06-03 (logs/formal_yield removed; witness feedback enabled)
 
 | File | Description |
 |------|-------------|
-| [`ic3_frame_v1_integration.md`](ic3_frame_v1_integration.md) | Request/response schema, layers, parallel+retry, legacy deletion list |
+| [`ic3_frame_v1_integration.md`](ic3_frame_v1_integration.md) | Request/response schema, batch+digest, JSONL, channel vs quality |
+| [`hwmcc_experiment_tiers.md`](hwmcc_experiment_tiers.md) | Tier 0–3 SOP；baseline / **baseline-patch** / **--skip-partial** resume |
+| [`plans/experiment_parallel_policy.md`](plans/experiment_parallel_policy.md) | 實驗八開預設、伺服器容量、harness 參數 |
+| [`plans/experiment_plan_review.md`](plans/experiment_plan_review.md) | **實驗總檢視**、Phase L/E/Q todo、首輪教訓 |
 | [`ARCHITECTURE.md`](ARCHITECTURE.md) | C++/sidecar flow for v1 |
 | [`HANDOFF_CURRENT_STATE.md`](HANDOFF_CURRENT_STATE.md) | Current task and file map |
 | [`pono_frame_cti_dump_format.md`](pono_frame_cti_dump_format.md) | Frame/CTI dump (reuse for harness L3) |
 | [`ic3ia_predicate_mapping_audit.md`](ic3ia_predicate_mapping_audit.md) | stateNN ↔ BTOR2 |
 | [`mapping_spike_solver_shortlist.md`](mapping_spike_solver_shortlist.md) | Symbol shortlist notes |
 | [`generalization_operators.md`](generalization_operators.md) | Operator names for `operator` field |
+| [`plans/frame_snapshot_quality_plan.md`](plans/frame_snapshot_quality_plan.md) | Frame snapshot 品質（Track A 已實施；Track B 視 Phase Q） |
 
 ---
 

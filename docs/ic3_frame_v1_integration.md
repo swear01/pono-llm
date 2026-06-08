@@ -34,12 +34,14 @@ See also [`ARCHITECTURE.md`](ARCHITECTURE.md).
 | Layer | Content | Same circuit run |
 |-------|---------|------------------|
 | 0 | system + ic3_frame schema rules | Fixed (global) |
-| 1 | benchmark static (property, init summary) | Fixed per `.btor2` |
+| 1 | benchmark path only (see note below) | Fixed per `.btor2` |
 | 2 | `symbol_registry` ( **Verilog required** , btor2_line, width) | Fixed per circuit |
 | 3 | `frame_snapshot` (frontier OR clauses) | Changes per frame / as proof adds clauses |
 | 4 | `cti` + `feedback` + `sample_id` | Unique per API call |
 
 Layers 0–2 are stable → provider prefix cache. Layer 3–4 change each request; sidecar renders them as **compact line text** in the API user prompt (JSONL on disk stays JSON).
+
+**`bad_property` omitted from API prompts (2026-06, temporary):** C++ still writes the full bad-state BTOR expression to `benchmark_context.json` (`write_benchmark_context` in `llm_generalizer.cpp`). Sidecar **does not** include it in the user prompt sent to the LLM. On ILA-scale designs the serialized `bad_property` can exceed 1MB per request and dominated input tokens without helping blocking (CTI digest + frame digest already describe the bad region). Re-enable only after a bounded summary (e.g. truncated `property_name` or a few root literals), not the full formula tree.
 
 ### Sidecar compact serialization (Layer 3–4)
 
@@ -101,7 +103,7 @@ Sidecar flag `--snapshot-max-clauses N` (default `0` = all clauses): when `N>0`,
 
 - `frame_idx` is authoritative; response has **no** `frame_hint`.
 - `symbol_registry` lives in `benchmark_context.json` (Layer 2), not per request.
-- Sidecar reads `benchmark_context_path` for benchmark name, property, and symbol registry.
+- Sidecar reads `benchmark_context_path` for benchmark name and symbol registry (`bad_property` on disk only; not sent to the API — see Prompt layers).
 - LLM must cite symbols only as `ref` (`stateNN`, `inputN`); Verilog is semantic hint only.
 - C++ writes `benchmark_context.json` (layers 1–2) once at startup; sidecar caches it.
 - Request JSON uses minimal fields: literals `{atom:{ref,rhs},polarity}`, clauses `{disjuncts:[...]}`.
@@ -110,14 +112,37 @@ Sidecar flag `--snapshot-max-clauses N` (default `0` = all clauses): when `N>0`,
 
 ## Request: `ic3_frame_batch_request` v1 (default)
 
-After each `block_all` phase, Pono flushes **one** batch line containing all CTIs buffered for that frame. The LLM reads every cube and returns **one** `block_disjuncts` (parallel K samples). Response `source_cti_id` is the `batch_id` (e.g. `batch_f2_a1`), not per-CTI ids.
+After each `block_all` phase, Pono flushes **one** batch line containing all CTIs buffered for that frame. The LLM returns **one** `block_disjuncts` per sample (parallel K). Response `source_cti_id` is the `batch_id` (e.g. `batch_f2_a1`), not per-CTI ids.
 
 | Field | Notes |
 |-------|--------|
 | `batch_id` | `batch_f{frame}_a{attempt}` |
-| `cti_entries[]` | `{cti_id, cti}` per buffered CTI, buffer order preserved |
+| `cti_entries[]` | Full mode: `{cti_id, cti}`. Digest mode: `{cti_id, literals[]}` (compact strings) |
+| `cti_digest` | Optional: `{cti_total, literal_stats[], ...}` when batch is large |
+| `frame_snapshot` | May include `clauses_total` when C++ caps clauses |
 | `temperature` | `0.5` in request; sidecar uses it for API calls |
 | `parallel_samples` | K (default 3) |
+| `model` | Default `deepseek-v4-pro` if `--llm-model` unset |
+
+### CTI digest (large batches)
+
+When the serialized batch line exceeds `--llm-batch-max-json-bytes` (default **500000**), C++ enables digest (if `--llm-cti-digest` is on, default):
+
+- **`cti_digest`:** `cti_total` + top `literal_stats` (frequency across all cubes in the round).
+- **`cti_entries`:** representative sample cubes only, with `literals[]` instead of full `cti.cube` JSON.
+- **`batch_store_`:** still holds **all** CTIs for C++ meta / retry; only the JSONL line is slim.
+- Shrink loop: if still over budget, halve `--llm-cti-digest-max-cubes` (down to 1) and retry.
+
+Disable with `--no-llm-cti-digest`. Sidecar renders digest via `format_cti_batch_digest` in the API user prompt; `llm_log.jsonl` `cti_total` uses `cti_digest.cti_total` when present.
+
+### JSONL reliability
+
+- C++ serializes each request to a string buffer, then writes **one line + `\n` + `flush`** (atomic append).
+- Sidecar [`jsonl_protocol.read_requests_batch`](../llm_worker/jsonl_protocol.py): if a line has **no trailing `\n`**, treat as in-progress and **do not** advance `last_position`.
+
+### Frame snapshot cap (C++ JSONL)
+
+`--llm-snapshot-max-clauses N` (default **50**): only the **last N** clauses are written into `frame_snapshot` in the request JSON, with `clauses_total` set when truncated. Sidecar `--snapshot-max-clauses` should match for consistent prompt text.
 
 **Execution modes (only two supported):**
 
@@ -128,11 +153,33 @@ After each `block_all` phase, Pono flushes **one** batch line containing all CTI
 
 `--no-llm-batch-cti` (legacy per-CTI, ~N requests per flush) is **debug-only**, not used in smoke/benchmarks.
 
-**Pono flags:** `--llm-batch-wait-sec 120` (sync wait timeout).
+**Pono LLM flags (batch):**
 
-**Feedback:** keyed by `batch_f{frame}` so attempt 2 (`batch_f2_a2`) still sees failures from attempt 1.
+| Flag | Default | Purpose |
+|------|---------|---------|
+| `--llm-batch-wait-sec` | 120 | Sync wait timeout after flush (smoke uses 300) |
+| `--llm-snapshot-max-clauses` | 50 | Cap clauses in JSONL `frame_snapshot` |
+| `--llm-batch-max-json-bytes` | 500000 | Trigger CTI digest when batch JSON exceeds N bytes |
+| `--llm-cti-digest-max-cubes` | 16 | Max sample cubes when digest on |
+| `--llm-cti-digest-top-lits` | 40 | Max literal stats rows in digest |
+| `--no-llm-cti-digest` | off | Send full `cti_entries` always |
+| `--llm-model` | (empty → `deepseek-v4-pro`) | Model name in request JSON |
+
+**Feedback:** keyed by `batch_f{frame}` so attempt 2 (`batch_f2_a2`) still sees failures from attempt 1. Sidecar formats witness fields in the user prompt.
 
 **Accept semantics:** one `rel_ind_check` per accepted sample; batch accept does **not** mark individual `cti_id` entries as accepted (they may be buffered again in later rounds).
+
+### Verification: channel vs quality
+
+| Check | Smoke / channel | Research / quality |
+|-------|-----------------|---------------------|
+| `responses == requests × K` | required (`STRICT=1`) | required |
+| `batch_timeouts == 0` | required | required |
+| JSONL parse errors | required | required |
+| `accepted >= 1` | not required | goal for LLM usefulness |
+| `rejected_initial`, `induction_fail` | logged in `manifest.json` | analyze prompt / digest |
+
+See [`hwmcc_experiment_tiers.md`](hwmcc_experiment_tiers.md) for staged benchmark workflow.
 
 ---
 
@@ -206,10 +253,11 @@ Implementation: `engines/ic3_frame_ast.{h,cpp}` (planned).
 
 Same request (layers 0–3 identical) → **K parallel** API calls (`--llm-parallel-samples`, default 3).
 
-Sidecar concurrency (two levels):
+Sidecar concurrency (three levels):
 
 1. **Within one request:** K sample API calls run in parallel (`ThreadPoolExecutor`).
-2. **Across requests:** up to `--max-inflight-requests` (default 4) request lines processed concurrently; responses may arrive out of order (C++ groups by `source_cti_id`).
+2. **Within one sidecar:** up to `--max-inflight-requests` (default **8**) request lines processed concurrently; responses may arrive out of order (C++ groups by `source_cti_id`).
+3. **Across benchmarks (`run_benchmarks.py`):** default **`--parallel 8`** — each worker spawns its **own** pono + sidecar pair with isolated JSONL paths (not one shared sidecar). See [`plans/experiment_parallel_policy.md`](plans/experiment_parallel_policy.md).
 
 - Diversity: `temperature` > 0 in parallel mode, or `sample_id` in layer 4.
 - C++ validates all responses; **first** passing `rel_ind_check` is accepted.
@@ -257,7 +305,13 @@ With thinking enabled, the same prompts take **~90–220 s** (hidden `reasoning_
 
 Python deps: `pip install -r llm_worker/requirements.txt` — uses the `openai` package as HTTP client for DeepSeek's OpenAI-compatible API (not OpenAI models).
 
-Endpoint: `https://api.deepseek.com/v1`, default model `deepseek-v4-pro` (override via sidecar `--model`).
+Endpoint: `https://api.deepseek.com/v1`. Default model **`deepseek-v4-pro`** everywhere unless overridden:
+
+- Pono: `--llm-model NAME` (written into each request JSON `model` field; empty → `deepseek-v4-pro`).
+- Sidecar: `--model NAME` (client default when request omits `model`).
+- Benchmarks: `run_benchmarks.py --llm-model` (default `deepseek-v4-pro`).
+
+Only DeepSeek is supported in the online v1 path (the `openai` package is an HTTP client, not OpenAI models).
 
 ---
 

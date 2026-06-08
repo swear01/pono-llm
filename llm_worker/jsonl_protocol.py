@@ -39,17 +39,24 @@ def read_requests_batch(
     with open(path, "r") as f:
         f.seek(last_position)
         for _ in range(max_lines):
+            line_start = f.tell()
             line = f.readline()
             if not line:
                 new_position = f.tell()
                 break
-            new_position = f.tell()
+            if not line.endswith("\n"):
+                # Writer still appending (e.g. multi-MB batch line); retry next poll.
+                new_position = line_start
+                break
             if not line.strip():
+                new_position = f.tell()
                 continue
             try:
                 requests.append(json.loads(line))
+                new_position = f.tell()
             except json.JSONDecodeError as e:
                 print(f"[jsonl] Failed to parse request line: {e}")
+                new_position = f.tell()
 
     return requests, new_position
 

@@ -48,6 +48,17 @@ def test_validate_batch_request_empty_entries():
     assert "empty" in err
 
 
+def test_validate_batch_request_with_digest():
+    req = _minimal_batch()
+    req["cti_digest"] = {
+        "cti_total": 100,
+        "literal_stats": [{"lit": "state5=1", "count": 80}],
+        "sample_cubes": [],
+    }
+    ok, err = validate_batch_request(req)
+    assert ok, err
+
+
 def test_validate_batch_request_missing_batch_id():
     req = _minimal_batch()
     del req["batch_id"]

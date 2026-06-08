@@ -5,8 +5,10 @@ Unified benchmark runner for pono + LLM evaluation.
 Phases:
   test     - Run built-in tests (make check + tests/python + schema + sidecar)
   download - Download HWMCC benchmarks (2020/2024/2025)
-  baseline - Run baseline pono on all filtered benchmarks
-  llm      - Run +LLM pono on interesting (medium/slow/timeout) benchmarks
+  baseline       - Run baseline pono on all filtered benchmarks
+  baseline-patch - Reconcile suspended run from nohup.log (trust timeout/memout, re-run error/unknown)
+                   Resume with: --phase baseline --skip-partial (reads results_baseline_partial.csv)
+  llm            - Run +LLM pono on interesting (medium/slow/timeout) benchmarks
   report   - Generate markdown report from CSV results
   hwmcc    - download + baseline + llm + report (full pipeline)
   all      - test + download + baseline + llm + report
@@ -16,6 +18,19 @@ Usage:
   python3 scripts/run_benchmarks.py --phase test
   python3 scripts/run_benchmarks.py --phase download --hwmcc-dir ~/hwmcc_benchmarks
   python3 scripts/run_benchmarks.py --phase hwmcc --hwmcc-dir ~/hwmcc_benchmarks --parallel 8
+
+Recommended workflow (see docs/hwmcc_experiment_tiers.md):
+  Tier 0: scripts/smoke_p040.sh
+  Tier 1: --phase baseline (full HWMCC, no LLM)
+  Tier 2: --phase report + --phase find-solvable
+  Tier 3: --phase llm --parallel 8
+  Legacy full pipeline: --phase hwmcc (= download + baseline + llm + report)
+
+Interrupted baseline (suspend -> patch -> resume):
+  python3 scripts/run_benchmarks.py --phase baseline-patch \\
+    --output-dir OUT --baseline-log OUT/nohup.log --parallel 8
+  python3 scripts/run_benchmarks.py --phase baseline --skip-partial \\
+    --output-dir OUT --hwmcc-dir ~/hwmcc_benchmarks --parallel 8
 """
 
 from __future__ import annotations
@@ -95,9 +110,39 @@ class RunResult:
     llm_accepted: int = 0
     llm_rejected: int = 0
     llm_errors: int = 0
+    llm_requests: int = 0
+    llm_candidates: int = 0
+    llm_schema_fail: int = 0
+    llm_parse_fail: int = 0
+    llm_vocab_fail: int = 0
+    llm_induction_fail: int = 0
+    llm_rejected_initial: int = 0
+    llm_missing_block: int = 0
+    llm_lookup_miss: int = 0
+    llm_attempt_mismatch: int = 0
+    llm_budget_skip: int = 0
+    llm_predicates_added: int = 0
+    llm_batch_timeouts: int = 0
 
 
 RESULT_FIELDS = [f.name for f in fields(RunResult)]
+
+# Keys from engines/llm_generalizer.cpp LLM_STATS line (minus accepted/rejected/errors).
+_LLM_STAT_KEY_MAP: dict[str, str] = {
+    "requests": "llm_requests",
+    "candidates": "llm_candidates",
+    "schema_fail": "llm_schema_fail",
+    "parse_fail": "llm_parse_fail",
+    "vocab_fail": "llm_vocab_fail",
+    "induction_fail": "llm_induction_fail",
+    "rejected_initial": "llm_rejected_initial",
+    "missing_block": "llm_missing_block",
+    "lookup_miss": "llm_lookup_miss",
+    "attempt_mismatch": "llm_attempt_mismatch",
+    "budget_skip": "llm_budget_skip",
+    "predicates_added": "llm_predicates_added",
+    "batch_timeouts": "llm_batch_timeouts",
+}
 
 
 # ── CLI ──────────────────────────────────────────────────────────────────
@@ -115,7 +160,10 @@ def parse_args() -> argparse.Namespace:
     )
     p.add_argument(
         "--phase",
-        choices=["test", "download", "baseline", "llm", "report", "hwmcc", "all"],
+        choices=[
+            "test", "download", "baseline", "baseline-patch", "llm", "report",
+            "hwmcc", "all", "find-solvable",
+        ],
         default="hwmcc",
         help="Which phase(s) to run",
     )
@@ -156,8 +204,8 @@ def parse_args() -> argparse.Namespace:
     p.add_argument(
         "--parallel",
         type=int,
-        default=4,
-        help="Max parallel workers",
+        default=8,
+        help="Max parallel workers (default 8 for 32-core / 125GiB hosts)",
     )
     p.add_argument(
         "--output-dir",
@@ -207,6 +255,29 @@ def parse_args() -> argparse.Namespace:
         help="LLM model name (passed to sidecar)",
     )
     p.add_argument(
+        "--llm-phase",
+        choices=["competition", "a", "b"],
+        default="competition",
+        help=(
+            "LLM target set from results_baseline.csv: "
+            "a=non-fast solved (algorithm validity), "
+            "b=timeout+memout (seek new solves), "
+            "competition=legacy competition filter"
+        ),
+    )
+    p.add_argument(
+        "--snapshot-max-clauses",
+        type=int,
+        default=0,
+        help="Frame snapshot mode for +LLM (0=digest/Track A, >0=legacy tail-N)",
+    )
+    p.add_argument(
+        "--llm-drain-sec",
+        type=int,
+        default=300,
+        help="Seconds to drain sidecar after each +LLM benchmark",
+    )
+    p.add_argument(
         "--no-llm",
         action="store_true",
         help="Even if baseline is medium/slow/timeout, skip +llm phase",
@@ -214,8 +285,8 @@ def parse_args() -> argparse.Namespace:
     p.add_argument(
         "--memory-limit",
         type=float,
-        default=40.0,
-        help="Memory limit per benchmark in GB (soft, monitor checks every 5s)",
+        default=14.0,
+        help="Memory limit per benchmark in GB (soft; 14 fits 8-way on 125GiB)",
     )
     p.add_argument(
         "--limit",
@@ -236,8 +307,35 @@ def parse_args() -> argparse.Namespace:
     p.add_argument(
         "--find-max",
         type=int,
-        default=30,
-        help="Max benchmarks to test in find-solvable phase",
+        default=0,
+        help="Max benchmarks to probe in find-solvable (0=all collected entries)",
+    )
+    p.add_argument(
+        "--baseline-log",
+        type=pathlib.Path,
+        default=None,
+        help="Nohup log for baseline-patch (default: <output-dir>/nohup.log)",
+    )
+    p.add_argument(
+        "--skip-partial",
+        action="store_true",
+        help="Skip benchmarks already in results_baseline_partial.csv when resuming baseline",
+    )
+    p.add_argument(
+        "--partial-csv",
+        type=pathlib.Path,
+        default=None,
+        help="Partial baseline CSV for --skip-partial (default: <output-dir>/results_baseline_partial.csv)",
+    )
+    p.add_argument(
+        "--run-id",
+        default="",
+        help="LLM run archive ID (default: timestamp YYYYMMDD_HHMMSS)",
+    )
+    p.add_argument(
+        "--archive-full-requests",
+        action="store_true",
+        help="Always archive requests.jsonl even when req_n=0 (debug; larger)",
     )
     return p.parse_args()
 
@@ -448,6 +546,26 @@ def run_phase_test(args: argparse.Namespace) -> bool:
                 log("test_sidecar.py PASSED")
     else:
         log("test_sidecar.py not found, skipping")
+
+    phase_l_tests = root / "scripts" / "tests"
+    if phase_l_tests.is_dir():
+        log("Running pytest scripts/tests (Phase L harness) ...")
+        r = subprocess.run(
+            [sys.executable, "-m", "pytest", str(phase_l_tests), "-q"],
+            capture_output=True,
+            text=True,
+            timeout=120,
+            cwd=str(root),
+        )
+        if r.returncode != 0:
+            log("pytest scripts/tests FAILED:")
+            log(r.stdout[-2000:] if len(r.stdout) > 2000 else r.stdout)
+            log(r.stderr[-2000:] if len(r.stderr) > 2000 else r.stderr)
+            ok = False
+        else:
+            log("pytest scripts/tests PASSED")
+    else:
+        log("scripts/tests not found, skipping Phase L harness tests")
 
     return ok
 
@@ -825,28 +943,123 @@ def collect_benchmarks(
 # ── Phase: run pono ──────────────────────────────────────────────────────
 
 
-def _parse_llm_stats(stderr: str) -> tuple[int, int, int]:
-    """Parse LLM accept/reject/error counts from pono stderr.
-    Expects a line like: LLM_STATS accepted=5 rejected=10 errors=3 ..."""
-    accepted = rejected = errors = 0
+def _parse_pono_stdout(stdout: str | None, returncode: int) -> str:
+    """Parse pono stdout. BTOR2 prints 'sat|unsat|unknown|error' then 'bN' on the next line."""
+    text = (stdout or "").strip()
+    if not text:
+        return "unknown" if returncode == 0 else "error"
+    first = text.splitlines()[0].strip().lower()
+    if first in ("sat", "unsat", "unknown", "error"):
+        return first
+    return "unknown" if returncode == 0 else "error"
+
+
+def _category_from_run(result: str, wall_time: float) -> str:
+    if result in ("timeout", "error", "memout"):
+        return result
+    if wall_time < 30:
+        return "fast"
+    if wall_time < 500:
+        return "medium"
+    return "slow"
+
+
+def _parse_llm_stats(stderr: str) -> dict[str, int]:
+    """Parse LLM_STATS line from pono stderr into field-name -> int."""
+    stats: dict[str, int] = {
+        "llm_accepted": 0,
+        "llm_rejected": 0,
+        "llm_errors": 0,
+    }
+    for field_name in _LLM_STAT_KEY_MAP.values():
+        stats[field_name] = 0
+
+    last_line = ""
     for line in stderr.splitlines():
-        if not line.strip().startswith("LLM_STATS"):
+        if line.strip().startswith("LLM_STATS"):
+            last_line = line.strip()
+
+    if not last_line:
+        return stats
+
+    for part in last_line.split():
+        if "=" not in part:
             continue
-        for part in line.split():
-            if "=" not in part:
-                continue
-            key, val = part.split("=", 1)
-            try:
-                int_val = int(val)
-            except ValueError:
-                continue
-            if key == "accepted":
-                accepted = int_val
-            elif key == "rejected":
-                rejected = int_val
-            elif key == "errors":
-                errors = int_val
-    return accepted, rejected, errors
+        key, val = part.split("=", 1)
+        try:
+            int_val = int(val)
+        except ValueError:
+            continue
+        if key == "accepted":
+            stats["llm_accepted"] = int_val
+        elif key == "rejected":
+            stats["llm_rejected"] = int_val
+        elif key == "errors":
+            stats["llm_errors"] = int_val
+        elif key in _LLM_STAT_KEY_MAP:
+            stats[_LLM_STAT_KEY_MAP[key]] = int_val
+    return stats
+
+
+def _bench_slug(entry: BenchEntry) -> str:
+    """Stable archive directory name per benchmark."""
+    stem = re.sub(r"[^\w.-]+", "_", pathlib.Path(entry.path).stem)
+    return f"{entry.year}_{entry.track}_{stem}"
+
+
+def _count_jsonl_lines(path: str) -> int:
+    if not os.path.isfile(path):
+        return 0
+    with open(path) as f:
+        return sum(1 for _ in f)
+
+
+def _archive_llm_artifacts(
+    tmpdir: str,
+    dest: pathlib.Path,
+    *,
+    pono_stderr: str,
+    req_n: int,
+    archive_full_requests: bool,
+) -> None:
+    """Copy per-benchmark LLM artifacts from tmpdir to persistent archive."""
+    dest.mkdir(parents=True, exist_ok=True)
+
+    def _copy_if_exists(name: str) -> None:
+        src = os.path.join(tmpdir, name)
+        if os.path.isfile(src):
+            shutil.copy2(src, dest / name)
+
+    if req_n > 0 or archive_full_requests:
+        _copy_if_exists("requests.jsonl")
+    _copy_if_exists("llm_log.jsonl")
+    _copy_if_exists("responses.jsonl")
+    _copy_if_exists("sidecar_stderr.log")
+    (dest / "pono_stderr.log").write_text(pono_stderr or "")
+
+
+def _write_run_manifest(path: pathlib.Path, data: dict) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(data, indent=2) + "\n")
+
+
+def _run_result_llm_summary(r: RunResult) -> dict:
+    """Compact LLM stats for run_manifest.json."""
+    return {
+        "benchmark": r.benchmark,
+        "slug": _bench_slug(BenchEntry(
+            path=r.benchmark, year=r.year, track=r.track, expected=r.expected,
+        )),
+        "result": r.result,
+        "wall_time": round(r.wall_time, 2),
+        "match": r.match,
+        "llm_accepted": r.llm_accepted,
+        "llm_rejected": r.llm_rejected,
+        "llm_requests": r.llm_requests,
+        "llm_batch_timeouts": r.llm_batch_timeouts,
+        "llm_rejected_initial": r.llm_rejected_initial,
+        "llm_induction_fail": r.llm_induction_fail,
+    }
 
 
 def run_pono(
@@ -863,8 +1076,10 @@ def run_pono(
     memory_limit_gb: float = 40.0,
     llm_parallel_samples: int = 3,
     llm_reasoning_effort: str = "none",
-) -> RunResult:
-    """Run pono on a single benchmark. Returns RunResult."""
+    llm_batch_wait_sec: int = 300,
+    llm_snapshot_max_clauses: int = 0,
+) -> tuple[RunResult, str]:
+    """Run pono on a single benchmark. Returns (RunResult, stderr text)."""
     cmd = [
         str(pono_bin),
         "-e", engine,
@@ -878,6 +1093,8 @@ def run_pono(
             "--llm-accepted-budget", str(accepted_budget),
             "--llm-parallel-samples", str(llm_parallel_samples),
             "--llm-reasoning-effort", llm_reasoning_effort,
+            "--llm-batch-wait-sec", str(llm_batch_wait_sec),
+            "--llm-snapshot-max-clauses", str(llm_snapshot_max_clauses),
             "--llm-req-path", req_path,
             "--llm-resp-path", resp_path,
             "--llm-log", log_path,
@@ -894,13 +1111,13 @@ def run_pono(
             stdout=subprocess.PIPE, stderr=subprocess.PIPE,
             text=True,
         )
-    except Exception as exc:
+    except Exception:
         wall = time.time() - t0
         return RunResult(
             benchmark=entry.path, year=entry.year, track=entry.track,
             expected=entry.expected, mode=mode,
             result="error", wall_time=wall, category="error", match=False,
-        )
+        ), ""
 
     def _mem_monitor():
         """Kill proc if RSS exceeds limit, checking every 5s."""
@@ -935,34 +1152,20 @@ def run_pono(
             result = "memout"
             wall = time.time() - t0
         else:
-            stdout_text = (stdout or "").strip().lower()
-            if stdout_text in ("sat", "unsat"):
-                result = stdout_text
-            elif proc.returncode == 0:
-                result = "unknown"
-            else:
-                result = "error"
+            result = _parse_pono_stdout(stdout, proc.returncode)
 
-    llm_acc = llm_rej = llm_err = 0
+    llm_stats: dict[str, int] = {}
     if mode == "llm":
         try:
-            llm_acc, llm_rej, llm_err = _parse_llm_stats(stderr)
+            llm_stats = _parse_llm_stats(stderr or "")
         except Exception:
-            pass
+            llm_stats = {}
 
-    # classification
-    if result in ("timeout", "error"):
-        category = result
-    elif wall < 30:
-        category = "fast"
-    elif wall < 500:
-        category = "medium"
-    else:
-        category = "slow"
+    category = _category_from_run(result, wall)
 
     match = (result == entry.expected)
 
-    return RunResult(
+    run_result = RunResult(
         benchmark=entry.path,
         year=entry.year,
         track=entry.track,
@@ -972,20 +1175,174 @@ def run_pono(
         wall_time=wall,
         category=category,
         match=match,
-        llm_accepted=llm_acc,
-        llm_rejected=llm_rej,
-        llm_errors=llm_err,
+        llm_accepted=llm_stats.get("llm_accepted", 0),
+        llm_rejected=llm_stats.get("llm_rejected", 0),
+        llm_errors=llm_stats.get("llm_errors", 0),
+        llm_requests=llm_stats.get("llm_requests", 0),
+        llm_candidates=llm_stats.get("llm_candidates", 0),
+        llm_schema_fail=llm_stats.get("llm_schema_fail", 0),
+        llm_parse_fail=llm_stats.get("llm_parse_fail", 0),
+        llm_vocab_fail=llm_stats.get("llm_vocab_fail", 0),
+        llm_induction_fail=llm_stats.get("llm_induction_fail", 0),
+        llm_rejected_initial=llm_stats.get("llm_rejected_initial", 0),
+        llm_missing_block=llm_stats.get("llm_missing_block", 0),
+        llm_lookup_miss=llm_stats.get("llm_lookup_miss", 0),
+        llm_attempt_mismatch=llm_stats.get("llm_attempt_mismatch", 0),
+        llm_budget_skip=llm_stats.get("llm_budget_skip", 0),
+        llm_predicates_added=llm_stats.get("llm_predicates_added", 0),
+        llm_batch_timeouts=llm_stats.get("llm_batch_timeouts", 0),
     )
+    return run_result, stderr or ""
 
 
 def _run_one_baseline(job: tuple[BenchEntry, pathlib.Path, str, int, int]) -> RunResult:
     entry, pono_bin, engine, bound, timeout = job
-    return run_pono(entry, pono_bin, engine, bound, timeout, "baseline")
+    result, _ = run_pono(entry, pono_bin, engine, bound, timeout, "baseline")
+    return result
 
 
-def run_phase_baseline(args: argparse.Namespace, entries: list[BenchEntry]) -> list[RunResult]:
+def parse_baseline_nohup_log(log_path: pathlib.Path) -> dict[str, tuple[str, float]]:
+    """Parse harness log -> basename -> (logged_result, wall_time)."""
+    import re
+
+    text = log_path.read_text()
+    current: str | None = None
+    out: dict[str, tuple[str, float]] = {}
+    for line in text.splitlines():
+        m = re.search(r"\[worker \d+\] starting: (.+\.btor2)", line)
+        if m:
+            current = m.group(1)
+            continue
+        m = re.search(r"\[worker \d+\] done: (\S+) ([\d.]+)s", line)
+        if m and current:
+            out[current] = (m.group(1), float(m.group(2)))
+            current = None
+    return out
+
+
+def merge_baseline_results(
+    entries: list[BenchEntry],
+    partial: list[RunResult],
+    new_results: list[RunResult],
+) -> list[RunResult]:
+    """Merge partial + new rows in collect_benchmarks order."""
+    by_path: dict[str, RunResult] = {r.benchmark: r for r in partial}
+    by_path.update({r.benchmark: r for r in new_results})
+    merged: list[RunResult] = []
+    missing: list[str] = []
+    for entry in entries:
+        row = by_path.get(entry.path)
+        if row is None:
+            missing.append(entry.path)
+            continue
+        merged.append(row)
+    if missing:
+        log(f"  WARNING: {len(missing)} benchmarks missing after merge")
+    return merged
+
+
+def _basename_entry_map(entries: list[BenchEntry]) -> dict[str, BenchEntry]:
+    out: dict[str, BenchEntry] = {}
+    for entry in entries:
+        name = pathlib.Path(entry.path).name
+        if name in out:
+            log(f"  WARNING: duplicate basename {name}; using {entry.path}")
+        out[name] = entry
+    return out
+
+
+def run_phase_baseline_patch(
+    args: argparse.Namespace,
+    entries: list[BenchEntry],
+    log_path: pathlib.Path,
+) -> list[RunResult]:
+    """Rebuild completed baseline rows from log; re-run misclassified error/unknown cases."""
+    logged = parse_baseline_nohup_log(log_path)
+    log(f"=== Phase: baseline-patch ({len(logged)} completed in log) ===")
+    if not logged:
+        log(f"No completed benchmarks found in {log_path}")
+        return []
+
+    by_name = _basename_entry_map(entries)
+    trusted: list[RunResult] = []
+    to_rerun: list[BenchEntry] = []
+    missing: list[str] = []
+
+    for name, (logged_result, wall_time) in logged.items():
+        entry = by_name.get(name)
+        if not entry:
+            missing.append(name)
+            continue
+        if logged_result in ("timeout", "memout"):
+            trusted.append(RunResult(
+                benchmark=entry.path,
+                year=entry.year,
+                track=entry.track,
+                expected=entry.expected,
+                mode="baseline",
+                result=logged_result,
+                wall_time=wall_time,
+                category=_category_from_run(logged_result, wall_time),
+                match=(logged_result == entry.expected),
+            ))
+        elif logged_result in ("error", "unknown"):
+            to_rerun.append(entry)
+        else:
+            log(f"  WARNING: unexpected logged result {logged_result!r} for {name}")
+
+    if missing:
+        log(f"  WARNING: {len(missing)} log entries not in benchmark list (skipped)")
+
+    log(f"  trusted from log: {len(trusted)} (timeout/memout)")
+    log(f"  re-run queue: {len(to_rerun)} (error/unknown)")
+
+    rerun_results: list[RunResult] = []
+    if to_rerun:
+        pono_bin = _resolve_pono(args)
+        from queue import Queue
+        from concurrent.futures import ThreadPoolExecutor, as_completed
+
+        q: Queue[BenchEntry | None] = Queue()
+        for entry in to_rerun:
+            q.put(entry)
+        for _ in range(args.parallel):
+            q.put(None)
+
+        def _worker() -> list[RunResult]:
+            local: list[RunResult] = []
+            while True:
+                entry = q.get()
+                if entry is None:
+                    break
+                name = pathlib.Path(entry.path).name
+                log(f"  patch re-run: {name}")
+                result, _ = run_pono(
+                    entry, pono_bin, args.engine, args.bound, args.timeout, "baseline",
+                    memory_limit_gb=args.memory_limit,
+                )
+                local.append(result)
+                log(f"  patch done: {name} -> {result.result} {result.wall_time:.1f}s")
+            return local
+
+        with ThreadPoolExecutor(max_workers=args.parallel) as pool:
+            futs = [pool.submit(_worker) for _ in range(args.parallel)]
+            for fut in as_completed(futs):
+                rerun_results.extend(fut.result())
+
+    results = trusted + rerun_results
+    log(f"baseline-patch total rows: {len(results)}")
+    return results
+
+
+def run_phase_baseline(
+    args: argparse.Namespace,
+    entries: list[BenchEntry],
+    *,
+    total_count: int | None = None,
+) -> list[RunResult]:
     """Run baseline pono on all entries in parallel using subprocess workers."""
-    log(f"=== Phase: baseline ({len(entries)} benchmarks) ===")
+    total = total_count if total_count is not None else len(entries)
+    log(f"=== Phase: baseline ({len(entries)} to run, {total} total) ===")
     pono_bin = str(_resolve_pono(args))
 
     results: list[RunResult] = []
@@ -1004,9 +1361,9 @@ def run_phase_baseline(args: argparse.Namespace, entries: list[BenchEntry]) -> l
                 return
             log(f"  [worker {worker_id}] starting: {pathlib.Path(entry.path).name}")
             try:
-                r = run_pono(entry, pathlib.Path(pono_bin), args.engine,
-                            args.bound, args.timeout, "baseline",
-                            memory_limit_gb=args.memory_limit)
+                r, _ = run_pono(entry, pathlib.Path(pono_bin), args.engine,
+                                args.bound, args.timeout, "baseline",
+                                memory_limit_gb=args.memory_limit)
             except Exception:
                 r = RunResult(
                     benchmark=entry.path, year=entry.year, track=entry.track,
@@ -1016,8 +1373,10 @@ def run_phase_baseline(args: argparse.Namespace, entries: list[BenchEntry]) -> l
             log(f"  [worker {worker_id}] done: {r.result} {r.wall_time:.1f}s")
             results.append(r)
             done = len(results)
+            skipped = total - len(entries)
+            overall = skipped + done
             if done % 10 == 0 or done == len(entries) or done <= 3:
-                log(f"  baseline progress: {done}/{len(entries)}")
+                log(f"  baseline progress: {overall}/{total}")
 
     log(f"Starting {args.parallel} workers ...")
     threads = [Thread(target=_worker, args=(i,), daemon=True)
@@ -1031,6 +1390,63 @@ def run_phase_baseline(args: argparse.Namespace, entries: list[BenchEntry]) -> l
 
 
 # ── Phase: +llm ──────────────────────────────────────────────────────────
+
+P040_BASENAME = "qspiflash_dualflexpress_divfive-p040.btor2"
+
+
+def _find_p040_in_baseline(baseline_results: list[RunResult]) -> RunResult | None:
+    for row in baseline_results:
+        name = pathlib.Path(row.benchmark).name
+        if name == P040_BASENAME or name.endswith("p040.btor2"):
+            return row
+    return None
+
+
+def select_llm_targets_by_phase(
+    baseline_results: list[RunResult],
+    phase: str,
+    *,
+    fast_threshold: float = 30.0,
+    include_p040: bool = True,
+) -> list[RunResult]:
+    """Select +LLM targets from baseline CSV rows (phase a or b)."""
+    if phase == "a":
+        targets = [
+            r for r in baseline_results
+            if r.result in ("sat", "unsat") and r.wall_time >= fast_threshold
+        ]
+        label = f"phase A (non-fast solved, >={fast_threshold}s)"
+    elif phase == "b":
+        targets = [
+            r for r in baseline_results
+            if r.result in ("timeout", "memout")
+        ]
+        label = "phase B (timeout + memout)"
+    else:
+        raise ValueError(f"select_llm_targets_by_phase: unsupported phase {phase!r}")
+
+    if include_p040:
+        p040 = _find_p040_in_baseline(baseline_results)
+        if p040 is None:
+            log("  WARNING: p040 control benchmark not found in baseline results")
+        elif p040.benchmark not in {t.benchmark for t in targets}:
+            targets.append(p040)
+            log(f"  Added p040 control: {pathlib.Path(p040.benchmark).name}")
+
+    log(f"  LLM {label}: {len(targets)} targets")
+    by_result: dict[str, int] = {}
+    for t in targets:
+        by_result[t.result] = by_result.get(t.result, 0) + 1
+    log(f"  Baseline result breakdown: {by_result}")
+    return targets
+
+
+def llm_results_csv_path(args: argparse.Namespace) -> pathlib.Path:
+    if args.llm_phase == "a":
+        return args.output_dir / "results_llm_phase_a.csv"
+    if args.llm_phase == "b":
+        return args.output_dir / "results_llm_phase_b.csv"
+    return args.output_dir / "results_llm.csv"
 
 
 def _run_one_llm(job_data: dict) -> RunResult:
@@ -1062,7 +1478,7 @@ def _run_one_llm(job_data: dict) -> RunResult:
             "--poll-interval", "0.5",
             "--max-requests", str(job_data.get("llm_max_requests", 50)),
             "--max-inflight-requests", str(job_data.get("llm_max_inflight", 8)),
-            "--snapshot-max-clauses", str(job_data.get("snapshot_max_clauses", 50)),
+            "--snapshot-max-clauses", str(job_data.get("snapshot_max_clauses", 0)),
             "--model", llm_model,
         ],
         stdout=subprocess.DEVNULL,
@@ -1072,31 +1488,30 @@ def _run_one_llm(job_data: dict) -> RunResult:
 
     time.sleep(1)
 
-    result = run_pono(
+    result, pono_stderr = run_pono(
         entry, pono_bin, engine, bound, timeout,
         mode="llm",
         req_path=req_path, resp_path=resp_path, log_path=log_path,
         accepted_budget=accepted_budget,
-        memory_limit_gb=job_data.get("memory_limit", 40.0),
+        memory_limit_gb=job_data.get("memory_limit", 14.0),
         llm_parallel_samples=job_data.get("llm_parallel_samples", 3),
         llm_reasoning_effort=job_data.get("llm_reasoning_effort", "none"),
+        llm_batch_wait_sec=job_data.get("llm_batch_wait_sec", 300),
+        llm_snapshot_max_clauses=job_data.get("snapshot_max_clauses", 0),
     )
 
     # Drain sidecar before stopping
-    drain_sec = job_data.get("drain_sec", 120)
+    drain_sec = job_data.get("drain_sec", 300)
     deadline = time.time() + drain_sec
+    req_n = 0
     while time.time() < deadline:
-        req_n = 0
-        log_n = 0
-        if os.path.isfile(req_path):
-            with open(req_path) as f:
-                req_n = sum(1 for _ in f)
-        if os.path.isfile(log_path):
-            with open(log_path) as f:
-                log_n = sum(1 for _ in f)
+        req_n = _count_jsonl_lines(req_path)
+        log_n = _count_jsonl_lines(log_path)
         if req_n > 0 and log_n >= req_n:
             break
         time.sleep(2)
+    else:
+        req_n = _count_jsonl_lines(req_path)
 
     # Stop sidecar
     try:
@@ -1104,6 +1519,19 @@ def _run_one_llm(job_data: dict) -> RunResult:
         sidecar_proc.wait(timeout=10)
     except Exception:
         sidecar_proc.kill()
+
+    archive_dir = job_data.get("archive_dir")
+    if archive_dir:
+        try:
+            _archive_llm_artifacts(
+                tmpdir,
+                pathlib.Path(archive_dir),
+                pono_stderr=pono_stderr,
+                req_n=req_n,
+                archive_full_requests=job_data.get("archive_full_requests", False),
+            )
+        except Exception as exc:
+            log(f"  WARNING: archive failed for {pathlib.Path(entry.path).name}: {exc}")
 
     return result
 
@@ -1113,49 +1541,96 @@ def run_phase_llm(
     baseline_results: list[RunResult],
     comp_map: dict[str, CompEntry],
 ) -> list[RunResult]:
-    """Run +LLM on benchmarks classified as medium/slow/timeout in competition results."""
-    # Build a lookup: (year, bench_abs_path) -> CompEntry
-    comp_by_path: dict[str, CompEntry] = {}
-    matched = 0
-    for br in baseline_results:
-        entry = BenchEntry(path=br.benchmark, year=br.year, track=br.track, expected=br.expected)
-        ce = match_entry_to_competition(entry, comp_map)
-        if ce:
-            comp_by_path[br.benchmark] = ce
-            matched += 1
+    """Run +LLM on a target subset of baseline benchmarks."""
+    if args.llm_phase in ("a", "b"):
+        log(f"=== Phase: +LLM (subset --llm-phase {args.llm_phase}) ===")
+        targets = select_llm_targets_by_phase(
+            baseline_results,
+            args.llm_phase,
+            fast_threshold=args.fast_threshold,
+        )
+        targets_path = args.output_dir / f"llm_targets_phase_{args.llm_phase}.json"
+        targets_path.parent.mkdir(parents=True, exist_ok=True)
+        targets_path.write_text(json.dumps({
+            "llm_phase": args.llm_phase,
+            "fast_threshold": args.fast_threshold,
+            "target_count": len(targets),
+            "targets": [
+                {
+                    "benchmark": t.benchmark,
+                    "name": pathlib.Path(t.benchmark).name,
+                    "expected": t.expected,
+                    "baseline_result": t.result,
+                    "baseline_wall_time": t.wall_time,
+                    "baseline_category": t.category,
+                }
+                for t in targets
+            ],
+        }, indent=2) + "\n")
+        log(f"  Target list saved to {targets_path}")
+    else:
+        # Legacy: competition medium/slow/timeout filter
+        comp_by_path: dict[str, CompEntry] = {}
+        matched = 0
+        for br in baseline_results:
+            entry = BenchEntry(path=br.benchmark, year=br.year, track=br.track, expected=br.expected)
+            ce = match_entry_to_competition(entry, comp_map)
+            if ce:
+                comp_by_path[br.benchmark] = ce
+                matched += 1
 
-    # Filter: only run +LLM on benchmarks that were medium/slow/timeout in competition
-    targets = [r for r in baseline_results
-               if comp_by_path.get(r.benchmark) and comp_by_path[r.benchmark].category in ("medium", "slow", "timeout")]
+        targets = [r for r in baseline_results
+                   if comp_by_path.get(r.benchmark)
+                   and comp_by_path[r.benchmark].category in ("medium", "slow", "timeout")]
 
-    # Also skip benchmarks that timed out in our baseline (our machine might be slower)
-    fast_in_bl = [r for r in baseline_results if r.category == "fast"]
-    fast_paths = {r.benchmark for r in fast_in_bl}
-    skipped_fast_baseline = [t for t in targets if t.benchmark in fast_paths]
-    targets = [t for t in targets if t.benchmark not in fast_paths]
+        fast_paths = {r.benchmark for r in baseline_results if r.category == "fast"}
+        skipped_fast_baseline = [t for t in targets if t.benchmark in fast_paths]
+        targets = [t for t in targets if t.benchmark not in fast_paths]
+        if skipped_fast_baseline:
+            targets = targets + skipped_fast_baseline
 
-    if skipped_fast_baseline:
-        log(f"Note: {len(skipped_fast_baseline)} benchmarks were fast in our baseline but medium/slow/timeout in competition. Including them in +LLM anyway?")
-        # Actually include them back - they're fast on our machine which is fine
-        targets = targets + skipped_fast_baseline
+        log(f"=== Phase: +LLM ({len(targets)} benchmarks, competition filter) ===")
+        log(f"  (matched {matched} of {len(baseline_results)} baseline results to competition data)")
+        by_cat: dict[str, int] = {}
+        for t in targets:
+            ce = comp_by_path.get(t.benchmark)
+            if ce:
+                by_cat[ce.category] = by_cat.get(ce.category, 0) + 1
+        log(f"  Competition classification: medium={by_cat.get('medium',0)}, slow={by_cat.get('slow',0)}, timeout={by_cat.get('timeout',0)}")
 
     if not targets:
         log("No benchmarks qualify for +LLM phase")
         return []
 
-    log(f"=== Phase: +LLM ({len(targets)} benchmarks, classified by competition results) ===")
-    log(f"  (matched {matched} of {len(baseline_results)} baseline results to competition data)")
-
-    # Show breakdown
-    by_cat: dict[str, int] = {}
-    for t in targets:
-        ce = comp_by_path.get(t.benchmark)
-        if ce:
-            by_cat[ce.category] = by_cat.get(ce.category, 0) + 1
-    log(f"  Competition classification: medium={by_cat.get('medium',0)}, slow={by_cat.get('slow',0)}, timeout={by_cat.get('timeout',0)}")
     pono_bin = _resolve_pono(args)
     sidecar_path = _resolve_sidecar(args)
     prompt_dir = _resolve_prompt_dir(args)
+
+    run_id = args.run_id or time.strftime("%Y%m%d_%H%M%S")
+    if args.llm_phase in ("a", "b") and not args.run_id:
+        run_id = f"{run_id}_phase_{args.llm_phase}"
+    archive_root = args.output_dir / "runs" / run_id
+    manifest_path = archive_root / "run_manifest.json"
+    started_at = time.strftime("%Y-%m-%dT%H:%M:%S")
+    _write_run_manifest(manifest_path, {
+        "run_id": run_id,
+        "phase": f"llm_{args.llm_phase}" if args.llm_phase in ("a", "b") else "llm",
+        "llm_phase": args.llm_phase,
+        "status": "running",
+        "started_at": started_at,
+        "parallel": args.parallel,
+        "snapshot_max_clauses": args.snapshot_max_clauses,
+        "llm_model": args.llm_model,
+        "llm_drain_sec": args.llm_drain_sec,
+        "memory_limit_gb": args.memory_limit,
+        "engine": args.engine,
+        "bound": args.bound,
+        "timeout": args.timeout,
+        "target_count": len(targets),
+        "archive_root": str(archive_root),
+        "benchmarks": [],
+    })
+    log(f"LLM archive: {archive_root}")
 
     # Create temp dir for sidecar IPC files
     base_tmp = pathlib.Path(tempfile.mkdtemp(prefix="pono_bench_"))
@@ -1173,6 +1648,7 @@ def run_phase_llm(
         )
         tmpdir = str(base_tmp / str(uuid.uuid4())[:8])
         pathlib.Path(tmpdir).mkdir(parents=True)
+        slug = _bench_slug(entry)
         jobs.append(dict(
             entry=entry,
             pono_bin=pono_bin,
@@ -1185,6 +1661,14 @@ def run_phase_llm(
             prompt_dir=str(prompt_dir),
             llm_max_requests=args.llm_max_requests,
             llm_model=args.llm_model,
+            llm_batch_wait_sec=300,
+            llm_max_inflight=8,
+            llm_parallel_samples=3,
+            memory_limit=args.memory_limit,
+            drain_sec=args.llm_drain_sec,
+            snapshot_max_clauses=args.snapshot_max_clauses,
+            archive_dir=str(archive_root / slug),
+            archive_full_requests=args.archive_full_requests,
         ))
 
     log(f"Starting {args.parallel} workers (each with own sidecar) ...")
@@ -1204,7 +1688,29 @@ def run_phase_llm(
                 else:
                     log(f"  ERROR: {type(exc).__name__}: {exc}")
 
-    # Cleanup
+    finished_at = time.strftime("%Y-%m-%dT%H:%M:%S")
+    _write_run_manifest(manifest_path, {
+        "run_id": run_id,
+        "phase": "llm",
+        "status": "done",
+        "started_at": started_at,
+        "finished_at": finished_at,
+        "parallel": args.parallel,
+        "snapshot_max_clauses": args.snapshot_max_clauses,
+        "llm_model": args.llm_model,
+        "llm_drain_sec": args.llm_drain_sec,
+        "memory_limit_gb": args.memory_limit,
+        "engine": args.engine,
+        "bound": args.bound,
+        "timeout": args.timeout,
+        "target_count": len(targets),
+        "completed_count": len(results),
+        "archive_root": str(archive_root),
+        "benchmarks": [_run_result_llm_summary(r) for r in results],
+    })
+    log(f"Run manifest: {manifest_path}")
+
+    # Cleanup (per-job archives already copied)
     try:
         shutil.rmtree(base_tmp, ignore_errors=True)
     except Exception:
@@ -1232,20 +1738,23 @@ def load_results(path: pathlib.Path) -> list[RunResult]:
     with path.open() as f:
         reader = csv.DictReader(f)
         for row in reader:
-            results.append(RunResult(
-                benchmark=row["benchmark"],
-                year=int(row["year"]),
-                track=row["track"],
-                expected=row["expected"],
-                mode=row["mode"],
-                result=row["result"],
-                wall_time=float(row["wall_time"]),
-                category=row["category"],
-                match=row["match"].lower() == "true",
-                llm_accepted=int(row.get("llm_accepted", 0)),
-                llm_rejected=int(row.get("llm_rejected", 0)),
-                llm_errors=int(row.get("llm_errors", 0)),
-            ))
+            kwargs: dict = {
+                "benchmark": row["benchmark"],
+                "year": int(row["year"]),
+                "track": row["track"],
+                "expected": row["expected"],
+                "mode": row["mode"],
+                "result": row["result"],
+                "wall_time": float(row["wall_time"]),
+                "category": row["category"],
+                "match": row["match"].lower() == "true",
+            }
+            for field_name in RESULT_FIELDS:
+                if field_name in kwargs:
+                    continue
+                if field_name.startswith("llm_"):
+                    kwargs[field_name] = int(row.get(field_name, 0) or 0)
+            results.append(RunResult(**kwargs))
     return results
 
 
@@ -1471,63 +1980,101 @@ def _resolve_prompt_dir(args: argparse.Namespace) -> pathlib.Path:
 
 
 def run_find_solvable(args: argparse.Namespace) -> list[dict]:
-    """Find IC3IA-solvable non-fast benchmarks that have refinement cycles."""
+    """Find IC3IA-solvable benchmarks with refinement cycles, excluding too-fast cases."""
     log("=== Phase: find-solvable ===")
     years = [int(y.strip()) for y in args.hwmcc_years.split(",")]
     comp_map = load_competition_classification(args.hwmcc_dir)
     entries = collect_benchmarks(args.hwmcc_dir, years)
+    if args.limit > 0:
+        entries = entries[:args.limit]
+    if args.find_max > 0:
+        entries = entries[:args.find_max]
 
-    # Filter: pono solved in competition, medium or slow (not fast)
-    targets = []
-    for e in entries:
-        ce = match_entry_to_competition(e, comp_map)
-        if not ce:
-            continue
-        if ce.category in ("medium",):
-            targets.append((e, ce))
-    targets = targets[:args.find_max]
+    baseline_by_path: dict[str, RunResult] = {}
+    baseline_path = args.output_dir / "results_baseline.csv"
+    if baseline_path.exists():
+        for row in load_results(baseline_path):
+            baseline_by_path[row.benchmark] = row
+        log(f"  Loaded baseline CSV for pre-filter: {len(baseline_by_path)} rows")
 
-    log(f"Testing {len(targets)} candidates (medium category in competition)...")
+    log(
+        f"Scanning {len(entries)} benchmarks "
+        f"(fast_threshold={args.fast_threshold}s, need blocking_phases>0)..."
+    )
     pono_bin = str(_resolve_pono(args))
-    results = []
+    results: list[dict] = []
+    skipped_hard = 0
+    skipped_fast = 0
 
-    for e, ce in targets:
+    for e in entries:
         name = pathlib.Path(e.path).name
-        log(f"  testing: {name} (comp: {ce.result} {ce.wall_time:.0f}s {ce.category})")
+        ce = match_entry_to_competition(e, comp_map)
+        comp_note = (
+            f"comp: {ce.result} {ce.wall_time:.0f}s {ce.category}"
+            if ce else "comp: n/a"
+        )
+
+        br = baseline_by_path.get(e.path)
+        if br and br.result in ("timeout", "memout", "error"):
+            skipped_hard += 1
+            continue
+        if br and br.result in ("sat", "unsat") and br.wall_time < args.fast_threshold:
+            skipped_fast += 1
+            continue
+
+        log(f"  testing: {name} ({comp_note})")
         cmd = [pono_bin, "-v", "2", "-e", args.engine, "-k", str(args.bound), e.path]
+        probe_timeout = min(args.timeout, 300)
+        if br and br.result in ("sat", "unsat"):
+            probe_timeout = min(args.timeout, max(probe_timeout, int(br.wall_time) + 30))
         try:
+            t0 = time.time()
             proc = subprocess.run(
                 cmd, capture_output=True, text=True,
-                timeout=min(args.timeout, 300),
+                timeout=probe_timeout,
             )
-            stdout_text = (proc.stdout or "").strip().lower()
+            wall_time = time.time() - t0
+            stdout_text = _parse_pono_stdout(proc.stdout, proc.returncode)
             stderr_text = proc.stderr or ""
             if stdout_text in ("sat", "unsat"):
                 blocking_phases = len([l for l in stderr_text.splitlines()
                                       if "Blocking phase at frame" in l])
-                if blocking_phases > 0:
+                if blocking_phases <= 0:
+                    log(f"    ✅ solved but 0 blocking phases (too simple)")
+                elif wall_time < args.fast_threshold:
+                    log(f"    ✅ solved in {wall_time:.1f}s but too fast (<{args.fast_threshold}s)")
+                else:
                     results.append({
                         "name": name,
                         "path": e.path,
                         "expected": e.expected,
                         "blocking_phases": blocking_phases,
-                        "comp_category": ce.category,
+                        "wall_time": round(wall_time, 2),
+                        "comp_category": ce.category if ce else "",
                     })
-                    log(f"    ✅ solved, {blocking_phases} blocking phases")
-                else:
-                    log(f"    ✅ solved but 0 blocking phases (too simple)")
+                    log(f"    ✅ solved in {wall_time:.1f}s, {blocking_phases} blocking phases")
             else:
-                log(f"    ❌ result={stdout_text[:20]}")
+                log(f"    ❌ result={stdout_text}")
         except subprocess.TimeoutExpired:
-            log(f"    ⏱ timeout")
+            log(f"    ⏱ timeout ({probe_timeout}s)")
         except Exception as exc:
             log(f"    ❌ error: {exc}")
 
+    if skipped_hard or skipped_fast:
+        log(
+            f"  Pre-skipped from baseline: {skipped_hard} hard "
+            f"(timeout/memout/error), {skipped_fast} fast (<{args.fast_threshold}s)"
+        )
+
     if results:
         results.sort(key=lambda r: r["blocking_phases"], reverse=True)
-        log(f"\nFound {len(results)} solvable benchmarks with refinement cycles:")
+        log(f"\nFound {len(results)} candidates (non-fast, blocking_phases>0):")
         for r in results[:15]:
-            log(f"  {r['name']:55s} {r['expected']:5s} {r['blocking_phases']:4d} blocking phases  ({r['comp_category']})")
+            log(
+                f"  {r['name']:55s} {r['expected']:5s} "
+                f"{r['blocking_phases']:4d} blocking  {r['wall_time']:6.1f}s  "
+                f"({r['comp_category'] or 'n/a'})"
+            )
 
     return results
 
@@ -1557,10 +2104,50 @@ def main() -> int:
         log(f"Dry run. Phases: {todo}")
         return 0
 
+    # ── phase: baseline-patch ──
+    if "baseline-patch" in todo:
+        years = [int(y.strip()) for y in args.hwmcc_years.split(",")]
+        entries = collect_benchmarks(args.hwmcc_dir, years)
+        if args.limit > 0:
+            entries = entries[:args.limit]
+        log_path = args.baseline_log or (args.output_dir / "nohup.log")
+        if not log_path.exists():
+            log(f"Baseline log not found: {log_path}")
+            return 1
+        args.output_dir.mkdir(parents=True, exist_ok=True)
+        patch_results = run_phase_baseline_patch(args, entries, log_path)
+        partial_path = args.output_dir / "results_baseline_partial.csv"
+        save_results(patch_results, partial_path)
+        logged = parse_baseline_nohup_log(log_path)
+        pending = len(entries) - len(logged)
+        manifest = {
+            "generated_at": time.strftime("%Y-%m-%dT%H:%M:%S"),
+            "baseline_log": str(log_path),
+            "logged_completed": len(logged),
+            "patched_rows": len(patch_results),
+            "pending_benchmarks": max(pending, 0),
+            "total_benchmarks": len(entries),
+        }
+        manifest_path = args.output_dir / "baseline_patch_manifest.json"
+        manifest_path.write_text(json.dumps(manifest, indent=2) + "\n")
+        log(f"Partial results saved to {partial_path}")
+        log(f"Manifest saved to {manifest_path} (pending={pending})")
+        return 0
+
     # ── phase: find-solvable ──
     if "find-solvable" in todo:
         run_phase_download(args)  # need CSVs for competition data
-        run_find_solvable(args)
+        candidates = run_find_solvable(args)
+        candidates_path = args.output_dir / "candidates.json"
+        candidates_path.parent.mkdir(parents=True, exist_ok=True)
+        candidates_path.write_text(json.dumps({
+            "generated_at": time.strftime("%Y-%m-%dT%H:%M:%S"),
+            "find_max": args.find_max,
+            "hwmcc_years": args.hwmcc_years,
+            "candidate_count": len(candidates),
+            "candidates": candidates,
+        }, indent=2) + "\n")
+        log(f"Candidates saved to {candidates_path}")
         return 0
 
     # ── phase: test ──
@@ -1596,7 +2183,28 @@ def main() -> int:
 
     # ── phase: baseline ──
     if "baseline" in todo:
-        baseline_results = run_phase_baseline(args, entries)
+        partial_results: list[RunResult] = []
+        entries_to_run = entries
+        if args.skip_partial:
+            partial_path = args.partial_csv or (args.output_dir / "results_baseline_partial.csv")
+            if partial_path.exists():
+                partial_results = load_results(partial_path)
+                skip_paths = {r.benchmark for r in partial_results}
+                entries_to_run = [e for e in entries if e.path not in skip_paths]
+                log(
+                    f"Resuming baseline: skipping {len(partial_results)} from {partial_path}, "
+                    f"{len(entries_to_run)} remaining"
+                )
+            else:
+                log(f"--skip-partial set but {partial_path} not found; running all benchmarks")
+
+        new_results = run_phase_baseline(
+            args, entries_to_run, total_count=len(entries),
+        )
+        if partial_results:
+            baseline_results = merge_baseline_results(entries, partial_results, new_results)
+        else:
+            baseline_results = new_results
         save_results(baseline_results, args.output_dir / "results_baseline.csv")
         log(f"Baseline results saved to {args.output_dir / 'results_baseline.csv'}")
 
@@ -1609,8 +2217,9 @@ def main() -> int:
         else:
             llm_results = run_phase_llm(args, baseline_results, comp_map)
             if llm_results:
-                save_results(llm_results, args.output_dir / "results_llm.csv")
-                log(f"+LLM results saved to {args.output_dir / 'results_llm.csv'}")
+                llm_csv = llm_results_csv_path(args)
+                save_results(llm_results, llm_csv)
+                log(f"+LLM results saved to {llm_csv}")
 
     # ── phase: report ──
     if "report" in todo:

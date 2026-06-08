@@ -26,9 +26,16 @@ from deepseek_client import DeepSeekClient
 from ic3_frame_schema import normalize_response, validate_request, validate_response
 from jsonl_protocol import append_log_line, read_requests_batch, write_response
 from prompt_format import (
+    batch_cti_total,
+    collect_refs_from_request,
     format_cti_batch_all,
+    format_cti_batch_digest,
     format_cti_literals,
+    format_feedback_block,
     format_frame_snapshot,
+    format_proof_context,
+    format_symbol_hints,
+    sample_generalization_hint,
 )
 
 V1_REQUEST_TYPES = frozenset({"ic3_frame_request", "ic3_frame_batch_request"})
@@ -48,6 +55,20 @@ def load_benchmark_context(path: str) -> dict:
         return json.load(f)
 
 
+def format_benchmark_context_ref(benchmark_ctx: dict) -> str:
+    """Layer-1 benchmark reference for API prompts.
+
+    ``bad_property`` remains in ``benchmark_context.json`` on disk but is
+    intentionally omitted from the LLM user prompt (full BTOR bad expr can be
+    MB-scale; CTI/frame digest carries the actionable blocking signal).
+    See ``docs/ic3_frame_v1_integration.md`` (Prompt layers).
+    """
+    return json.dumps(
+        {"benchmark": benchmark_ctx.get("benchmark")},
+        separators=(",", ":"),
+    )
+
+
 def build_batch_user_prompt(
     req: dict,
     benchmark_ctx: dict,
@@ -55,35 +76,51 @@ def build_batch_user_prompt(
     snapshot_max_clauses: int = 0,
 ) -> str:
     batch_id = req.get("batch_id", "")
+    attempt = int(req.get("attempt", 1))
+    feedback = req.get("feedback") or []
+    registry = benchmark_ctx.get("symbol_registry") or {}
+    refs = collect_refs_from_request(req)
+
     parts = [
         f"batch_id: {batch_id}",
         f"frame_idx: {req.get('frame_idx')}",
-        f"attempt: {req.get('attempt', 1)}",
+        f"attempt: {attempt}",
         f"sample_id: {sample_id}",
         "",
-        format_cti_batch_all(req.get("cti_entries") or []),
+        format_proof_context(req),
+        "",
+        sample_generalization_hint(sample_id),
+        "",
+        (
+            format_cti_batch_digest(req["cti_digest"], req.get("cti_entries") or [])
+            if req.get("cti_digest")
+            else format_cti_batch_all(req.get("cti_entries") or [])
+        ),
         "",
         format_frame_snapshot(
             req.get("frame_snapshot", {}),
             max_clauses=snapshot_max_clauses,
+            attempt=attempt,
+            has_feedback=bool(feedback),
+            feedback=feedback,
         ),
     ]
-    feedback = req.get("feedback") or []
+    sym_hints = format_symbol_hints(refs, registry)
+    if sym_hints:
+        parts.extend(["", sym_hints])
     if feedback:
-        parts.extend(["", "Previous failures (feedback):", json.dumps(feedback, indent=2)])
+        parts.extend(["", format_feedback_block(feedback)])
     if benchmark_ctx:
         parts.extend([
             "",
             "Benchmark context (reference):",
-            json.dumps({
-                "benchmark": benchmark_ctx.get("benchmark"),
-                "bad_property": benchmark_ctx.get("bad_property"),
-            }, separators=(",", ":")),
+            format_benchmark_context_ref(benchmark_ctx),
         ])
     parts.extend([
         "",
         "Respond with ic3_frame_response JSON only.",
-        "Output exactly ONE block_disjuncts (one OR-clause) covering all listed CTI cubes.",
+        "Output exactly ONE block_disjuncts (one OR-clause) consistent with digest stats and sample cubes.",
+        "The block must falsify the bad region implied by high-frequency literals; do not restate listed frame clauses.",
         f"Set source_cti_id to {batch_id!r} and sample_id to {sample_id}.",
     ])
     return "\n".join(parts)
@@ -99,30 +136,41 @@ def build_user_prompt(
         return build_batch_user_prompt(
             req, benchmark_ctx, sample_id, snapshot_max_clauses=snapshot_max_clauses
         )
+    attempt = int(req.get("attempt", 1))
+    feedback = req.get("feedback") or []
+    registry = benchmark_ctx.get("symbol_registry") or {}
+    refs = collect_refs_from_request(req)
+
     parts = [
         f"frame_idx: {req.get('frame_idx')}",
         f"cti_id: {req.get('cti_id')}",
-        f"attempt: {req.get('attempt', 1)}",
+        f"attempt: {attempt}",
         f"sample_id: {sample_id}",
+        "",
+        format_proof_context(req),
+        "",
+        sample_generalization_hint(sample_id),
         "",
         format_cti_literals(req.get("cti", {})),
         "",
         format_frame_snapshot(
             req.get("frame_snapshot", {}),
             max_clauses=snapshot_max_clauses,
+            attempt=attempt,
+            has_feedback=bool(feedback),
+            feedback=feedback,
         ),
     ]
-    feedback = req.get("feedback") or []
+    sym_hints = format_symbol_hints(refs, registry)
+    if sym_hints:
+        parts.extend(["", sym_hints])
     if feedback:
-        parts.extend(["", "Previous failures (feedback):", json.dumps(feedback, indent=2)])
+        parts.extend(["", format_feedback_block(feedback)])
     if benchmark_ctx:
         parts.extend([
             "",
             "Benchmark context (reference):",
-            json.dumps({
-                "benchmark": benchmark_ctx.get("benchmark"),
-                "bad_property": benchmark_ctx.get("bad_property"),
-            }, separators=(",", ":")),
+            format_benchmark_context_ref(benchmark_ctx),
         ])
     parts.extend([
         "",
@@ -223,7 +271,7 @@ def handle_one_request(
             "request_type": request.get("type"),
             "batch_id": request.get("batch_id"),
             "cti_id": request.get("cti_id"),
-            "cti_total": len(request.get("cti_entries") or []),
+            "cti_total": batch_cti_total(request),
             "parallel_samples": len(responses),
             "token_count": token_count,
             "latency_ms": latency_ms,
@@ -277,7 +325,7 @@ def main():
     parser.add_argument("--poll-interval", type=float, default=1.0)
     parser.add_argument("--max-requests", type=int, default=0,
                         help="Max total requests to process (0=unlimited)")
-    parser.add_argument("--max-inflight-requests", type=int, default=4,
+    parser.add_argument("--max-inflight-requests", type=int, default=8,
                         help="Max concurrent request lines in flight")
     parser.add_argument("--snapshot-max-clauses", type=int, default=0,
                         help="Max frame clauses in prompt (0=all, compact line format)")

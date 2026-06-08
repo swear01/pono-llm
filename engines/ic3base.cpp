@@ -17,12 +17,14 @@
 
 #include "engines/ic3base.h"
 
+#include <algorithm>
 #include <cassert>
 #include <cstddef>
 #include <set>
 #include <sstream>
 #include <stdexcept>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
 
 #include "core/prop.h"
@@ -482,7 +484,9 @@ ProverResult IC3Base::step(int i)
   // Flush batched CTI contexts for this frame to LLM
   if (llm_gen_ && llm_gen_->is_async_cti()
       && llm_gen_->has_buffered_cti(frontier_idx())) {
-    string snapshot = serialize_frame_snapshot_json(frontier_idx());
+    vector<string> cti_keys;
+    llm_gen_->collect_buffered_literal_keys(frontier_idx(), cti_keys);
+    string snapshot = serialize_frame_snapshot_json(frontier_idx(), cti_keys);
     llm_gen_->flush_frame_batch(frontier_idx(), snapshot);
     if (options_.llm_sync_after_flush_ && options_.llm_batch_cti_) {
       const string & bid = llm_gen_->last_flushed_batch_id();
@@ -571,7 +575,8 @@ bool IC3Base::rel_ind_check(size_t i,
                             bool get_pred,
                             const vector<IC3FrameDisjunct> * witness_refs,
                             string * witness_ref_out,
-                            string * witness_val_out)
+                            string * witness_val_out,
+                            const unordered_set<string> * priority_witness_refs)
 {
   assert(i > 0);
   assert(i < frames_.size());
@@ -656,8 +661,11 @@ bool IC3Base::rel_ind_check(size_t i,
   }
 
   if (r.is_sat() && witness_refs && witness_ref_out && witness_val_out) {
-    try_extract_witness_from_refs(
-        *witness_refs, true, *witness_ref_out, *witness_val_out);
+    try_extract_witness_from_refs(*witness_refs,
+                                  true,
+                                  *witness_ref_out,
+                                  *witness_val_out,
+                                  priority_witness_refs);
   }
 
   pop_solver_context();
@@ -1012,18 +1020,34 @@ bool IC3Base::try_extract_witness_from_refs(
     const vector<IC3FrameDisjunct> & refs,
     bool use_next_state,
     string & ref_out,
-    string & val_out) const
+    string & val_out,
+    const unordered_set<string> * priority_refs) const
 {
   assert(solver_context_ > 0);
+  vector<const IC3FrameDisjunct *> ordered;
+  ordered.reserve(refs.size());
   for (const auto & d : refs) {
     if (d.ref.empty()) continue;
+    ordered.push_back(&d);
+  }
+  if (priority_refs && !priority_refs->empty()) {
+    stable_sort(ordered.begin(),
+                ordered.end(),
+                [&](const IC3FrameDisjunct * a, const IC3FrameDisjunct * b) {
+                  bool pa = priority_refs->count(a->ref) > 0;
+                  bool pb = priority_refs->count(b->ref) > 0;
+                  if (pa != pb) return pa > pb;
+                  return false;
+                });
+  }
+  for (const IC3FrameDisjunct * d : ordered) {
     try {
-      Term sym = ts_.lookup(d.ref);
+      Term sym = ts_.lookup(d->ref);
       Term query = use_next_state ? ts_.next(sym) : sym;
       Term model_val = solver_->get_value(query);
       string formatted = format_llm_term_value(model_val);
       if (formatted.empty()) continue;
-      ref_out = d.ref;
+      ref_out = d->ref;
       val_out = formatted;
       return true;
     } catch (...) {
@@ -1037,7 +1061,8 @@ bool IC3Base::check_intersects_initial_with_witness(
     const Term & t,
     const vector<IC3FrameDisjunct> & refs,
     string & ref_out,
-    string & val_out)
+    string & val_out,
+    const unordered_set<string> * priority_witness_refs)
 {
   assert(solver_context_ == 0);
   push_solver_context();
@@ -1046,7 +1071,8 @@ bool IC3Base::check_intersects_initial_with_witness(
   Result r = check_sat();
   const bool intersects = r.is_sat();
   if (intersects) {
-    try_extract_witness_from_refs(refs, false, ref_out, val_out);
+    try_extract_witness_from_refs(
+        refs, false, ref_out, val_out, priority_witness_refs);
   }
   pop_solver_context();
   return intersects;
@@ -1385,6 +1411,7 @@ static void fill_cti_literal_from_term(const smt::Term & child, CTILiteral & lit
       lit.value = rhs->to_string();
       if (lit.value == "true") lit.value = "1";
       if (lit.value == "false") lit.value = "0";
+      lit.polarity = polarity;
       lit.expr = lit.varname + " = " + lit.value;
       if (!polarity) lit.expr = "not (" + lit.expr + ")";
       return;
@@ -1397,6 +1424,7 @@ static void fill_cti_literal_from_term(const smt::Term & child, CTILiteral & lit
     } else {
       lit.value = polarity ? "1" : "0";
     }
+    lit.polarity = polarity;
     lit.expr = lit.varname + " = " + lit.value;
     return;
   }
@@ -1404,6 +1432,7 @@ static void fill_cti_literal_from_term(const smt::Term & child, CTILiteral & lit
   lit.varname = simplify_cti_literal(child);
   lit.expr = lit.varname;
   lit.value = polarity ? "true" : "false";
+  lit.polarity = polarity;
 }
 
 std::vector<CTILiteral> IC3Base::collect_cti_literals(
@@ -1753,37 +1782,182 @@ static bool term_to_disjunct_json(const smt::Term & term,
   return false;
 }
 
-std::string IC3Base::serialize_frame_snapshot_json(size_t frame_idx) const
+static bool disjunct_to_literal_line(const smt::Term & child, std::string & out_line)
+{
+  smt::Term inner = child;
+  bool polarity = true;
+  if (child->get_op() == smt::Not) {
+    inner = *(child->begin());
+    polarity = false;
+  }
+  smt::Op op = inner->get_op();
+  if (op.prim_op == smt::Equal) {
+    auto it = inner->begin();
+    if (it != inner->end()) {
+      smt::Term lhs = *it;
+      smt::Term rhs = *std::next(it);
+      std::string ref = extract_state_ref_name(lhs->to_string());
+      std::string rhs_s = rhs->to_string();
+      if (rhs_s == "true") rhs_s = "1";
+      if (rhs_s == "false") rhs_s = "0";
+      out_line = (polarity ? "" : "!") + ref + "=" + rhs_s;
+      return !ref.empty();
+    }
+  }
+  if (inner->is_symbol() || inner->is_symbolic_const()) {
+    std::string ref = extract_state_ref_name(inner->to_string());
+    if (ref.empty()) return false;
+    out_line = (polarity ? "" : "!") + ref + "=" + (polarity ? "1" : "0");
+    return true;
+  }
+  return false;
+}
+
+static std::string literal_ref_from_line(const std::string & lit_line)
+{
+  size_t start = (!lit_line.empty() && lit_line[0] == '!') ? 1 : 0;
+  size_t eq = lit_line.find('=', start);
+  if (eq == std::string::npos) return "";
+  return lit_line.substr(start, eq - start);
+}
+
+static void append_clause_json(ostringstream & out, const IC3Formula & clause)
+{
+  out << "{\"disjuncts\":[";
+  bool first_disj = true;
+  for (const auto & child : clause.children) {
+    if (!first_disj) out << ",";
+    first_disj = false;
+    smt::Term inner = child;
+    bool polarity = true;
+    if (child->get_op() == smt::Not) {
+      inner = *(child->begin());
+      polarity = false;
+    }
+    ostringstream disj;
+    if (!term_to_disjunct_json(child, inner, polarity, disj)) {
+      out << "{\"atom\":{\"ref\":\"\",\"rhs\":\"\"},";
+      out << "\"polarity\":true,\"expr\":\""
+          << cti_json_escape(simplify_cti_literal(child)) << "\"}";
+    } else {
+      out << disj.str();
+    }
+  }
+  out << "]}";
+}
+
+std::string IC3Base::serialize_frame_snapshot_json(
+    size_t frame_idx, const vector<string> & cti_literal_keys) const
 {
   ostringstream out;
-  out << "{\"frame_idx\":" << frame_idx << ",\"clauses\":[";
+  const size_t max_clauses = options_.llm_snapshot_max_clauses_;
+  const size_t max_samples = options_.llm_clause_digest_max_samples_;
+  const size_t top_lits = options_.llm_cti_digest_top_lits_;
+
+  size_t clauses_total = 0;
   if (frame_idx < frames_.size()) {
+    clauses_total = frames_.at(frame_idx).size();
+  }
+
+  out << "{\"frame_idx\":" << frame_idx;
+  if (clauses_total > 0) {
+    out << ",\"clauses_total\":" << clauses_total;
+  }
+
+  if (frame_idx >= frames_.size() || clauses_total == 0) {
+    out << ",\"clauses\":[]}";
+    return out.str();
+  }
+
+  const auto & frame_clauses = frames_.at(frame_idx);
+
+  if (max_clauses > 0) {
+    size_t start_idx = 0;
+    if (clauses_total > max_clauses) {
+      start_idx = clauses_total - max_clauses;
+    }
+    out << ",\"clauses\":[";
     bool first_clause = true;
-    for (const auto & clause : frames_.at(frame_idx)) {
+    for (size_t ci = start_idx; ci < frame_clauses.size(); ++ci) {
       if (!first_clause) out << ",";
       first_clause = false;
-      out << "{\"disjuncts\":[";
-      bool first_disj = true;
-      for (const auto & child : clause.children) {
-        if (!first_disj) out << ",";
-        first_disj = false;
-        smt::Term inner = child;
-        bool polarity = true;
-        if (child->get_op() == smt::Not) {
-          inner = *(child->begin());
-          polarity = false;
-        }
-        ostringstream disj;
-        if (!term_to_disjunct_json(child, inner, polarity, disj)) {
-          out << "{\"atom\":{\"ref\":\"\",\"rhs\":\"\"},";
-          out << "\"polarity\":true,\"expr\":\""
-              << cti_json_escape(simplify_cti_literal(child)) << "\"}";
-        } else {
-          out << disj.str();
-        }
-      }
-      out << "]}";
+      append_clause_json(out, frame_clauses[ci]);
     }
+    out << "]}";
+    return out.str();
+  }
+
+  std::unordered_map<std::string, size_t> lit_counts;
+  std::unordered_set<std::string> cti_full_keys(cti_literal_keys.begin(),
+                                                cti_literal_keys.end());
+  std::unordered_set<std::string> cti_refs;
+  for (const auto & k : cti_literal_keys) {
+    std::string ref = literal_ref_from_line(k);
+    if (!ref.empty()) cti_refs.insert(ref);
+  }
+
+  std::vector<std::pair<size_t, size_t>> clause_scores;
+  for (size_t ci = 0; ci < frame_clauses.size(); ++ci) {
+    size_t score = 0;
+    for (const auto & child : frame_clauses[ci].children) {
+      std::string lit_line;
+      if (!disjunct_to_literal_line(child, lit_line)) continue;
+      lit_counts[lit_line]++;
+      if (cti_full_keys.count(lit_line)) score += 10;
+      std::string ref = literal_ref_from_line(lit_line);
+      if (cti_refs.count(ref)) score += 3;
+    }
+    score += ci;
+    clause_scores.push_back({ci, score});
+  }
+
+  stable_sort(clause_scores.begin(),
+              clause_scores.end(),
+              [](const std::pair<size_t, size_t> & a,
+                 const std::pair<size_t, size_t> & b) {
+                return a.second > b.second;
+              });
+
+  std::vector<size_t> sample_indices;
+  sample_indices.reserve(max_samples);
+  for (const auto & entry : clause_scores) {
+    if (sample_indices.size() >= max_samples) break;
+    sample_indices.push_back(entry.first);
+  }
+  stable_sort(sample_indices.begin(), sample_indices.end());
+
+  out << ",\"proof_context\":{";
+  out << "\"frame_idx\":" << frame_idx;
+  out << ",\"clauses_total\":" << clauses_total;
+  out << ",\"sample_clauses\":" << sample_indices.size();
+  out << "}";
+
+  out << ",\"clause_digest\":{";
+  out << "\"clauses_total\":" << clauses_total;
+  out << ",\"literal_stats\":[";
+  std::vector<std::pair<std::string, size_t>> stats_vec(lit_counts.begin(),
+                                                        lit_counts.end());
+  stable_sort(stats_vec.begin(),
+              stats_vec.end(),
+              [](const std::pair<std::string, size_t> & a,
+                 const std::pair<std::string, size_t> & b) {
+                return a.second > b.second;
+              });
+  bool first_stat = true;
+  for (size_t i = 0; i < stats_vec.size() && i < top_lits; ++i) {
+    if (!first_stat) out << ",";
+    first_stat = false;
+    out << "{\"lit\":\"" << cti_json_escape(stats_vec[i].first) << "\"";
+    out << ",\"count\":" << stats_vec[i].second << "}";
+  }
+  out << "]}";
+
+  out << ",\"clauses\":[";
+  bool first_clause = true;
+  for (size_t ci : sample_indices) {
+    if (!first_clause) out << ",";
+    first_clause = false;
+    append_clause_json(out, frame_clauses[ci]);
   }
   out << "]}";
   return out.str();
@@ -1872,8 +2046,13 @@ void IC3Base::process_llm_candidates()
       IC3Formula check_cube = ic3formula_negate(blocking);
       std::string wit_ref;
       std::string wit_val;
-      if (check_intersects_initial_with_witness(
-              check_cube.term, resp.block_disjuncts, wit_ref, wit_val)) {
+      std::unordered_set<std::string> priority_wit_refs;
+      llm_gen_->collect_cti_literal_refs(cti_id, priority_wit_refs);
+      if (check_intersects_initial_with_witness(check_cube.term,
+                                                resp.block_disjuncts,
+                                                wit_ref,
+                                                wit_val,
+                                                &priority_wit_refs)) {
         llm_gen_->stats_.num_rejected_initial++;
         llm_gen_->add_feedback(
             cti_id, resp, "rejected_initial", wit_ref, wit_val);
@@ -1890,7 +2069,8 @@ void IC3Base::process_llm_candidates()
                          false,
                          &resp.block_disjuncts,
                          &wit_ref,
-                         &wit_val)) {
+                         &wit_val,
+                         &priority_wit_refs)) {
         llm_gen_->stats_.num_induction_fail++;
         llm_gen_->add_feedback(
             cti_id, resp, "induction_failed", wit_ref, wit_val);
@@ -1933,7 +2113,10 @@ void IC3Base::process_llm_candidates()
       llm_gen_->stats_.num_lookup_miss++;
       continue;
     }
-    std::string snapshot = serialize_frame_snapshot_json(retry_frame);
+    std::vector<std::string> retry_cti_keys;
+    llm_gen_->collect_cti_literal_keys(retry_cti_id, retry_cti_keys);
+    std::string snapshot =
+        serialize_frame_snapshot_json(retry_frame, retry_cti_keys);
     llm_gen_->write_retry_request(retry_cti_id, snapshot);
   }
 }

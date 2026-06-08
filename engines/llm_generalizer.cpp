@@ -5,6 +5,7 @@
 
 #include "engines/llm_generalizer.h"
 
+#include <algorithm>
 #include <cassert>
 #include <chrono>
 #include <fstream>
@@ -35,6 +36,16 @@ static void ensure_dir_for_file(const string & path)
     cur.push_back(c);
     if (c == '/') mkdir(cur.c_str(), 0775);
   }
+}
+
+static bool append_jsonl_line(const string & path, const string & json_body)
+{
+  ensure_dir_for_file(path);
+  ofstream fout(path, ios::app);
+  if (!fout.is_open()) return false;
+  fout << json_body << "\n";
+  fout.flush();
+  return true;
 }
 
 /** Stable feedback key for batch IDs (batch_f2_a1 -> batch_f2). */
@@ -70,6 +81,15 @@ static streampos safe_response_offset(streampos pos)
 }
 
 }  // namespace
+
+std::string format_cti_literal_line(const CTILiteral & lit)
+{
+  string ref = extract_state_ref(lit.varname);
+  string rhs = lit.value;
+  if (rhs == "true") rhs = "1";
+  if (rhs == "false") rhs = "0";
+  return (lit.polarity ? "" : "!") + ref + "=" + rhs;
+}
 
 LLMGeneralizer::LLMGeneralizer(PonoOptions opts, const SmtSolver & solver)
     : opts_(opts), solver_(solver)
@@ -193,6 +213,68 @@ bool LLMGeneralizer::has_buffered_cti(size_t frame_idx) const
   return it != frame_cti_buffer_.end() && !it->second.empty();
 }
 
+void LLMGeneralizer::collect_buffered_literal_keys(size_t frame_idx,
+                                                   vector<string> & out) const
+{
+  out.clear();
+  auto it = frame_cti_buffer_.find(frame_idx);
+  if (it == frame_cti_buffer_.end()) return;
+  unordered_set<string> seen;
+  for (const auto & b : it->second) {
+    for (const auto & lit : b.ctx.literals) {
+      string key = format_literal_line(lit);
+      if (seen.insert(key).second) out.push_back(key);
+    }
+  }
+}
+
+void LLMGeneralizer::collect_cti_literal_refs(
+    const string & cti_id, unordered_set<string> & out) const
+{
+  out.clear();
+  if (cti_id.rfind("batch_", 0) == 0) {
+    auto it = batch_store_.find(cti_id);
+    if (it == batch_store_.end()) return;
+    for (const auto & stored : it->second.ctis) {
+      for (const auto & lit : stored.ctx.literals) {
+        string ref = extract_state_ref(lit.varname);
+        if (!ref.empty()) out.insert(ref);
+      }
+    }
+    return;
+  }
+  auto it = cti_store_.find(cti_id);
+  if (it == cti_store_.end()) return;
+  for (const auto & lit : it->second.ctx.literals) {
+    string ref = extract_state_ref(lit.varname);
+    if (!ref.empty()) out.insert(ref);
+  }
+}
+
+void LLMGeneralizer::collect_cti_literal_keys(const string & cti_id,
+                                              vector<string> & out) const
+{
+  out.clear();
+  unordered_set<string> seen;
+  if (cti_id.rfind("batch_", 0) == 0) {
+    auto it = batch_store_.find(cti_id);
+    if (it == batch_store_.end()) return;
+    for (const auto & stored : it->second.ctis) {
+      for (const auto & lit : stored.ctx.literals) {
+        string key = format_literal_line(lit);
+        if (seen.insert(key).second) out.push_back(key);
+      }
+    }
+    return;
+  }
+  auto it = cti_store_.find(cti_id);
+  if (it == cti_store_.end()) return;
+  for (const auto & lit : it->second.ctx.literals) {
+    string key = format_literal_line(lit);
+    if (seen.insert(key).second) out.push_back(key);
+  }
+}
+
 size_t LLMGeneralizer::feedback_attempt(const string & cti_id) const
 {
   auto it = attempt_by_cti_.find(cti_id);
@@ -292,6 +374,65 @@ bool LLMGeneralizer::is_cti_accepted(const string & cti_id) const
   return accepted_cti_ids_.count(cti_id) > 0;
 }
 
+string LLMGeneralizer::format_literal_line(const CTILiteral & lit) const
+{
+  return format_cti_literal_line(lit);
+}
+
+void LLMGeneralizer::build_cti_digest(const vector<BufferedCTI> & buffered,
+                                      vector<size_t> & out_indices,
+                                      string & out_digest_json,
+                                      size_t max_cubes_override) const
+{
+  const size_t n = buffered.size();
+  const size_t max_cubes = max_cubes_override > 0
+                               ? max_cubes_override
+                               : opts_.llm_cti_digest_max_cubes_;
+  const size_t top_lits = opts_.llm_cti_digest_top_lits_;
+
+  unordered_map<string, size_t> lit_counts;
+  for (const auto & b : buffered) {
+    unordered_set<string> seen;
+    for (const auto & lit : b.ctx.literals) {
+      string key = format_literal_line(lit);
+      if (seen.insert(key).second) lit_counts[key]++;
+    }
+  }
+
+  vector<pair<string, size_t>> ranked(lit_counts.begin(), lit_counts.end());
+  sort(ranked.begin(),
+       ranked.end(),
+       [](const pair<string, size_t> & a, const pair<string, size_t> & b) {
+         return a.second > b.second;
+       });
+  if (ranked.size() > top_lits) ranked.resize(top_lits);
+
+  out_indices.clear();
+  if (n == 0) {
+    out_digest_json = "{}";
+    return;
+  }
+  if (n <= max_cubes) {
+    for (size_t i = 0; i < n; ++i) out_indices.push_back(i);
+  } else if (max_cubes <= 1) {
+    out_indices.push_back(0);
+  } else {
+    for (size_t k = 0; k < max_cubes; ++k) {
+      out_indices.push_back((k * (n - 1)) / (max_cubes - 1));
+    }
+  }
+
+  ostringstream d;
+  d << "{\"cti_total\":" << n << ",\"literal_stats\":[";
+  for (size_t i = 0; i < ranked.size(); ++i) {
+    if (i > 0) d << ",";
+    d << "{\"lit\":\"" << escape_json(ranked[i].first) << "\",";
+    d << "\"count\":" << ranked[i].second << "}";
+  }
+  d << "]}";
+  out_digest_json = d.str();
+}
+
 void LLMGeneralizer::append_cti_cube_json(ostream & out, const CTIContext & ctx) const
 {
   out << "\"cti\":{\"cube\":{\"literals\":[";
@@ -302,7 +443,7 @@ void LLMGeneralizer::append_cti_cube_json(ostream & out, const CTIContext & ctx)
     string rhs = lit.value;
     if (rhs == "true") rhs = "1";
     if (rhs == "false") rhs = "0";
-    bool pol = (lit.value == "true" || lit.value == "1");
+    bool pol = lit.polarity;
     out << "{\"atom\":{";
     out << "\"ref\":\"" << escape_json(ref) << "\",";
     out << "\"rhs\":\"" << escape_json(rhs) << "\"},";
@@ -373,19 +514,16 @@ void LLMGeneralizer::write_request_for_cti(const CTIContext & ctx,
     attempt_by_cti_[ctx.cti_id] = 1;
   }
 
-  ensure_dir_for_file(request_path_);
-  ofstream fout(request_path_, ios::app);
-  if (!fout.is_open()) {
-    logger.log(0, "LLMGeneralizer: cannot open request file {}", request_path_);
-    return;
-  }
-
   vector<LLMFeedbackEntry> fb;
   auto fb_it = feedback_by_cti_.find(ctx.cti_id);
   if (fb_it != feedback_by_cti_.end()) fb = fb_it->second;
 
-  serialize_frame_request(fout, ctx, attempt, fb, frame_snapshot_json);
-  fout << "\n";
+  ostringstream buf;
+  serialize_frame_request(buf, ctx, attempt, fb, frame_snapshot_json);
+  if (!append_jsonl_line(request_path_, buf.str())) {
+    logger.log(0, "LLMGeneralizer: cannot open request file {}", request_path_);
+    return;
+  }
   register_outstanding_samples(ctx.cti_id, attempt);
   stats_.num_requests++;
 }
@@ -396,6 +534,8 @@ void LLMGeneralizer::serialize_batch_request(
     size_t frame_idx,
     size_t attempt,
     const vector<BufferedCTI> & buffered,
+    const vector<size_t> & export_indices,
+    const string & digest_json,
     const vector<LLMFeedbackEntry> & feedback,
     const string & frame_snapshot_json)
 {
@@ -416,11 +556,31 @@ void LLMGeneralizer::serialize_batch_request(
   out << "\"benchmark_context_path\":\"" << escape_json(benchmark_context_path_)
       << "\",";
 
+  if (!digest_json.empty()) {
+    out << "\"cti_digest\":" << digest_json << ",";
+  }
+
   out << "\"cti_entries\":[";
-  for (size_t i = 0; i < buffered.size(); ++i) {
+  for (size_t i = 0; i < export_indices.size(); ++i) {
     if (i > 0) out << ",";
-    out << "{\"cti_id\":\"" << escape_json(buffered[i].ctx.cti_id) << "\",";
-    append_cti_cube_json(out, buffered[i].ctx);
+    const auto & b = buffered[export_indices[i]];
+    out << "{\"cti_id\":\"" << escape_json(b.ctx.cti_id) << "\"";
+    if (!digest_json.empty()) {
+      out << ",\"literals\":[";
+      unordered_set<string> seen;
+      bool first_lit = true;
+      for (const auto & lit : b.ctx.literals) {
+        string key = format_literal_line(lit);
+        if (!seen.insert(key).second) continue;
+        if (!first_lit) out << ",";
+        first_lit = false;
+        out << "\"" << escape_json(key) << "\"";
+      }
+      out << "]";
+    } else {
+      out << ",";
+      append_cti_cube_json(out, b.ctx);
+    }
     out << "}";
   }
   out << "],";
@@ -477,20 +637,47 @@ void LLMGeneralizer::write_batch_request(size_t frame_idx,
   }
   batch_store_[batch_id] = meta;
 
-  ensure_dir_for_file(request_path_);
-  ofstream fout(request_path_, ios::app);
-  if (!fout.is_open()) {
-    logger.log(0, "LLMGeneralizer: cannot open request file {}", request_path_);
-    return;
-  }
-
   vector<LLMFeedbackEntry> fb;
   auto fb_it = feedback_by_cti_.find(batch_feedback_key(batch_id));
   if (fb_it != feedback_by_cti_.end()) fb = fb_it->second;
 
-  serialize_batch_request(fout, batch_id, frame_idx, attempt, buffered, fb,
-                          frame_snapshot_json);
-  fout << "\n";
+  vector<size_t> export_indices;
+  for (size_t i = 0; i < buffered.size(); ++i) export_indices.push_back(i);
+  string digest_json;
+
+  auto serialize_line = [&](const vector<size_t> & indices,
+                            const string & digest) -> string {
+    ostringstream buf;
+    serialize_batch_request(buf,
+                            batch_id,
+                            frame_idx,
+                            attempt,
+                            buffered,
+                            indices,
+                            digest,
+                            fb,
+                            frame_snapshot_json);
+    return buf.str();
+  };
+
+  string line = serialize_line(export_indices, digest_json);
+  if (opts_.llm_cti_digest_
+      && line.size() > opts_.llm_batch_max_json_bytes_) {
+    size_t max_cubes = opts_.llm_cti_digest_max_cubes_;
+    for (int shrink = 0; shrink < 4 && max_cubes > 0; ++shrink) {
+      build_cti_digest(buffered, export_indices, digest_json, max_cubes);
+      line = serialize_line(export_indices, digest_json);
+      if (line.size() <= opts_.llm_batch_max_json_bytes_) break;
+      if (max_cubes <= 1) break;
+      max_cubes = max_cubes / 2;
+      if (max_cubes < 1) max_cubes = 1;
+    }
+  }
+
+  if (!append_jsonl_line(request_path_, line)) {
+    logger.log(0, "LLMGeneralizer: cannot open request file {}", request_path_);
+    return;
+  }
   register_outstanding_samples(batch_id, attempt);
   stats_.num_requests++;
   last_flushed_batch_id_ = batch_id;

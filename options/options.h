@@ -229,7 +229,13 @@ class PonoOptions
         llm_response_path_(default_llm_response_path_),
         llm_batch_cti_(default_llm_batch_cti_),
         llm_sync_after_flush_(default_llm_sync_after_flush_),
-        llm_batch_wait_sec_(default_llm_batch_wait_sec_)
+        llm_batch_wait_sec_(default_llm_batch_wait_sec_),
+        llm_snapshot_max_clauses_(default_llm_snapshot_max_clauses_),
+        llm_clause_digest_max_samples_(default_llm_clause_digest_max_samples_),
+        llm_cti_digest_(default_llm_cti_digest_),
+        llm_cti_digest_max_cubes_(default_llm_cti_digest_max_cubes_),
+        llm_cti_digest_top_lits_(default_llm_cti_digest_top_lits_),
+        llm_batch_max_json_bytes_(default_llm_batch_max_json_bytes_)
   {
   }
 
@@ -423,6 +429,12 @@ class PonoOptions
   bool llm_batch_cti_;
   bool llm_sync_after_flush_;
   size_t llm_batch_wait_sec_;
+  size_t llm_snapshot_max_clauses_;
+  size_t llm_clause_digest_max_samples_;
+  bool llm_cti_digest_;
+  size_t llm_cti_digest_max_cubes_;
+  size_t llm_cti_digest_top_lits_;
+  size_t llm_batch_max_json_bytes_;
 
  private:
   // Default options
@@ -527,6 +539,12 @@ class PonoOptions
   static const bool default_llm_batch_cti_ = true;
   static const bool default_llm_sync_after_flush_ = true;
   static const size_t default_llm_batch_wait_sec_ = 120;
+  static const size_t default_llm_snapshot_max_clauses_ = 0;
+  static const size_t default_llm_clause_digest_max_samples_ = 12;
+  static const bool default_llm_cti_digest_ = true;
+  static const size_t default_llm_cti_digest_max_cubes_ = 16;
+  static const size_t default_llm_cti_digest_top_lits_ = 40;
+  static const size_t default_llm_batch_max_json_bytes_ = 500000;
 };
 
 // Useful functions for printing etc...

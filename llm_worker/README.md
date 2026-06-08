@@ -36,11 +36,16 @@ Pono 端（主力 engine：**IC3IA**）：
 | [`ic3_frame_schema.py`](ic3_frame_schema.py) | Request/response validation |
 | [`prompts/ic3_frame_v1.txt`](prompts/ic3_frame_v1.txt) | Layer 0 system prompt |
 | [`tests/test_ic3_frame_schema.py`](tests/test_ic3_frame_schema.py) | Schema unit tests (no API) |
+| [`tests/test_jsonl_protocol.py`](tests/test_jsonl_protocol.py) | JSONL partial-line / corrupt-line reader tests |
+| [`tests/test_sidecar_batch.py`](tests/test_sidecar_batch.py) | Mock batch request → K responses |
+| [`tests/test_cti_digest.py`](tests/test_cti_digest.py) | Digest schema + prompt size |
 | [`tests/test_prompt_format.py`](tests/test_prompt_format.py) | Compact prompt formatting tests (no API) |
 
 ## Spec
 
 See [`docs/ic3_frame_v1_integration.md`](../docs/ic3_frame_v1_integration.md).
+
+**Prompt cost note:** `benchmark_context.json` may contain a large `bad_property` string (C++ writes the full bad-state expr). Sidecar currently sends only `benchmark` path in the API user prompt — not `bad_property` — to avoid MB-scale input on ILA designs. CTI/frame digest is the actionable blocking context.
 
 ## Environment
 
@@ -66,32 +71,65 @@ pip install -r llm_worker/requirements.txt
 
 Do **not** rely on omitting `reasoning_effort` to disable thinking.
 
+## Build note (PonoOptions / ABI)
+
+After changing [`options/options.h`](../options/options.h), rebuild **both** the library and the `pono` executable:
+
+```bash
+cd build && make -j4 pono-bin
+```
+
+Rebuilding only `libpono.so` without `pono-bin` can cause `malloc` crashes in `LLMGeneralizer` (stale `PonoOptions` layout).
+
+## Model
+
+Default **`deepseek-v4-pro`** ([`deepseek_client.py`](deepseek_client.py), C++ request JSON, `run_benchmarks.py --llm-model`). Override with `--llm-model` (pono) or `--model` (sidecar). Endpoint: `https://api.deepseek.com/v1` only.
+
 ## Smoke (p040, isolated session)
 
 ```bash
 export DEEPSEEK_API_KEY=sk-...
 chmod +x scripts/smoke_p040.sh
+cd build && touch ../pono.cpp && make -j4 pono-bin && cd ..
 
 # Uses mktemp under /tmp/pono_smoke_* — never shared /tmp/p040_*
-SNAPSHOT_MAX=50 PONO_TIMEOUT=600 ./scripts/smoke_p040.sh
+SNAPSHOT_MAX=0 BATCH_WAIT_SEC=300 PONO_TIMEOUT=600 ./scripts/smoke_p040.sh
 ```
 
-Each run writes `requests.jsonl`, `responses.jsonl`, `llm_log.jsonl`, and `manifest.json` under a unique `RUN_DIR`. API usage scales with how long pono runs (many CTI requests); cost is acceptable for validation.
+Each run writes `requests.jsonl`, `responses.jsonl`, `llm_log.jsonl`, and `manifest.json` under a unique `RUN_DIR`.
 
-Env overrides: `BTOR`, `SNAPSHOT_MAX`, `PONO_TIMEOUT`, `PARALLEL_SAMPLES`.
+**Channel checks (`STRICT=1` default):** `responses = requests × PARALLEL_SAMPLES`, `batch_timeouts = 0`, no sidecar JSONL parse errors, max request line under 500KB. **`accepted > 0` is not required** (quality is separate).
+
+Env overrides: `BTOR`, `SNAPSHOT_MAX`, `PONO_TIMEOUT`, `PARALLEL_SAMPLES`, `BATCH_WAIT_SEC`, `STRICT`, `MAX_INFLIGHT`, `DRAIN_SEC`.
 
 ## Tests
 
 ```bash
-# 無 API
+# 無 API（建議一次跑完）
+python3 -m pytest llm_worker/tests/ -q
+cd build && ./tests/test_ic3_frame_ast
+
+# 或個別
 python3 llm_worker/tests/test_ic3_frame_schema.py
-python3 llm_worker/tests/test_prompt_format.py
-python3 llm_worker/tests/test_deepseek_thinking.py
-python3 llm_worker/tests/test_sidecar_concurrency.py
+python3 llm_worker/tests/test_jsonl_protocol.py
+python3 llm_worker/tests/test_sidecar_batch.py
+python3 llm_worker/tests/test_cti_digest.py
 
 # 含 API（需 DEEPSEEK_API_KEY）
 python3 test_sidecar.py --client-only
 
-# 或一次跑內建 test phase
+# 或 C++ + 部分 schema（不含全部 llm_worker pytest）
 python3 scripts/run_benchmarks.py --phase test
+```
+
+## HWMCC experiments
+
+Staged workflow (smoke → find-solvable → llm subset → full pipeline): [`docs/hwmcc_experiment_tiers.md`](../docs/hwmcc_experiment_tiers.md).
+
+**Parallel policy (batch runs):** default **8 workers** (`--parallel 8`), each with its own sidecar instance. Standard flags: `--memory-limit 14 --snapshot-max-clauses 0 --llm-drain-sec 300`. Details: [`docs/plans/experiment_parallel_policy.md`](../docs/plans/experiment_parallel_policy.md).
+
+```bash
+python3 scripts/run_benchmarks.py --phase llm \
+  --hwmcc-dir ~/hwmcc_benchmarks --limit 50 \
+  --parallel 8 --memory-limit 14 --snapshot-max-clauses 0
 ```

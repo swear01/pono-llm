@@ -1,7 +1,7 @@
 # Batch 全 CTI 單結論 + Flush 後同步等待
 
-**狀態：** 已實作（2026-06-04）  
-**前置：** IC3 Frame v1、thinking disabled、smoke session 隔離（commits ahead 3，未 push）  
+**狀態：** 已實作（batch + sync + digest + JSONL 修復，2026-06）  
+**文件：** [ic3_frame_v1_integration.md](../ic3_frame_v1_integration.md)、[hwmcc_experiment_tiers.md](../hwmcc_experiment_tiers.md)  
 **關聯：** [p040-smoke-session-latency-plan.md](p040-smoke-session-latency-plan.md)
 
 ---

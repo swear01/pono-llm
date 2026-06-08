@@ -24,10 +24,14 @@ struct CTILiteral
   std::string varname;
   std::string expr;
   std::string value;
+  bool polarity = true;
   std::string kind;
   std::vector<std::string> signals;
   smt::Term term;
 };
+
+/** Compact literal line for digest keys and JSONL (uses CTILiteral::polarity). */
+std::string format_cti_literal_line(const CTILiteral & lit);
 
 struct CTIContext
 {
@@ -139,6 +143,15 @@ class LLMGeneralizer
                                      size_t attempt) const;
   bool has_buffered_cti(size_t frame_idx) const;
 
+  void collect_buffered_literal_keys(size_t frame_idx,
+                                     std::vector<std::string> & out) const;
+
+  void collect_cti_literal_refs(const std::string & cti_id,
+                                std::unordered_set<std::string> & out) const;
+
+  void collect_cti_literal_keys(const std::string & cti_id,
+                                std::vector<std::string> & out) const;
+
   std::string last_flushed_batch_id() const { return last_flushed_batch_id_; }
 
   bool wait_for_batch_responses(const std::string & batch_id,
@@ -204,11 +217,19 @@ class LLMGeneralizer
 
   void append_cti_cube_json(std::ostream & out, const CTIContext & ctx) const;
 
+  std::string format_literal_line(const CTILiteral & lit) const;
+  void build_cti_digest(const std::vector<BufferedCTI> & buffered,
+                        std::vector<size_t> & out_indices,
+                        std::string & out_digest_json,
+                        size_t max_cubes_override = 0) const;
+
   void serialize_batch_request(std::ostream & out,
                                const std::string & batch_id,
                                size_t frame_idx,
                                size_t attempt,
                                const std::vector<BufferedCTI> & buffered,
+                               const std::vector<size_t> & export_indices,
+                               const std::string & digest_json,
                                const std::vector<LLMFeedbackEntry> & feedback,
                                const std::string & frame_snapshot_json);
 

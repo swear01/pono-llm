@@ -1,6 +1,6 @@
 # Handoff: Current State
 
-**Last updated:** 2026-06-03  
+**Last updated:** 2026-06-07  
 **Branch:** `main` (pono-llm research fork)
 
 ## Active direction
@@ -73,11 +73,25 @@ See tagged **HISTORICAL** files in [`DOC_INDEX.md`](DOC_INDEX.md).
 
 ---
 
+## HWMCC baseline 實驗狀態（2026-06-07）
+
+| 項目 | 狀態 |
+|------|------|
+| Output dir | `bench_results/hwmcc_baseline_20260607` |
+| 首輪 baseline | 已 suspend（~168 案在 `nohup.log`） |
+| Harness 修正 | `_parse_pono_stdout`；`baseline-patch`；`--skip-partial` |
+| 進行中 | `baseline-patch` → `results_baseline_partial.csv` |
+| 下一步 | `baseline --skip-partial` resume → `results_baseline.csv`（1052 案） |
+
+SOP：[`hwmcc_experiment_tiers.md`](hwmcc_experiment_tiers.md) § 中斷恢復。
+
+---
+
 ## Immediate next task
 
-1. Implement `ic3_frame_schema.py` + validator tests
-2. Implement `ic3_frame_ast` C++ builder
-3. Rewrite harness serialization (registry + Verilog + frame_snapshot)
+1. 完成 `baseline-patch` + `baseline --skip-partial` → 全量 `results_baseline.csv`
+2. `--phase report` + `find-solvable` → `candidates.json`
+3. Phase E LLM 子集（candidates ∩ baseline 解出 + p040）
 4. Rewrite sidecar (layers, parallel K, retry, reasoning_effort=none)
 5. Delete legacy paths listed above
 6. E2E qspiflash p040

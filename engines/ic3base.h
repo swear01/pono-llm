@@ -67,6 +67,7 @@
 #include <cstddef>
 #include <memory>
 #include <queue>
+#include <unordered_set>
 #include <vector>
 
 #include "core/proverresult.h"
@@ -436,7 +437,9 @@ class IC3Base : public SafetyProver
                      bool get_pred = true,
                      const std::vector<IC3FrameDisjunct> * witness_refs = nullptr,
                      std::string * witness_ref_out = nullptr,
-                     std::string * witness_val_out = nullptr);
+                     std::string * witness_val_out = nullptr,
+                     const std::unordered_set<std::string> * priority_witness_refs =
+                         nullptr);
 
   // Helper methods
 
@@ -644,13 +647,15 @@ class IC3Base : public SafetyProver
       const std::vector<IC3FrameDisjunct> & refs,
       bool use_next_state,
       std::string & ref_out,
-      std::string & val_out) const;
+      std::string & val_out,
+      const std::unordered_set<std::string> * priority_refs = nullptr) const;
 
   bool check_intersects_initial_with_witness(
       const smt::Term & t,
       const std::vector<IC3FrameDisjunct> & refs,
       std::string & ref_out,
-      std::string & val_out);
+      std::string & val_out,
+      const std::unordered_set<std::string> * priority_witness_refs = nullptr);
 
   void process_llm_candidates();
 
@@ -666,7 +671,9 @@ class IC3Base : public SafetyProver
 
   virtual bool try_apply_llm_refine_predicate(const smt::Term & pred);
 
-  std::string serialize_frame_snapshot_json(size_t frame_idx) const;
+  std::string serialize_frame_snapshot_json(
+      size_t frame_idx,
+      const std::vector<std::string> & cti_literal_keys = {}) const;
 };
 
 }  // namespace pono

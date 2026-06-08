@@ -3,6 +3,20 @@
 
 # LLM-Guided Lemma Generalization: Bug Analysis
 
+## Harness — baseline stdout 誤判（2026-06-07，已修）
+
+**位置：** `scripts/run_benchmarks.py` `run_pono()`（舊版整段 stdout 比對）
+
+**問題：** BTOR2 的 pono 印兩行（`sat`/`unsat` + `b0`）。harness 用 `stdout.strip()` 比對 `"sat"`/`"unsat"` 失敗 → `sat` 記成 `unknown`（exit 0）、`unsat` 記成 `error`（exit 1）。baseline log 看似「全 error、零解出」。
+
+**修正：** `_parse_pono_stdout()` 讀 stdout **第一行**；中斷恢復見 [`hwmcc_experiment_tiers.md`](hwmcc_experiment_tiers.md) § 中斷恢復（`baseline-patch` + `--skip-partial`）。
+
+**與下方 Bug #3 的關係：** Bug #3 描述「幾乎全是 error/timeout 故 LLM stats 未觸發」— baseline 誤判會放大該現象；根因不同，但症狀重疊。
+
+**修正後仍會有的真 `error`：** 少數 benchmark 在 IC3IA + Bitwuzla 上引擎無法繼續（interpolation 不支援、IC3 `reaches_bad` SMT unknown）。pono stdout 第一行為 `error`、exit 2 — 見 [`hwmcc_experiment_tiers.md`](hwmcc_experiment_tiers.md) § `result` 語意。
+
+---
+
 ## Summary
 
 Benchmark 結果 LLM Accepted=0，LLM 貢獻完全為零。以下為系統性分析出的所有問題。
