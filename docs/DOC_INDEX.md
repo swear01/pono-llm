@@ -36,6 +36,8 @@ Last updated: 2026-06-07 (baseline patch/resume; stdout fix;真 error 語意)
 | [`mapping_spike_solver_shortlist.md`](mapping_spike_solver_shortlist.md) | Symbol shortlist notes |
 | [`generalization_operators.md`](generalization_operators.md) | Operator names for `operator` field |
 | [`plans/frame_snapshot_quality_plan.md`](plans/frame_snapshot_quality_plan.md) | Frame snapshot 品質（Track A 已實施；Track B 視 Phase Q） |
+| [`plans/lemma_expressiveness_roadmap.md`](plans/lemma_expressiveness_roadmap.md) | **未來** — lemma 表達力擴充 X1–X4；Gate 0 待 Phase Q 數據 |
+| [`plans/openrouter_provider_policy.md`](plans/openrouter_provider_policy.md) | OpenRouter v4-flash 供應商篩選（fp8、排除 fp4/貴/慢） |
 
 ---
 

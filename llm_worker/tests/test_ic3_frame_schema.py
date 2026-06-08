@@ -96,6 +96,36 @@ def test_invalid_predicate_form():
     assert "unsupported" in err or "missing" in err
 
 
+def test_block_clauses_multi():
+    resp = {
+        "type": "ic3_frame_response",
+        "source_cti_id": "batch_f2_a1",
+        "block_clauses": [
+            [{"ref": "state5", "op": "eq", "rhs": "0", "polarity": True}],
+            [{"ref": "state93", "op": "eq", "rhs": "1", "polarity": False}],
+        ],
+        "rationale": "alternatives",
+    }
+    ok, err = validate_response(resp, max_block_clauses=3)
+    assert ok, err
+    out = normalize_response(resp, "batch_f2_a1", 0, max_block_clauses=3)
+    assert len(out["block_clauses"]) == 2
+    assert out["block_disjuncts"] == out["block_clauses"][0]
+
+
+def test_block_clauses_over_limit_rejected():
+    resp = {
+        "type": "ic3_frame_response",
+        "source_cti_id": "batch_f2_a1",
+        "block_clauses": [
+            [{"ref": f"state{i}", "op": "eq", "rhs": "0", "polarity": True}]
+            for i in range(4)
+        ],
+    }
+    ok, err = validate_response(resp, max_block_clauses=3)
+    assert not ok
+
+
 def test_validate_batch_via_validate_request():
     req = {
         "type": "ic3_frame_batch_request",

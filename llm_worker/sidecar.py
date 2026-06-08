@@ -22,7 +22,8 @@ from concurrent.futures import Future, ThreadPoolExecutor, as_completed
 from pathlib import Path
 from typing import Optional
 
-from deepseek_client import DeepSeekClient
+from env_config import load_env, require_api_key, get_llm_provider, default_model
+from llm_client import LLMClient, create_llm_client
 from ic3_frame_schema import normalize_response, validate_request, validate_response
 from jsonl_protocol import append_log_line, read_requests_batch, write_response
 from prompt_format import (
@@ -116,11 +117,17 @@ def build_batch_user_prompt(
             "Benchmark context (reference):",
             format_benchmark_context_ref(benchmark_ctx),
         ])
+    max_block_clauses = int(req.get("max_block_clauses", 3))
     parts.extend([
         "",
         "Respond with ic3_frame_response JSON only.",
-        "Output exactly ONE block_disjuncts (one OR-clause) consistent with digest stats and sample cubes.",
-        "The block must falsify the bad region implied by high-frequency literals; do not restate listed frame clauses.",
+        (
+            f"Output 1 to {max_block_clauses} independent block_clauses "
+            "(each inner array is one OR-clause, at most 8 disjuncts per clause)."
+        ),
+        "Clauses are alternative strategies; the verifier accepts the first valid clause and ignores the rest.",
+        "Each clause must falsify the bad region implied by digest stats / sample cubes and must not hold on initial state.",
+        "Use block_clauses: [[...], [...]] — not multiple top-level block_disjuncts keys.",
         f"Set source_cti_id to {batch_id!r} and sample_id to {sample_id}.",
     ])
     return "\n".join(parts)
@@ -172,16 +179,21 @@ def build_user_prompt(
             "Benchmark context (reference):",
             format_benchmark_context_ref(benchmark_ctx),
         ])
+    max_block_clauses = int(req.get("max_block_clauses", 3))
     parts.extend([
         "",
         "Respond with ic3_frame_response JSON only.",
+        (
+            f"Output 1 to {max_block_clauses} independent block_clauses "
+            "(verifier accepts the first valid clause)."
+        ),
         f"Set source_cti_id to {req.get('cti_id')!r} and sample_id to {sample_id}.",
     ])
     return "\n".join(parts)
 
 
 def process_request(
-    client: DeepSeekClient,
+    client: LLMClient,
     req: dict,
     system_prompt: str,
     snapshot_max_clauses: int = 0,
@@ -219,8 +231,13 @@ def process_request(
             raw = json.loads(text)
         except json.JSONDecodeError:
             raw = {"block_disjuncts": [], "rationale": "LLM response was not valid JSON"}
-        normalized = normalize_response(raw, source_id, sample_id, attempt)
-        valid, verr = validate_response(normalized)
+        max_block_clauses = int(req.get("max_block_clauses", 3))
+        normalized = normalize_response(
+            raw, source_id, sample_id, attempt, max_block_clauses=max_block_clauses
+        )
+        valid, verr = validate_response(
+            normalized, max_block_clauses=max_block_clauses
+        )
         if not valid:
             normalized["rationale"] = f"{normalized.get('rationale', '')} [{verr}]"
         return sample_id, normalized, tokens, latency_ms
@@ -242,7 +259,7 @@ def process_request(
 
 
 def handle_one_request(
-    client: DeepSeekClient,
+    client: LLMClient,
     request: dict,
     system_prompt: str,
     resp_path: str,
@@ -330,14 +347,29 @@ def main():
     parser.add_argument("--snapshot-max-clauses", type=int, default=0,
                         help="Max frame clauses in prompt (0=all, compact line format)")
     parser.add_argument("--model", default="")
+    parser.add_argument(
+        "--provider",
+        default="",
+        choices=["", "deepseek", "openrouter"],
+        help="LLM API provider (default: LLM_PROVIDER from .env or deepseek)",
+    )
     args = parser.parse_args()
 
-    api_key = os.environ.get("DEEPSEEK_API_KEY")
-    if not api_key:
-        print("[sidecar] ERROR: DEEPSEEK_API_KEY not set")
-        return 1
+    env_path = load_env()
+    if env_path:
+        print(f"[sidecar] loaded env from {env_path}")
 
-    client = DeepSeekClient(api_key, model_name=args.model or None)
+    try:
+        provider = get_llm_provider(args.provider or None)
+        api_key = require_api_key(provider)
+        client = create_llm_client(
+            provider=provider,
+            api_key=api_key,
+            model_name=args.model or default_model(provider),
+        )
+    except (RuntimeError, ValueError) as e:
+        print(f"[sidecar] ERROR: {e}")
+        return 1
     system_prompt = load_prompt(args.prompt_dir)
     write_lock = threading.Lock()
 

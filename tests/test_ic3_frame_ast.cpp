@@ -60,4 +60,27 @@ TEST(IC3FrameAstTest, SampleIdNotStringField)
   EXPECT_EQ(res.attempt, 1u);
 }
 
+TEST(IC3FrameAstTest, BlockClausesMulti)
+{
+  string line =
+      R"({"type":"ic3_frame_response","source_cti_id":"batch_f2_a1","sample_id":0,"block_clauses":[[{"ref":"state5","op":"eq","rhs":"0","polarity":true}],[{"ref":"state93","op":"eq","rhs":"1","polarity":false}]],"rationale":"alt"})";
+  auto res = parse_ic3_frame_response_line(line);
+  ASSERT_TRUE(res.valid) << res.error_msg;
+  ASSERT_EQ(res.block_clauses.size(), 2u);
+  EXPECT_EQ(res.block_clauses[0].size(), 1u);
+  EXPECT_EQ(res.block_clauses[1][0].ref, "state93");
+  EXPECT_EQ(res.block_disjuncts.size(), 1u);
+  EXPECT_EQ(res.block_disjuncts[0].ref, "state5");
+}
+
+TEST(IC3FrameAstTest, LegacyBlockDisjunctsMapsToClauses)
+{
+  string line =
+      R"({"type":"ic3_frame_response","source_cti_id":"batch_f1_a1","sample_id":0,"block_disjuncts":[{"ref":"state1","op":"eq","rhs":"0","polarity":false}],"rationale":"legacy"})";
+  auto res = parse_ic3_frame_response_line(line);
+  ASSERT_TRUE(res.valid) << res.error_msg;
+  ASSERT_EQ(res.block_clauses.size(), 1u);
+  EXPECT_EQ(res.block_clauses[0][0].ref, "state1");
+}
+
 }  // namespace pono_tests

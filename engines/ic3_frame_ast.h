@@ -39,6 +39,7 @@ struct IC3FrameResponse
   size_t sample_id = 0;
   size_t attempt = 0;
   bool has_block = false;
+  std::vector<std::vector<IC3FrameDisjunct>> block_clauses;
   std::vector<IC3FrameDisjunct> block_disjuncts;
   bool has_refine_predicate = false;
   IC3FramePredicateNode refine_predicate;

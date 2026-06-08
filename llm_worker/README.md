@@ -49,13 +49,21 @@ See [`docs/ic3_frame_v1_integration.md`](../docs/ic3_frame_v1_integration.md).
 
 ## Environment
 
-**API key（必填）：**
+Copy [`.env.sample`](../.env.sample) to `.env` at the repo root (`.env` is gitignored):
 
 ```bash
-export DEEPSEEK_API_KEY=sk-...
+cp .env.sample .env
+# edit .env — set LLM_PROVIDER and the matching API key
 ```
 
-Sidecar 只讀 `DEEPSEEK_API_KEY`（shell 環境變數，不寫入 repo）。
+| Variable | Purpose |
+|----------|---------|
+| `DEEPSEEK_API_KEY` | DeepSeek API key |
+| `OPENROUTER_API_KEY` | [OpenRouter](https://openrouter.ai/) API key |
+
+`.env` is **secrets only**. Provider: `--llm-provider` / `--provider`. Model: `--llm-model` / `--model`.
+
+Sidecar and `run_benchmarks.py` load `.env` automatically via `python-dotenv`.
 
 **Python 依賴：**
 
@@ -83,7 +91,18 @@ Rebuilding only `libpono.so` without `pono-bin` can cause `malloc` crashes in `L
 
 ## Model
 
-Default **`deepseek-v4-pro`** ([`deepseek_client.py`](deepseek_client.py), C++ request JSON, `run_benchmarks.py --llm-model`). Override with `--llm-model` (pono) or `--model` (sidecar). Endpoint: `https://api.deepseek.com/v1` only.
+Default provider: **OpenRouter** (`deepseek/deepseek-v4-flash`). Also supports **DeepSeek** direct (`deepseek-v4-pro`) via `--provider deepseek` / `--llm-provider deepseek`. Override model with `--llm-model` or `--model`.
+
+### OpenRouter provider routing (experiments)
+
+OpenRouter calls automatically attach a curated `provider` block (fp8/full-precision only; excludes fp4 mirrors like DeepInfra). See [`docs/plans/openrouter_provider_policy.md`](../docs/plans/openrouter_provider_policy.md).
+
+| Preset | Env | `only` pool |
+|--------|-----|-------------|
+| default | `OPENROUTER_ROUTING_PRESET=default` | novita, deepseek, baidu, parasail, alibaba, streamlake, atlas-cloud |
+| minimal | `OPENROUTER_ROUTING_PRESET=minimal` | novita, deepseek, baidu |
+
+Audit live endpoints: `python3 scripts/verify_openrouter_endpoints.py --check-policy`
 
 ## Smoke (p040, isolated session)
 

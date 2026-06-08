@@ -222,6 +222,7 @@ class PonoOptions
         llm_accepted_budget_(default_llm_accepted_budget_),
         llm_parallel_samples_(default_llm_parallel_samples_),
         llm_max_attempts_(default_llm_max_attempts_),
+        llm_max_block_clauses_(default_llm_max_block_clauses_),
         llm_reasoning_effort_(default_llm_reasoning_effort_),
         llm_model_(default_llm_model_),
         llm_log_path_(default_llm_log_path_),
@@ -421,6 +422,7 @@ class PonoOptions
   size_t llm_accepted_budget_;
   size_t llm_parallel_samples_;
   size_t llm_max_attempts_;
+  size_t llm_max_block_clauses_;
   std::string llm_reasoning_effort_;
   std::string llm_model_;
   std::string llm_log_path_;
@@ -529,8 +531,9 @@ class PonoOptions
   static const bool default_klive_lockstep_bmc_ = true;
   static const LLMGenMode default_llm_gen_mode_ = LLM_GEN_NONE;
   static const size_t default_llm_accepted_budget_ = 50;
-  static const size_t default_llm_parallel_samples_ = 3;
-  static const size_t default_llm_max_attempts_ = 2;
+  static const size_t default_llm_parallel_samples_ = 1;
+  static const size_t default_llm_max_attempts_ = 3;
+  static const size_t default_llm_max_block_clauses_ = 3;
   inline static const std::string default_llm_reasoning_effort_ = "none";
   inline static const std::string default_llm_model_;
   inline static const std::string default_llm_log_path_;

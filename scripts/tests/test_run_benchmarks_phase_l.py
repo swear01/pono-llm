@@ -21,7 +21,8 @@ SAMPLE_LLM_STATS = (
     "LLM_STATS accepted=2 rejected=8 errors=0 requests=10 candidates=20 "
     "schema_fail=1 parse_fail=0 vocab_fail=0 induction_fail=3 "
     "rejected_initial=2 missing_block=0 lookup_miss=1 attempt_mismatch=0 "
-    "budget_skip=0 predicates_added=2 batch_timeouts=1"
+    "budget_skip=0 predicates_added=2 batch_timeouts=1 "
+    "batch_waits=5 batch_wait_ms_total=12345 batch_wait_ms_max=4000"
 )
 
 
@@ -51,6 +52,9 @@ class TestParseLlmStats:
         assert stats["llm_lookup_miss"] == 1
         assert stats["llm_predicates_added"] == 2
         assert stats["llm_batch_timeouts"] == 1
+        assert stats["llm_batch_waits"] == 5
+        assert stats["llm_batch_wait_ms_total"] == 12345
+        assert stats["llm_batch_wait_ms_max"] == 4000
 
     def test_uses_last_llm_stats_line(self):
         stderr = (

@@ -125,6 +125,7 @@ enum optionIndex
   LLM_ACCEPTED_BUDGET,
   LLM_PARALLEL_SAMPLES,
   LLM_MAX_ATTEMPTS,
+  LLM_MAX_BLOCK_CLAUSES,
   LLM_REASONING_EFFORT,
   LLM_MODEL,
   LLM_LOG_PATH,
@@ -806,13 +807,19 @@ const option::Descriptor usage[] = {
     "",
     "llm-parallel-samples",
     Arg::Numeric,
-    "  --llm-parallel-samples \tParallel LLM samples per CTI (default: 3)" },
+    "  --llm-parallel-samples \tParallel LLM samples per CTI (default: 1)" },
   { LLM_MAX_ATTEMPTS,
     0,
     "",
     "llm-max-attempts",
     Arg::Numeric,
-    "  --llm-max-attempts \tMax feedback retries per CTI (default: 2)" },
+    "  --llm-max-attempts \tMax feedback retry rounds per batch (default: 3)" },
+  { LLM_MAX_BLOCK_CLAUSES,
+    0,
+    "",
+    "llm-max-block-clauses",
+    Arg::Numeric,
+    "  --llm-max-block-clauses \tMax independent block clauses per LLM response (default: 3)" },
   { LLM_REASONING_EFFORT,
     0,
     "",
@@ -1247,6 +1254,9 @@ ProverResult PonoOptions::parse_and_set_options(int argc,
           break;
         case LLM_MAX_ATTEMPTS:
           llm_max_attempts_ = std::stoul(opt.arg);
+          break;
+        case LLM_MAX_BLOCK_CLAUSES:
+          llm_max_block_clauses_ = std::stoul(opt.arg);
           break;
         case LLM_REASONING_EFFORT:
           llm_reasoning_effort_ = opt.arg;

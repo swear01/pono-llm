@@ -52,6 +52,42 @@ import threading
 import time
 import urllib.request
 import uuid
+
+
+def _llm_worker_dir() -> pathlib.Path:
+    return pathlib.Path(__file__).resolve().parents[1] / "llm_worker"
+
+
+def _load_repo_env() -> pathlib.Path | None:
+    worker = _llm_worker_dir()
+    if str(worker) not in sys.path:
+        sys.path.insert(0, str(worker))
+    from env_config import load_env
+
+    return load_env()
+
+
+def _resolve_llm_provider(cli_provider: str = "") -> str:
+    _load_repo_env()
+    from env_config import get_llm_provider
+
+    return get_llm_provider(cli_provider or None)
+
+
+def _resolve_llm_model(cli_model: str = "", cli_provider: str = "") -> str:
+    _load_repo_env()
+    from env_config import default_model, get_llm_provider
+
+    if cli_model:
+        return cli_model
+    return default_model(get_llm_provider(cli_provider or None))
+
+
+def _llm_api_key_configured(cli_provider: str = "") -> bool:
+    _load_repo_env()
+    from env_config import get_api_key, get_llm_provider
+
+    return bool(get_api_key(get_llm_provider(cli_provider or None)))
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from dataclasses import dataclass, field, fields
 from typing import Optional
@@ -123,6 +159,9 @@ class RunResult:
     llm_budget_skip: int = 0
     llm_predicates_added: int = 0
     llm_batch_timeouts: int = 0
+    llm_batch_waits: int = 0
+    llm_batch_wait_ms_total: int = 0
+    llm_batch_wait_ms_max: int = 0
 
 
 RESULT_FIELDS = [f.name for f in fields(RunResult)]
@@ -142,6 +181,9 @@ _LLM_STAT_KEY_MAP: dict[str, str] = {
     "budget_skip": "llm_budget_skip",
     "predicates_added": "llm_predicates_added",
     "batch_timeouts": "llm_batch_timeouts",
+    "batch_waits": "llm_batch_waits",
+    "batch_wait_ms_total": "llm_batch_wait_ms_total",
+    "batch_wait_ms_max": "llm_batch_wait_ms_max",
 }
 
 
@@ -250,9 +292,15 @@ def parse_args() -> argparse.Namespace:
         help="Max LLM requests per sidecar (0 = unlimited)",
     )
     p.add_argument(
+        "--llm-provider",
+        choices=["", "deepseek", "openrouter"],
+        default="",
+        help="LLM API provider (default: LLM_PROVIDER from .env or deepseek)",
+    )
+    p.add_argument(
         "--llm-model",
-        default="deepseek-v4-pro",
-        help="LLM model name (passed to sidecar)",
+        default="",
+        help="LLM model name (default: provider default; see --llm-provider)",
     )
     p.add_argument(
         "--llm-phase",
@@ -527,8 +575,8 @@ def run_phase_test(args: argparse.Namespace) -> bool:
 
     sidecar_test = root / "test_sidecar.py"
     if sidecar_test.exists():
-        if not os.environ.get("DEEPSEEK_API_KEY"):
-            log("SKIP test_sidecar.py --with-llm (DEEPSEEK_API_KEY not set)")
+        if not _llm_api_key_configured():
+            log("SKIP test_sidecar.py --with-llm (no LLM API key in .env / environment)")
         else:
             log("Running test_sidecar.py --with-llm ...")
             env = os.environ.copy()
@@ -1057,6 +1105,9 @@ def _run_result_llm_summary(r: RunResult) -> dict:
         "llm_rejected": r.llm_rejected,
         "llm_requests": r.llm_requests,
         "llm_batch_timeouts": r.llm_batch_timeouts,
+        "llm_batch_waits": r.llm_batch_waits,
+        "llm_batch_wait_ms_total": r.llm_batch_wait_ms_total,
+        "llm_batch_wait_ms_max": r.llm_batch_wait_ms_max,
         "llm_rejected_initial": r.llm_rejected_initial,
         "llm_induction_fail": r.llm_induction_fail,
     }
@@ -1074,10 +1125,11 @@ def run_pono(
     log_path: str = "",
     accepted_budget: int = 50,
     memory_limit_gb: float = 40.0,
-    llm_parallel_samples: int = 3,
+    llm_parallel_samples: int = 1,
     llm_reasoning_effort: str = "none",
     llm_batch_wait_sec: int = 300,
     llm_snapshot_max_clauses: int = 0,
+    llm_model: str = "",
 ) -> tuple[RunResult, str]:
     """Run pono on a single benchmark. Returns (RunResult, stderr text)."""
     cmd = [
@@ -1099,6 +1151,8 @@ def run_pono(
             "--llm-resp-path", resp_path,
             "--llm-log", log_path,
         ])
+        if llm_model:
+            cmd.extend(["--llm-model", llm_model])
     cmd.append(entry.path)
 
     t0 = time.time()
@@ -1191,6 +1245,9 @@ def run_pono(
         llm_budget_skip=llm_stats.get("llm_budget_skip", 0),
         llm_predicates_added=llm_stats.get("llm_predicates_added", 0),
         llm_batch_timeouts=llm_stats.get("llm_batch_timeouts", 0),
+        llm_batch_waits=llm_stats.get("llm_batch_waits", 0),
+        llm_batch_wait_ms_total=llm_stats.get("llm_batch_wait_ms_total", 0),
+        llm_batch_wait_ms_max=llm_stats.get("llm_batch_wait_ms_max", 0),
     )
     return run_result, stderr or ""
 
@@ -1464,23 +1521,28 @@ def _run_one_llm(job_data: dict) -> RunResult:
     resp_path = os.path.join(tmpdir, "responses.jsonl")
     log_path = os.path.join(tmpdir, "llm_log.jsonl")
     sidecar_stderr = os.path.join(tmpdir, "sidecar_stderr.log")
-    llm_model = job_data.get("llm_model", "deepseek-v4-pro")
+    llm_model = job_data.get("llm_model", "")
+    llm_provider = job_data.get("llm_provider", "")
 
     # Start sidecar
     env = os.environ.copy()
+    sidecar_cmd = [
+        sys.executable, sidecar_path,
+        "--req-path", req_path,
+        "--resp-path", resp_path,
+        "--log-path", log_path,
+        "--prompt-dir", prompt_dir,
+        "--poll-interval", "0.5",
+        "--max-requests", str(job_data.get("llm_max_requests", 50)),
+        "--max-inflight-requests", str(job_data.get("llm_max_inflight", 8)),
+        "--snapshot-max-clauses", str(job_data.get("snapshot_max_clauses", 0)),
+    ]
+    if llm_provider:
+        sidecar_cmd.extend(["--provider", llm_provider])
+    if llm_model:
+        sidecar_cmd.extend(["--model", llm_model])
     sidecar_proc = subprocess.Popen(
-        [
-            sys.executable, sidecar_path,
-            "--req-path", req_path,
-            "--resp-path", resp_path,
-            "--log-path", log_path,
-            "--prompt-dir", prompt_dir,
-            "--poll-interval", "0.5",
-            "--max-requests", str(job_data.get("llm_max_requests", 50)),
-            "--max-inflight-requests", str(job_data.get("llm_max_inflight", 8)),
-            "--snapshot-max-clauses", str(job_data.get("snapshot_max_clauses", 0)),
-            "--model", llm_model,
-        ],
+        sidecar_cmd,
         stdout=subprocess.DEVNULL,
         stderr=open(sidecar_stderr, "w"),
         env=env,
@@ -1494,10 +1556,11 @@ def _run_one_llm(job_data: dict) -> RunResult:
         req_path=req_path, resp_path=resp_path, log_path=log_path,
         accepted_budget=accepted_budget,
         memory_limit_gb=job_data.get("memory_limit", 14.0),
-        llm_parallel_samples=job_data.get("llm_parallel_samples", 3),
+        llm_parallel_samples=job_data.get("llm_parallel_samples", 1),
         llm_reasoning_effort=job_data.get("llm_reasoning_effort", "none"),
         llm_batch_wait_sec=job_data.get("llm_batch_wait_sec", 300),
         llm_snapshot_max_clauses=job_data.get("snapshot_max_clauses", 0),
+        llm_model=llm_model,
     )
 
     # Drain sidecar before stopping
@@ -1542,6 +1605,16 @@ def run_phase_llm(
     comp_map: dict[str, CompEntry],
 ) -> list[RunResult]:
     """Run +LLM on a target subset of baseline benchmarks."""
+    llm_provider = _resolve_llm_provider(args.llm_provider)
+    llm_model = _resolve_llm_model(args.llm_model, args.llm_provider)
+    if not _llm_api_key_configured(args.llm_provider):
+        log(
+            f"ERROR: no API key configured for LLM provider {llm_provider!r}. "
+            "Set keys in .env (see .env.sample)."
+        )
+        return []
+    log(f"LLM provider={llm_provider} model={llm_model}")
+
     if args.llm_phase in ("a", "b"):
         log(f"=== Phase: +LLM (subset --llm-phase {args.llm_phase}) ===")
         targets = select_llm_targets_by_phase(
@@ -1620,7 +1693,8 @@ def run_phase_llm(
         "started_at": started_at,
         "parallel": args.parallel,
         "snapshot_max_clauses": args.snapshot_max_clauses,
-        "llm_model": args.llm_model,
+        "llm_provider": llm_provider,
+        "llm_model": llm_model,
         "llm_drain_sec": args.llm_drain_sec,
         "memory_limit_gb": args.memory_limit,
         "engine": args.engine,
@@ -1660,10 +1734,11 @@ def run_phase_llm(
             sidecar_path=str(sidecar_path),
             prompt_dir=str(prompt_dir),
             llm_max_requests=args.llm_max_requests,
-            llm_model=args.llm_model,
+            llm_provider=llm_provider,
+            llm_model=llm_model,
             llm_batch_wait_sec=300,
             llm_max_inflight=8,
-            llm_parallel_samples=3,
+            llm_parallel_samples=1,
             memory_limit=args.memory_limit,
             drain_sec=args.llm_drain_sec,
             snapshot_max_clauses=args.snapshot_max_clauses,
@@ -1697,7 +1772,8 @@ def run_phase_llm(
         "finished_at": finished_at,
         "parallel": args.parallel,
         "snapshot_max_clauses": args.snapshot_max_clauses,
-        "llm_model": args.llm_model,
+        "llm_provider": llm_provider,
+        "llm_model": llm_model,
         "llm_drain_sec": args.llm_drain_sec,
         "memory_limit_gb": args.memory_limit,
         "engine": args.engine,
@@ -2084,6 +2160,9 @@ def run_find_solvable(args: argparse.Namespace) -> list[dict]:
 
 def main() -> int:
     args = parse_args()
+    env_path = _load_repo_env()
+    if env_path:
+        log(f"Loaded .env from {env_path}")
 
     if args.all:
         args.phase = "all"

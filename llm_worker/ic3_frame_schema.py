@@ -2,6 +2,9 @@
 
 from typing import Any, Dict, List, Tuple
 
+MAX_DISJUNCTS_PER_CLAUSE = 8
+MAX_BLOCK_CLAUSES_HARD_CAP = 8
+
 
 def validate_batch_request(req: Dict[str, Any]) -> Tuple[bool, str]:
     if req.get("type") != "ic3_frame_batch_request":
@@ -69,6 +72,55 @@ def _extract_predicate(raw: Dict[str, Any]) -> Dict[str, Any]:
     return {}
 
 
+def _collect_block_clauses(
+    resp: Dict[str, Any],
+    max_clauses: int = 0,
+) -> List[List[Dict[str, Any]]]:
+    clauses: List[List[Dict[str, Any]]] = []
+
+    raw_clauses = resp.get("block_clauses")
+    if isinstance(raw_clauses, list):
+        for item in raw_clauses:
+            if isinstance(item, list):
+                flat = _flatten_disjuncts(item)
+            elif isinstance(item, dict):
+                flat = _flatten_disjuncts([item])
+            else:
+                flat = []
+            if flat:
+                clauses.append(flat)
+
+    if not clauses:
+        disjuncts = resp.get("block_disjuncts")
+        if disjuncts:
+            flat = _flatten_disjuncts(disjuncts)
+            if flat:
+                clauses.append(flat)
+
+    if not clauses:
+        for action in resp.get("actions") or []:
+            if action.get("kind") == "block":
+                clause = action.get("clause") or {}
+                flat = _flatten_disjuncts(clause.get("disjuncts") or [])
+                if flat:
+                    clauses.append(flat)
+
+    if max_clauses > 0 and len(clauses) > max_clauses:
+        clauses = clauses[:max_clauses]
+    return clauses
+
+
+def _validate_disjuncts(disjuncts: List[Dict[str, Any]]) -> Tuple[bool, str]:
+    if not disjuncts:
+        return False, "empty clause"
+    if len(disjuncts) > MAX_DISJUNCTS_PER_CLAUSE:
+        return False, f"clause exceeds {MAX_DISJUNCTS_PER_CLAUSE} disjuncts"
+    for d in disjuncts:
+        if not d.get("ref") or not d.get("rhs"):
+            return False, "disjunct missing ref or rhs"
+    return True, ""
+
+
 def _validate_predicate_node(node: Dict[str, Any]) -> Tuple[bool, str]:
     form = node.get("form", "")
     if form == "ref":
@@ -98,29 +150,28 @@ def _validate_predicate_node(node: Dict[str, Any]) -> Tuple[bool, str]:
     return False, f"unsupported predicate form: {form}"
 
 
-def validate_response(resp: Dict[str, Any]) -> Tuple[bool, str]:
+def validate_response(
+    resp: Dict[str, Any],
+    max_block_clauses: int = MAX_BLOCK_CLAUSES_HARD_CAP,
+) -> Tuple[bool, str]:
     if resp.get("type") != "ic3_frame_response":
         return False, "type must be ic3_frame_response"
     if not resp.get("source_cti_id"):
         return False, "missing source_cti_id"
 
-    disjuncts = resp.get("block_disjuncts")
-    if not disjuncts:
-        for action in resp.get("actions") or []:
-            if action.get("kind") == "block":
-                clause = action.get("clause") or {}
-                disjuncts = _flatten_disjuncts(clause.get("disjuncts") or [])
-                break
-
+    clauses_all = _collect_block_clauses(resp, max_clauses=0)
+    if max_block_clauses > 0 and len(clauses_all) > max_block_clauses:
+        return False, f"too many block_clauses (max {max_block_clauses})"
+    clauses = clauses_all if max_block_clauses <= 0 else clauses_all[:max_block_clauses]
     predicate = resp.get("refine_predicate") or _extract_predicate(resp)
 
-    if not disjuncts and not predicate:
-        return False, "missing block_disjuncts and refine_predicate"
+    if not clauses and not predicate:
+        return False, "missing block_clauses/block_disjuncts and refine_predicate"
 
-    if disjuncts:
-        for d in disjuncts:
-            if not d.get("ref") or not d.get("rhs"):
-                return False, "disjunct missing ref or rhs"
+    for clause in clauses:
+        ok, err = _validate_disjuncts(clause)
+        if not ok:
+            return False, err
 
     if predicate:
         ok, err = _validate_predicate_node(predicate)
@@ -131,24 +182,19 @@ def validate_response(resp: Dict[str, Any]) -> Tuple[bool, str]:
 
 
 def normalize_response(resp: Dict[str, Any], source_cti_id: str, sample_id: int,
-                       attempt: int = 1) -> Dict[str, Any]:
-    """Normalize LLM output to flat block_disjuncts + refine_predicate."""
-    disjuncts = resp.get("block_disjuncts")
-    if not disjuncts:
-        for action in resp.get("actions") or []:
-            if action.get("kind") == "block":
-                clause = action.get("clause") or {}
-                disjuncts = _flatten_disjuncts(clause.get("disjuncts") or [])
-                break
-
+                       attempt: int = 1,
+                       max_block_clauses: int = MAX_BLOCK_CLAUSES_HARD_CAP) -> Dict[str, Any]:
+    """Normalize LLM output to block_clauses + refine_predicate."""
+    clauses = _collect_block_clauses(resp, max_clauses=max_block_clauses)
     predicate = resp.get("refine_predicate") or _extract_predicate(resp)
 
     symbols = resp.get("symbols_used") or []
     if not symbols:
         sym_set = set()
-        for d in disjuncts or []:
-            if d.get("ref"):
-                sym_set.add(d["ref"])
+        for clause in clauses:
+            for d in clause:
+                if d.get("ref"):
+                    sym_set.add(d["ref"])
         symbols = sorted(sym_set)
 
     out = {
@@ -157,7 +203,8 @@ def normalize_response(resp: Dict[str, Any], source_cti_id: str, sample_id: int,
         "source_cti_id": resp.get("source_cti_id") or source_cti_id,
         "sample_id": resp.get("sample_id", sample_id),
         "attempt": resp.get("attempt", attempt),
-        "block_disjuncts": disjuncts or [],
+        "block_clauses": clauses,
+        "block_disjuncts": clauses[0] if clauses else [],
         "symbols_used": symbols,
         "rationale": resp.get("rationale", ""),
     }

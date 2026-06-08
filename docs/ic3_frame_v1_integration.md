@@ -68,9 +68,9 @@ Sidecar flag `--snapshot-max-clauses N` (default `0` = all clauses): when `N>0`,
   "frame_idx": 12,
   "cti_id": "cti_000123",
   "attempt": 1,
-  "max_attempts": 2,
+  "max_attempts": 3,
   "parallel_group": "cti_000123_a1",
-  "parallel_samples": 3,
+  "parallel_samples": 1,
   "benchmark_context_path": "/tmp/pono_benchmark_context.json",
   "cti": {
     "cube": {
@@ -112,7 +112,7 @@ Sidecar flag `--snapshot-max-clauses N` (default `0` = all clauses): when `N>0`,
 
 ## Request: `ic3_frame_batch_request` v1 (default)
 
-After each `block_all` phase, Pono flushes **one** batch line containing all CTIs buffered for that frame. The LLM returns **one** `block_disjuncts` per sample (parallel K). Response `source_cti_id` is the `batch_id` (e.g. `batch_f2_a1`), not per-CTI ids.
+After each `block_all` phase, Pono flushes **one** batch line containing all CTIs buffered for that frame. The LLM returns **1–N** independent `block_clauses` per sample (default N=3; `--llm-max-block-clauses`). C++ accepts the **first** clause that passes init + induction and stops. Response `source_cti_id` is the `batch_id` (e.g. `batch_f2_a1`), not per-CTI ids.
 
 | Field | Notes |
 |-------|--------|
@@ -121,7 +121,8 @@ After each `block_all` phase, Pono flushes **one** batch line containing all CTI
 | `cti_digest` | Optional: `{cti_total, literal_stats[], ...}` when batch is large |
 | `frame_snapshot` | May include `clauses_total` when C++ caps clauses |
 | `temperature` | `0.5` in request; sidecar uses it for API calls |
-| `parallel_samples` | K (default 3) |
+| `parallel_samples` | K (default 1) |
+| `max_block_clauses` | N independent OR-clauses per response (default 3); first valid wins |
 | `model` | Default `deepseek-v4-pro` if `--llm-model` unset |
 
 ### CTI digest (large batches)
@@ -214,9 +215,10 @@ See [`hwmcc_experiment_tiers.md`](hwmcc_experiment_tiers.md) for staged benchmar
 
 **Limits (v1):**
 
-- At most **one** `block` action (multiple `disjuncts` allowed inside the OR clause).
+- Up to **N** independent `block_clauses` per response (default N=3 via `--llm-max-block-clauses`); each clause is one OR of literals (≤8 disjuncts).
+- Legacy single `block_disjuncts` still accepted (treated as one clause).
+- C++ accepts the **first** clause passing init + induction; remaining clauses in that response are skipped.
 - At most **one** optional `refine_predicate` action (IC3IA only).
-- **No** multiple independent `block` actions per response; use parallel sampling instead.
 
 Optional `refine_predicate`:
 
@@ -285,7 +287,7 @@ Parallel = breadth; retry = depth. Both are used together.
 | `reasoning_effort` | **`none`** (default, required for latency) |
 | `thinking` | When `reasoning_effort` is `none`, client sends `extra_body: {"thinking": {"type": "disabled"}}`. **Omitting `reasoning_effort` does not disable thinking** on `deepseek-v4-pro`. |
 | `temperature` | `0` serial repair; `0.7–0.9` parallel sampling |
-| Logging | `latency_ms`, `prompt_tokens`, `completion_tokens`, `reasoning_chars`, `user_prompt_bytes`, `prompt_hash`, `sample_id` |
+| Logging | Sidecar `llm_log.jsonl`: `latency_ms`, `prompt_tokens`, …; C++ stderr: `LLM_BATCH_WAIT batch_id=… wait_ms=…` per sync wait; summary `LLM_STATS batch_waits batch_wait_ms_total batch_wait_ms_max` |
 
 ### Latency (measured 2026-06-04, `deepseek-v4-pro`, thinking disabled)
 
@@ -301,17 +303,21 @@ With thinking enabled, the same prompts take **~90–220 s** (hidden `reasoning_
 
 | Variable | Required | Description |
 |----------|----------|-------------|
-| `DEEPSEEK_API_KEY` | yes | DeepSeek API key; read by [`llm_worker/sidecar.py`](../llm_worker/sidecar.py) at runtime |
+| `DEEPSEEK_API_KEY` | if provider=deepseek | In `.env` (secrets only) |
+| `OPENROUTER_API_KEY` | if provider=openrouter | In `.env` (secrets only) |
 
 Python deps: `pip install -r llm_worker/requirements.txt` — uses the `openai` package as HTTP client for DeepSeek's OpenAI-compatible API (not OpenAI models).
 
-Endpoint: `https://api.deepseek.com/v1`. Default model **`deepseek-v4-pro`** everywhere unless overridden:
+Copy `.env.sample` → `.env` (gitignored). Sidecar and `run_benchmarks.py` load it via `python-dotenv`.
 
-- Pono: `--llm-model NAME` (written into each request JSON `model` field; empty → `deepseek-v4-pro`).
-- Sidecar: `--model NAME` (client default when request omits `model`).
-- Benchmarks: `run_benchmarks.py --llm-model` (default `deepseek-v4-pro`).
+| Provider | Endpoint | Default model |
+|----------|----------|---------------|
+| `deepseek` | `https://api.deepseek.com/v1` | `deepseek-v4-pro` |
+| `openrouter` | `https://openrouter.ai/api/v1` | `deepseek/deepseek-chat` |
 
-Only DeepSeek is supported in the online v1 path (the `openai` package is an HTTP client, not OpenAI models).
+Override model: Pono `--llm-model`, sidecar `--model`, or per-request JSON `model` field (not in `.env`).
+
+CLI: sidecar `--provider {deepseek,openrouter}`; benchmarks `--llm-provider`. The `openai` Python package is only the HTTP client.
 
 ---
 

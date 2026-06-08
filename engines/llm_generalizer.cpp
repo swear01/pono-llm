@@ -466,12 +466,14 @@ void LLMGeneralizer::serialize_frame_request(
   out << "\"cti_id\":\"" << escape_json(ctx.cti_id) << "\",";
   out << "\"attempt\":" << attempt << ",";
   out << "\"max_attempts\":" << opts_.llm_max_attempts_ << ",";
+  out << "\"max_block_clauses\":" << opts_.llm_max_block_clauses_ << ",";
   out << "\"parallel_group\":\"" << escape_json(ctx.cti_id + "_a" + std::to_string(attempt))
       << "\",";
   out << "\"parallel_samples\":" << opts_.llm_parallel_samples_ << ",";
   out << "\"reasoning_effort\":\"" << escape_json(opts_.llm_reasoning_effort_) << "\",";
   out << "\"model\":\""
-      << escape_json(opts_.llm_model_.empty() ? "deepseek-v4-pro" : opts_.llm_model_)
+      << escape_json(opts_.llm_model_.empty() ? "deepseek/deepseek-v4-flash"
+                                               : opts_.llm_model_)
       << "\",";
   out << "\"benchmark_context_path\":\"" << escape_json(benchmark_context_path_)
       << "\",";
@@ -546,12 +548,14 @@ void LLMGeneralizer::serialize_batch_request(
   out << "\"frame_idx\":" << frame_idx << ",";
   out << "\"attempt\":" << attempt << ",";
   out << "\"max_attempts\":" << opts_.llm_max_attempts_ << ",";
+  out << "\"max_block_clauses\":" << opts_.llm_max_block_clauses_ << ",";
   out << "\"parallel_group\":\"" << escape_json(batch_id) << "\",";
   out << "\"parallel_samples\":" << opts_.llm_parallel_samples_ << ",";
   out << "\"temperature\":0.5,";
   out << "\"reasoning_effort\":\"" << escape_json(opts_.llm_reasoning_effort_) << "\",";
   out << "\"model\":\""
-      << escape_json(opts_.llm_model_.empty() ? "deepseek-v4-pro" : opts_.llm_model_)
+      << escape_json(opts_.llm_model_.empty() ? "deepseek/deepseek-v4-flash"
+                                               : opts_.llm_model_)
       << "\",";
   out << "\"benchmark_context_path\":\"" << escape_json(benchmark_context_path_)
       << "\",";
@@ -714,7 +718,11 @@ bool LLMGeneralizer::wait_for_batch_responses(const string & batch_id,
                                               unsigned timeout_sec)
 {
   using clock = chrono::steady_clock;
-  auto deadline = clock::now() + chrono::seconds(timeout_sec);
+  const auto t0 = clock::now();
+  const auto deadline = t0 + chrono::seconds(timeout_sec);
+  size_t received_samples = 0;
+  bool ok = false;
+
   while (clock::now() < deadline) {
     unordered_set<size_t> samples;
     ifstream fin(response_path_);
@@ -732,22 +740,42 @@ bool LLMGeneralizer::wait_for_batch_responses(const string & batch_id,
         }
       }
     }
-    if (samples.size() >= expected_samples) {
-      logger.log(1,
-                 "LLMGeneralizer: batch {} received {}/{} samples",
-                 batch_id,
-                 samples.size(),
-                 expected_samples);
-      return true;
+    received_samples = samples.size();
+    if (received_samples >= expected_samples) {
+      ok = true;
+      break;
     }
     this_thread::sleep_for(chrono::milliseconds(200));
   }
 
+  const auto wait_ms = static_cast<uint64_t>(
+      chrono::duration_cast<chrono::milliseconds>(clock::now() - t0).count());
+  stats_.num_batch_waits++;
+  stats_.total_batch_wait_ms += wait_ms;
+  if (wait_ms > stats_.max_batch_wait_ms) {
+    stats_.max_batch_wait_ms = wait_ms;
+  }
+
+  cerr << "LLM_BATCH_WAIT batch_id=" << batch_id << " wait_ms=" << wait_ms
+       << " ok=" << (ok ? 1 : 0) << " samples=" << received_samples << "/"
+       << expected_samples << endl;
+
+  if (ok) {
+    logger.log(1,
+               "LLMGeneralizer: batch {} received {}/{} samples (wait_ms={})",
+               batch_id,
+               received_samples,
+               expected_samples,
+               wait_ms);
+    return true;
+  }
+
   stats_.num_batch_timeout++;
   logger.log(0,
-               "LLMGeneralizer: batch {} wait timeout ({}s)",
+               "LLMGeneralizer: batch {} wait timeout ({}s, wait_ms={})",
                batch_id,
-               timeout_sec);
+               timeout_sec,
+               wait_ms);
   return false;
 }
 
@@ -868,6 +896,9 @@ void LLMGeneralizer::log_stats() const
   logger.log(0, "  Attempt mismatch:    {}", stats_.num_attempt_mismatch);
   logger.log(0, "  Budget skips:        {}", stats_.num_budget_skip);
   logger.log(0, "  Predicates added:    {}", stats_.num_predicates_added);
+  logger.log(0, "  Batch waits:         {}", stats_.num_batch_waits);
+  logger.log(0, "  Batch wait total ms: {}", stats_.total_batch_wait_ms);
+  logger.log(0, "  Batch wait max ms:   {}", stats_.max_batch_wait_ms);
   const size_t rejected_total =
       stats_.num_schema_fail + stats_.num_parse_fail + stats_.num_vocab_fail
       + stats_.num_induction_fail + stats_.num_rejected_initial
@@ -885,7 +916,10 @@ void LLMGeneralizer::log_stats() const
        << " attempt_mismatch=" << stats_.num_attempt_mismatch
        << " budget_skip=" << stats_.num_budget_skip
        << " predicates_added=" << stats_.num_predicates_added
-       << " batch_timeouts=" << stats_.num_batch_timeout << endl;
+       << " batch_timeouts=" << stats_.num_batch_timeout
+       << " batch_waits=" << stats_.num_batch_waits
+       << " batch_wait_ms_total=" << stats_.total_batch_wait_ms
+       << " batch_wait_ms_max=" << stats_.max_batch_wait_ms << endl;
 }
 
 }  // namespace pono

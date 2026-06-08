@@ -5,6 +5,7 @@
 #pragma once
 
 #include <cstddef>
+#include <cstdint>
 #include <fstream>
 #include <map>
 #include <string>
@@ -85,6 +86,9 @@ struct GeneralizationStats
   size_t num_budget_skip = 0;
   size_t num_predicates_added = 0;
   size_t num_batch_timeout = 0;
+  size_t num_batch_waits = 0;
+  uint64_t total_batch_wait_ms = 0;
+  uint64_t max_batch_wait_ms = 0;
   size_t total_tokens = 0;
   size_t accepted_budget = 0;
   double total_llm_time_ms = 0.0;
@@ -105,6 +109,9 @@ struct GeneralizationStats
     num_budget_skip = 0;
     num_predicates_added = 0;
     num_batch_timeout = 0;
+    num_batch_waits = 0;
+    total_batch_wait_ms = 0;
+    max_batch_wait_ms = 0;
     total_tokens = 0;
     accepted_budget = 0;
     total_llm_time_ms = 0.0;

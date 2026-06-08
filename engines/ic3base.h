@@ -669,6 +669,16 @@ class IC3Base : public SafetyProver
 
   bool validate_frame_response_vocab(const IC3FrameResponse & resp) const;
 
+  bool validate_block_clause_vocab(
+      const std::vector<IC3FrameDisjunct> & disjuncts) const;
+
+  bool try_accept_first_block_clause(const std::string & cti_id,
+                                     size_t frame_idx,
+                                     const IC3FrameResponse & resp,
+                                     std::string & fail_reason,
+                                     std::string & witness_ref,
+                                     std::string & witness_val);
+
   virtual bool try_apply_llm_refine_predicate(const smt::Term & pred);
 
   std::string serialize_frame_snapshot_json(

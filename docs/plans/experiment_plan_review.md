@@ -99,6 +99,8 @@
 - [ ] **Q1** 依歸檔 `LLM_STATS` 評估 `rejected_initial` / `accepted`
 - [ ] **Q2a** 若改善不足 → 啟動 Track B（cube-subset）
 - [ ] **Q2b** 若穩定 `accepted≥1` → 建 `scripts/ab_snapshot_quality.sh`（A0 vs A3）
+- [ ] **Q3** 填寫 [`lemma_expressiveness_roadmap.md`](lemma_expressiveness_roadmap.md) § Gate 0（是否需擴 expressiveness）
+- [ ] **Q4** 若 Gate 0 觸發 → 排程 **Phase X1**（`refine_predicate` 接入）；見該文件
 
 ---
 
@@ -108,7 +110,7 @@
 Phase L（已完成）
   → Phase Baseline（全量 baseline + report + find-solvable）
   → Phase E（LLM，八開，正確選案）
-  → Phase Q（Track B 或 A/B）
+  → Phase Q（Track B 或 A/B；或 Phase X1 見 lemma roadmap）
 ```
 
 觸發：「跑 baseline」／「執行 Phase E」。

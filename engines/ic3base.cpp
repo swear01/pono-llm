@@ -1537,16 +1537,22 @@ IC3Formula IC3Base::build_block_clause_from_disjuncts(
   return IC3Formula(t, children, true);
 }
 
-bool IC3Base::validate_frame_response_vocab(
-    const IC3FrameResponse & resp) const
+bool IC3Base::validate_block_clause_vocab(
+    const vector<IC3FrameDisjunct> & disjuncts) const
 {
-  for (const auto & d : resp.block_disjuncts) {
+  for (const auto & d : disjuncts) {
     try {
       ts_.lookup(d.ref);
     } catch (...) {
       return false;
     }
   }
+  return true;
+}
+
+bool IC3Base::validate_frame_response_vocab(
+    const IC3FrameResponse & resp) const
+{
   if (resp.has_refine_predicate) {
     vector<string> pred_refs;
     collect_predicate_refs(resp.refine_predicate, pred_refs);
@@ -1571,6 +1577,80 @@ bool IC3Base::validate_frame_response_vocab(
 bool IC3Base::try_apply_llm_refine_predicate(const Term & pred)
 {
   (void)pred;
+  return false;
+}
+
+bool IC3Base::try_accept_first_block_clause(
+    const string & cti_id,
+    size_t frame_idx,
+    const IC3FrameResponse & resp,
+    string & fail_reason,
+    string & witness_ref,
+    string & witness_val)
+{
+  vector<vector<IC3FrameDisjunct>> clauses = resp.block_clauses;
+  if (clauses.empty() && !resp.block_disjuncts.empty()) {
+    clauses.push_back(resp.block_disjuncts);
+  }
+  if (clauses.size() > options_.llm_max_block_clauses_) {
+    clauses.resize(options_.llm_max_block_clauses_);
+  }
+  if (clauses.empty()) return false;
+
+  unordered_set<string> priority_wit_refs;
+  llm_gen_->collect_cti_literal_refs(cti_id, priority_wit_refs);
+
+  for (size_t ci = 0; ci < clauses.size(); ++ci) {
+    const auto & disjuncts = clauses[ci];
+    if (!validate_block_clause_vocab(disjuncts)) {
+      fail_reason = "vocab_fail";
+      continue;
+    }
+
+    IC3Formula blocking = build_block_clause_from_disjuncts(disjuncts);
+    if (blocking.children.empty()) {
+      fail_reason = "empty_block_clause";
+      continue;
+    }
+
+    IC3Formula check_cube = ic3formula_negate(blocking);
+    witness_ref.clear();
+    witness_val.clear();
+    if (check_intersects_initial_with_witness(check_cube.term,
+                                              disjuncts,
+                                              witness_ref,
+                                              witness_val,
+                                              &priority_wit_refs)) {
+      fail_reason = "rejected_initial";
+      continue;
+    }
+
+    IC3Formula out;
+    witness_ref.clear();
+    witness_val.clear();
+    if (!rel_ind_check(frame_idx,
+                       check_cube,
+                       out,
+                       false,
+                       &disjuncts,
+                       &witness_ref,
+                       &witness_val,
+                       &priority_wit_refs)) {
+      fail_reason = "induction_failed";
+      continue;
+    }
+
+    constrain_frame(frame_idx, blocking, true);
+    llm_gen_->stats_.num_accepted++;
+    llm_gen_->stats_.accepted_budget++;
+    logger.log(1,
+               "IC3Frame clause ACCEPTED at frame {} (clause_idx={} disjuncts={})",
+               frame_idx,
+               ci,
+               blocking.children.size());
+    logger.log(1, "  Rationale: {}", resp.rationale);
+    return true;
+  }
   return false;
 }
 
@@ -2035,61 +2115,33 @@ void IC3Base::process_llm_candidates()
         continue;
       }
 
-      IC3Formula blocking = build_block_clause_from_disjuncts(resp.block_disjuncts);
-      if (blocking.children.empty()) {
-        llm_gen_->stats_.num_parse_fail++;
-        llm_gen_->add_feedback(cti_id, resp, "empty_block_clause");
-        llm_gen_->note_response_processed(cti_id, resp_attempt);
-        continue;
-      }
-
-      IC3Formula check_cube = ic3formula_negate(blocking);
+      std::string fail_reason;
       std::string wit_ref;
       std::string wit_val;
-      std::unordered_set<std::string> priority_wit_refs;
-      llm_gen_->collect_cti_literal_refs(cti_id, priority_wit_refs);
-      if (check_intersects_initial_with_witness(check_cube.term,
-                                                resp.block_disjuncts,
-                                                wit_ref,
-                                                wit_val,
-                                                &priority_wit_refs)) {
+      if (try_accept_first_block_clause(
+              cti_id, frame_idx, resp, fail_reason, wit_ref, wit_val)) {
+        llm_gen_->mark_accepted(cti_id);
+        llm_gen_->note_response_processed(cti_id, resp_attempt);
+        accepted = true;
+        break;
+      }
+
+      if (fail_reason == "rejected_initial") {
         llm_gen_->stats_.num_rejected_initial++;
-        llm_gen_->add_feedback(
-            cti_id, resp, "rejected_initial", wit_ref, wit_val);
-        llm_gen_->note_response_processed(cti_id, resp_attempt);
-        continue;
-      }
-
-      IC3Formula out;
-      wit_ref.clear();
-      wit_val.clear();
-      if (!rel_ind_check(frame_idx,
-                         check_cube,
-                         out,
-                         false,
-                         &resp.block_disjuncts,
-                         &wit_ref,
-                         &wit_val,
-                         &priority_wit_refs)) {
+      } else if (fail_reason == "induction_failed") {
         llm_gen_->stats_.num_induction_fail++;
-        llm_gen_->add_feedback(
-            cti_id, resp, "induction_failed", wit_ref, wit_val);
-        llm_gen_->note_response_processed(cti_id, resp_attempt);
-        continue;
+      } else if (fail_reason == "vocab_fail") {
+        llm_gen_->stats_.num_vocab_fail++;
+      } else if (fail_reason == "empty_block_clause") {
+        llm_gen_->stats_.num_parse_fail++;
+      } else {
+        llm_gen_->stats_.num_induction_fail++;
+        fail_reason = "all_clauses_failed";
       }
-
-      constrain_frame(frame_idx, blocking, true);
-      llm_gen_->stats_.num_accepted++;
-      llm_gen_->stats_.accepted_budget++;
-      llm_gen_->mark_accepted(cti_id);
+      llm_gen_->add_feedback(
+          cti_id, resp, fail_reason, wit_ref, wit_val);
       llm_gen_->note_response_processed(cti_id, resp_attempt);
-      accepted = true;
-      logger.log(1,
-                 "IC3Frame response ACCEPTED at frame {} (disjuncts={})",
-                 frame_idx,
-                 blocking.children.size());
-      logger.log(1, "  Rationale: {}", resp.rationale);
-      break;
+      continue;
     }
 
     if (!accepted && !llm_gen_->is_cti_accepted(cti_id)

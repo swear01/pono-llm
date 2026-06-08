@@ -15,8 +15,14 @@ PONO_OUT="$RUN_DIR/pono_stdout.log"
 PONO_ERR="$RUN_DIR/pono_stderr.log"
 MANIFEST="$RUN_DIR/manifest.json"
 
-if [[ -z "${DEEPSEEK_API_KEY:-}" ]]; then
-  echo "ERROR: DEEPSEEK_API_KEY not set" >&2
+if ! python3 -c "
+import sys
+sys.path.insert(0, '$ROOT/llm_worker')
+from env_config import load_env, any_llm_api_key_configured
+load_env()
+sys.exit(0 if any_llm_api_key_configured() else 1)
+"; then
+  echo "ERROR: set API keys in $ROOT/.env (see .env.sample)" >&2
   exit 1
 fi
 if [[ ! -x "$ROOT/build/pono" ]]; then
@@ -30,7 +36,7 @@ fi
 
 SNAPSHOT_MAX="${SNAPSHOT_MAX:-0}"
 PONO_TIMEOUT="${PONO_TIMEOUT:-600}"
-PARALLEL_SAMPLES="${PARALLEL_SAMPLES:-3}"
+PARALLEL_SAMPLES="${PARALLEL_SAMPLES:-1}"
 MAX_INFLIGHT="${MAX_INFLIGHT:-8}"
 DRAIN_SEC="${DRAIN_SEC:-600}"
 BATCH_WAIT_SEC="${BATCH_WAIT_SEC:-300}"
@@ -40,6 +46,9 @@ NO_SYNC="${NO_SYNC:-0}"
 echo "RUN_DIR=$RUN_DIR"
 echo "snapshot_max_clauses=$SNAPSHOT_MAX parallel_samples=$PARALLEL_SAMPLES max_inflight=$MAX_INFLIGHT drain_sec=$DRAIN_SEC batch_wait_sec=$BATCH_WAIT_SEC strict=$STRICT"
 
+SIDECAR_EXTRA=()
+[[ -n "${LLM_PROVIDER:-}" ]] && SIDECAR_EXTRA+=(--provider "$LLM_PROVIDER")
+
 python3 -u "$ROOT/llm_worker/sidecar.py" \
   --req-path "$REQ" \
   --resp-path "$RESP" \
@@ -48,6 +57,7 @@ python3 -u "$ROOT/llm_worker/sidecar.py" \
   --poll-interval 0.5 \
   --max-inflight-requests "$MAX_INFLIGHT" \
   --snapshot-max-clauses "$SNAPSHOT_MAX" \
+  "${SIDECAR_EXTRA[@]}" \
   >"$SIDECAR_LOG" 2>&1 &
 SIDECAR_PID=$!
 sleep 2

@@ -224,26 +224,9 @@ static bool parse_actions_predicate(const string & line, IC3FramePredicateNode &
   return out.valid;
 }
 
-static vector<IC3FrameDisjunct> parse_actions_block(const string & line)
+static vector<IC3FrameDisjunct> parse_action_block_disjuncts(
+    const string & action_obj)
 {
-  size_t pos = line.find("\"actions\"");
-  if (pos == string::npos) return {};
-  pos = line.find("[", pos);
-  if (pos == string::npos) return {};
-  size_t end = find_matching_bracket(line, pos);
-  if (end == string::npos) return {};
-
-  string actions = line.substr(pos + 1, end - pos - 1);
-  size_t block_pos = actions.find("\"kind\":\"block\"");
-  if (block_pos == string::npos) block_pos = actions.find("\"kind\": \"block\"");
-  if (block_pos == string::npos) return {};
-
-  size_t obj_start = actions.rfind("{", block_pos);
-  if (obj_start == string::npos) return {};
-  size_t obj_end = find_matching_brace(actions, obj_start);
-  if (obj_end == string::npos) return {};
-  string action_obj = actions.substr(obj_start, obj_end - obj_start + 1);
-
   size_t disj_pos = action_obj.find("\"disjuncts\"");
   if (disj_pos == string::npos) {
     disj_pos = action_obj.find("\"clause\"");
@@ -258,6 +241,89 @@ static vector<IC3FrameDisjunct> parse_actions_block(const string & line)
   if (disj_end == string::npos) return {};
   return parse_disjunct_array(
       action_obj.substr(disj_pos + 1, disj_end - disj_pos - 1));
+}
+
+static vector<vector<IC3FrameDisjunct>> parse_all_actions_blocks(
+    const string & line)
+{
+  vector<vector<IC3FrameDisjunct>> out;
+  size_t pos = line.find("\"actions\"");
+  if (pos == string::npos) return out;
+  pos = line.find("[", pos);
+  if (pos == string::npos) return out;
+  size_t end = find_matching_bracket(line, pos);
+  if (end == string::npos) return out;
+
+  string actions = line.substr(pos + 1, end - pos - 1);
+  size_t search = 0;
+  while (search < actions.size()) {
+    size_t block_pos = actions.find("\"kind\":\"block\"", search);
+    if (block_pos == string::npos) {
+      block_pos = actions.find("\"kind\": \"block\"", search);
+    }
+    if (block_pos == string::npos) break;
+
+    size_t obj_start = actions.rfind("{", block_pos);
+    if (obj_start == string::npos || obj_start < search) break;
+    size_t obj_end = find_matching_brace(actions, obj_start);
+    if (obj_end == string::npos) break;
+
+    string action_obj = actions.substr(obj_start, obj_end - obj_start + 1);
+    auto disjuncts = parse_action_block_disjuncts(action_obj);
+    if (!disjuncts.empty()) out.push_back(disjuncts);
+    search = obj_end + 1;
+  }
+  return out;
+}
+
+static vector<IC3FrameDisjunct> parse_actions_block(const string & line)
+{
+  auto all = parse_all_actions_blocks(line);
+  if (all.empty()) return {};
+  return all.front();
+}
+
+static vector<vector<IC3FrameDisjunct>> parse_block_clauses_field(
+    const string & line)
+{
+  vector<vector<IC3FrameDisjunct>> out;
+  size_t pos = line.find("\"block_clauses\"");
+  if (pos == string::npos) return out;
+  pos = line.find("[", pos);
+  if (pos == string::npos) return out;
+  size_t end = find_matching_bracket(line, pos);
+  if (end == string::npos) return out;
+
+  string outer = line.substr(pos + 1, end - pos - 1);
+  size_t cur = 0;
+  while (cur < outer.size()) {
+    while (cur < outer.size() && (outer[cur] == ',' || isspace(outer[cur]))) {
+      cur++;
+    }
+    if (cur >= outer.size()) break;
+
+    if (outer[cur] == '[') {
+      size_t inner_end = find_matching_bracket(outer, cur);
+      if (inner_end == string::npos) break;
+      auto disjuncts = parse_disjunct_array(outer.substr(cur + 1, inner_end - cur - 1));
+      if (!disjuncts.empty()) out.push_back(disjuncts);
+      cur = inner_end + 1;
+      continue;
+    }
+
+    if (outer[cur] == '{') {
+      size_t obj_end = find_matching_brace(outer, cur);
+      if (obj_end == string::npos) break;
+      auto disjuncts =
+          parse_disjunct_array(outer.substr(cur, obj_end - cur + 1));
+      if (!disjuncts.empty()) out.push_back(disjuncts);
+      cur = obj_end + 1;
+      continue;
+    }
+
+    break;
+  }
+  return out;
 }
 
 static Term build_node_term(const SmtSolver & solver,
@@ -425,6 +491,11 @@ IC3FrameResponse parse_ic3_frame_response_line(const string & line)
 
   res.attempt = parse_uint_field(line, "attempt", 0);
 
+  res.block_clauses = parse_block_clauses_field(line);
+  if (res.block_clauses.empty()) {
+    res.block_clauses = parse_all_actions_blocks(line);
+  }
+
   size_t pos = line.find("\"block_disjuncts\"");
   if (pos != string::npos) {
     pos = line.find("[", pos);
@@ -437,10 +508,17 @@ IC3FrameResponse parse_ic3_frame_response_line(const string & line)
     }
   }
 
-  if (res.block_disjuncts.empty()) {
+  if (res.block_clauses.empty() && !res.block_disjuncts.empty()) {
+    res.block_clauses.push_back(res.block_disjuncts);
+  } else if (res.block_clauses.empty()) {
     res.block_disjuncts = parse_actions_block(line);
+    if (!res.block_disjuncts.empty()) {
+      res.block_clauses.push_back(res.block_disjuncts);
+    }
+  } else if (res.block_disjuncts.empty() && !res.block_clauses.empty()) {
+    res.block_disjuncts = res.block_clauses.front();
   }
-  res.has_block = !res.block_disjuncts.empty();
+  res.has_block = !res.block_clauses.empty();
 
   if (parse_predicate_field(line, "refine_predicate", res.refine_predicate)) {
     res.has_refine_predicate = true;
