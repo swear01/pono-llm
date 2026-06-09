@@ -38,6 +38,7 @@ SNAPSHOT_MAX="${SNAPSHOT_MAX:-0}"
 PONO_TIMEOUT="${PONO_TIMEOUT:-600}"
 PARALLEL_SAMPLES="${PARALLEL_SAMPLES:-1}"
 MAX_ATTEMPTS="${MAX_ATTEMPTS:-1}"
+MAX_BLOCK_CLAUSES="${MAX_BLOCK_CLAUSES:-3}"
 MAX_INFLIGHT="${MAX_INFLIGHT:-8}"
 DRAIN_SEC="${DRAIN_SEC:-600}"
 BATCH_WAIT_SEC="${BATCH_WAIT_SEC:-300}"
@@ -45,7 +46,7 @@ STRICT="${STRICT:-1}"
 NO_SYNC="${NO_SYNC:-0}"
 
 echo "RUN_DIR=$RUN_DIR"
-echo "snapshot_max_clauses=$SNAPSHOT_MAX parallel_samples=$PARALLEL_SAMPLES max_attempts=$MAX_ATTEMPTS max_inflight=$MAX_INFLIGHT drain_sec=$DRAIN_SEC batch_wait_sec=$BATCH_WAIT_SEC strict=$STRICT"
+echo "snapshot_max_clauses=$SNAPSHOT_MAX parallel_samples=$PARALLEL_SAMPLES max_attempts=$MAX_ATTEMPTS max_block_clauses=$MAX_BLOCK_CLAUSES max_inflight=$MAX_INFLIGHT drain_sec=$DRAIN_SEC batch_wait_sec=$BATCH_WAIT_SEC strict=$STRICT"
 
 SIDECAR_EXTRA=()
 [[ -n "${LLM_PROVIDER:-}" ]] && SIDECAR_EXTRA+=(--provider "$LLM_PROVIDER")
@@ -73,6 +74,7 @@ timeout "$PONO_TIMEOUT" "$ROOT/build/pono" -e ic3ia -k 5 \
   --llm-parallel-samples "$PARALLEL_SAMPLES" \
   --llm-reasoning-effort none \
   --llm-max-attempts "$MAX_ATTEMPTS" \
+  --llm-max-block-clauses "$MAX_BLOCK_CLAUSES" \
   --llm-accepted-budget 5 \
   --llm-batch-wait-sec "$BATCH_WAIT_SEC" \
   --llm-snapshot-max-clauses "$SNAPSHOT_MAX" \
