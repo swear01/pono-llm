@@ -178,6 +178,101 @@ def _format_disjunct_json(dj: dict[str, Any]) -> str:
     return json.dumps(compact, separators=(",", ":"))
 
 
+def witness_refs_from_feedback(req: dict) -> list[tuple[str, str]]:
+    """(ref, next_value) for each rejected_initial witness in request feedback."""
+    out: list[tuple[str, str]] = []
+    for fb in req.get("feedback") or []:
+        if fb.get("reason") != "rejected_initial":
+            continue
+        wit = fb.get("witness") or {}
+        wref = str(wit.get("ref") or "")
+        wval = str(wit.get("next_value") or "")
+        if wref and wval:
+            out.append((wref, wval))
+    return out
+
+
+def disjunct_blocked_for_witness_retry(dj: dict[str, Any], wref: str, wval: str) -> bool:
+    """Q3.6: True if disjunct must be stripped on retry (init_wide: any ref match)."""
+    if str(dj.get("ref") or "") != wref:
+        return False
+    if parse_witness_tag(wval) == "init_wide":
+        return True
+    for tmpl in forbidden_disjuncts_for_witness(wref, wval):
+        if disjunct_equals(dj, tmpl):
+            return True
+    return False
+
+
+def pick_safe_digest_disjunct(
+    req: dict,
+    *,
+    exclude_refs: set[str] | None = None,
+) -> dict[str, Any] | None:
+    """First digest-negate disjunct that avoids witness refs and FORBIDDEN shapes."""
+    skip = set(exclude_refs or ())
+    for lit in pick_digest_literal_lines(req, max_n=8, skip_witness_forbidden=True):
+        dj = negate_digest_lit_to_disjunct(lit)
+        if not dj:
+            continue
+        ref = str(dj.get("ref") or "")
+        if ref in skip:
+            continue
+        if _is_forbidden_witness_block_disjunct(dj, req):
+            continue
+        return dj
+    return None
+
+
+def apply_witness_forbidden_post_filter(resp: dict[str, Any], req: dict) -> dict[str, Any]:
+    """Q3.6 sidecar guard: drop witness FORBIDDEN disjuncts on retry; fallback safe digest neg."""
+    from ic3_frame_schema import collect_block_clauses
+
+    attempt = int(req.get("attempt") or 1)
+    witnesses = witness_refs_from_feedback(req)
+    if attempt < 2 or not witnesses:
+        return resp
+
+    exclude_refs = {wref for wref, _ in witnesses}
+    clauses = collect_block_clauses(resp, max_clauses=0)
+    new_clauses: list[list[dict[str, Any]]] = []
+    filtered_any = False
+
+    for clause in clauses:
+        kept: list[dict[str, Any]] = []
+        for dj in clause:
+            if any(
+                disjunct_blocked_for_witness_retry(dj, wref, wval)
+                for wref, wval in witnesses
+            ):
+                filtered_any = True
+                continue
+            kept.append(dj)
+        if kept:
+            new_clauses.append(kept)
+
+    if not new_clauses:
+        safe = pick_safe_digest_disjunct(req, exclude_refs=exclude_refs)
+        if safe:
+            new_clauses = [[safe]]
+            filtered_any = True
+
+    if not filtered_any:
+        return resp
+
+    out = dict(resp)
+    out["block_clauses"] = new_clauses
+    out["block_disjuncts"] = new_clauses[0] if new_clauses else []
+    sym_set: set[str] = set()
+    for clause in new_clauses:
+        for d in clause:
+            if d.get("ref"):
+                sym_set.add(str(d["ref"]))
+    out["symbols_used"] = sorted(sym_set)
+    out["rationale"] = (out.get("rationale") or "") + " [Q3.6 witness-forbidden post-filter]"
+    return out
+
+
 def _is_forbidden_witness_block_disjunct(dj: dict[str, Any], req: dict | None) -> bool:
     """True when disjunct matches Q3.1 init FORBIDDEN template for any RI witness."""
     if not req:

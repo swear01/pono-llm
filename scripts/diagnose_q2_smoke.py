@@ -14,8 +14,17 @@ from pathlib import Path
 from typing import Any
 
 # Reuse Phase Q0 taxonomy helpers.
+_ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(Path(__file__).resolve().parent))
+sys.path.insert(0, str(_ROOT / "llm_worker"))
 import analyze_accept_diagnosis as diag  # noqa: E402
+from prompt_format import (  # noqa: E402
+    disjunct_blocked_for_witness_retry,
+    normalize_rhs,
+    parse_digest_lit_line,
+)
+
+_POS_LIT_RE = re.compile(r"^(!?)((?:state|input)\d+)=(.+)$")
 
 
 @dataclass
@@ -161,19 +170,83 @@ def classify_ri_with_clause_idx(
     }
 
 
-def disjunct_matches_cti_literal(dj: dict[str, Any], cti_refs: set[str], req: dict[str, Any]) -> bool:
-    ref = str(dj.get("ref") or "")
-    if ref not in cti_refs:
-        return False
-    # Heuristic: same ref appears in CTI with matching rhs/polarity intent.
+def iter_positive_cti_literals(req: dict[str, Any]) -> list[tuple[str, str, bool]]:
+    """Positive (non-negated) literals from digest stats and cti_entries."""
+    out: list[tuple[str, str, bool]] = []
+    seen: set[tuple[str, str]] = set()
+    for row in (req.get("cti_digest") or {}).get("literal_stats") or []:
+        lit = str(row.get("lit", "")).strip()
+        if lit.startswith("!"):
+            continue
+        parsed = parse_digest_lit_line(lit)
+        if not parsed:
+            continue
+        ref, rhs, pol = parsed
+        key = (ref, normalize_rhs(rhs))
+        if key not in seen:
+            seen.add(key)
+            out.append((ref, rhs, pol))
     for ent in req.get("cti_entries") or []:
+        for lit in ent.get("literals") or []:
+            text = str(lit).strip()
+            if text.startswith("!"):
+                continue
+            m = _POS_LIT_RE.match(text)
+            if not m:
+                continue
+            ref, rhs = m.group(2), m.group(3)
+            key = (ref, normalize_rhs(rhs))
+            if key not in seen:
+                seen.add(key)
+                out.append((ref, rhs, True))
         for lit in (ent.get("cti") or {}).get("cube", {}).get("literals") or []:
             atom = lit.get("atom") or {}
-            if atom.get("ref") != ref:
+            ref = str(atom.get("ref") or "")
+            if not ref:
                 continue
-            if str(atom.get("rhs")) == str(dj.get("rhs")):
-                return bool(lit.get("polarity", True)) == bool(dj.get("polarity", True))
-    return True  # ref in digest/cti, shape unknown
+            rhs = str(atom.get("rhs", ""))
+            if not bool(lit.get("polarity", True)):
+                continue
+            key = (ref, normalize_rhs(rhs))
+            if key not in seen:
+                seen.add(key)
+                out.append((ref, rhs, True))
+    return out
+
+
+def disjunct_is_true_positive_cti_copy(dj: dict[str, Any], req: dict[str, Any]) -> bool:
+    """Q3.5: restates a positive CTI/digest literal (polarity=true, same ref/rhs)."""
+    if not bool(dj.get("polarity", True)):
+        return False
+    ref = str(dj.get("ref") or "")
+    rhs = str(dj.get("rhs") or "")
+    for pref, prhs, _ in iter_positive_cti_literals(req):
+        if ref == pref and normalize_rhs(rhs) == normalize_rhs(prhs):
+            return True
+    return False
+
+
+def disjunct_matches_digest_negation(dj: dict[str, Any], req: dict[str, Any]) -> bool:
+    """Q3.5: matches mechanical negation of any simple digest top literal."""
+    for lit in diag.top_digest_literals(req, 8):
+        mic = diag.negate_top1_mic_clause(lit)
+        if mic and diag.matches_single_disjunct([dj], mic):
+            return True
+    return False
+
+
+def disjunct_matches_cti_literal(dj: dict[str, Any], cti_refs: set[str], req: dict[str, Any]) -> bool:
+    """Legacy broad heuristic (deprecated for gating); kept for backward compat."""
+    return disjunct_is_true_positive_cti_copy(dj, req) or (
+        str(dj.get("ref") or "") in cti_refs
+        and disjunct_matches_digest_negation(dj, req)
+    )
+
+
+def failed_disjunct_hits_witness_forbidden(
+    dj: dict[str, Any], wref: str, wval: str
+) -> bool:
+    return disjunct_blocked_for_witness_retry(dj, wref, wval)
 
 
 def analyze_run(run: SmokeRun) -> dict[str, Any]:
@@ -202,7 +275,12 @@ def analyze_run(run: SmokeRun) -> dict[str, Any]:
     used_clause_idx = 0
     total_ri = 0
     cti_copy_disjuncts = 0
+    true_pos_copy = 0
+    digest_neg_disjuncts = 0
+    other_disjuncts = 0
     total_disjuncts = 0
+    ri_forbidden_checks = 0
+    ri_forbidden_viol = 0
     retry_same_witness: Counter[str] = Counter()
     retry_same_pattern: Counter[str] = Counter()
     attempt_ri: Counter[int] = Counter()
@@ -221,8 +299,13 @@ def analyze_run(run: SmokeRun) -> dict[str, Any]:
             for clause in diag.collect_clauses(resp):
                 for dj in clause:
                     total_disjuncts += 1
-                    if disjunct_matches_cti_literal(dj, cti_refs, req):
+                    if disjunct_is_true_positive_cti_copy(dj, req):
+                        true_pos_copy += 1
                         cti_copy_disjuncts += 1
+                    elif disjunct_matches_digest_negation(dj, req):
+                        digest_neg_disjuncts += 1
+                    else:
+                        other_disjuncts += 1
 
         for fb in req.get("feedback") or []:
             reason = str(fb.get("reason") or "")
@@ -265,6 +348,11 @@ def analyze_run(run: SmokeRun) -> dict[str, Any]:
                 if entry.get("pattern") and entry.get("pattern") == prev_pat:
                     retry_same_pattern[str(entry.get("pattern"))] += 1
 
+            for dj in entry.get("failed_clause") or []:
+                ri_forbidden_checks += 1
+                if wref and wval and failed_disjunct_hits_witness_forbidden(dj, wref, wval):
+                    ri_forbidden_viol += 1
+
             if len(examples[cat]) < 2:
                 examples[cat].append(
                     {
@@ -305,6 +393,28 @@ def analyze_run(run: SmokeRun) -> dict[str, Any]:
             else 0,
             "total_disjuncts": total_disjuncts,
         },
+        "response_disjunct_metrics": {
+            "total_disjuncts": total_disjuncts,
+            "true_pos_cti_copy": true_pos_copy,
+            "true_pos_cti_copy_pct": round(100.0 * true_pos_copy / total_disjuncts, 1)
+            if total_disjuncts
+            else 0.0,
+            "digest_neg": digest_neg_disjuncts,
+            "digest_neg_pct": round(100.0 * digest_neg_disjuncts / total_disjuncts, 1)
+            if total_disjuncts
+            else 0.0,
+            "other": other_disjuncts,
+            "other_pct": round(100.0 * other_disjuncts / total_disjuncts, 1)
+            if total_disjuncts
+            else 0.0,
+        },
+        "witness_forbidden": {
+            "ri_failed_disjunct_checks": ri_forbidden_checks,
+            "ri_forbidden_violations": ri_forbidden_viol,
+            "ri_forbidden_viol_pct": round(100.0 * ri_forbidden_viol / ri_forbidden_checks, 1)
+            if ri_forbidden_checks
+            else 0.0,
+        },
         "retry_stagnation": {
             "rejected_initial_by_attempt": dict(sorted(attempt_ri.items())),
             "same_witness_on_retry_top": retry_same_witness.most_common(8),
@@ -321,6 +431,9 @@ def aggregate_runs(per_run: list[dict[str, Any]]) -> dict[str, Any]:
     mic_pcts: list[float] = []
     single_pcts: list[float] = []
     cti_copy_pcts: list[float] = []
+    true_copy_pcts: list[float] = []
+    digest_neg_pcts: list[float] = []
+    forbidden_viol_pcts: list[float] = []
 
     for r in per_run:
         tax = r.get("rejected_initial_taxonomy") or {}
@@ -333,6 +446,11 @@ def aggregate_runs(per_run: list[dict[str, Any]]) -> dict[str, Any]:
         if rs.get("single_disjunct_clause_pct") is not None:
             single_pcts.append(rs["single_disjunct_clause_pct"])
         cti_copy_pcts.append((r.get("cti_literal_copy") or {}).get("disjuncts_matching_cti_pct", 0))
+        rdm = r.get("response_disjunct_metrics") or {}
+        true_copy_pcts.append(rdm.get("true_pos_cti_copy_pct", 0))
+        digest_neg_pcts.append(rdm.get("digest_neg_pct", 0))
+        wf = r.get("witness_forbidden") or {}
+        forbidden_viol_pcts.append(wf.get("ri_forbidden_viol_pct", 0))
 
     def cat_share(c: str) -> float:
         return round(100.0 * cats[c] / total_ri, 1) if total_ri else 0.0
@@ -349,6 +467,13 @@ def aggregate_runs(per_run: list[dict[str, Any]]) -> dict[str, Any]:
         if single_pcts
         else None,
         "mean_cti_copy_disjunct_pct": round(statistics.mean(cti_copy_pcts), 1) if cti_copy_pcts else None,
+        "mean_true_pos_cti_copy_pct": round(statistics.mean(true_copy_pcts), 1)
+        if true_copy_pcts
+        else None,
+        "mean_digest_neg_pct": round(statistics.mean(digest_neg_pcts), 1) if digest_neg_pcts else None,
+        "mean_witness_forbidden_viol_pct": round(statistics.mean(forbidden_viol_pcts), 1)
+        if forbidden_viol_pcts
+        else None,
     }
 
 
@@ -374,7 +499,10 @@ def write_summary_md(report: dict[str, Any], out_path: Path) -> None:
         "",
         f"- Mean MIC top-1 shape match: **{agg.get('mean_mic_top1_shape_pct')}%**",
         f"- Mean single-disjunct clauses: **{agg.get('mean_single_disjunct_clause_pct')}%**",
-        f"- Mean CTI-literal copy in disjuncts: **{agg.get('mean_cti_copy_disjunct_pct')}%**",
+        f"- Mean true positive CTI copy: **{agg.get('mean_true_pos_cti_copy_pct')}%** (Q3.5 gate)",
+        f"- Mean digest-negation disjuncts: **{agg.get('mean_digest_neg_pct')}%**",
+        f"- Mean witness FORBIDDEN viol (RI failed): **{agg.get('mean_witness_forbidden_viol_pct')}%** (Q3.5 gate)",
+        f"- Legacy CTI copy heuristic: **{agg.get('mean_cti_copy_disjunct_pct')}%** (deprecated)",
         "",
         "## Interpretation",
         "",
@@ -471,7 +599,9 @@ def main() -> None:
     print(
         f"Aggregate: accept/API={agg.get('accept_per_request_pct')}% "
         f"B2={agg.get('category_share_pct', {}).get('B2_single_witness_lit_false_at_witness')}% "
-        f"C2={agg.get('category_share_pct', {}).get('C2_multi_or_other_disjunct_at_init')}%"
+        f"true_copy={agg.get('mean_true_pos_cti_copy_pct')}% "
+        f"digest_neg={agg.get('mean_digest_neg_pct')}% "
+        f"forbidden_viol={agg.get('mean_witness_forbidden_viol_pct')}%"
     )
 
 

@@ -27,6 +27,7 @@ from llm_client import LLMClient, create_llm_client
 from ic3_frame_schema import normalize_response, validate_request, validate_response
 from jsonl_protocol import append_log_line, read_requests_batch, write_response
 from prompt_format import (
+    apply_witness_forbidden_post_filter,
     batch_cti_total,
     collect_refs_from_request,
     format_cti_batch_all,
@@ -261,6 +262,7 @@ def process_request(
         normalized = normalize_response(
             raw, source_id, sample_id, attempt, max_block_clauses=max_block_clauses
         )
+        normalized = apply_witness_forbidden_post_filter(normalized, req)
         valid, verr = validate_response(
             normalized, max_block_clauses=max_block_clauses
         )

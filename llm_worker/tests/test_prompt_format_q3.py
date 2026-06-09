@@ -9,7 +9,9 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from prompt_format import (
     _failed_clause_from_rejected_json,
     _is_forbidden_witness_block_disjunct,
+    apply_witness_forbidden_post_filter,
     collect_forbidden_positive_literals,
+    disjunct_blocked_for_witness_retry,
     disjunct_equals,
     forbidden_disjuncts_for_witness,
     format_digest_block_hints,
@@ -341,6 +343,70 @@ def test_suggest_digest_negation_avoids_witness_forbidden_fallback():
     joined = "\n".join(lines)
     assert "!state24=1" not in joined.split("SUGGESTED")[-1]
     assert "different from witness" in joined or "state24" not in joined.split("SUGGESTED")[-1]
+
+
+def test_disjunct_blocked_init_wide_any_ref():
+    dj = {"ref": "state798", "op": "eq", "rhs": "#b000000000000", "polarity": False}
+    assert disjunct_blocked_for_witness_retry(dj, "state798", "#b000000000000")
+
+
+def test_post_filter_strips_witness_forbidden_on_retry():
+    req = {
+        "attempt": 2,
+        "cti_digest": {
+            "literal_stats": [
+                {"lit": "state24=#b1", "count": 10},
+                {"lit": "state34=#b0", "count": 8},
+            ]
+        },
+        "feedback": [
+            {
+                "reason": "rejected_initial",
+                "witness": {"ref": "state24", "next_value": "#b1"},
+            }
+        ],
+    }
+    resp = {
+        "type": "ic3_frame_response",
+        "source_cti_id": "batch_f1_a2",
+        "block_clauses": [
+            [{"ref": "state24", "op": "eq", "rhs": "#b1", "polarity": False}],
+            [{"ref": "state34", "op": "eq", "rhs": "#b0", "polarity": False}],
+        ],
+    }
+    out = apply_witness_forbidden_post_filter(resp, req)
+    assert out["block_clauses"][0][0]["ref"] == "state34"
+    assert "post-filter" in out.get("rationale", "")
+
+
+def test_post_filter_fallback_safe_digest_when_all_stripped():
+    req = {
+        "attempt": 3,
+        "cti_digest": {
+            "literal_stats": [{"lit": "state34=#b0", "count": 5}],
+        },
+        "feedback": [
+            {
+                "reason": "rejected_initial",
+                "witness": {"ref": "state24", "next_value": "#b1"},
+            }
+        ],
+    }
+    resp = {
+        "type": "ic3_frame_response",
+        "block_clauses": [
+            [{"ref": "state24", "op": "eq", "rhs": "1", "polarity": False}],
+        ],
+    }
+    out = apply_witness_forbidden_post_filter(resp, req)
+    assert len(out["block_clauses"]) == 1
+    assert out["block_clauses"][0][0]["ref"] == "state34"
+
+
+def test_post_filter_noop_on_attempt1():
+    req = {"attempt": 1, "feedback": []}
+    resp = {"block_clauses": [[{"ref": "state5", "op": "eq", "rhs": "0", "polarity": False}]]}
+    assert apply_witness_forbidden_post_filter(resp, req) is resp
 
 
 def test_build_batch_user_prompt_includes_witness_repair_on_retry():

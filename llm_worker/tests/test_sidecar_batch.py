@@ -15,8 +15,6 @@ from sidecar import (
     format_benchmark_context_ref,
     process_request,
 )
-
-
 def _minimal_batch(parallel_samples: int = 3) -> dict:
     return {
         "schema_version": 1,
@@ -90,6 +88,44 @@ def test_process_batch_writes_k_responses():
     with open(resp_path) as f:
         lines = [ln for ln in f if ln.strip()]
     assert len(lines) == 3
+
+
+def test_process_request_post_filters_witness_forbidden_on_retry():
+    class RetryMockClient:
+        def call(self, *args, **kwargs):
+            return (
+                json.dumps({
+                    "block_clauses": [
+                        [{"ref": "state24", "op": "eq", "rhs": "#b1", "polarity": False}],
+                    ],
+                }),
+                12,
+                100.0,
+            )
+
+    req = _minimal_batch(parallel_samples=1)
+    req["attempt"] = 2
+    req["batch_id"] = "batch_f1_a2"
+    req["cti_digest"] = {
+        "cti_total": 1,
+        "literal_stats": [
+            {"lit": "state24=#b1", "count": 5},
+            {"lit": "state34=#b0", "count": 3},
+        ],
+    }
+    req["cti_entries"] = [{"cti_id": "f1_abc", "literals": ["state24=1", "state34=0"]}]
+    req["feedback"] = [
+        {
+            "reason": "rejected_initial",
+            "witness": {"ref": "state24", "next_value": "#b1"},
+            "rejected_json": "{}",
+        }
+    ]
+    responses, _, _ = process_request(RetryMockClient(), req, "system")
+    assert len(responses) == 1
+    clause = responses[0]["block_clauses"][0]
+    assert clause[0]["ref"] == "state34"
+    assert "post-filter" in responses[0].get("rationale", "")
 
 
 def test_benchmark_context_omits_bad_property():

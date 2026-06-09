@@ -181,6 +181,14 @@ def validate_response(
     return True, ""
 
 
+def collect_block_clauses(
+    resp: Dict[str, Any],
+    max_clauses: int = 0,
+) -> List[List[Dict[str, Any]]]:
+    """Public accessor for normalized block_clauses extraction."""
+    return _collect_block_clauses(resp, max_clauses=max_clauses)
+
+
 def normalize_response(resp: Dict[str, Any], source_cti_id: str, sample_id: int,
                        attempt: int = 1,
                        max_block_clauses: int = MAX_BLOCK_CLAUSES_HARD_CAP) -> Dict[str, Any]:
