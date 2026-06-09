@@ -29,6 +29,10 @@ _PROVIDER_URLS = {
     "openrouter": OPENROUTER_BASE_URL,
 }
 
+_OPENROUTER_REASONING_EFFORTS = frozenset(
+    {"none", "minimal", "low", "medium", "high", "xhigh"}
+)
+
 
 def get_api_key(provider: str | None = None):
     from env_config import get_api_key as _get
@@ -87,20 +91,35 @@ class LLMClient:
             )
         self.last_call_stats: dict[str, Any] = {}
 
-    def _apply_thinking_mode(self, kwargs: dict, reasoning_effort: str | None = None) -> str:
+    def _thinking_payload_target(self, payload: dict) -> dict:
+        """Provider knobs live in extra_body (OpenAI SDK) or top-level (urllib)."""
+        if self._client is not None:
+            return payload.setdefault("extra_body", {})
+        return payload
+
+    def _apply_thinking_mode(self, payload: dict, reasoning_effort: str | None = None) -> str:
+        effort = (reasoning_effort or "none").lower()
+
+        if self.provider == "openrouter":
+            target = self._thinking_payload_target(payload)
+            if effort in ("none", "", "off", "disabled"):
+                target["reasoning"] = {"effort": "none", "exclude": True}
+                return "disabled"
+            mapped = effort if effort in _OPENROUTER_REASONING_EFFORTS else "high"
+            target["reasoning"] = {"effort": mapped}
+            return mapped
+
         if not self._supports_thinking:
             return "n/a"
-        effort = (reasoning_effort or "none").lower()
-        extra = kwargs.setdefault("extra_body", {})
+
+        target = self._thinking_payload_target(payload)
         if effort in ("none", "", "off", "disabled"):
-            extra["thinking"] = {"type": "disabled"}
+            target["thinking"] = {"type": "disabled"}
             return "disabled"
-        extra["thinking"] = {"type": "enabled"}
-        if effort in ("high", "max", "low", "medium", "xhigh"):
-            kwargs["reasoning_effort"] = effort
-        else:
-            kwargs["reasoning_effort"] = "high"
-        return effort
+        target["thinking"] = {"type": "enabled"}
+        mapped = effort if effort in ("high", "max", "low", "medium", "xhigh") else "high"
+        payload["reasoning_effort"] = mapped
+        return mapped
 
     def _apply_openrouter_routing(self, payload: dict) -> None:
         if self.provider != "openrouter" or not self._openrouter_routing:
@@ -211,16 +230,7 @@ class LLMClient:
             "temperature": temperature,
             "max_tokens": 32768,
         }
-        thinking_mode = "n/a"
-        if self._supports_thinking:
-            effort = (reasoning_effort or "none").lower()
-            if effort in ("none", "", "off", "disabled"):
-                payload["thinking"] = {"type": "disabled"}
-                thinking_mode = "disabled"
-            else:
-                payload["thinking"] = {"type": "enabled"}
-                thinking_mode = effort if effort in ("high", "max") else "high"
-                payload["reasoning_effort"] = thinking_mode
+        thinking_mode = self._apply_thinking_mode(payload, reasoning_effort)
 
         self._apply_openrouter_routing(payload)
 

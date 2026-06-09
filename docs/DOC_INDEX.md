@@ -4,7 +4,7 @@
 **Architecture:** [`ARCHITECTURE.md`](ARCHITECTURE.md)  
 **Handoff:** [`HANDOFF_CURRENT_STATE.md`](HANDOFF_CURRENT_STATE.md)
 
-Last updated: 2026-06-07 (baseline patch/resume; stdout fix;真 error 語意)
+Last updated: 2026-06-09 (OpenRouter reasoning off; harness stats fallback; Phase A postmortem)
 
 > **Note:** `logs/formal_yield/` was removed from the repo (legacy offline artifacts). HISTORICAL docs may still reference that path; see `.gitignore`.
 
@@ -38,6 +38,7 @@ Last updated: 2026-06-07 (baseline patch/resume; stdout fix;真 error 語意)
 | [`plans/frame_snapshot_quality_plan.md`](plans/frame_snapshot_quality_plan.md) | Frame snapshot 品質（Track A 已實施；Track B 視 Phase Q） |
 | [`plans/lemma_expressiveness_roadmap.md`](plans/lemma_expressiveness_roadmap.md) | **未來** — lemma 表達力擴充 X1–X4；Gate 0 待 Phase Q 數據 |
 | [`plans/openrouter_provider_policy.md`](plans/openrouter_provider_policy.md) | OpenRouter v4-flash 供應商篩選（fp8、排除 fp4/貴/慢） |
+| [`plans/phase_a_postmortem_plan.md`](plans/phase_a_postmortem_plan.md) | **Phase A 事後分析** — batch_timeouts、accept 低、24 案 regression 計劃 |
 
 ---
 

@@ -36,6 +36,12 @@ def summarize(entries: list[dict]) -> dict:
         for e in entries
         if e.get("prompt_tokens") is not None
     ]
+    completion_tokens = [
+        int(e["completion_tokens"])
+        for e in entries
+        if e.get("completion_tokens") is not None
+    ]
+    thinking_modes = [e.get("thinking_mode") for e in entries if e.get("thinking_mode")]
 
     out = {
         "count": len(entries),
@@ -57,6 +63,14 @@ def summarize(entries: list[dict]) -> dict:
             "max": max(prompt_tokens),
             "mean": int(statistics.mean(prompt_tokens)),
         }
+    if completion_tokens:
+        out["completion_tokens"] = {
+            "min": min(completion_tokens),
+            "max": max(completion_tokens),
+            "mean": int(statistics.mean(completion_tokens)),
+        }
+    if thinking_modes:
+        out["thinking_mode"] = thinking_modes[0] if len(set(thinking_modes)) == 1 else "mixed"
     return out
 
 

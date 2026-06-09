@@ -90,6 +90,7 @@ pono_add_test(test_promote_inputvars)
 pono_add_test(test_partial_model)
 pono_add_test(test_ic3_frame_ast)
 pono_add_test(test_llm_literal_format)
+pono_add_test(test_llm_block_accept)
 
 if(WITH_MSAT_IC3IA)
   pono_add_test(test_msat_ic3ia)

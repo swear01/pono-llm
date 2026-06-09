@@ -220,18 +220,28 @@ def process_request(
         user_prompt = build_user_prompt(
             req, benchmark_ctx, sample_id, snapshot_max_clauses=snapshot_max_clauses
         )
-        text, tokens, latency_ms = client.call(
-            user_prompt,
-            system_prompt=system_prompt,
-            model_name=model_name,
-            reasoning_effort=reasoning_effort,
-            temperature=temperature,
-        )
+        max_block_clauses = int(req.get("max_block_clauses", 3))
+        try:
+            text, tokens, latency_ms = client.call(
+                user_prompt,
+                system_prompt=system_prompt,
+                model_name=model_name,
+                reasoning_effort=reasoning_effort,
+                temperature=temperature,
+            )
+        except Exception as e:
+            normalized = normalize_response(
+                {"block_clauses": [], "rationale": f"api_error: {e}"},
+                source_id,
+                sample_id,
+                attempt,
+                max_block_clauses=max_block_clauses,
+            )
+            return sample_id, normalized, 0, 0.0
         try:
             raw = json.loads(text)
         except json.JSONDecodeError:
             raw = {"block_disjuncts": [], "rationale": "LLM response was not valid JSON"}
-        max_block_clauses = int(req.get("max_block_clauses", 3))
         normalized = normalize_response(
             raw, source_id, sample_id, attempt, max_block_clauses=max_block_clauses
         )
@@ -276,9 +286,27 @@ def handle_one_request(
     user_prompt_bytes = len(user_prompt.encode("utf-8"))
     system_prompt_bytes = len(system_prompt.encode("utf-8"))
 
-    responses, token_count, latency_ms = process_request(
-        client, request, system_prompt, snapshot_max_clauses=snapshot_max_clauses
-    )
+    parallel_samples = int(request.get("parallel_samples", 1))
+    max_block_clauses = int(request.get("max_block_clauses", 3))
+    source_id = request.get("batch_id") or request.get("cti_id", "")
+    attempt = int(request.get("attempt", 1))
+    try:
+        responses, token_count, latency_ms = process_request(
+            client, request, system_prompt, snapshot_max_clauses=snapshot_max_clauses
+        )
+    except Exception as e:
+        responses = [
+            normalize_response(
+                {"block_clauses": [], "rationale": f"api_error: {e}"},
+                source_id,
+                sid,
+                attempt,
+                max_block_clauses=max_block_clauses,
+            )
+            for sid in range(parallel_samples)
+        ]
+        token_count = 0
+        latency_ms = 0.0
     with write_lock:
         for resp in responses:
             write_response(resp_path, resp)

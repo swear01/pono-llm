@@ -499,79 +499,25 @@ def run_phase_test(args: argparse.Namespace) -> bool:
     else:
         log("tests/python not found, skipping")
 
-    schema_test = root / "llm_worker" / "tests" / "test_ic3_frame_schema.py"
-    if schema_test.exists():
-        log("Running llm_worker/tests/test_ic3_frame_schema.py ...")
+    llm_worker_tests = root / "llm_worker" / "tests"
+    if llm_worker_tests.is_dir():
+        log("Running pytest llm_worker/tests ...")
         r = subprocess.run(
-            [sys.executable, str(schema_test)],
-            capture_output=True, text=True, timeout=60,
-            cwd=str(root),
-        )
-        if r.returncode != 0:
-            log("test_ic3_frame_schema.py FAILED:")
-            log(r.stdout[-1000:])
-            log(r.stderr[-1000:])
-            ok = False
-        else:
-            log("test_ic3_frame_schema.py PASSED")
-    else:
-        log("test_ic3_frame_schema.py not found, skipping")
-
-    thinking_test = root / "llm_worker" / "tests" / "test_deepseek_thinking.py"
-    if thinking_test.exists():
-        log("Running llm_worker/tests/test_deepseek_thinking.py ...")
-        r = subprocess.run(
-            [sys.executable, str(thinking_test)],
-            capture_output=True, text=True, timeout=60,
-            cwd=str(root),
-        )
-        if r.returncode != 0:
-            log("test_deepseek_thinking.py FAILED:")
-            log(r.stdout[-1000:])
-            log(r.stderr[-1000:])
-            ok = False
-        else:
-            log("test_deepseek_thinking.py PASSED")
-    else:
-        log("test_deepseek_thinking.py not found, skipping")
-
-    prompt_fmt_test = root / "llm_worker" / "tests" / "test_prompt_format.py"
-    if prompt_fmt_test.exists():
-        log("Running llm_worker/tests/test_prompt_format.py ...")
-        r = subprocess.run(
-            [sys.executable, str(prompt_fmt_test)],
-            capture_output=True, text=True, timeout=60,
-            cwd=str(root),
-        )
-        if r.returncode != 0:
-            log("test_prompt_format.py FAILED:")
-            log(r.stdout[-1000:])
-            log(r.stderr[-1000:])
-            ok = False
-        else:
-            log("test_prompt_format.py PASSED")
-    else:
-        log("test_prompt_format.py not found, skipping")
-
-    concurrency_test = root / "llm_worker" / "tests" / "test_sidecar_concurrency.py"
-    if concurrency_test.exists():
-        log("Running llm_worker/tests/test_sidecar_concurrency.py ...")
-        r = subprocess.run(
-            [sys.executable, str(concurrency_test)],
+            [sys.executable, "-m", "pytest", str(llm_worker_tests), "-q"],
             capture_output=True,
             text=True,
-            timeout=60,
+            timeout=120,
             cwd=str(root),
         )
         if r.returncode != 0:
-            log("test_sidecar_concurrency.py FAILED:")
-            log(r.stdout[-1000:])
-            log(r.stderr[-1000:])
+            log("pytest llm_worker/tests FAILED:")
+            log(r.stdout[-2000:] if len(r.stdout) > 2000 else r.stdout)
+            log(r.stderr[-2000:] if len(r.stderr) > 2000 else r.stderr)
             ok = False
         else:
-            log("test_sidecar_concurrency.py PASSED")
+            log("pytest llm_worker/tests PASSED")
     else:
-        log("test_sidecar_concurrency.py not found, skipping")
+        log("llm_worker/tests not found, skipping")
 
     sidecar_test = root / "test_sidecar.py"
     if sidecar_test.exists():
@@ -1049,6 +995,68 @@ def _parse_llm_stats(stderr: str) -> dict[str, int]:
     return stats
 
 
+def _parse_llm_batch_waits_from_stderr(stderr: str) -> dict[str, int]:
+    """Sum LLM_BATCH_WAIT lines when pono exits without LLM_STATS (e.g. harness kill)."""
+    waits = 0
+    total_ms = 0
+    max_ms = 0
+    timeouts = 0
+    for line in stderr.splitlines():
+        line = line.strip()
+        if not line.startswith("LLM_BATCH_WAIT"):
+            continue
+        waits += 1
+        wait_ms = 0
+        ok = 1
+        for part in line.split():
+            if part.startswith("wait_ms="):
+                try:
+                    wait_ms = int(part.split("=", 1)[1])
+                except ValueError:
+                    wait_ms = 0
+            elif part.startswith("ok="):
+                try:
+                    ok = int(part.split("=", 1)[1])
+                except ValueError:
+                    ok = 1
+        total_ms += wait_ms
+        if wait_ms > max_ms:
+            max_ms = wait_ms
+        if ok == 0:
+            timeouts += 1
+    return {
+        "llm_batch_waits": waits,
+        "llm_batch_wait_ms_total": total_ms,
+        "llm_batch_wait_ms_max": max_ms,
+        "llm_batch_timeouts": timeouts,
+    }
+
+
+def _fallback_llm_stats_from_artifacts(
+    stderr: str,
+    log_path: str = "",
+    req_path: str = "",
+) -> dict[str, int]:
+    """Fill gaps when LLM_STATS is missing but sidecar/pono artifacts exist."""
+    stats = _parse_llm_stats(stderr)
+    has_llm_stats = any(
+        line.strip().startswith("LLM_STATS") for line in stderr.splitlines()
+    )
+    if has_llm_stats:
+        return stats
+
+    if req_path and _count_jsonl_lines(req_path) > 0:
+        stats["llm_requests"] = _count_jsonl_lines(req_path)
+    elif log_path and _count_jsonl_lines(log_path) > 0:
+        stats["llm_requests"] = _count_jsonl_lines(log_path)
+
+    batch = _parse_llm_batch_waits_from_stderr(stderr)
+    for key, val in batch.items():
+        if stats.get(key, 0) == 0:
+            stats[key] = val
+    return stats
+
+
 def _bench_slug(entry: BenchEntry) -> str:
     """Stable archive directory name per benchmark."""
     stem = re.sub(r"[^\w.-]+", "_", pathlib.Path(entry.path).stem)
@@ -1211,7 +1219,9 @@ def run_pono(
     llm_stats: dict[str, int] = {}
     if mode == "llm":
         try:
-            llm_stats = _parse_llm_stats(stderr or "")
+            llm_stats = _fallback_llm_stats_from_artifacts(
+                stderr or "", log_path=log_path, req_path=req_path
+            )
         except Exception:
             llm_stats = {}
 

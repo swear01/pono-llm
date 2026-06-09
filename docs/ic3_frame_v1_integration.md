@@ -285,7 +285,7 @@ Parallel = breadth; retry = depth. Both are used together.
 | Setting | Value |
 |---------|--------|
 | `reasoning_effort` | **`none`** (default, required for latency) |
-| `thinking` | When `reasoning_effort` is `none`, client sends `extra_body: {"thinking": {"type": "disabled"}}`. **Omitting `reasoning_effort` does not disable thinking** on `deepseek-v4-pro`. |
+| `thinking` | **DeepSeek direct:** `extra_body.thinking.type=disabled`. **OpenRouter:** `extra_body.reasoning.effort=none` + `exclude=true`. Omitting `reasoning_effort` does **not** disable thinking. |
 | `temperature` | `0` serial repair; `0.7–0.9` parallel sampling |
 | Logging | Sidecar `llm_log.jsonl`: `latency_ms`, `prompt_tokens`, …; C++ stderr: `LLM_BATCH_WAIT batch_id=… wait_ms=…` per sync wait; summary `LLM_STATS batch_waits batch_wait_ms_total batch_wait_ms_max` |
 

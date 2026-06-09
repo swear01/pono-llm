@@ -5,6 +5,7 @@ from __future__ import annotations
 import csv
 import json
 import pathlib
+import subprocess
 import sys
 from dataclasses import fields
 from unittest import mock
@@ -75,6 +76,132 @@ class TestParseLlmStats:
         stats = rb._parse_llm_stats(stderr)
         assert stats["llm_accepted"] == 0
         assert stats["llm_rejected"] == 3
+
+
+class TestParseLlmBatchWaits:
+    def test_sums_wait_lines(self):
+        stderr = "\n".join([
+            "LLM_BATCH_WAIT batch_id=batch_f1_a1 wait_ms=50000 ok=1 samples=1/1",
+            "LLM_BATCH_WAIT batch_id=batch_f2_a1 wait_ms=30000 ok=1 samples=1/1",
+            "LLM_BATCH_WAIT batch_id=batch_f3_a1 wait_ms=300032 ok=0 samples=0/1",
+        ])
+        batch = rb._parse_llm_batch_waits_from_stderr(stderr)
+        assert batch["llm_batch_waits"] == 3
+        assert batch["llm_batch_wait_ms_total"] == 380032
+        assert batch["llm_batch_wait_ms_max"] == 300032
+        assert batch["llm_batch_timeouts"] == 1
+
+
+class TestFallbackLlmStats:
+    def test_uses_jsonl_when_no_llm_stats(self, tmp_path):
+        log_path = tmp_path / "llm_log.jsonl"
+        log_path.write_text("{}\n" * 49)
+        stats = rb._fallback_llm_stats_from_artifacts("", log_path=str(log_path))
+        assert stats["llm_requests"] == 49
+        assert stats["llm_accepted"] == 0
+
+    def test_uses_batch_waits_from_stderr(self):
+        stderr = "LLM_BATCH_WAIT batch_id=batch_f1_a1 wait_ms=73052 ok=1 samples=1/1\n"
+        stats = rb._fallback_llm_stats_from_artifacts(stderr, log_path="")
+        assert stats["llm_batch_waits"] == 1
+        assert stats["llm_batch_wait_ms_total"] == 73052
+        assert stats["llm_requests"] == 0
+
+    def test_combined_jsonl_and_batch_waits(self, tmp_path):
+        log_path = tmp_path / "llm_log.jsonl"
+        req_path = tmp_path / "requests.jsonl"
+        log_path.write_text("{}\n" * 5)
+        req_path.write_text('{"type":"ic3_frame_batch_request"}\n' * 7)
+        stderr = "\n".join([
+            "LLM_BATCH_WAIT batch_id=batch_f1_a1 wait_ms=50000 ok=1 samples=1/1",
+            "LLM_BATCH_WAIT batch_id=batch_f2_a1 wait_ms=40000 ok=1 samples=1/1",
+        ])
+        stats = rb._fallback_llm_stats_from_artifacts(
+            stderr, log_path=str(log_path), req_path=str(req_path)
+        )
+        assert stats["llm_requests"] == 7
+        assert stats["llm_batch_waits"] == 2
+        assert stats["llm_batch_wait_ms_total"] == 90000
+
+    def test_prefers_requests_jsonl_over_llm_log(self, tmp_path):
+        log_path = tmp_path / "llm_log.jsonl"
+        req_path = tmp_path / "requests.jsonl"
+        log_path.write_text("{}\n" * 3)
+        req_path.write_text('{"x":1}\n' * 9)
+        stats = rb._fallback_llm_stats_from_artifacts(
+            "", log_path=str(log_path), req_path=str(req_path)
+        )
+        assert stats["llm_requests"] == 9
+
+    def test_llm_stats_takes_precedence(self, tmp_path):
+        log_path = tmp_path / "llm_log.jsonl"
+        log_path.write_text("{}\n" * 10)
+        stderr = f"{SAMPLE_LLM_STATS}\n"
+        stats = rb._fallback_llm_stats_from_artifacts(stderr, log_path=str(log_path))
+        assert stats["llm_requests"] == 10
+        assert stats["llm_accepted"] == 2
+
+    def test_run_pono_timeout_uses_fallback(self, tmp_path):
+        log_path = tmp_path / "llm_log.jsonl"
+        log_path.write_text("{}\n" * 3)
+        entry = _make_entry()
+        fake_proc = mock.MagicMock()
+        fake_proc.communicate.side_effect = [
+            subprocess.TimeoutExpired(cmd="pono", timeout=60),
+            ("", ""),
+        ]
+        fake_proc.pid = 99
+
+        with mock.patch("run_benchmarks.subprocess.Popen", return_value=fake_proc):
+            with mock.patch("run_benchmarks.threading.Thread"):
+                result, _ = rb.run_pono(
+                    entry,
+                    pathlib.Path("/fake/pono"),
+                    "ic3ia",
+                    10,
+                    60,
+                    "llm",
+                    req_path="/tmp/r.jsonl",
+                    resp_path="/tmp/s.jsonl",
+                    log_path=str(log_path),
+                )
+
+        assert result.result == "timeout"
+        assert result.llm_requests == 3
+
+    def test_run_pono_timeout_populates_batch_waits(self, tmp_path):
+        log_path = tmp_path / "llm_log.jsonl"
+        req_path = tmp_path / "requests.jsonl"
+        req_path.write_text('{"type":"ic3_frame_batch_request"}\n' * 4)
+        entry = _make_entry()
+        fake_proc = mock.MagicMock()
+        stderr_on_kill = (
+            "LLM_BATCH_WAIT batch_id=batch_f1_a1 wait_ms=50000 ok=1 samples=1/1\n"
+        )
+        fake_proc.communicate.side_effect = [
+            subprocess.TimeoutExpired(cmd="pono", timeout=60),
+            ("", stderr_on_kill),
+        ]
+        fake_proc.pid = 99
+
+        with mock.patch("run_benchmarks.subprocess.Popen", return_value=fake_proc):
+            with mock.patch("run_benchmarks.threading.Thread"):
+                result, _ = rb.run_pono(
+                    entry,
+                    pathlib.Path("/fake/pono"),
+                    "ic3ia",
+                    10,
+                    60,
+                    "llm",
+                    req_path=str(req_path),
+                    resp_path="/tmp/s.jsonl",
+                    log_path=str(log_path),
+                )
+
+        assert result.result == "timeout"
+        assert result.llm_requests == 4
+        assert result.llm_batch_waits == 1
+        assert result.llm_batch_wait_ms_total == 50000
 
 
 class TestBenchSlug:
