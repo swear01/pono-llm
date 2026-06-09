@@ -47,10 +47,11 @@
 | A0 baseline | **6.7%** (2/30) | 19 | — |
 | A1 Q2.1+Q2.3, mbc=3 | **17.2%** (5/29) | 18 | +10.6 pp vs A0 |
 | A2 Q2 + mbc=1 | **12.9%** (4/31) | 18 | +6.2 pp vs 同輪 mbc=3 |
+| **A3 綜合**（Q2.1+Q2.2+Q2.3, mbc=1） | **9.4%** (3/32) | 22 | +9.4 pp vs A0（同腳本 3 輪） |
 
 **Q2.3 驗證：** `attempt≥2` request 含 `clause_idx` + `block_clauses`；`format_feedback_block` 輸出 `failed_clause[idx]`。
 
-**解讀：** 單次 smoke 波動大（曾 0% vs 25%）；3 輪平均後 Q2.1+Q2.3 明顯優於 baseline，但距 40% 目標仍遠。`mbc=1` 降低 `rejected_initial`，建議納入 A3 綜合配置。
+**解讀：** 單次 smoke 波動大（曾 0% vs 25%）；多輪平均後 Q2 優於 baseline，但距 40% 目標仍遠。A1 單獨測最高（17.2%），A3 綜合本輪 9.4%（A0 該輪均值 0%）；**建議以 11 案子集或更多 p040 輪次再驗**後再定是否改預設 `max_block_clauses=1`。
 
 ## Harness
 
@@ -77,7 +78,7 @@ python3 scripts/analyze_accept_diagnosis.py --phase all
 
 ## 後續 Gate
 
-- A3 綜合 ≥ 25%（p040 3 輪均值）→ 擴 11 案子集
+- A3 綜合 ≥ 25%（p040 多輪均值）→ 擴 11 案子集（本輪 9.4%，未達）
 - 達標 → tier + Phase A′ 全量（~1900 API）
 - B2 仍高 → Q2.4
 - 仍低 → Track B `drop_literals`
