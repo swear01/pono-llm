@@ -1,0 +1,882 @@
+{
+  "feedback_entries": 1049,
+  "reason_counts": {
+    "rejected_initial": 875,
+    "induction_failed": 157,
+    "empty_block_clause": 12,
+    "vocab_fail": 3,
+    "predicate_rejected": 1,
+    "predicate_parse_fail": 1
+  },
+  "reason_share_pct": {
+    "rejected_initial": 83.4,
+    "induction_failed": 15.0,
+    "empty_block_clause": 1.1,
+    "vocab_fail": 0.3,
+    "predicate_rejected": 0.1,
+    "predicate_parse_fail": 0.1
+  },
+  "top_witness_refs": [
+    [
+      "state30",
+      47
+    ],
+    [
+      "state32",
+      36
+    ],
+    [
+      "state283",
+      24
+    ],
+    [
+      "state34",
+      18
+    ],
+    [
+      "state28",
+      17
+    ],
+    [
+      "state22",
+      17
+    ],
+    [
+      "state335",
+      16
+    ],
+    [
+      "state101",
+      15
+    ],
+    [
+      "state36",
+      13
+    ],
+    [
+      "state1568",
+      13
+    ],
+    [
+      "state1492",
+      13
+    ],
+    [
+      "state2448",
+      12
+    ],
+    [
+      "state53",
+      12
+    ],
+    [
+      "state62",
+      12
+    ],
+    [
+      "state595",
+      11
+    ],
+    [
+      "state85",
+      11
+    ],
+    [
+      "state35",
+      10
+    ],
+    [
+      "state109",
+      10
+    ],
+    [
+      "state12",
+      10
+    ],
+    [
+      "state50",
+      9
+    ]
+  ],
+  "by_tier_reason": {
+    "other": {
+      "rejected_initial": 446,
+      "induction_failed": 108,
+      "vocab_fail": 3,
+      "predicate_rejected": 1,
+      "predicate_parse_fail": 1
+    },
+    "zipcpu": {
+      "rejected_initial": 87,
+      "induction_failed": 5
+    },
+    "ila": {
+      "rejected_initial": 172,
+      "induction_failed": 9,
+      "empty_block_clause": 8
+    },
+    "riscv": {
+      "rejected_initial": 130,
+      "induction_failed": 12,
+      "empty_block_clause": 3
+    },
+    "qspiflash": {
+      "rejected_initial": 24,
+      "induction_failed": 10,
+      "empty_block_clause": 1
+    },
+    "microban": {
+      "rejected_initial": 16,
+      "induction_failed": 13
+    }
+  },
+  "high_fail_top10": [
+    {
+      "slug": "2025_bv_exit.3.prop1-back-serstep",
+      "tier": "other",
+      "requests": 47,
+      "rejected_initial": 45,
+      "feedback": {
+        "feedback_entries": 46,
+        "reason_counts": {
+          "rejected_initial": 46
+        },
+        "top_witness_refs": [
+          [
+            "state109",
+            10
+          ],
+          [
+            "state12",
+            10
+          ],
+          [
+            "state79",
+            6
+          ],
+          [
+            "state77",
+            6
+          ],
+          [
+            "state101",
+            6
+          ],
+          [
+            "state48",
+            3
+          ],
+          [
+            "state91",
+            2
+          ],
+          [
+            "state14",
+            2
+          ],
+          [
+            "state103",
+            1
+          ]
+        ],
+        "top_witness_by_reason": {
+          "rejected_initial": [
+            [
+              "state109",
+              10
+            ],
+            [
+              "state12",
+              10
+            ],
+            [
+              "state79",
+              6
+            ],
+            [
+              "state77",
+              6
+            ],
+            [
+              "state101",
+              6
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "slug": "2025_bv_collision.1.prop1-func-interl",
+      "tier": "other",
+      "requests": 47,
+      "rejected_initial": 41,
+      "feedback": {
+        "feedback_entries": 46,
+        "reason_counts": {
+          "rejected_initial": 45,
+          "induction_failed": 1
+        },
+        "top_witness_refs": [
+          [
+            "state32",
+            13
+          ],
+          [
+            "state62",
+            12
+          ],
+          [
+            "state30",
+            11
+          ],
+          [
+            "state34",
+            7
+          ],
+          [
+            "state8",
+            1
+          ],
+          [
+            "state28",
+            1
+          ],
+          [
+            "state15",
+            1
+          ]
+        ],
+        "top_witness_by_reason": {
+          "rejected_initial": [
+            [
+              "state32",
+              13
+            ],
+            [
+              "state62",
+              12
+            ],
+            [
+              "state30",
+              11
+            ],
+            [
+              "state34",
+              6
+            ],
+            [
+              "state8",
+              1
+            ]
+          ],
+          "induction_failed": [
+            [
+              "state34",
+              1
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "slug": "2025_array_riscv_formal_nerv_axi_cache_bus_dmem_io_read_ch0-p13",
+      "tier": "riscv",
+      "requests": 29,
+      "rejected_initial": 26,
+      "feedback": {
+        "feedback_entries": 28,
+        "reason_counts": {
+          "rejected_initial": 26,
+          "empty_block_clause": 2
+        },
+        "top_witness_refs": [
+          [
+            "state2000",
+            6
+          ],
+          [
+            "state2009",
+            5
+          ],
+          [
+            "state2012",
+            5
+          ],
+          [
+            "state2129",
+            3
+          ],
+          [
+            "input3",
+            2
+          ],
+          [
+            "state1530",
+            2
+          ],
+          [
+            "state1600",
+            2
+          ],
+          [
+            "state28",
+            1
+          ],
+          [
+            "state153",
+            1
+          ],
+          [
+            "state1599",
+            1
+          ]
+        ],
+        "top_witness_by_reason": {
+          "rejected_initial": [
+            [
+              "state2000",
+              6
+            ],
+            [
+              "state2009",
+              5
+            ],
+            [
+              "state2129",
+              3
+            ],
+            [
+              "state2012",
+              3
+            ],
+            [
+              "input3",
+              2
+            ]
+          ],
+          "empty_block_clause": [
+            [
+              "state2012",
+              2
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "slug": "2025_array_riscv_formal_nerv_axi_cache_bus_imem_ch0_faulty-p3",
+      "tier": "riscv",
+      "requests": 26,
+      "rejected_initial": 23,
+      "feedback": {
+        "feedback_entries": 25,
+        "reason_counts": {
+          "rejected_initial": 24,
+          "empty_block_clause": 1
+        },
+        "top_witness_refs": [
+          [
+            "state1492",
+            11
+          ],
+          [
+            "state74",
+            4
+          ],
+          [
+            "state1577",
+            3
+          ],
+          [
+            "state223",
+            2
+          ],
+          [
+            "state1381",
+            2
+          ],
+          [
+            "state1936",
+            1
+          ],
+          [
+            "state217",
+            1
+          ],
+          [
+            "state1606",
+            1
+          ]
+        ],
+        "top_witness_by_reason": {
+          "rejected_initial": [
+            [
+              "state1492",
+              11
+            ],
+            [
+              "state74",
+              4
+            ],
+            [
+              "state1577",
+              3
+            ],
+            [
+              "state223",
+              2
+            ],
+            [
+              "state1381",
+              2
+            ]
+          ],
+          "empty_block_clause": [
+            [
+              "state1606",
+              1
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "slug": "2024_bv_Problem04_label27",
+      "tier": "other",
+      "requests": 25,
+      "rejected_initial": 19,
+      "feedback": {
+        "feedback_entries": 23,
+        "reason_counts": {
+          "rejected_initial": 19,
+          "induction_failed": 4
+        },
+        "top_witness_refs": [
+          [
+            "state50",
+            6
+          ],
+          [
+            "state53",
+            5
+          ],
+          [
+            "state52",
+            5
+          ],
+          [
+            "state54",
+            4
+          ],
+          [
+            "state41",
+            1
+          ],
+          [
+            "state47",
+            1
+          ],
+          [
+            "state42",
+            1
+          ]
+        ],
+        "top_witness_by_reason": {
+          "rejected_initial": [
+            [
+              "state50",
+              6
+            ],
+            [
+              "state53",
+              5
+            ],
+            [
+              "state52",
+              5
+            ],
+            [
+              "state41",
+              1
+            ],
+            [
+              "state47",
+              1
+            ]
+          ],
+          "induction_failed": [
+            [
+              "state54",
+              4
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "slug": "2024_array_res2f",
+      "tier": "other",
+      "requests": 23,
+      "rejected_initial": 18,
+      "feedback": {
+        "feedback_entries": 22,
+        "reason_counts": {
+          "rejected_initial": 16,
+          "induction_failed": 6
+        },
+        "top_witness_refs": [
+          [
+            "state39",
+            9
+          ],
+          [
+            "state37",
+            4
+          ],
+          [
+            "state36",
+            4
+          ],
+          [
+            "state34",
+            2
+          ],
+          [
+            "state35",
+            2
+          ],
+          [
+            "state38",
+            1
+          ]
+        ],
+        "top_witness_by_reason": {
+          "rejected_initial": [
+            [
+              "state39",
+              4
+            ],
+            [
+              "state36",
+              4
+            ],
+            [
+              "state37",
+              3
+            ],
+            [
+              "state34",
+              2
+            ],
+            [
+              "state35",
+              2
+            ]
+          ],
+          "induction_failed": [
+            [
+              "state39",
+              5
+            ],
+            [
+              "state37",
+              1
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "slug": "2024_array_ss2f",
+      "tier": "other",
+      "requests": 18,
+      "rejected_initial": 17,
+      "feedback": {
+        "feedback_entries": 18,
+        "reason_counts": {
+          "rejected_initial": 16,
+          "induction_failed": 2
+        },
+        "top_witness_refs": [
+          [
+            "state30",
+            7
+          ],
+          [
+            "state32",
+            5
+          ],
+          [
+            "state28",
+            2
+          ],
+          [
+            "state29",
+            1
+          ],
+          [
+            "state31",
+            1
+          ],
+          [
+            "state27",
+            1
+          ],
+          [
+            "state22",
+            1
+          ]
+        ],
+        "top_witness_by_reason": {
+          "rejected_initial": [
+            [
+              "state30",
+              7
+            ],
+            [
+              "state32",
+              3
+            ],
+            [
+              "state28",
+              2
+            ],
+            [
+              "state29",
+              1
+            ],
+            [
+              "state31",
+              1
+            ]
+          ],
+          "induction_failed": [
+            [
+              "state32",
+              2
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "slug": "2025_array_riscv_formal_nerv_axi_cache_bus_dmem_fault_ch0-p2",
+      "tier": "riscv",
+      "requests": 22,
+      "rejected_initial": 17,
+      "feedback": {
+        "feedback_entries": 20,
+        "reason_counts": {
+          "rejected_initial": 18,
+          "induction_failed": 2
+        },
+        "top_witness_refs": [
+          [
+            "state1573",
+            4
+          ],
+          [
+            "state2168",
+            3
+          ],
+          [
+            "state1462",
+            3
+          ],
+          [
+            "state303",
+            3
+          ],
+          [
+            "state2203",
+            2
+          ],
+          [
+            "state29",
+            2
+          ],
+          [
+            "state148",
+            1
+          ],
+          [
+            "state2288",
+            1
+          ],
+          [
+            "state293",
+            1
+          ]
+        ],
+        "top_witness_by_reason": {
+          "rejected_initial": [
+            [
+              "state2168",
+              3
+            ],
+            [
+              "state1462",
+              3
+            ],
+            [
+              "state303",
+              3
+            ],
+            [
+              "state1573",
+              2
+            ],
+            [
+              "state2203",
+              2
+            ]
+          ],
+          "induction_failed": [
+            [
+              "state1573",
+              2
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "slug": "2025_bv_benchmarks_output_btor2_example_230_miter_miter",
+      "tier": "other",
+      "requests": 23,
+      "rejected_initial": 16,
+      "feedback": {
+        "feedback_entries": 22,
+        "reason_counts": {
+          "rejected_initial": 16,
+          "induction_failed": 6
+        },
+        "top_witness_refs": [
+          [
+            "state209",
+            8
+          ],
+          [
+            "state24",
+            4
+          ],
+          [
+            "state27",
+            4
+          ],
+          [
+            "state728",
+            3
+          ],
+          [
+            "state357",
+            3
+          ]
+        ],
+        "top_witness_by_reason": {
+          "rejected_initial": [
+            [
+              "state209",
+              6
+            ],
+            [
+              "state24",
+              4
+            ],
+            [
+              "state728",
+              3
+            ],
+            [
+              "state357",
+              3
+            ]
+          ],
+          "induction_failed": [
+            [
+              "state27",
+              4
+            ],
+            [
+              "state209",
+              2
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "slug": "2025_array_zipcpu_zipcpu_piped-p284",
+      "tier": "zipcpu",
+      "requests": 19,
+      "rejected_initial": 15,
+      "feedback": {
+        "feedback_entries": 17,
+        "reason_counts": {
+          "rejected_initial": 15,
+          "induction_failed": 2
+        },
+        "top_witness_refs": [
+          [
+            "state85",
+            5
+          ],
+          [
+            "state165",
+            3
+          ],
+          [
+            "state2286",
+            2
+          ],
+          [
+            "state57",
+            2
+          ],
+          [
+            "state53",
+            2
+          ],
+          [
+            "state2956",
+            2
+          ],
+          [
+            "state2327",
+            1
+          ]
+        ],
+        "top_witness_by_reason": {
+          "rejected_initial": [
+            [
+              "state85",
+              5
+            ],
+            [
+              "state165",
+              3
+            ],
+            [
+              "state2286",
+              2
+            ],
+            [
+              "state53",
+              2
+            ],
+            [
+              "state2956",
+              2
+            ]
+          ],
+          "induction_failed": [
+            [
+              "state57",
+              2
+            ]
+          ]
+        }
+      }
+    }
+  ]
+}

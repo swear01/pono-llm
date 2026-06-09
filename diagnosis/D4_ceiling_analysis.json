@@ -1,0 +1,17 @@
+{
+  "current_accept_per_request_pct": 1.745,
+  "target_accept_per_request_pct": 40.0,
+  "gap_points": 38.3,
+  "heuristic_ceiling": {
+    "mean_mic_top1_shape_pct": 0.1,
+    "mean_single_disjunct_clause_pct": 77.2,
+    "mean_multi_clause_response_pct": 75.4
+  },
+  "go_no_go": "mixed",
+  "note": "Mixed clause shapes across tiers; pursue tier-split targets and Q2 prompt fixes on high rejected_initial subset before full expressiveness expansion.",
+  "tier_split_recommendation": {
+    "microban_zipcpu_qspiflash": "interim target 20\u201340% on subset after Q2",
+    "ila": "interim target 5\u201315%; expressiveness gate before 40%",
+    "global_40pct": "requires go_no_go=prompt_feedback_likely on D4 + Phase A\u2032 rerun"
+  }
+}

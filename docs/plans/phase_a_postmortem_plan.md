@@ -98,7 +98,13 @@ Phase A：**全體僅 2 次**（`ILA_Rocket_ANDI_sanity`、`res1f`），兩案�
 | Q0.3 | 對 **10 案高 rejected_initial**（req≥10, acc=0）抽樣 witness | init witness ref 分布 |
 | Q0.4 | 2 案 `batch_timeout` 對照 `llm_log.jsonl` latency | 確認是否 sidecar 慢 |
 
-**腳本（待加）：** `scripts/analyze_phase_a.py` 讀 CSV + 歸檔目錄輸出報告。
+**腳本：** `scripts/analyze_accept_diagnosis.py`（D0–D5 報告輸出至 `diagnosis/`）。
+
+```bash
+python3 scripts/analyze_accept_diagnosis.py --phase all
+```
+
+**成功標準（修訂）：** accept/request **≥ 40%**（p040 子集先行）；全量需 D4 go/no-go 後再評。
 
 ### 階段 Q1 — 牆鐘回歸（與 accept 分開）
 

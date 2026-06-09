@@ -1,0 +1,25 @@
+{
+  "success_criteria": {
+    "p040_subset": "accept/request >= 40%",
+    "diagnosis_subset_24": "accept/request >= 20% after Q2",
+    "global_phase_a_prime": "accept/request >= 40% only if D4 go_no_go allows"
+  },
+  "interventions": [
+    {
+      "priority": 1,
+      "action": "Q2.1/Q2.3: ban init-true literals; force single-disjunct / negate digest top-1",
+      "expected_impact": "high on rejected_initial"
+    },
+    {
+      "priority": 2,
+      "action": "Q2.4: max_block_clauses=1 A/B",
+      "expected_impact": "medium \u2014 reduce redundant wide clauses"
+    },
+    {
+      "priority": 3,
+      "action": "Q2.2: full disjuncts in rejected_json feedback",
+      "expected_impact": "medium \u2014 improve retry on attempt 2/3"
+    }
+  ],
+  "d4_go_no_go": "mixed"
+}

@@ -1,0 +1,258 @@
+{
+  "totals": {
+    "requests": 1146,
+    "candidates": 996,
+    "accepted": 20,
+    "accept_per_request_pct": 1.745,
+    "accept_per_candidate_pct": 2.008,
+    "rejected_initial": 842,
+    "rejected_initial_per_request": 0.735,
+    "induction_fail": 120,
+    "induction_fail_per_request": 0.105,
+    "reject_reason_share": {
+      "rejected_initial": 87.526,
+      "induction_fail": 12.474
+    }
+  },
+  "accept_cases": [
+    {
+      "slug": "2025_bv_microban_110",
+      "tier": "microban",
+      "accepted": 5,
+      "requests": 34,
+      "accept_rate_pct": 14.706,
+      "rejected_initial": 20,
+      "induction_fail": 8
+    },
+    {
+      "slug": "2024_bv_zipcpu-zipmmu-p12",
+      "tier": "zipcpu",
+      "accepted": 2,
+      "requests": 20,
+      "accept_rate_pct": 10.0,
+      "rejected_initial": 15,
+      "induction_fail": 2
+    },
+    {
+      "slug": "2024_bv_a10-p06",
+      "tier": "other",
+      "accepted": 2,
+      "requests": 7,
+      "accept_rate_pct": 28.571,
+      "rejected_initial": 2,
+      "induction_fail": 2
+    },
+    {
+      "slug": "2025_bv_qspiflash_dualflexpress_divthree-p46",
+      "tier": "qspiflash",
+      "accepted": 2,
+      "requests": 39,
+      "accept_rate_pct": 5.128,
+      "rejected_initial": 24,
+      "induction_fail": 10
+    },
+    {
+      "slug": "2024_bv_sw_ball2004_2",
+      "tier": "other",
+      "accepted": 1,
+      "requests": 16,
+      "accept_rate_pct": 6.25,
+      "rejected_initial": 8,
+      "induction_fail": 4
+    },
+    {
+      "slug": "2024_array_zipcpu_zipcpu_dcache-p243",
+      "tier": "zipcpu",
+      "accepted": 1,
+      "requests": 6,
+      "accept_rate_pct": 16.667,
+      "rejected_initial": 4,
+      "induction_fail": 0
+    },
+    {
+      "slug": "2024_array_ILA_Rocket_SLTU_sanity",
+      "tier": "ila",
+      "accepted": 1,
+      "requests": 4,
+      "accept_rate_pct": 25.0,
+      "rejected_initial": 1,
+      "induction_fail": 1
+    },
+    {
+      "slug": "2025_array_zipcpu_zipcpu_dcache-p322",
+      "tier": "zipcpu",
+      "accepted": 1,
+      "requests": 16,
+      "accept_rate_pct": 6.25,
+      "rejected_initial": 13,
+      "induction_fail": 0
+    },
+    {
+      "slug": "2025_array_zipcpu_zipcpu_piped-p493",
+      "tier": "zipcpu",
+      "accepted": 1,
+      "requests": 12,
+      "accept_rate_pct": 8.333,
+      "rejected_initial": 9,
+      "induction_fail": 0
+    },
+    {
+      "slug": "2025_array_ILA_Rocket_SLTIU_problem",
+      "tier": "ila",
+      "accepted": 1,
+      "requests": 6,
+      "accept_rate_pct": 16.667,
+      "rejected_initial": 2,
+      "induction_fail": 0
+    },
+    {
+      "slug": "2025_array_riscv_formal_nerv_axi_cache_bus_dmem_fault_ch0-p15",
+      "tier": "riscv",
+      "accepted": 1,
+      "requests": 4,
+      "accept_rate_pct": 25.0,
+      "rejected_initial": 3,
+      "induction_fail": 0
+    },
+    {
+      "slug": "2025_array_riscv_formal_nerv_axi_cache_bus_imem_ch0_faulty-p5",
+      "tier": "riscv",
+      "accepted": 1,
+      "requests": 4,
+      "accept_rate_pct": 25.0,
+      "rejected_initial": 2,
+      "induction_fail": 0
+    },
+    {
+      "slug": "2025_bv_cal42",
+      "tier": "other",
+      "accepted": 1,
+      "requests": 3,
+      "accept_rate_pct": 33.333,
+      "rejected_initial": 1,
+      "induction_fail": 0
+    }
+  ],
+  "zero_accept_high_reject_subset": [
+    {
+      "slug": "2025_bv_exit.3.prop1-back-serstep",
+      "tier": "other",
+      "requests": 47,
+      "rejected_initial": 45,
+      "induction_fail": 0
+    },
+    {
+      "slug": "2025_bv_collision.1.prop1-func-interl",
+      "tier": "other",
+      "requests": 47,
+      "rejected_initial": 41,
+      "induction_fail": 4
+    },
+    {
+      "slug": "2025_array_riscv_formal_nerv_axi_cache_bus_dmem_io_read_ch0-p13",
+      "tier": "riscv",
+      "requests": 29,
+      "rejected_initial": 26,
+      "induction_fail": 0
+    },
+    {
+      "slug": "2025_array_riscv_formal_nerv_axi_cache_bus_imem_ch0_faulty-p3",
+      "tier": "riscv",
+      "requests": 26,
+      "rejected_initial": 23,
+      "induction_fail": 0
+    },
+    {
+      "slug": "2024_bv_Problem04_label27",
+      "tier": "other",
+      "requests": 25,
+      "rejected_initial": 19,
+      "induction_fail": 3
+    },
+    {
+      "slug": "2024_array_res2f",
+      "tier": "other",
+      "requests": 23,
+      "rejected_initial": 18,
+      "induction_fail": 4
+    },
+    {
+      "slug": "2025_array_riscv_formal_nerv_axi_cache_bus_dmem_fault_ch0-p2",
+      "tier": "riscv",
+      "requests": 22,
+      "rejected_initial": 17,
+      "induction_fail": 1
+    },
+    {
+      "slug": "2024_array_ss2f",
+      "tier": "other",
+      "requests": 18,
+      "rejected_initial": 17,
+      "induction_fail": 1
+    },
+    {
+      "slug": "2025_bv_benchmarks_output_btor2_example_230_miter_miter",
+      "tier": "other",
+      "requests": 23,
+      "rejected_initial": 16,
+      "induction_fail": 6
+    },
+    {
+      "slug": "2025_array_zipcpu_zipcpu_piped-p284",
+      "tier": "zipcpu",
+      "requests": 19,
+      "rejected_initial": 15,
+      "induction_fail": 1
+    }
+  ],
+  "by_tier": {
+    "ila": {
+      "cases": 35,
+      "requests": 200,
+      "accepted": 2,
+      "accept_per_request_pct": 1.0,
+      "rejected_initial": 156,
+      "induction_fail": 5
+    },
+    "microban": {
+      "cases": 1,
+      "requests": 34,
+      "accepted": 5,
+      "accept_per_request_pct": 14.706,
+      "rejected_initial": 20,
+      "induction_fail": 8
+    },
+    "other": {
+      "cases": 45,
+      "requests": 604,
+      "accepted": 4,
+      "accept_per_request_pct": 0.662,
+      "rejected_initial": 439,
+      "induction_fail": 83
+    },
+    "qspiflash": {
+      "cases": 1,
+      "requests": 39,
+      "accepted": 2,
+      "accept_per_request_pct": 5.128,
+      "rejected_initial": 24,
+      "induction_fail": 10
+    },
+    "riscv": {
+      "cases": 14,
+      "requests": 163,
+      "accepted": 2,
+      "accept_per_request_pct": 1.227,
+      "rejected_initial": 123,
+      "induction_fail": 8
+    },
+    "zipcpu": {
+      "cases": 8,
+      "requests": 106,
+      "accepted": 5,
+      "accept_per_request_pct": 4.717,
+      "rejected_initial": 80,
+      "induction_fail": 6
+    }
+  }
+}

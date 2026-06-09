@@ -4,7 +4,7 @@
 **Architecture:** [`ARCHITECTURE.md`](ARCHITECTURE.md)  
 **Handoff:** [`HANDOFF_CURRENT_STATE.md`](HANDOFF_CURRENT_STATE.md)
 
-Last updated: 2026-06-09 (parallel_samples default K=1 doc fix; OpenRouter reasoning off)
+Last updated: 2026-06-09 (accept diagnosis script D0–D5; parallel_samples K=1)
 
 > **Note:** `logs/formal_yield/` was removed from the repo (legacy offline artifacts). HISTORICAL docs may still reference that path; see `.gitignore`.
 
