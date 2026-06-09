@@ -15,6 +15,20 @@
 
 **未採納：** `max_block_clauses=1`（A3 綜合未勝出 mbc=3）。
 
+### Q2 現行方法診斷（6 輪 p040 smoke 彙總）
+
+來源：`diagnosis/Q2_current_method_summary.md`、`scripts/diagnose_q2_smoke.py`
+
+| 發現 | 數值 | 含義 |
+|------|------|------|
+| `rejected_initial` 仍 **100% B2** | 45/45 | Q2.1 反例 **未**消除 CTI/init 不一致 |
+| CTI 字面抄襲率 | **98.4%** disjuncts | 模型幾乎直接複製 CTI/digest 字面 |
+| MIC top-1 否定形狀命中 | **0%** | 未產出機械式 digest-negate block |
+| 單 disjunct clause | **100%** | p040 smoke 上 C2 幾乎為 0；**收窄 OR 非當務之急** |
+| Top B2 pattern | `init0_clause_eq_0_pol_False` | init=#b0 卻用 `!ref=0` 等「看起來像 CTI」的字面 |
+
+**結論：** Q3 應優先 **Q3.1 witness 模板 + Q3.2 強制 digest 否定**，而非 mbc=1。
+
 ## Q3 目標
 
 | 層級 | accept/API | 備註 |

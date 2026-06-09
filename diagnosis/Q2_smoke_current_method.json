@@ -1,0 +1,1071 @@
+{
+  "inputs": [
+    "/tmp/q2_ab_multiround_20260609_202028/A1_q2_r1",
+    "/tmp/q2_ab_multiround_20260609_202028/A1_q2_r2",
+    "/tmp/q2_ab_multiround_20260609_202028/A1_q2_r3",
+    "/tmp/q2_combined_ab_20260609_203002/A3_combined_r1",
+    "/tmp/q2_combined_ab_20260609_203002/A3_combined_r2",
+    "/tmp/q2_combined_ab_20260609_203002/A3_combined_r3"
+  ],
+  "filter": "*",
+  "per_run": [
+    {
+      "label": "A1_q2_r1",
+      "path": "/tmp/q2_ab_multiround_20260609_202028/A1_q2_r1",
+      "llm_stats": {
+        "accepted": 2,
+        "rejected": 6,
+        "errors": 0,
+        "requests": 9,
+        "candidates": 8,
+        "schema_fail": 0,
+        "parse_fail": 0,
+        "vocab_fail": 0,
+        "induction_fail": 1,
+        "rejected_initial": 5,
+        "missing_block": 0,
+        "lookup_miss": 0,
+        "attempt_mismatch": 0,
+        "budget_skip": 0,
+        "predicates_added": 0,
+        "batch_timeouts": 0,
+        "batch_waits": 4,
+        "batch_wait_ms_total": 12009,
+        "batch_wait_ms_max": 3403
+      },
+      "accept_per_request_pct": 22.2,
+      "response_shape": {
+        "responses": 9,
+        "requests": 9,
+        "parallel_samples": 1,
+        "clause_disjunct_hist": {
+          "1": 13
+        },
+        "response_clause_counts": {
+          "1": 7,
+          "3": 2
+        },
+        "sample_id_hist": {
+          "0": 9
+        },
+        "single_disjunct_clause_pct": 100.0,
+        "mic_top1_shape_pct": 0.0,
+        "total_clauses": 13
+      },
+      "feedback_summary": {
+        "feedback_entries": 7,
+        "reason_counts": {
+          "rejected_initial": 5,
+          "induction_failed": 2
+        },
+        "top_witness_refs": [
+          [
+            "state21",
+            2
+          ],
+          [
+            "state19",
+            2
+          ],
+          [
+            "state32",
+            1
+          ],
+          [
+            "state34",
+            1
+          ],
+          [
+            "state520",
+            1
+          ]
+        ],
+        "top_witness_by_reason": {
+          "induction_failed": [
+            [
+              "state21",
+              2
+            ]
+          ],
+          "rejected_initial": [
+            [
+              "state19",
+              2
+            ],
+            [
+              "state32",
+              1
+            ],
+            [
+              "state34",
+              1
+            ],
+            [
+              "state520",
+              1
+            ]
+          ]
+        }
+      },
+      "rejected_initial_taxonomy": {
+        "total": 5,
+        "categories": {
+          "B2_single_witness_lit_false_at_witness": 5
+        },
+        "category_share_pct": {
+          "B2_single_witness_lit_false_at_witness": 100.0
+        },
+        "top_patterns": [
+          [
+            "init0_clause_eq_0_pol_False",
+            3
+          ],
+          [
+            "init1_clause_eq_1_pol_False",
+            2
+          ]
+        ],
+        "init_witness_tags": {
+          "init0": 3,
+          "init1": 2
+        },
+        "failed_clause_disjunct_counts": {
+          "1": 5
+        },
+        "clause_idx_used_pct": 100.0,
+        "examples": {
+          "B2_single_witness_lit_false_at_witness": [
+            {
+              "batch_id": "batch_f2_a2",
+              "attempt": 2,
+              "witness": {
+                "ref": "state19",
+                "next_value": "#b0"
+              },
+              "pattern": "init0_clause_eq_0_pol_False",
+              "failed_clause": [
+                {
+                  "ref": "state19",
+                  "op": "eq",
+                  "rhs": "0",
+                  "polarity": false
+                }
+              ],
+              "clause_idx": 0
+            },
+            {
+              "batch_id": "batch_f1_a3",
+              "attempt": 3,
+              "witness": {
+                "ref": "state32",
+                "next_value": "#b0"
+              },
+              "pattern": "init0_clause_eq_0_pol_False",
+              "failed_clause": [
+                {
+                  "ref": "state32",
+                  "op": "eq",
+                  "rhs": "0",
+                  "polarity": false
+                }
+              ],
+              "clause_idx": 2
+            }
+          ]
+        }
+      },
+      "cti_literal_copy": {
+        "disjuncts_matching_cti_pct": 100.0,
+        "total_disjuncts": 13
+      },
+      "retry_stagnation": {
+        "rejected_initial_by_attempt": {
+          "2": 2,
+          "3": 3
+        },
+        "same_witness_on_retry_top": [],
+        "same_pattern_on_retry_top": []
+      }
+    },
+    {
+      "label": "A1_q2_r2",
+      "path": "/tmp/q2_ab_multiround_20260609_202028/A1_q2_r2",
+      "llm_stats": {
+        "accepted": 1,
+        "rejected": 8,
+        "errors": 0,
+        "requests": 10,
+        "candidates": 9,
+        "schema_fail": 0,
+        "parse_fail": 0,
+        "vocab_fail": 0,
+        "induction_fail": 1,
+        "rejected_initial": 7,
+        "missing_block": 0,
+        "lookup_miss": 0,
+        "attempt_mismatch": 0,
+        "budget_skip": 0,
+        "predicates_added": 0,
+        "batch_timeouts": 0,
+        "batch_waits": 4,
+        "batch_wait_ms_total": 12008,
+        "batch_wait_ms_max": 3402
+      },
+      "accept_per_request_pct": 10.0,
+      "response_shape": {
+        "responses": 10,
+        "requests": 10,
+        "parallel_samples": 1,
+        "clause_disjunct_hist": {
+          "1": 18
+        },
+        "response_clause_counts": {
+          "1": 6,
+          "3": 4
+        },
+        "sample_id_hist": {
+          "0": 10
+        },
+        "single_disjunct_clause_pct": 100.0,
+        "mic_top1_shape_pct": 0.0,
+        "total_clauses": 18
+      },
+      "feedback_summary": {
+        "feedback_entries": 8,
+        "reason_counts": {
+          "rejected_initial": 7,
+          "induction_failed": 1
+        },
+        "top_witness_refs": [
+          [
+            "state21",
+            3
+          ],
+          [
+            "state34",
+            2
+          ],
+          [
+            "state32",
+            1
+          ],
+          [
+            "state1887",
+            1
+          ],
+          [
+            "state482",
+            1
+          ]
+        ],
+        "top_witness_by_reason": {
+          "rejected_initial": [
+            [
+              "state21",
+              2
+            ],
+            [
+              "state34",
+              2
+            ],
+            [
+              "state32",
+              1
+            ],
+            [
+              "state1887",
+              1
+            ],
+            [
+              "state482",
+              1
+            ]
+          ],
+          "induction_failed": [
+            [
+              "state21",
+              1
+            ]
+          ]
+        }
+      },
+      "rejected_initial_taxonomy": {
+        "total": 7,
+        "categories": {
+          "B2_single_witness_lit_false_at_witness": 7
+        },
+        "category_share_pct": {
+          "B2_single_witness_lit_false_at_witness": 100.0
+        },
+        "top_patterns": [
+          [
+            "init0_clause_eq_0_pol_False",
+            4
+          ],
+          [
+            "init1_clause_eq_1_pol_False",
+            2
+          ],
+          [
+            "init1_clause_eq_0_pol_True",
+            1
+          ]
+        ],
+        "init_witness_tags": {
+          "init0": 4,
+          "init1": 3
+        },
+        "failed_clause_disjunct_counts": {
+          "1": 7
+        },
+        "clause_idx_used_pct": 100.0,
+        "examples": {
+          "B2_single_witness_lit_false_at_witness": [
+            {
+              "batch_id": "batch_f1_a2",
+              "attempt": 2,
+              "witness": {
+                "ref": "state32",
+                "next_value": "#b0"
+              },
+              "pattern": "init0_clause_eq_0_pol_False",
+              "failed_clause": [
+                {
+                  "ref": "state32",
+                  "op": "eq",
+                  "rhs": "0",
+                  "polarity": false
+                }
+              ],
+              "clause_idx": 2
+            },
+            {
+              "batch_id": "batch_f2_a2",
+              "attempt": 2,
+              "witness": {
+                "ref": "state21",
+                "next_value": "#b0"
+              },
+              "pattern": "init0_clause_eq_0_pol_False",
+              "failed_clause": [
+                {
+                  "ref": "state21",
+                  "op": "eq",
+                  "rhs": "0",
+                  "polarity": false
+                }
+              ],
+              "clause_idx": 2
+            }
+          ]
+        }
+      },
+      "cti_literal_copy": {
+        "disjuncts_matching_cti_pct": 94.4,
+        "total_disjuncts": 18
+      },
+      "retry_stagnation": {
+        "rejected_initial_by_attempt": {
+          "2": 4,
+          "3": 3
+        },
+        "same_witness_on_retry_top": [],
+        "same_pattern_on_retry_top": []
+      }
+    },
+    {
+      "label": "A1_q2_r3",
+      "path": "/tmp/q2_ab_multiround_20260609_202028/A1_q2_r3",
+      "llm_stats": {
+        "accepted": 2,
+        "rejected": 7,
+        "errors": 0,
+        "requests": 10,
+        "candidates": 9,
+        "schema_fail": 0,
+        "parse_fail": 0,
+        "vocab_fail": 0,
+        "induction_fail": 1,
+        "rejected_initial": 6,
+        "missing_block": 0,
+        "lookup_miss": 0,
+        "attempt_mismatch": 0,
+        "budget_skip": 0,
+        "predicates_added": 0,
+        "batch_timeouts": 0,
+        "batch_waits": 4,
+        "batch_wait_ms_total": 11207,
+        "batch_wait_ms_max": 3601
+      },
+      "accept_per_request_pct": 20.0,
+      "response_shape": {
+        "responses": 10,
+        "requests": 10,
+        "parallel_samples": 1,
+        "clause_disjunct_hist": {
+          "1": 24
+        },
+        "response_clause_counts": {
+          "1": 2,
+          "2": 2,
+          "3": 6
+        },
+        "sample_id_hist": {
+          "0": 10
+        },
+        "single_disjunct_clause_pct": 100.0,
+        "mic_top1_shape_pct": 0.0,
+        "total_clauses": 24
+      },
+      "feedback_summary": {
+        "feedback_entries": 8,
+        "reason_counts": {
+          "rejected_initial": 8
+        },
+        "top_witness_refs": [
+          [
+            "state24",
+            3
+          ],
+          [
+            "state34",
+            2
+          ],
+          [
+            "state1887",
+            1
+          ],
+          [
+            "state211",
+            1
+          ],
+          [
+            "state245",
+            1
+          ]
+        ],
+        "top_witness_by_reason": {
+          "rejected_initial": [
+            [
+              "state24",
+              3
+            ],
+            [
+              "state34",
+              2
+            ],
+            [
+              "state1887",
+              1
+            ],
+            [
+              "state211",
+              1
+            ],
+            [
+              "state245",
+              1
+            ]
+          ]
+        }
+      },
+      "rejected_initial_taxonomy": {
+        "total": 8,
+        "categories": {
+          "B2_single_witness_lit_false_at_witness": 8
+        },
+        "category_share_pct": {
+          "B2_single_witness_lit_false_at_witness": 100.0
+        },
+        "top_patterns": [
+          [
+            "init1_clause_eq_1_pol_False",
+            7
+          ],
+          [
+            "init0_clause_eq_0_pol_False",
+            1
+          ]
+        ],
+        "init_witness_tags": {
+          "init1": 7,
+          "init0": 1
+        },
+        "failed_clause_disjunct_counts": {
+          "1": 8
+        },
+        "clause_idx_used_pct": 100.0,
+        "examples": {
+          "B2_single_witness_lit_false_at_witness": [
+            {
+              "batch_id": "batch_f1_a2",
+              "attempt": 2,
+              "witness": {
+                "ref": "state1887",
+                "next_value": "#b0"
+              },
+              "pattern": "init0_clause_eq_0_pol_False",
+              "failed_clause": [
+                {
+                  "ref": "state1887",
+                  "op": "eq",
+                  "rhs": "0",
+                  "polarity": false
+                }
+              ],
+              "clause_idx": 2
+            },
+            {
+              "batch_id": "batch_f2_a2",
+              "attempt": 2,
+              "witness": {
+                "ref": "state34",
+                "next_value": "#b1"
+              },
+              "pattern": "init1_clause_eq_1_pol_False",
+              "failed_clause": [
+                {
+                  "ref": "state34",
+                  "op": "eq",
+                  "rhs": "1",
+                  "polarity": false
+                }
+              ],
+              "clause_idx": 2
+            }
+          ]
+        }
+      },
+      "cti_literal_copy": {
+        "disjuncts_matching_cti_pct": 95.8,
+        "total_disjuncts": 24
+      },
+      "retry_stagnation": {
+        "rejected_initial_by_attempt": {
+          "2": 4,
+          "3": 4
+        },
+        "same_witness_on_retry_top": [],
+        "same_pattern_on_retry_top": []
+      }
+    },
+    {
+      "label": "A3_combined_r1",
+      "path": "/tmp/q2_combined_ab_20260609_203002/A3_combined_r1",
+      "llm_stats": {
+        "accepted": 1,
+        "rejected": 9,
+        "errors": 0,
+        "requests": 11,
+        "candidates": 10,
+        "schema_fail": 0,
+        "parse_fail": 0,
+        "vocab_fail": 0,
+        "induction_fail": 1,
+        "rejected_initial": 8,
+        "missing_block": 0,
+        "lookup_miss": 0,
+        "attempt_mismatch": 0,
+        "budget_skip": 0,
+        "predicates_added": 0,
+        "batch_timeouts": 0,
+        "batch_waits": 4,
+        "batch_wait_ms_total": 11806,
+        "batch_wait_ms_max": 4001
+      },
+      "accept_per_request_pct": 9.1,
+      "response_shape": {
+        "responses": 11,
+        "requests": 11,
+        "parallel_samples": 1,
+        "clause_disjunct_hist": {
+          "1": 11
+        },
+        "response_clause_counts": {
+          "1": 11
+        },
+        "sample_id_hist": {
+          "0": 11
+        },
+        "single_disjunct_clause_pct": 100.0,
+        "mic_top1_shape_pct": 0.0,
+        "total_clauses": 11
+      },
+      "feedback_summary": {
+        "feedback_entries": 10,
+        "reason_counts": {
+          "rejected_initial": 8,
+          "induction_failed": 2
+        },
+        "top_witness_refs": [
+          [
+            "state19",
+            4
+          ],
+          [
+            "state21",
+            3
+          ],
+          [
+            "state34",
+            3
+          ]
+        ],
+        "top_witness_by_reason": {
+          "induction_failed": [
+            [
+              "state21",
+              2
+            ]
+          ],
+          "rejected_initial": [
+            [
+              "state19",
+              4
+            ],
+            [
+              "state34",
+              3
+            ],
+            [
+              "state21",
+              1
+            ]
+          ]
+        }
+      },
+      "rejected_initial_taxonomy": {
+        "total": 8,
+        "categories": {
+          "B2_single_witness_lit_false_at_witness": 8
+        },
+        "category_share_pct": {
+          "B2_single_witness_lit_false_at_witness": 100.0
+        },
+        "top_patterns": [
+          [
+            "init0_clause_eq_0_pol_False",
+            5
+          ],
+          [
+            "init1_clause_eq_1_pol_False",
+            3
+          ]
+        ],
+        "init_witness_tags": {
+          "init0": 5,
+          "init1": 3
+        },
+        "failed_clause_disjunct_counts": {
+          "1": 8
+        },
+        "clause_idx_used_pct": 100.0,
+        "examples": {
+          "B2_single_witness_lit_false_at_witness": [
+            {
+              "batch_id": "batch_f2_a2",
+              "attempt": 2,
+              "witness": {
+                "ref": "state19",
+                "next_value": "#b0"
+              },
+              "pattern": "init0_clause_eq_0_pol_False",
+              "failed_clause": [
+                {
+                  "ref": "state19",
+                  "op": "eq",
+                  "rhs": "0",
+                  "polarity": false
+                }
+              ],
+              "clause_idx": 0
+            },
+            {
+              "batch_id": "batch_f1_a3",
+              "attempt": 3,
+              "witness": {
+                "ref": "state21",
+                "next_value": "#b0"
+              },
+              "pattern": "init0_clause_eq_0_pol_False",
+              "failed_clause": [
+                {
+                  "ref": "state21",
+                  "op": "eq",
+                  "rhs": "0",
+                  "polarity": false
+                }
+              ],
+              "clause_idx": 0
+            }
+          ]
+        }
+      },
+      "cti_literal_copy": {
+        "disjuncts_matching_cti_pct": 100.0,
+        "total_disjuncts": 11
+      },
+      "retry_stagnation": {
+        "rejected_initial_by_attempt": {
+          "2": 3,
+          "3": 5
+        },
+        "same_witness_on_retry_top": [],
+        "same_pattern_on_retry_top": []
+      }
+    },
+    {
+      "label": "A3_combined_r2",
+      "path": "/tmp/q2_combined_ab_20260609_203002/A3_combined_r2",
+      "llm_stats": {
+        "accepted": 2,
+        "rejected": 8,
+        "errors": 0,
+        "requests": 10,
+        "candidates": 10,
+        "schema_fail": 0,
+        "parse_fail": 0,
+        "vocab_fail": 0,
+        "induction_fail": 2,
+        "rejected_initial": 6,
+        "missing_block": 0,
+        "lookup_miss": 0,
+        "attempt_mismatch": 0,
+        "budget_skip": 0,
+        "predicates_added": 0,
+        "batch_timeouts": 0,
+        "batch_waits": 4,
+        "batch_wait_ms_total": 10808,
+        "batch_wait_ms_max": 3202
+      },
+      "accept_per_request_pct": 20.0,
+      "response_shape": {
+        "responses": 10,
+        "requests": 10,
+        "parallel_samples": 1,
+        "clause_disjunct_hist": {
+          "1": 10
+        },
+        "response_clause_counts": {
+          "1": 10
+        },
+        "sample_id_hist": {
+          "0": 10
+        },
+        "single_disjunct_clause_pct": 100.0,
+        "mic_top1_shape_pct": 0.0,
+        "total_clauses": 10
+      },
+      "feedback_summary": {
+        "feedback_entries": 9,
+        "reason_counts": {
+          "rejected_initial": 7,
+          "induction_failed": 2
+        },
+        "top_witness_refs": [
+          [
+            "state19",
+            4
+          ],
+          [
+            "state21",
+            2
+          ],
+          [
+            "state34",
+            2
+          ],
+          [
+            "state211",
+            1
+          ]
+        ],
+        "top_witness_by_reason": {
+          "induction_failed": [
+            [
+              "state21",
+              2
+            ]
+          ],
+          "rejected_initial": [
+            [
+              "state19",
+              4
+            ],
+            [
+              "state34",
+              2
+            ],
+            [
+              "state211",
+              1
+            ]
+          ]
+        }
+      },
+      "rejected_initial_taxonomy": {
+        "total": 7,
+        "categories": {
+          "B2_single_witness_lit_false_at_witness": 7
+        },
+        "category_share_pct": {
+          "B2_single_witness_lit_false_at_witness": 100.0
+        },
+        "top_patterns": [
+          [
+            "init0_clause_eq_0_pol_False",
+            4
+          ],
+          [
+            "init1_clause_eq_1_pol_False",
+            3
+          ]
+        ],
+        "init_witness_tags": {
+          "init0": 4,
+          "init1": 3
+        },
+        "failed_clause_disjunct_counts": {
+          "1": 7
+        },
+        "clause_idx_used_pct": 100.0,
+        "examples": {
+          "B2_single_witness_lit_false_at_witness": [
+            {
+              "batch_id": "batch_f2_a2",
+              "attempt": 2,
+              "witness": {
+                "ref": "state19",
+                "next_value": "#b0"
+              },
+              "pattern": "init0_clause_eq_0_pol_False",
+              "failed_clause": [
+                {
+                  "ref": "state19",
+                  "op": "eq",
+                  "rhs": "0",
+                  "polarity": false
+                }
+              ],
+              "clause_idx": 0
+            },
+            {
+              "batch_id": "batch_f1_a3",
+              "attempt": 3,
+              "witness": {
+                "ref": "state34",
+                "next_value": "#b1"
+              },
+              "pattern": "init1_clause_eq_1_pol_False",
+              "failed_clause": [
+                {
+                  "ref": "state34",
+                  "op": "eq",
+                  "rhs": "1",
+                  "polarity": false
+                }
+              ],
+              "clause_idx": 0
+            }
+          ]
+        }
+      },
+      "cti_literal_copy": {
+        "disjuncts_matching_cti_pct": 100.0,
+        "total_disjuncts": 10
+      },
+      "retry_stagnation": {
+        "rejected_initial_by_attempt": {
+          "2": 2,
+          "3": 5
+        },
+        "same_witness_on_retry_top": [],
+        "same_pattern_on_retry_top": []
+      }
+    },
+    {
+      "label": "A3_combined_r3",
+      "path": "/tmp/q2_combined_ab_20260609_203002/A3_combined_r3",
+      "llm_stats": {
+        "accepted": 0,
+        "rejected": 9,
+        "errors": 0,
+        "requests": 11,
+        "candidates": 9,
+        "schema_fail": 0,
+        "parse_fail": 0,
+        "vocab_fail": 0,
+        "induction_fail": 1,
+        "rejected_initial": 8,
+        "missing_block": 0,
+        "lookup_miss": 0,
+        "attempt_mismatch": 0,
+        "budget_skip": 0,
+        "predicates_added": 0,
+        "batch_timeouts": 0,
+        "batch_waits": 4,
+        "batch_wait_ms_total": 12409,
+        "batch_wait_ms_max": 3803
+      },
+      "accept_per_request_pct": 0.0,
+      "response_shape": {
+        "responses": 11,
+        "requests": 11,
+        "parallel_samples": 1,
+        "clause_disjunct_hist": {
+          "1": 11
+        },
+        "response_clause_counts": {
+          "1": 11
+        },
+        "sample_id_hist": {
+          "0": 11
+        },
+        "single_disjunct_clause_pct": 100.0,
+        "mic_top1_shape_pct": 0.0,
+        "total_clauses": 11
+      },
+      "feedback_summary": {
+        "feedback_entries": 10,
+        "reason_counts": {
+          "rejected_initial": 10
+        },
+        "top_witness_refs": [
+          [
+            "state34",
+            4
+          ],
+          [
+            "state19",
+            3
+          ],
+          [
+            "state21",
+            2
+          ],
+          [
+            "state199",
+            1
+          ]
+        ],
+        "top_witness_by_reason": {
+          "rejected_initial": [
+            [
+              "state34",
+              4
+            ],
+            [
+              "state19",
+              3
+            ],
+            [
+              "state21",
+              2
+            ],
+            [
+              "state199",
+              1
+            ]
+          ]
+        }
+      },
+      "rejected_initial_taxonomy": {
+        "total": 10,
+        "categories": {
+          "B2_single_witness_lit_false_at_witness": 10
+        },
+        "category_share_pct": {
+          "B2_single_witness_lit_false_at_witness": 100.0
+        },
+        "top_patterns": [
+          [
+            "init0_clause_eq_0_pol_False",
+            5
+          ],
+          [
+            "init1_clause_eq_1_pol_False",
+            4
+          ],
+          [
+            "init_wide_clause_eq_1_pol_False",
+            1
+          ]
+        ],
+        "init_witness_tags": {
+          "init0": 5,
+          "init1": 4,
+          "init_wide": 1
+        },
+        "failed_clause_disjunct_counts": {
+          "1": 10
+        },
+        "clause_idx_used_pct": 100.0,
+        "examples": {
+          "B2_single_witness_lit_false_at_witness": [
+            {
+              "batch_id": "batch_f1_a2",
+              "attempt": 2,
+              "witness": {
+                "ref": "state21",
+                "next_value": "#b0"
+              },
+              "pattern": "init0_clause_eq_0_pol_False",
+              "failed_clause": [
+                {
+                  "ref": "state21",
+                  "op": "eq",
+                  "rhs": "0",
+                  "polarity": false
+                }
+              ],
+              "clause_idx": 0
+            },
+            {
+              "batch_id": "batch_f2_a2",
+              "attempt": 2,
+              "witness": {
+                "ref": "state19",
+                "next_value": "#b0"
+              },
+              "pattern": "init0_clause_eq_0_pol_False",
+              "failed_clause": [
+                {
+                  "ref": "state19",
+                  "op": "eq",
+                  "rhs": "0",
+                  "polarity": false
+                }
+              ],
+              "clause_idx": 0
+            }
+          ]
+        }
+      },
+      "cti_literal_copy": {
+        "disjuncts_matching_cti_pct": 100.0,
+        "total_disjuncts": 11
+      },
+      "retry_stagnation": {
+        "rejected_initial_by_attempt": {
+          "2": 4,
+          "3": 6
+        },
+        "same_witness_on_retry_top": [],
+        "same_pattern_on_retry_top": []
+      }
+    }
+  ],
+  "aggregate": {
+    "runs": 6,
+    "accept_per_request_pct": 13.1,
+    "accepted": 8,
+    "requests": 61,
+    "rejected_initial_total": 45,
+    "category_share_pct": {
+      "B2_single_witness_lit_false_at_witness": 100.0
+    },
+    "mean_mic_top1_shape_pct": 0.0,
+    "mean_single_disjunct_clause_pct": 100.0,
+    "mean_cti_copy_disjunct_pct": 98.4
+  }
+}
