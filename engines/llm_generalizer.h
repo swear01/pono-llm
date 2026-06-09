@@ -178,7 +178,8 @@ class LLMGeneralizer
                     const IC3FrameResponse & rejected,
                     const std::string & reason,
                     const std::string & witness_ref = "",
-                    const std::string & witness_next = "");
+                    const std::string & witness_next = "",
+                    size_t clause_idx = SIZE_MAX);
 
   void finish_attempt(const std::string & cti_id, size_t frame_idx);
 

@@ -1586,8 +1586,10 @@ bool IC3Base::try_accept_first_block_clause(
     const IC3FrameResponse & resp,
     string & fail_reason,
     string & witness_ref,
-    string & witness_val)
+    string & witness_val,
+    size_t & fail_clause_idx)
 {
+  fail_clause_idx = SIZE_MAX;
   vector<vector<IC3FrameDisjunct>> clauses = resp.block_clauses;
   if (clauses.empty() && !resp.block_disjuncts.empty()) {
     clauses.push_back(resp.block_disjuncts);
@@ -1604,12 +1606,14 @@ bool IC3Base::try_accept_first_block_clause(
     const auto & disjuncts = clauses[ci];
     if (!validate_block_clause_vocab(disjuncts)) {
       fail_reason = "vocab_fail";
+      fail_clause_idx = ci;
       continue;
     }
 
     IC3Formula blocking = build_block_clause_from_disjuncts(disjuncts);
     if (blocking.children.empty()) {
       fail_reason = "empty_block_clause";
+      fail_clause_idx = ci;
       continue;
     }
 
@@ -1622,6 +1626,7 @@ bool IC3Base::try_accept_first_block_clause(
                                               witness_val,
                                               &priority_wit_refs)) {
       fail_reason = "rejected_initial";
+      fail_clause_idx = ci;
       continue;
     }
 
@@ -1637,6 +1642,7 @@ bool IC3Base::try_accept_first_block_clause(
                        &witness_val,
                        &priority_wit_refs)) {
       fail_reason = "induction_failed";
+      fail_clause_idx = ci;
       continue;
     }
 
@@ -2118,8 +2124,9 @@ void IC3Base::process_llm_candidates()
       std::string fail_reason;
       std::string wit_ref;
       std::string wit_val;
+      size_t fail_clause_idx = SIZE_MAX;
       if (try_accept_first_block_clause(
-              cti_id, frame_idx, resp, fail_reason, wit_ref, wit_val)) {
+              cti_id, frame_idx, resp, fail_reason, wit_ref, wit_val, fail_clause_idx)) {
         llm_gen_->mark_accepted(cti_id);
         llm_gen_->note_response_processed(cti_id, resp_attempt);
         accepted = true;
@@ -2139,7 +2146,7 @@ void IC3Base::process_llm_candidates()
         fail_reason = "all_clauses_failed";
       }
       llm_gen_->add_feedback(
-          cti_id, resp, fail_reason, wit_ref, wit_val);
+          cti_id, resp, fail_reason, wit_ref, wit_val, fail_clause_idx);
       llm_gen_->note_response_processed(cti_id, resp_attempt);
       continue;
     }

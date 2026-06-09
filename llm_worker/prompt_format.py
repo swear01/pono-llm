@@ -115,6 +115,55 @@ def format_proof_context(req: dict) -> str:
     return "proof_context: " + json.dumps(ctx, separators=(",", ":"))
 
 
+def format_init_aware_block() -> str:
+    """Compact init-semantics reminder for retry prompts (Q2.1)."""
+    return "\n".join(
+        [
+            "Initial-state rules (critical):",
+            "  - CTI literals are failing-state values, NOT init values.",
+            "  - Each block clause OR must be FALSE at design reset (witness ref=value in feedback).",
+            "  - Do not copy CTI ref=value into a clause without checking init; prefer digest high-freq literals.",
+            "  - Prefer 1 disjunct; multi-OR fails when any sibling is true at init.",
+        ]
+    )
+
+
+def _format_rejected_clause(rejected_json: str) -> str | None:
+    try:
+        obj = json.loads(rejected_json)
+    except (json.JSONDecodeError, TypeError):
+        return None
+    idx = obj.get("clause_idx")
+    clauses = obj.get("block_clauses") or []
+    if idx is not None and isinstance(idx, int) and 0 <= idx < len(clauses):
+        parts: list[str] = []
+        for dj in clauses[idx]:
+            ref = dj.get("ref") or ""
+            if not ref:
+                continue
+            parts.append(
+                format_literal_line(ref, dj.get("rhs", ""), bool(dj.get("polarity", True)))
+            )
+        if parts:
+            return f"      failed_clause[{idx}]: " + " | ".join(parts)
+    if clauses:
+        lines = []
+        for ci, clause in enumerate(clauses):
+            parts = []
+            for dj in clause:
+                ref = dj.get("ref") or ""
+                if not ref:
+                    continue
+                parts.append(
+                    format_literal_line(ref, dj.get("rhs", ""), bool(dj.get("polarity", True)))
+                )
+            if parts:
+                lines.append(f"      clause[{ci}]: " + " | ".join(parts))
+        if lines:
+            return "\n".join(lines)
+    return None
+
+
 def _repair_line(reason: str, wref: str, wval: str) -> str:
     if reason == "rejected_initial" and wref:
         return (
@@ -153,10 +202,14 @@ def format_feedback_block(feedback: list[dict]) -> str:
             entry.append(repair)
         rejected = fb.get("rejected_json")
         if rejected:
-            text = str(rejected)
-            if len(text) > 200:
-                text = text[:197] + "..."
-            entry.append(f"      rejected: {text}")
+            clause_line = _format_rejected_clause(str(rejected))
+            if clause_line:
+                entry.append(clause_line)
+            else:
+                text = str(rejected)
+                if len(text) > 400:
+                    text = text[:397] + "..."
+                entry.append(f"      rejected: {text}")
         block = "\n".join(entry)
         if reason == "rejected_initial":
             correctness.append(block)

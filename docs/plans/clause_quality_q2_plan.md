@@ -1,7 +1,7 @@
 # Clause 品質提升計劃 Q2（基線版本）
 
-**狀態：** 基線已標記；Q2 實作進行中  
-**基線 commit：** （見 git tag `pre-q2-clause-quality` 或本文件所在 commit）  
+**狀態：** 基線已標記；Q2.1 + Q2.3 實作中  
+**基線 commit：** `aa7c3ba`（tag `pre-q2-clause-quality`）  
 **診斷：** `diagnosis/D_summary.md`、`diagnosis/D3b_init_semantics.json`
 
 ## 目標

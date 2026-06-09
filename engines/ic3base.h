@@ -677,7 +677,8 @@ class IC3Base : public SafetyProver
                                      const IC3FrameResponse & resp,
                                      std::string & fail_reason,
                                      std::string & witness_ref,
-                                     std::string & witness_val);
+                                     std::string & witness_val,
+                                     size_t & fail_clause_idx);
 
   virtual bool try_apply_llm_refine_predicate(const smt::Term & pred);
 

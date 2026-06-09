@@ -289,10 +289,26 @@ static string sample_group_key(const string & cti_id, size_t attempt)
   return cti_id + "#" + std::to_string(attempt);
 }
 
+static void append_disjunct_json(ostringstream & out,
+                                 const IC3FrameDisjunct & d,
+                                 const function<string(const string &)> & escape)
+{
+  out << "{\"ref\":\"" << escape(d.ref) << "\",";
+  out << "\"op\":\"" << escape(d.op) << "\",";
+  out << "\"rhs\":\"" << escape(d.rhs) << "\",";
+  out << "\"polarity\":" << (d.polarity ? "true" : "false") << "}";
+}
+
 static string serialize_response_for_feedback(
     const IC3FrameResponse & rejected,
+    size_t clause_idx,
     const function<string(const string &)> & escape)
 {
+  vector<vector<IC3FrameDisjunct>> clauses = rejected.block_clauses;
+  if (clauses.empty() && !rejected.block_disjuncts.empty()) {
+    clauses.push_back(rejected.block_disjuncts);
+  }
+
   ostringstream out;
   out << "{";
   out << "\"source_cti_id\":\"" << escape(rejected.source_cti_id) << "\",";
@@ -301,6 +317,20 @@ static string serialize_response_for_feedback(
   out << "\"has_block\":" << (rejected.has_block ? "true" : "false") << ",";
   out << "\"has_refine_predicate\":"
       << (rejected.has_refine_predicate ? "true" : "false") << ",";
+  out << "\"block_clauses\":[";
+  for (size_t ci = 0; ci < clauses.size(); ++ci) {
+    if (ci > 0) out << ",";
+    out << "[";
+    for (size_t di = 0; di < clauses[ci].size(); ++di) {
+      if (di > 0) out << ",";
+      append_disjunct_json(out, clauses[ci][di], escape);
+    }
+    out << "]";
+  }
+  out << "],";
+  if (clause_idx != SIZE_MAX) {
+    out << "\"clause_idx\":" << clause_idx << ",";
+  }
   out << "\"rationale\":\"" << escape(rejected.rationale) << "\"";
   out << "}";
   return out.str();
@@ -336,12 +366,14 @@ void LLMGeneralizer::add_feedback(const string & cti_id,
                                   const IC3FrameResponse & rejected,
                                   const string & reason,
                                   const string & witness_ref,
-                                  const string & witness_next)
+                                  const string & witness_next,
+                                  size_t clause_idx)
 {
   LLMFeedbackEntry fb;
   fb.reason = reason;
   fb.rejected_json =
       serialize_response_for_feedback(rejected,
+                                      clause_idx,
                                       [this](const string & s) {
                                         return escape_json(s);
                                       });

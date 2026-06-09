@@ -34,6 +34,7 @@ from prompt_format import (
     format_cti_literals,
     format_feedback_block,
     format_frame_snapshot,
+    format_init_aware_block,
     format_proof_context,
     format_symbol_hints,
     sample_generalization_hint,
@@ -111,6 +112,8 @@ def build_batch_user_prompt(
         parts.extend(["", sym_hints])
     if feedback:
         parts.extend(["", format_feedback_block(feedback)])
+    if feedback or attempt > 1:
+        parts.extend(["", format_init_aware_block()])
     if benchmark_ctx:
         parts.extend([
             "",
@@ -173,6 +176,8 @@ def build_user_prompt(
         parts.extend(["", sym_hints])
     if feedback:
         parts.extend(["", format_feedback_block(feedback)])
+    if feedback or attempt > 1:
+        parts.extend(["", format_init_aware_block()])
     if benchmark_ctx:
         parts.extend([
             "",

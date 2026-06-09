@@ -15,6 +15,33 @@ from prompt_format import (
 )
 
 
+def test_feedback_renders_failed_clause_with_idx():
+    fb = [
+        {
+            "reason": "rejected_initial",
+            "witness": {"ref": "state0", "next_value": "0"},
+            "rejected_json": (
+                '{"clause_idx":0,"block_clauses":['
+                '[{"ref":"state0","op":"eq","rhs":"1","polarity":true}],'
+                '[{"ref":"state5","op":"eq","rhs":"0","polarity":false}]'
+                "]}"
+            ),
+        },
+    ]
+    text = format_feedback_block(fb)
+    assert "failed_clause[0]" in text
+    assert "state0=1" in text
+    assert "clause[1]" not in text
+
+
+def test_init_aware_block_present():
+    from prompt_format import format_init_aware_block
+
+    text = format_init_aware_block()
+    assert "CTI literals" in text
+    assert "FALSE at design reset" in text
+
+
 def test_contrastive_feedback_zones():
     fb = [
         {

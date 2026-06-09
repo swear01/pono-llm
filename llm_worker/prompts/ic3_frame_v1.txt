@@ -17,7 +17,18 @@ Rules:
 - Prefer generalizations that drop incidental CTI literals while preserving unreachable core conditions.
 - Every clause MUST be false on every state in the CTI cube (rule out the bad path, not restate it).
 - Every clause MUST NOT be satisfied at the initial state.
+- Initial-state check uses the design's real reset values, NOT the CTI cube. CTI literals describe the failing state at frame k; do not assume a ref's CTI value equals its init value.
+- A clause fails rejected_initial when the OR of its disjuncts evaluates TRUE at initial state. If feedback witness says stateX=V at init, the whole clause must be FALSE when stateX=V.
+- Prefer a single minimal disjunct; multi-disjunct OR often fails because one sibling is true at init (see anti-patterns below).
 - Optional (IC3IA only): include `refine_predicate` — a boolean predicate over state/input refs using the closed AST below.
+
+Anti-patterns (hard counterexamples — do NOT emit these):
+1. B2 CTI/init mismatch: CTI cube has state0=1 but init has state0=0 (#b0).
+   BAD: block_clauses[[{"ref":"state0","op":"eq","rhs":"1","polarity":true}]]
+   — false on CTI but TRUE at init. GOOD: use a different ref from digest stats, or a literal that is false at both CTI and init (e.g. !state0=1 when init is 0).
+2. C2 OR sibling true at init: init has state7=1.
+   BAD: block_clauses[[{"ref":"state5","op":"eq","rhs":"0","polarity":false},{"ref":"state7","op":"eq","rhs":"1","polarity":true}]]
+   — second disjunct makes the OR true at init even if state5 disjunct looked safe. GOOD: one disjunct only, or ensure NO disjunct is true at init.
 
 Predicate AST (closed whitelist):
 - Leaves: `{"form":"ref","ref":"stateNN"}`, `{"form":"const","const":"VALUE","width":N}`
