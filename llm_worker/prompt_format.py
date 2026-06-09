@@ -4,7 +4,9 @@ from __future__ import annotations
 
 import json
 import re
-from typing import Iterable
+from typing import Any, Iterable
+
+SIMPLE_LIT_RE = re.compile(r"^(!?)((?:state|input)\d+)=(.+)$")
 
 
 def normalize_rhs(rhs: str) -> str:
@@ -94,11 +96,276 @@ def format_symbol_hints(refs: set[str], registry: dict) -> str:
 
 def sample_generalization_hint(sample_id: int) -> str:
     hints = {
-        0: "Strategy: prefer MINIMAL block (1-2 disjuncts); drop datapath/incidental CTI literals.",
-        1: "Strategy: derive block from high-frequency clause_digest literals; avoid restating samples.",
-        2: "Strategy: OR of 3-4 literals covering all sample CTI cores; generalize beyond single cube.",
+        0: (
+            "Strategy: clause 0 = single digest top-1 NEGATION disjunct (see Digest-derived block hints); "
+            "do not copy CTI cube literals."
+        ),
+        1: (
+            "Strategy: primary block from digest top-1 negation; optional second clause from top-2 "
+            "negation (at most 2 disjuncts total per clause)."
+        ),
+        2: (
+            "Strategy: up to 3 alternative clauses, each a single digest top-N negation "
+            "(top-1, top-2, top-3); never restate positive CTI/digest literals."
+        ),
     }
     return hints.get(sample_id % 3, hints[0])
+
+
+def parse_witness_tag(val: str) -> str:
+    v = str(val)
+    if v in ("#b0", "0", "false"):
+        return "init0"
+    if v in ("#b1", "1", "true"):
+        return "init1"
+    return "init_wide"
+
+
+def disjunct_equals(a: dict[str, Any], b: dict[str, Any]) -> bool:
+    return (
+        str(a.get("ref") or "") == str(b.get("ref") or "")
+        and str(a.get("op") or "eq") == str(b.get("op") or "eq")
+        and bool(a.get("polarity", True)) == bool(b.get("polarity", True))
+        and normalize_rhs(str(a.get("rhs", ""))) == normalize_rhs(str(b.get("rhs", "")))
+    )
+
+
+def forbidden_disjuncts_for_witness(ref: str, val: str) -> list[dict[str, Any]]:
+    """Disjunct shapes that are commonly true at init for this witness (Q3.1)."""
+    tag = parse_witness_tag(val)
+    if tag == "init0":
+        return [
+            {"ref": ref, "op": "eq", "rhs": "1", "polarity": True},
+            {"ref": ref, "op": "eq", "rhs": "#b1", "polarity": True},
+            {"ref": ref, "op": "eq", "rhs": "0", "polarity": False},
+            {"ref": ref, "op": "eq", "rhs": "#b0", "polarity": False},
+        ]
+    if tag == "init1":
+        return [
+            {"ref": ref, "op": "eq", "rhs": "0", "polarity": True},
+            {"ref": ref, "op": "eq", "rhs": "#b0", "polarity": True},
+            {"ref": ref, "op": "eq", "rhs": "1", "polarity": False},
+            {"ref": ref, "op": "eq", "rhs": "#b1", "polarity": False},
+        ]
+    w_rhs = str(val)
+    return [
+        {"ref": ref, "op": "eq", "rhs": w_rhs, "polarity": True},
+        {"ref": ref, "op": "eq", "rhs": w_rhs, "polarity": False},
+    ]
+
+
+def _failed_clause_from_rejected_json(rejected_json: str) -> tuple[list[dict[str, Any]], int | None]:
+    try:
+        obj = json.loads(rejected_json)
+    except (json.JSONDecodeError, TypeError):
+        return [], None
+    clauses = obj.get("block_clauses") or []
+    idx = obj.get("clause_idx")
+    if idx is not None and isinstance(idx, int) and 0 <= idx < len(clauses):
+        return list(clauses[idx]), idx
+    if clauses:
+        return list(clauses[-1]), len(clauses) - 1
+    return [], None
+
+
+def _format_disjunct_json(dj: dict[str, Any]) -> str:
+    compact = {
+        "ref": dj.get("ref"),
+        "op": dj.get("op", "eq"),
+        "rhs": dj.get("rhs"),
+        "polarity": bool(dj.get("polarity", True)),
+    }
+    return json.dumps(compact, separators=(",", ":"))
+
+
+def _suggest_digest_negation(req: dict | None, witness_ref: str) -> str | None:
+    if not req:
+        return None
+    for lit in pick_digest_literal_lines(req, max_n=5):
+        dj = negate_digest_lit_to_disjunct(lit)
+        if not dj:
+            continue
+        ref = str(dj.get("ref") or "")
+        if ref and ref != witness_ref:
+            line = format_literal_line(ref, str(dj.get("rhs", "")), bool(dj.get("polarity", True)))
+            return f"      SUGGESTED: digest negation {line} (JSON: {_format_disjunct_json(dj)})"
+    for lit in pick_digest_literal_lines(req, max_n=1):
+        dj = negate_digest_lit_to_disjunct(lit)
+        if dj:
+            line = format_literal_line(
+                str(dj.get("ref", "")),
+                str(dj.get("rhs", "")),
+                bool(dj.get("polarity", True)),
+            )
+            return f"      SUGGESTED: digest top-1 negation {line} (JSON: {_format_disjunct_json(dj)})"
+    return "      SUGGESTED: use a different ref from digest stats (not the witness ref)."
+
+
+def format_witness_repair_lines(
+    fb: dict[str, Any],
+    req: dict | None = None,
+) -> list[str]:
+    """Q3.1 witness-driven repair lines for one feedback entry."""
+    reason = str(fb.get("reason") or "")
+    if reason != "rejected_initial":
+        return []
+
+    witness = fb.get("witness") or {}
+    wref = str(witness.get("ref") or "")
+    wval = str(witness.get("next_value") or "")
+    lines: list[str] = []
+
+    if wref and wval:
+        lines.append(
+            f"      INIT_CHECK: clause must be FALSE when {wref}={normalize_rhs(wval)} at reset"
+        )
+
+    rejected = fb.get("rejected_json")
+    failed_clause: list[dict[str, Any]] = []
+    if rejected:
+        failed_clause, _ = _failed_clause_from_rejected_json(str(rejected))
+
+    forbidden_parts: list[str] = []
+    if wref and wval:
+        for tmpl in forbidden_disjuncts_for_witness(wref, wval):
+            forbidden_parts.append(
+                format_literal_line(
+                    str(tmpl.get("ref", "")),
+                    str(tmpl.get("rhs", "")),
+                    bool(tmpl.get("polarity", True)),
+                )
+            )
+        for dj in failed_clause:
+            for tmpl in forbidden_disjuncts_for_witness(wref, wval):
+                if disjunct_equals(dj, tmpl):
+                    line = format_literal_line(
+                        str(dj.get("ref", "")),
+                        str(dj.get("rhs", "")),
+                        bool(dj.get("polarity", True)),
+                    )
+                    if line not in forbidden_parts:
+                        forbidden_parts.append(line)
+
+    if forbidden_parts:
+        lines.append("      FORBIDDEN (do not repeat): " + " | ".join(forbidden_parts))
+
+    suggested = _suggest_digest_negation(req, wref)
+    if suggested:
+        lines.append(suggested)
+
+    return lines
+
+
+def parse_digest_lit_line(lit: str) -> tuple[str, str, bool] | None:
+    """Parse digest/CTI lit line to (ref, rhs, positive_display_polarity)."""
+    text = str(lit).strip()
+    if not text or "bvor" in text or "bvcomp" in text or "(" in text:
+        return None
+    m = SIMPLE_LIT_RE.match(text)
+    if not m:
+        return None
+    neg_prefix = m.group(1) == "!"
+    ref, rhs = m.group(2), m.group(3)
+    return ref, rhs, not neg_prefix
+
+
+def negate_digest_lit_to_disjunct(lit: str) -> dict[str, Any] | None:
+    """Mechanical MIC-style block disjunct: negate digest literal (Q3.2)."""
+    parsed = parse_digest_lit_line(lit)
+    if not parsed:
+        return None
+    ref, rhs, positive_pol = parsed
+    return {
+        "ref": ref,
+        "op": "eq",
+        "rhs": rhs,
+        "polarity": not positive_pol,
+    }
+
+
+def _literal_line_from_cube(req: dict) -> list[str]:
+    """Build simple literal lines from first CTI entry when no digest."""
+    entries = req.get("cti_entries") or []
+    if not entries:
+        cti = req.get("cti") or {}
+        lines: list[str] = []
+        for ref, rhs, pol in _iter_cube_literals(cti):
+            prefix = "" if pol else "!"
+            lines.append(f"{prefix}{ref}={normalize_rhs(rhs)}")
+        return lines
+    lines = []
+    ent = entries[0]
+    if ent.get("literals"):
+        for lit in ent["literals"]:
+            lines.append(str(lit))
+    else:
+        for ref, rhs, pol in _iter_cube_literals(ent.get("cti") or {}):
+            prefix = "" if pol else "!"
+            lines.append(f"{prefix}{ref}={normalize_rhs(rhs)}")
+    return lines
+
+
+def pick_digest_literal_lines(req: dict, max_n: int = 3) -> list[str]:
+    stats = (req.get("cti_digest") or {}).get("literal_stats") or []
+    simple: list[str] = []
+    for row in stats:
+        lit = str(row.get("lit", "")).strip()
+        if parse_digest_lit_line(lit):
+            simple.append(lit)
+    if simple:
+        return simple[:max_n]
+    return _literal_line_from_cube(req)[:max_n]
+
+
+def collect_forbidden_positive_literals(req: dict, n: int = 5) -> list[str]:
+    lines = pick_digest_literal_lines(req, max_n=n)
+    forbidden: list[str] = []
+    for lit in lines:
+        parsed = parse_digest_lit_line(lit)
+        if not parsed:
+            continue
+        ref, rhs, pol = parsed
+        forbidden.append(format_literal_line(ref, rhs, pol))
+    return forbidden
+
+
+def format_digest_block_hints(req: dict, max_hints: int = 3) -> str:
+    """Q3.2 digest top-N negation suggestions for block clauses."""
+    lits = pick_digest_literal_lines(req, max_n=max_hints)
+    if not lits:
+        return ""
+
+    lines = [
+        "Digest-derived block hints (primary strategy):",
+        "  - Block must be FALSE on every CTI cube: negate high-frequency digest literals.",
+        "  - Do NOT emit any disjunct identical to a positive CTI/digest literal below.",
+    ]
+    for i, lit in enumerate(lits, start=1):
+        dj = negate_digest_lit_to_disjunct(lit)
+        if not dj:
+            continue
+        block_line = format_literal_line(
+            str(dj.get("ref", "")),
+            str(dj.get("rhs", "")),
+            bool(dj.get("polarity", True)),
+        )
+        count = ""
+        stats = (req.get("cti_digest") or {}).get("literal_stats") or []
+        for row in stats:
+            if str(row.get("lit", "")).strip() == lit:
+                count = f" (count={row.get('count', 0)})"
+                break
+        lines.append(f"  top-{i} CTI literal: {lit}{count}")
+        lines.append(f"    suggested block disjunct: {block_line}")
+        lines.append(f"    JSON: {_format_disjunct_json(dj)}")
+
+    forbidden = collect_forbidden_positive_literals(req, n=5)
+    if forbidden:
+        lines.append("  FORBIDDEN (do not copy as block disjunct): " + " | ".join(forbidden))
+
+    if len(lines) <= 3:
+        return ""
+    return "\n".join(lines)
 
 
 def format_proof_context(req: dict) -> str:
@@ -135,6 +402,8 @@ def _format_rejected_clause(rejected_json: str) -> str | None:
         return None
     idx = obj.get("clause_idx")
     clauses = obj.get("block_clauses") or []
+    if idx is None and clauses:
+        idx = len(clauses) - 1
     if idx is not None and isinstance(idx, int) and 0 <= idx < len(clauses):
         parts: list[str] = []
         for dj in clauses[idx]:
@@ -146,21 +415,6 @@ def _format_rejected_clause(rejected_json: str) -> str | None:
             )
         if parts:
             return f"      failed_clause[{idx}]: " + " | ".join(parts)
-    if clauses:
-        lines = []
-        for ci, clause in enumerate(clauses):
-            parts = []
-            for dj in clause:
-                ref = dj.get("ref") or ""
-                if not ref:
-                    continue
-                parts.append(
-                    format_literal_line(ref, dj.get("rhs", ""), bool(dj.get("polarity", True)))
-                )
-            if parts:
-                lines.append(f"      clause[{ci}]: " + " | ".join(parts))
-        if lines:
-            return "\n".join(lines)
     return None
 
 
@@ -182,7 +436,7 @@ def _repair_line(reason: str, wref: str, wval: str) -> str:
     return ""
 
 
-def format_feedback_block(feedback: list[dict]) -> str:
+def format_feedback_block(feedback: list[dict], req: dict | None = None) -> str:
     if not feedback:
         return ""
     correctness: list[str] = []
@@ -197,9 +451,17 @@ def format_feedback_block(feedback: list[dict]) -> str:
         entry = [f"  [{i}] {reason}"]
         if wref or wval:
             entry.append(f"      witness: {wref} -> {wval}")
-        repair = _repair_line(reason, wref, wval)
-        if repair:
-            entry.append(repair)
+        if reason == "rejected_initial":
+            witness_repair = format_witness_repair_lines(fb, req=req)
+            entry.extend(witness_repair)
+            if not witness_repair:
+                repair = _repair_line(reason, wref, wval)
+                if repair:
+                    entry.append(repair)
+        else:
+            repair = _repair_line(reason, wref, wval)
+            if repair:
+                entry.append(repair)
         rejected = fb.get("rejected_json")
         if rejected:
             clause_line = _format_rejected_clause(str(rejected))

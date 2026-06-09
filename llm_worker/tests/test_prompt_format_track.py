@@ -57,8 +57,8 @@ def test_contrastive_feedback_zones():
     text = format_feedback_block(fb)
     assert "Correctness failures" in text
     assert "Inductiveness failures" in text
-    assert "Repair:" in text
-    assert "state93=0" in text or "state93" in text
+    assert "INIT_CHECK" in text or "Repair:" in text
+    assert "state93" in text
 
 
 def test_attempt1_omit_frame_bodies():

@@ -2,7 +2,8 @@
 
 **前置：** Q2 診斷（`diagnosis/Q2_current_method_summary.md`）  
 **範圍：** 僅 Python prompt / sidecar（**無 C++ 變更**）  
-**量測：** p040 5 輪獨立 smoke，加總 accept/API
+**量測：** p040 5 輪獨立 smoke，加總 accept/API  
+**狀態：** ✅ Q3.1+Q3.2 已實作（`llm_worker/prompt_format.py`、`sidecar.py`、測試 `test_prompt_format_q3.py`）；待 5 輪 A/B
 
 ---
 

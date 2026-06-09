@@ -4,7 +4,7 @@
 **Architecture:** [`ARCHITECTURE.md`](ARCHITECTURE.md)  
 **Handoff:** [`HANDOFF_CURRENT_STATE.md`](HANDOFF_CURRENT_STATE.md)
 
-Last updated: 2026-06-09 (Q2 shipped; Q3 clause quality plan)
+Last updated: 2026-06-09 (Q3.1+Q3.2 witness repair + digest negation implemented)
 
 > **Note:** `logs/formal_yield/` was removed from the repo (legacy offline artifacts). HISTORICAL docs may still reference that path; see `.gitignore`.
 

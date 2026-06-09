@@ -32,6 +32,7 @@ from prompt_format import (
     format_cti_batch_all,
     format_cti_batch_digest,
     format_cti_literals,
+    format_digest_block_hints,
     format_feedback_block,
     format_frame_snapshot,
     format_init_aware_block,
@@ -98,6 +99,11 @@ def build_batch_user_prompt(
             if req.get("cti_digest")
             else format_cti_batch_all(req.get("cti_entries") or [])
         ),
+    ]
+    digest_hints = format_digest_block_hints(req)
+    if digest_hints:
+        parts.extend(["", digest_hints])
+    parts.extend([
         "",
         format_frame_snapshot(
             req.get("frame_snapshot", {}),
@@ -106,12 +112,12 @@ def build_batch_user_prompt(
             has_feedback=bool(feedback),
             feedback=feedback,
         ),
-    ]
+    ])
     sym_hints = format_symbol_hints(refs, registry)
     if sym_hints:
         parts.extend(["", sym_hints])
     if feedback:
-        parts.extend(["", format_feedback_block(feedback)])
+        parts.extend(["", format_feedback_block(feedback, req=req)])
     if feedback or attempt > 1:
         parts.extend(["", format_init_aware_block()])
     if benchmark_ctx:
@@ -162,6 +168,11 @@ def build_user_prompt(
         sample_generalization_hint(sample_id),
         "",
         format_cti_literals(req.get("cti", {})),
+    ]
+    digest_hints = format_digest_block_hints(req)
+    if digest_hints:
+        parts.extend(["", digest_hints])
+    parts.extend([
         "",
         format_frame_snapshot(
             req.get("frame_snapshot", {}),
@@ -170,12 +181,12 @@ def build_user_prompt(
             has_feedback=bool(feedback),
             feedback=feedback,
         ),
-    ]
+    ])
     sym_hints = format_symbol_hints(refs, registry)
     if sym_hints:
         parts.extend(["", sym_hints])
     if feedback:
-        parts.extend(["", format_feedback_block(feedback)])
+        parts.extend(["", format_feedback_block(feedback, req=req)])
     if feedback or attempt > 1:
         parts.extend(["", format_init_aware_block()])
     if benchmark_ctx:

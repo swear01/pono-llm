@@ -1,6 +1,6 @@
 # Clause 品質提升計劃 Q3
 
-**狀態：** 規劃中（Q2 已 tag `post-q2-clause-quality`）  
+**狀態：** Q3.1+Q3.2 已實作；待 Q3.0 五輪量測  
 **前置：** [`clause_quality_q2_plan.md`](clause_quality_q2_plan.md)、`diagnosis/D3b_init_semantics.json`  
 **品質量測標準：** 5 輪獨立 smoke，加總 `accepted/requests`（見 Q2 plan）
 

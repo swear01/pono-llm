@@ -29,6 +29,13 @@ Anti-patterns (hard counterexamples — do NOT emit these):
 2. C2 OR sibling true at init: init has state7=1.
    BAD: block_clauses[[{"ref":"state5","op":"eq","rhs":"0","polarity":false},{"ref":"state7","op":"eq","rhs":"1","polarity":true}]]
    — second disjunct makes the OR true at init even if state5 disjunct looked safe. GOOD: one disjunct only, or ensure NO disjunct is true at init.
+3. init0 witness (stateX=0 at reset): FORBIDDEN on stateX: stateX=1, !stateX=0.
+4. init1 witness (stateX=1 at reset): FORBIDDEN on stateX: stateX=0, !stateX=1.
+
+Digest negation (when cti_digest is present):
+- PRIMARY strategy: negate a high-frequency digest literal (see user "Digest-derived block hints").
+- Never emit a disjunct that matches a positive CTI/digest literal; that restates the bad path.
+- GOOD example: digest state215=#b1 (count=67) → block_clauses[[{"ref":"state215","op":"eq","rhs":"1","polarity":false}]]
 
 Predicate AST (closed whitelist):
 - Leaves: `{"form":"ref","ref":"stateNN"}`, `{"form":"const","const":"VALUE","width":N}`
@@ -54,6 +61,7 @@ Example with multiple alternative clauses:
 
 ## Batch mode (ic3_frame_batch_request)
 - Input may be a CTI digest (literal frequency stats + representative sample cubes) when cti_total is large.
+- When digest is present: use "Digest-derived block hints" — negate top-frequency literals; do not copy them positively.
 - When digest is present: use high-frequency literals to infer the shared bad core; sample cubes illustrate outliers.
 - When full cti_entries are listed: read every cube; you may ignore outlier CTIs mentally.
 - Output 1 to N `block_clauses` (each OR-clause at most 8 disjuncts).
