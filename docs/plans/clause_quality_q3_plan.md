@@ -1,8 +1,18 @@
 # Clause 品質提升計劃 Q3
 
-**狀態：** Q3.1+Q3.2 已實作；待 Q3.0 五輪量測  
+**狀態：** Q3.1–Q3.6 已實作；見 [`clause_quality_q3_postmortem_plan.md`](clause_quality_q3_postmortem_plan.md)  
 **前置：** [`clause_quality_q2_plan.md`](clause_quality_q2_plan.md)、`diagnosis/D3b_init_semantics.json`  
 **品質量測標準：** 5 輪獨立 smoke，加總 `accepted/requests`（見 Q2 plan）
+
+## Agent 須知（clause quality 迭代）
+
+完成 Q3.x 實作且 unit test 通過後，**直接跑 5 輪 p040 smoke**，不需詢問使用者：
+
+```bash
+MAX_ATTEMPTS=3 STRICT=0 ROUNDS=5 bash scripts/ab_q3_p040_multiround.sh
+```
+
+回報須含：aggregate accept/API、B0 vs B3 Δ、`true_pos_cti_copy_pct`、`digest_neg_pct`、`witness_forbidden_viol_pct`（Q3.5 指標）。
 
 ## Q2 收斂摘要
 
