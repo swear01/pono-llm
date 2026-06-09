@@ -32,6 +32,15 @@ print(stats.get("accepted", 0), stats.get("requests", 0), stats.get("candidates"
 PY
 }
 
+ensure_smoke_max_attempts() {
+  # Older tags may lack MAX_ATTEMPTS in smoke_p040.sh; patch for fair A/B.
+  local smoke="$ROOT/scripts/smoke_p040.sh"
+  if ! grep -q 'MAX_ATTEMPTS=' "$smoke"; then
+    sed -i 's/PARALLEL_SAMPLES="${PARALLEL_SAMPLES:-1}"/PARALLEL_SAMPLES="${PARALLEL_SAMPLES:-1}"\nMAX_ATTEMPTS="${MAX_ATTEMPTS:-1}"/' "$smoke"
+    sed -i 's/--llm-max-attempts 1/--llm-max-attempts "$MAX_ATTEMPTS"/' "$smoke"
+  fi
+}
+
 run_variant() {
   local label="$1"
   local git_ref="$2"
@@ -40,6 +49,7 @@ run_variant() {
 
   echo "=== [$label] checkout $git_ref ==="
   git -C "$ROOT" checkout "$git_ref" --quiet
+  ensure_smoke_max_attempts
 
   echo "=== [$label] build ==="
   make -C "$ROOT/build" -j"$(nproc)" pono 2>&1 | tail -3
