@@ -48,7 +48,8 @@ run_variant() {
   mkdir -p "$run_dir"
 
   echo "=== [$label] checkout $git_ref ==="
-  git -C "$ROOT" checkout "$git_ref" --quiet
+  git -C "$ROOT" checkout -f "$git_ref" --quiet
+  git -C "$ROOT" restore scripts/smoke_p040.sh 2>/dev/null || true
   ensure_smoke_max_attempts
 
   echo "=== [$label] build ==="
@@ -72,12 +73,13 @@ run_variant() {
   fi
   echo "$label $git_ref $stats_line" >>"$OUT_BASE/summary.tsv"
   echo "=== [$label] stats: $stats_line (accepted requests candidates rejected_initial induction_fail) ==="
+  git -C "$ROOT" restore scripts/smoke_p040.sh 2>/dev/null || true
 }
 
 main() {
   local head_ref
   head_ref="$(git -C "$ROOT" rev-parse HEAD)"
-  trap 'git -C "$ROOT" checkout "$head_ref" --quiet 2>/dev/null || true' EXIT
+  trap 'git -C "$ROOT" checkout -f "$head_ref" --quiet 2>/dev/null; git -C "$ROOT" restore scripts/smoke_p040.sh 2>/dev/null || true' EXIT
 
   echo "OUT_BASE=$OUT_BASE"
   echo "BTOR=$BTOR"
