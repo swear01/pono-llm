@@ -22,9 +22,9 @@ LLM runs **online** during IC3IA proof: CTI → structured JSON → `rel_ind_che
 |-------|----------|
 | I/O | `ic3_frame_request` / `ic3_frame_response` v1 only |
 | Block | 1 OR clause per response (multi-disjunct OK) |
-| Multi-block per response | **No** — use parallel K samples |
-| Parallel | K API calls per CTI (default 3), first accept wins |
-| Retry | Feedback + witness, max attempts (default 2 rounds) |
+| Multi-block per response | **Yes** — up to N `block_clauses` per response (default 3), first valid wins |
+| Parallel samples | K API calls per batch flush (default **1**); optional `--llm-parallel-samples K>1` |
+| Retry | Feedback + witness, max attempts (default 3 rounds) |
 | Cache | Prompt layers 0–2 fixed per circuit; log cached_tokens |
 | API | `reasoning_effort=none` default |
 | Verilog | Required in `symbol_registry` when mapped |

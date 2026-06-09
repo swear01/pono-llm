@@ -21,7 +21,7 @@ block_all 期間累積 CTI_1 … CTI_N
 | 要 | 不要 |
 |----|------|
 | 本輪 flush 的 **全部** CTI 進同一 request | N 次 API（現況 ~52 CTI → ~52 request） |
-| **K=3** 同一 prompt 的 3 個 sample（temp=0.5） | 1 次回傳 52 組 `block_disjuncts` |
+| **K** 平行 sample（**預設 K=1**；可選 K>1，temp=0.5） | 1 次回傳 52 組 `block_disjuncts` |
 | flush 後 **同步等待** K 個 response（方案 A） | 只靠 pono 結束後 drain、stats 失真 |
 | 僅 **兩種** 執行模式（見下） | 四種 CLI 組合、per-CTI 52×API 作為正式路徑 |
 
@@ -93,7 +93,7 @@ flowchart LR
   "attempt": 1,
   "max_attempts": 2,
   "parallel_group": "batch_f2_a1",
-  "parallel_samples": 3,
+  "parallel_samples": 1,
   "temperature": 0.5,
   "reasoning_effort": "none",
   "model": "deepseek-v4-pro",
@@ -414,7 +414,7 @@ sidecar_proc = subprocess.Popen([
 
 ```python
 "--llm-reasoning-effort", "none",
-"--llm-parallel-samples", str(job_data.get("llm_parallel_samples", 3)),
+"--llm-parallel-samples", str(job_data.get("llm_parallel_samples", 1)),
 ```
 
 pono 結束後 **drain**（複製 smoke：`req_n` vs `log_n`），再 terminate sidecar。
@@ -465,7 +465,7 @@ C++ 單元測試（若專案有 harness）：可後補 `wait` 用假 `responses.
 
 ## 風險
 
-- **單 block 覆蓋多 CTI**：過保守 → K=3 + retry；A/B `--no-llm-batch-cti`。
+- **單 block 覆蓋多 CTI**：過保守 → `max_block_clauses` + retry（可選 K>1）；A/B `--no-llm-batch-cti`。
 - **Sync 延遲**：每 frame +~(max sample latency)×1，非 ×52。
 - **Token 暴走**：監控 `completion_tokens`；必要時後續加 soft guard（非本階段）。
 - **batch JSONL 行過大**：sidecar 只讀一行；記憶體與單行 parse 時間可觀察。
@@ -549,10 +549,10 @@ if req_type not in V1_REQUEST_TYPES:
 **Batch request（2 CTI）：**
 
 ```json
-{"schema_version":1,"type":"ic3_frame_batch_request","batch_id":"batch_f1_a1","frame_idx":1,"attempt":1,"parallel_samples":3,"temperature":0.5,"cti_entries":[{"cti_id":"f1_a1b2","cti":{"cube":{"literals":[{"atom":{"ref":"state5","rhs":"1"},"polarity":true}]}}},{"cti_id":"f1_c3d4","cti":{"cube":{"literals":[{"atom":{"ref":"state7","rhs":"0"},"polarity":false}]}}}],"frame_snapshot":{"frame_idx":1,"clauses":[]}}
+{"schema_version":1,"type":"ic3_frame_batch_request","batch_id":"batch_f1_a1","frame_idx":1,"attempt":1,"parallel_samples":1,"temperature":0.5,"cti_entries":[{"cti_id":"f1_a1b2","cti":{"cube":{"literals":[{"atom":{"ref":"state5","rhs":"1"},"polarity":true}]}}},{"cti_id":"f1_c3d4","cti":{"cube":{"literals":[{"atom":{"ref":"state7","rhs":"0"},"polarity":false}]}}}],"frame_snapshot":{"frame_idx":1,"clauses":[]}}
 ```
 
-**Response（K=3 各一行）：**
+**Response（K 行，預設 K=1）：**
 
 ```json
 {"type":"ic3_frame_response","source_cti_id":"batch_f1_a1","sample_id":0,"block_disjuncts":[{"ref":"state5","op":"eq","rhs":"0","polarity":true}],"rationale":"..."}
@@ -570,7 +570,7 @@ cd /home/swear01/pono-llm && python3 -m pytest llm_worker/tests/ -q
 cmake --build /home/swear01/pono-llm/build -j
 
 # Smoke（需 DEEPSEEK_API_KEY）
-PARALLEL_SAMPLES=3 SNAPSHOT_MAX=50 MAX_INFLIGHT=8 \
+PARALLEL_SAMPLES=1 SNAPSHOT_MAX=50 MAX_INFLIGHT=8 \
   /home/swear01/pono-llm/scripts/smoke_p040.sh
 
 # A/B：per-CTI 對照（舊行為）
@@ -581,7 +581,7 @@ PARALLEL_SAMPLES=3 SNAPSHOT_MAX=50 MAX_INFLIGHT=8 \
 
 ```text
 LLM_STATS accepted>=0 requests=<blocking輪數, 遠小於136>
-  candidates≈requests*3 batch_timeouts=0 lookup_miss≈0
+  candidates≈requests*K (K=parallel_samples, 預設 1) batch_timeouts=0 lookup_miss≈0
 ```
 
 （實作時在 `cerr` 一行追加 `batch_timeouts=`。）
@@ -595,7 +595,7 @@ LLM_STATS accepted>=0 requests=<blocking輪數, 遠小於136>
 | `--llm-max-attempts 1` | 1 | 失敗後 **無** retry queue；`finish_attempt` 不會再 flush |
 | `--llm-accepted-budget 5` | 5 | 最多 5 次 batch accept（跨 frame） |
 | `-k 5` | bound 5 | 決定 blocking 輪數上界；requests 行數與之相關 |
-| `PARALLEL_SAMPLES=3` | K=3 | 每 batch 3 行 response |
+| `PARALLEL_SAMPLES` | 預設 **1** | 每 batch K 行 response（`responses == requests × K`） |
 
 `max_attempts>1` 時：batch reject 後 `finish_attempt(batch_id)` → `write_retry_request` 用 `batch_store_` 重送 **attempt 2**（新 `batch_id` 後綴 `_a2`）。
 
@@ -606,10 +606,11 @@ LLM_STATS accepted>=0 requests=<blocking輪數, 遠小於136>
 | 模式 | 每輪 blocking（~52 CTI） | 假設 10 輪 flush |
 |------|-------------------------|------------------|
 | per-CTI, K=1 | ~52 API | ~520 API |
-| per-CTI, K=3 | ~156 API | ~1560 API |
-| **batch, K=3** | **3 API** | **~30 API** |
+| per-CTI, K=3（可選） | ~156 API | ~1560 API |
+| **batch, K=1（預設）** | **1 API** | **~10 API** |
+| batch, K=3（可選） | 3 API | ~30 API |
 
-Sync wait：每輪約 `max(latency_sample_0..2)` ≈ 5–15s（thinking off），10 輪約 **+50–150s** wall time，仍遠低於 520×5s 量級。
+Sync wait：每輪約單次 API latency ≈ 2–6s（thinking off；OpenRouter 修復後），10 輪約 **+20–60s** wall time（K=1）。
 
 ---
 
@@ -644,7 +645,7 @@ Sync wait：每輪約 `max(latency_sample_0..2)` ≈ 5–15s（thinking off）�
 | ic3base step + process_llm_candidates | §H |
 | smoke / benchmark / 吞吐 / A/B | 後半部各節 |
 | Response parser 不變 | `ic3_frame_ast.cpp` |
-| `default_llm_parallel_samples_=3` | [`options/options.h`](../../options/options.h) 已為 3 |
+| `default_llm_parallel_samples_=1` | [`options/options.h`](../../options/options.h)；K>1 可選 |
 | Retry 路徑 | `process_llm_candidates` → `take_retry_queue` → `write_retry_request`（**非** `flush_retries`） |
 
 ### 先前遺漏、本節補上
@@ -657,7 +658,7 @@ Sync wait：每輪約 `max(latency_sample_0..2)` ≈ 5–15s（thinking off）�
 | G4 | **`GeneralizationStats::reset()`** | 新增 `num_batch_timeout` 並在 `reset()` 清零 |
 | G5 | **`mark_accepted(batch_id)` 後清理** | `batch_store_.erase(batch_id)`，避免 retry 用過期 CTI 列表 |
 | G6 | **per-CTI `accepted` 不連動** | batch accept **只** `mark_accepted(batch_id)`；個別 `cti_id` 仍可再 buffer（設計如此，寫入 integration doc） |
-| G7 | **`llm_worker/README.md`** | 更新：支援 `ic3_frame_batch_request`、預設 K=3、temp 0.5 |
+| G7 | **`llm_worker/README.md`** | 更新：支援 `ic3_frame_batch_request`、預設 K=1、temp 0.5 |
 | G8 | **`test_ic3_frame_schema.py`** | 新增 `test_validate_batch_request_ok/fail` |
 | G9 | **`test_sidecar_concurrency.py`** | 新增 `_minimal_batch_request()` + 確認 mock 路徑不 skip batch type（或單測 `V1_REQUEST_TYPES`） |
 | G10 | **`run_benchmarks._parse_llm_stats`** | 可選：解析 `requests=`、`candidates=`、`batch_timeouts=` 寫入 RunResult 註解欄位 |

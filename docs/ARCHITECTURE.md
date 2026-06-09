@@ -94,8 +94,9 @@ parallel K responses
 | 參數 | 預設 | 說明 |
 |------|------|------|
 | `--llm-gen-mode` | `none` | `async-cti` 啟用線上整合 |
-| `--llm-parallel-samples` | `3` | 每 request 平行 API 次數 |
-| `--llm-max-attempts` | `2` | feedback retry 輪數 |
+| `--llm-parallel-samples` | `1` | 每 batch flush 平行 API 次數（可選 K>1） |
+| `--llm-max-block-clauses` | `3` | 每 response 最多 N 條獨立 OR-clause |
+| `--llm-max-attempts` | `3` | feedback retry 輪數 |
 | `--llm-reasoning-effort` | `none` | API reasoning 控制 |
 | `--llm-accepted-budget` | `50` | 最多接受幾個 frame actions |
 | `--llm-req-path` / `--llm-resp-path` | `/tmp/pono_llm_*.jsonl` | JSONL 路徑 |

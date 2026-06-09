@@ -11,7 +11,7 @@
 ### Track A — Frame 品質
 
 - [x] P0 contrastive feedback + Repair
-- [x] P-parallel per-sample hint
+- [x] P-parallel per-sample hint（程式保留；**預設 K=1**，僅 `--llm-parallel-samples>1` 時多 hint）
 - [x] P0.5 symbol hints
 - [x] P1 attempt1 省略 bodies + proof_context
 - [x] P2 clause_digest + RAP-ranked samples（C++）

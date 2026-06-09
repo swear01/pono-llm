@@ -24,7 +24,7 @@
 |------|------|
 | `accepted=0`, `rejected_initial=9`, `induction_fail=3` | 品質問題，非通道（`batch_timeouts=0`） |
 | prompt「do not restate clauses」卻送 tail-50 | 誘導複讀舊 block |
-| K parallel samples 同一份 user prompt | diversity 不足 |
+| 預設 K=1，diversity 主要靠 `max_block_clauses`（N=3）與 temperature | 三樣本策略已廢為預設；`--llm-parallel-samples>1` 仍可選 |
 | `symbol_registry` 有 Verilog，sidecar 只送 name+bad | init 相關 reject 偏高 |
 
 ---
@@ -65,7 +65,7 @@ Tertiary:  accepted blocks（同 run positive example）
 | ID | 內容 | 工時 | 主要檔案 |
 |----|------|------|----------|
 | P0 | Contrastive feedback 三區 + Repair 一行 | 0.5d | `prompt_format.py`, `ic3_frame_v1.txt` |
-| P-parallel | per-`sample_id` generalization hint | 0.25d | `sidecar.py` |
+| P-parallel | per-`sample_id` generalization hint（**僅 K>1**） | 0.25d | `sidecar.py` |
 | P0.5 | symbol_registry 輕量 hints | 0.5d | `sidecar.py` |
 | P1 | attempt1 省略 clause bodies + `proof_context` | 0.5d | `ic3base.cpp`, `sidecar.py` |
 | P1.5 | witness 選擇（優先 CTI/衝突 ref） | 0.5d | `ic3base.cpp` |
@@ -86,7 +86,9 @@ Tertiary:  accepted blocks（同 run positive example）
 
 witness 語意見 [`integration.md` L271–272](../ic3_frame_v1_integration.md)。
 
-### P-parallel — sample 策略
+### P-parallel — sample 策略（可選，`--llm-parallel-samples>1`）
+
+預設 **K=1** 只使用 `sample_id=0`（minimal）。下列 hint 在提高 K 時生效：
 
 | sample_id | hint |
 |-----------|------|
@@ -110,7 +112,7 @@ attempt1：`drop_literals[]` from CTI batch → C++ MIC 轉 block。
 | 組 | 設定 |
 |----|------|
 | A0 | tail-50 baseline |
-| A1 | P0 + P-parallel + P0.5 |
+| A1 | P0 + P0.5（K=1 預設；P-parallel 僅 K>1 實驗） |
 | A2 | A1 + P1 omit |
 | A3 | A2 + P2 digest |
 | A4 | A3 + P2.5 RAP |

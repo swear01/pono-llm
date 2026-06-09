@@ -29,7 +29,7 @@ Pono 端（主力 engine：**IC3IA**）：
 
 | File | Role |
 |------|------|
-| [`sidecar.py`](sidecar.py) | Poll Frame v1 requests (single-CTI or batch-all-CTI), call LLM (parallel K, default temp=0.5 for batch), write `ic3_frame_response` |
+| [`sidecar.py`](sidecar.py) | Poll Frame v1 requests (single-CTI or batch-all-CTI), call LLM (**K** API calls per request from `parallel_samples`, **default K=1**; temp=0.5 for batch), write `ic3_frame_response` |
 | [`prompt_format.py`](prompt_format.py) | Compact line formats for CTI / frame snapshot in API user prompt |
 | [`deepseek_client.py`](deepseek_client.py) | DeepSeek API client (`https://api.deepseek.com/v1`) |
 | [`jsonl_protocol.py`](jsonl_protocol.py) | JSONL read/write |

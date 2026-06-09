@@ -28,7 +28,7 @@ LLM 成本不設上限；優先 **牆鐘時間**。
 | 參數 | 預設 | 說明 |
 |------|------|------|
 | `--max-inflight-requests` | 8 | 同時處理多條 request line |
-| `--llm-parallel-samples` | 3 | 每條 batch K 路 API 並行 |
+| `--llm-parallel-samples` | **1** | 每條 batch API 次數（可選 K>1；預設單樣本） |
 
 ---
 
@@ -55,7 +55,7 @@ Swap 僅 2 GiB 且常滿 — **不可依賴 swap**。
 | `--llm-drain-sec` | 300 |
 | `--llm-batch-wait-sec` | 300（傳給 pono） |
 
-每個 LLM job 另傳：`llm_max_inflight=8`、`llm_parallel_samples=3`。
+每個 LLM job 另傳：`llm_max_inflight=8`、`llm_parallel_samples=1`（與 pono/sidecar 預設一致）。
 
 ---
 

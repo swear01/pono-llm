@@ -253,7 +253,9 @@ Implementation: `engines/ic3_frame_ast.{h,cpp}` (planned).
 
 ### Parallel breadth
 
-Same request (layers 0–3 identical) → **K parallel** API calls (`--llm-parallel-samples`, default 3).
+**Default:** `K=1` (one API call per batch flush). Optional: `--llm-parallel-samples K` with `K>1` runs K parallel API calls (layers 0–3 identical; layer 4 `sample_id` hint differs).
+
+**Per-response breadth:** each API response may include up to **N** independent `block_clauses` (`--llm-max-block-clauses`, default **3**). C++ tries clauses in order; first valid wins. Candidate budget per flush ≈ **K × N** (default **3**, not 9).
 
 Sidecar concurrency (three levels):
 
@@ -344,8 +346,9 @@ For each `refine_predicate` (IC3IA):
 | Flag | Default | Description |
 |------|---------|-------------|
 | `--llm-gen-mode` | `none` | `async-cti` enables online integration |
-| `--llm-parallel-samples` | `3` | Parallel API calls per request |
-| `--llm-max-attempts` | `2` | Feedback retry rounds per CTI |
+| `--llm-parallel-samples` | `1` | Parallel API calls per batch flush (optional K>1) |
+| `--llm-max-block-clauses` | `3` | Independent OR-clauses per response; first valid wins |
+| `--llm-max-attempts` | `3` | Feedback retry rounds per batch |
 | `--llm-reasoning-effort` | `none` | Passed to API |
 | `--llm-temperature` | mode-dependent | Parallel vs retry |
 | `--llm-req-path` / `--llm-resp-path` | `/tmp/pono_llm_*.jsonl` | JSONL IPC |
