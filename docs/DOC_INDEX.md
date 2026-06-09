@@ -4,7 +4,7 @@
 **Architecture:** [`ARCHITECTURE.md`](ARCHITECTURE.md)  
 **Handoff:** [`HANDOFF_CURRENT_STATE.md`](HANDOFF_CURRENT_STATE.md)
 
-Last updated: 2026-06-09 (Q2 clause quality plan; p040 A/B smoke harness)
+Last updated: 2026-06-09 (Q2 shipped; Q3 clause quality plan)
 
 > **Note:** `logs/formal_yield/` was removed from the repo (legacy offline artifacts). HISTORICAL docs may still reference that path; see `.gitignore`.
 
@@ -39,7 +39,8 @@ Last updated: 2026-06-09 (Q2 clause quality plan; p040 A/B smoke harness)
 | [`plans/lemma_expressiveness_roadmap.md`](plans/lemma_expressiveness_roadmap.md) | **未來** — lemma 表達力擴充 X1–X4；Gate 0 待 Phase Q 數據 |
 | [`plans/openrouter_provider_policy.md`](plans/openrouter_provider_policy.md) | OpenRouter v4-flash 供應商篩選（fp8、排除 fp4/貴/慢） |
 | [`plans/phase_a_postmortem_plan.md`](plans/phase_a_postmortem_plan.md) | **Phase A 事後分析** — batch_timeouts、accept 低、24 案 regression 計劃 |
-| [`plans/clause_quality_q2_plan.md`](plans/clause_quality_q2_plan.md) | **Phase Q2** — init prompt、mbc=1、enriched feedback；p040 A/B smoke |
+| [`plans/clause_quality_q2_plan.md`](plans/clause_quality_q2_plan.md) | **Phase Q2**（tag `post-q2-clause-quality`）— init prompt、enriched feedback |
+| [`plans/clause_quality_q3_plan.md`](plans/clause_quality_q3_plan.md) | **Phase Q3** — witness 模板、digest 否定、11 案子集 5 輪 gate |
 
 ---
 

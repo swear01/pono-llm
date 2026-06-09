@@ -4,7 +4,7 @@ set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 BTOR="${BTOR:-$HOME/hwmcc_benchmarks/2024/btor2/2019/wolf/2019C/vgasim_imgfifo-p040.btor2}"
-ROUNDS="${ROUNDS:-3}"
+ROUNDS="${ROUNDS:-5}"
 MAX_ATTEMPTS="${MAX_ATTEMPTS:-3}"
 MAX_BLOCK_CLAUSES="${MAX_BLOCK_CLAUSES:-3}"
 STRICT="${STRICT:-0}"
