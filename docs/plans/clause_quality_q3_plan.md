@@ -6,9 +6,11 @@
 
 ## Agent 須知（clause quality 迭代）
 
-完成 Q3.x 實作且 unit test 通過後，**直接跑 5 輪 p040 smoke**，不需詢問使用者：
+1. **Commit 後自動 push** — 每次 commit 完成後，**直接 `git push origin main`**，不需詢問使用者。
+2. **Smoke 驗收** — Q3.x 實作且 unit test 通過後，**直接跑 5 輪 p040 smoke**，不需詢問使用者：
 
 ```bash
+git push origin main
 MAX_ATTEMPTS=3 STRICT=0 ROUNDS=5 bash scripts/ab_q3_p040_multiround.sh
 ```
 

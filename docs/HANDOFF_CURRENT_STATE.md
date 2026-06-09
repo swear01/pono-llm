@@ -1,7 +1,17 @@
 # Handoff: Current State
 
-**Last updated:** 2026-06-07  
+**Last updated:** 2026-06-10  
 **Branch:** `main` (pono-llm research fork)
+
+## Agent 須知（git / 驗收）
+
+1. **Commit 後自動 push** — 每次完成 commit，**直接 `git push origin main`** 到 GitHub，不需詢問使用者。（除非使用者明確說不要 push。）
+2. **Clause quality 變更** — unit test 通過後，**直接跑 5 輪 p040 smoke**（見 [`plans/clause_quality_q3_plan.md`](plans/clause_quality_q3_plan.md) Agent 須知），不需詢問。
+
+```bash
+git push origin main
+MAX_ATTEMPTS=3 STRICT=0 ROUNDS=5 bash scripts/ab_q3_p040_multiround.sh
+```
 
 ## Active direction
 

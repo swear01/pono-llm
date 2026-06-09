@@ -256,7 +256,8 @@ Day 5:  Q3.9 五輪 p040 B0 vs B5/B6
 
 ## Agent 須知
 
-Q3.x 實作 + unit test 通過後，**直接跑 5 輪 p040 smoke**（`ROUNDS=5`），不需詢問使用者是否執行。回報 aggregate 與 Q3.5 新指標。
+1. **Commit 後自動 push** — 每次 commit 後 **直接 `git push origin main`**，不需詢問使用者。
+2. **Smoke 驗收** — Q3.x 實作 + unit test 通過後，**直接跑 5 輪 p040 smoke**（`ROUNDS=5`），不需詢問。回報 aggregate 與 Q3.5 新指標。
 
 ---
 
