@@ -46,6 +46,45 @@ def test_phase_d1_on_minimal_csv(tmp_path: Path):
     assert out["totals"]["accept_per_request_pct"] == 20.0
 
 
+def test_classify_rejected_initial_b1_init_match():
+    fb = {
+        "reason": "rejected_initial",
+        "witness": {"ref": "state5", "next_value": "#b0"},
+        "rejected_json": '{"source_cti_id":"batch_f1_a1","attempt":1,"sample_id":0}',
+    }
+    resp = {
+        "source_cti_id": "batch_f1_a1",
+        "attempt": 1,
+        "sample_id": 0,
+        "block_clauses": [
+            [{"ref": "state5", "op": "eq", "rhs": "0", "polarity": True}],
+        ],
+    }
+    out = diag.classify_rejected_initial_entry(fb, resp, {"state5"})
+    assert out["category"] == "B1_single_witness_lit_true_at_init"
+
+
+def test_classify_rejected_initial_c2_multi_or():
+    fb = {
+        "reason": "rejected_initial",
+        "witness": {"ref": "state5", "next_value": "#b0"},
+        "rejected_json": '{"source_cti_id":"batch_f1_a1","attempt":1,"sample_id":0}',
+    }
+    resp = {
+        "source_cti_id": "batch_f1_a1",
+        "attempt": 1,
+        "sample_id": 0,
+        "block_clauses": [
+            [
+                {"ref": "state5", "op": "eq", "rhs": "1", "polarity": True},
+                {"ref": "state9", "op": "eq", "rhs": "0", "polarity": False},
+            ],
+        ],
+    }
+    out = diag.classify_rejected_initial_entry(fb, resp, {"state5"})
+    assert out["category"] == "C2_multi_or_other_disjunct_at_init"
+
+
 def test_collect_clauses_legacy_and_new():
     resp = {
         "block_clauses": [[{"ref": "state1", "op": "eq", "rhs": "0", "polarity": True}]],

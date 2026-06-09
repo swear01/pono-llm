@@ -1,0 +1,634 @@
+{
+  "total_rejected_initial_feedback": 875,
+  "note": "Categories use the last block_clause in the rejected response (C++ witness source). B2 means witness ref is in that clause but its literal is false at the witness init value \u2014 often init is #b0 while clause uses eq 1 (CTI pattern copied without init check). C2 means multi-disjunct OR where another sibling likely satisfies init.",
+  "categories": {
+    "B2_single_witness_lit_false_at_witness": 565,
+    "C2_multi_or_other_disjunct_at_init": 305,
+    "B1_single_witness_lit_true_at_init": 4,
+    "C1_multi_witness_lit_true_at_init": 1
+  },
+  "category_share_pct": {
+    "B2_single_witness_lit_false_at_witness": 64.6,
+    "C2_multi_or_other_disjunct_at_init": 34.9,
+    "B1_single_witness_lit_true_at_init": 0.5,
+    "C1_multi_witness_lit_true_at_init": 0.1
+  },
+  "init_witness_value_tags": {
+    "init0": 530,
+    "init1": 198,
+    "init_wide": 147
+  },
+  "last_clause_disjunct_counts": {
+    "1": 569,
+    "2": 269,
+    "3": 28,
+    "4": 3,
+    "5": 2,
+    "8": 4
+  },
+  "witness_in_cti": {
+    "in_cti": 819,
+    "not_in_cti": 56
+  },
+  "top_b2_patterns": [
+    [
+      "init0_clause_eq_1_pol_True",
+      221
+    ],
+    [
+      "init0_clause_eq_0_pol_False",
+      122
+    ],
+    [
+      "init1_clause_eq_1_pol_False",
+      66
+    ],
+    [
+      "init1_clause_eq_0_pol_True",
+      52
+    ],
+    [
+      "init_wide_clause_eq_0_pol_False",
+      46
+    ],
+    [
+      "init_wide_clause_eq_1_pol_True",
+      13
+    ],
+    [
+      "init_wide_clause_eq_1_pol_False",
+      13
+    ],
+    [
+      "init_wide_clause_eq_0_pol_True",
+      6
+    ],
+    [
+      "init_wide_clause_eq_3_pol_False",
+      5
+    ],
+    [
+      "init_wide_clause_eq_0000000000000000_pol_False",
+      4
+    ],
+    [
+      "init_wide_clause_eq_00000000_pol_False",
+      3
+    ],
+    [
+      "init_wide_clause_eq_00_pol_False",
+      2
+    ],
+    [
+      "init_wide_clause_eq_01_pol_False",
+      2
+    ],
+    [
+      "init_wide_clause_eq_000000_pol_False",
+      2
+    ],
+    [
+      "init_wide_clause_eq_3_pol_True",
+      2
+    ]
+  ],
+  "by_tier": {
+    "other": {
+      "B2_single_witness_lit_false_at_witness": 294,
+      "C2_multi_or_other_disjunct_at_init": 152
+    },
+    "zipcpu": {
+      "B2_single_witness_lit_false_at_witness": 58,
+      "C2_multi_or_other_disjunct_at_init": 27,
+      "B1_single_witness_lit_true_at_init": 2
+    },
+    "ila": {
+      "B2_single_witness_lit_false_at_witness": 111,
+      "C2_multi_or_other_disjunct_at_init": 58,
+      "B1_single_witness_lit_true_at_init": 2,
+      "C1_multi_witness_lit_true_at_init": 1
+    },
+    "riscv": {
+      "B2_single_witness_lit_false_at_witness": 83,
+      "C2_multi_or_other_disjunct_at_init": 47
+    },
+    "qspiflash": {
+      "B2_single_witness_lit_false_at_witness": 13,
+      "C2_multi_or_other_disjunct_at_init": 11
+    },
+    "microban": {
+      "C2_multi_or_other_disjunct_at_init": 10,
+      "B2_single_witness_lit_false_at_witness": 6
+    }
+  },
+  "examples": {
+    "B2_single_witness_lit_false_at_witness": [
+      {
+        "slug": "2024_bv_cal182",
+        "tier": "other",
+        "batch_id": "batch_f1_a2",
+        "witness": {
+          "ref": "state731",
+          "next_value": "#b0"
+        },
+        "pattern": "init0_clause_eq_1_pol_True",
+        "last_clause": [
+          {
+            "ref": "state731",
+            "op": "eq",
+            "rhs": "1",
+            "polarity": true
+          }
+        ],
+        "response_clauses": 1
+      },
+      {
+        "slug": "2024_bv_cal182",
+        "tier": "other",
+        "batch_id": "batch_f2_a2",
+        "witness": {
+          "ref": "state3448",
+          "next_value": "#b0"
+        },
+        "pattern": "init0_clause_eq_0_pol_False",
+        "last_clause": [
+          {
+            "ref": "state3448",
+            "op": "eq",
+            "rhs": "0",
+            "polarity": false
+          }
+        ],
+        "response_clauses": 3
+      },
+      {
+        "slug": "2024_bv_cal182",
+        "tier": "other",
+        "batch_id": "batch_f1_a3",
+        "witness": {
+          "ref": "state731",
+          "next_value": "#b0"
+        },
+        "pattern": "init0_clause_eq_1_pol_True",
+        "last_clause": [
+          {
+            "ref": "state731",
+            "op": "eq",
+            "rhs": "1",
+            "polarity": true
+          }
+        ],
+        "response_clauses": 1
+      }
+    ],
+    "C2_multi_or_other_disjunct_at_init": [
+      {
+        "slug": "2020_bv_gen44",
+        "tier": "other",
+        "batch_id": "batch_f1_a2",
+        "witness": {
+          "ref": "state50",
+          "next_value": "#b0"
+        },
+        "pattern": null,
+        "last_clause": [
+          {
+            "ref": "state50",
+            "op": "eq",
+            "rhs": "1",
+            "polarity": true
+          },
+          {
+            "ref": "state55",
+            "op": "eq",
+            "rhs": "1",
+            "polarity": true
+          }
+        ],
+        "response_clauses": 1
+      },
+      {
+        "slug": "2020_bv_cal37",
+        "tier": "other",
+        "batch_id": "batch_f1_a2",
+        "witness": {
+          "ref": "state66",
+          "next_value": "#b0"
+        },
+        "pattern": null,
+        "last_clause": [
+          {
+            "ref": "state66",
+            "op": "eq",
+            "rhs": "1",
+            "polarity": true
+          },
+          {
+            "ref": "state377",
+            "op": "eq",
+            "rhs": "0",
+            "polarity": false
+          }
+        ],
+        "response_clauses": 2
+      },
+      {
+        "slug": "2020_bv_cal37",
+        "tier": "other",
+        "batch_id": "batch_f1_a3",
+        "witness": {
+          "ref": "state66",
+          "next_value": "#b0"
+        },
+        "pattern": null,
+        "last_clause": [
+          {
+            "ref": "state66",
+            "op": "eq",
+            "rhs": "1",
+            "polarity": true
+          },
+          {
+            "ref": "state377",
+            "op": "eq",
+            "rhs": "0",
+            "polarity": false
+          }
+        ],
+        "response_clauses": 2
+      }
+    ],
+    "B1_single_witness_lit_true_at_init": [
+      {
+        "slug": "2024_array_zipcpu-zipmmu-p21",
+        "tier": "zipcpu",
+        "batch_id": "batch_f3_a2",
+        "witness": {
+          "ref": "state133",
+          "next_value": "#b0000000000000000"
+        },
+        "pattern": "init_wide_clause_eq_0_pol_True",
+        "last_clause": [
+          {
+            "ref": "state133",
+            "op": "ne",
+            "rhs": "0",
+            "polarity": true
+          }
+        ],
+        "response_clauses": 3
+      },
+      {
+        "slug": "2024_array_zipcpu-zipmmu-p21",
+        "tier": "zipcpu",
+        "batch_id": "batch_f3_a3",
+        "witness": {
+          "ref": "state133",
+          "next_value": "#b0000000000000000"
+        },
+        "pattern": "init_wide_clause_eq_0_pol_True",
+        "last_clause": [
+          {
+            "ref": "state133",
+            "op": "ne",
+            "rhs": "0",
+            "polarity": true
+          }
+        ],
+        "response_clauses": 3
+      },
+      {
+        "slug": "2024_array_ILA_Rocket_JAL_sanity",
+        "tier": "ila",
+        "batch_id": "batch_f1_a2",
+        "witness": {
+          "ref": "state288",
+          "next_value": "#b00000000000000000000000000000000"
+        },
+        "pattern": "init_wide_clause_eq_0_pol_True",
+        "last_clause": [
+          {
+            "ref": "state288",
+            "op": "ne",
+            "rhs": "0",
+            "polarity": true
+          }
+        ],
+        "response_clauses": 3
+      }
+    ],
+    "C1_multi_witness_lit_true_at_init": [
+      {
+        "slug": "2024_array_ILA_Rocket_LW_problem",
+        "tier": "ila",
+        "batch_id": "batch_f2_a3",
+        "witness": {
+          "ref": "state292",
+          "next_value": "#b00000000000000000000000000000000"
+        },
+        "pattern": null,
+        "last_clause": [
+          {
+            "ref": "state292",
+            "op": "ne",
+            "rhs": "0",
+            "polarity": true
+          },
+          {
+            "ref": "state900",
+            "op": "ne",
+            "rhs": "0",
+            "polarity": true
+          }
+        ],
+        "response_clauses": 2
+      }
+    ]
+  },
+  "p040_detail": [
+    {
+      "batch_id": "batch_f1_a2",
+      "attempt": 2,
+      "category": "B2_single_witness_lit_false_at_witness",
+      "witness": {
+        "ref": "state164",
+        "next_value": "#b1"
+      },
+      "last_clause": [
+        {
+          "ref": "state164",
+          "op": "eq",
+          "rhs": "1",
+          "polarity": false
+        }
+      ]
+    },
+    {
+      "batch_id": "batch_f2_a2",
+      "attempt": 2,
+      "category": "B2_single_witness_lit_false_at_witness",
+      "witness": {
+        "ref": "state34",
+        "next_value": "#b1"
+      },
+      "last_clause": [
+        {
+          "ref": "state34",
+          "op": "eq",
+          "rhs": "1",
+          "polarity": false
+        }
+      ]
+    },
+    {
+      "batch_id": "batch_f1_a3",
+      "attempt": 3,
+      "category": "B2_single_witness_lit_false_at_witness",
+      "witness": {
+        "ref": "state164",
+        "next_value": "#b1"
+      },
+      "last_clause": [
+        {
+          "ref": "state164",
+          "op": "eq",
+          "rhs": "1",
+          "polarity": false
+        }
+      ]
+    },
+    {
+      "batch_id": "batch_f1_a3",
+      "attempt": 3,
+      "category": "B2_single_witness_lit_false_at_witness",
+      "witness": {
+        "ref": "state164",
+        "next_value": "#b1"
+      },
+      "last_clause": [
+        {
+          "ref": "state164",
+          "op": "eq",
+          "rhs": "1",
+          "polarity": false
+        }
+      ]
+    },
+    {
+      "batch_id": "batch_f3_a2",
+      "attempt": 2,
+      "category": "B2_single_witness_lit_false_at_witness",
+      "witness": {
+        "ref": "state1480",
+        "next_value": "#b0"
+      },
+      "last_clause": [
+        {
+          "ref": "state1480",
+          "op": "eq",
+          "rhs": "1",
+          "polarity": true
+        }
+      ]
+    },
+    {
+      "batch_id": "batch_f4_a2",
+      "attempt": 2,
+      "category": "B2_single_witness_lit_false_at_witness",
+      "witness": {
+        "ref": "state634",
+        "next_value": "#b0"
+      },
+      "last_clause": [
+        {
+          "ref": "state634",
+          "op": "eq",
+          "rhs": "1",
+          "polarity": true
+        }
+      ]
+    },
+    {
+      "batch_id": "batch_f2_a3",
+      "attempt": 3,
+      "category": "B2_single_witness_lit_false_at_witness",
+      "witness": {
+        "ref": "state34",
+        "next_value": "#b1"
+      },
+      "last_clause": [
+        {
+          "ref": "state34",
+          "op": "eq",
+          "rhs": "1",
+          "polarity": false
+        }
+      ]
+    },
+    {
+      "batch_id": "batch_f2_a3",
+      "attempt": 3,
+      "category": "B2_single_witness_lit_false_at_witness",
+      "witness": {
+        "ref": "state34",
+        "next_value": "#b1"
+      },
+      "last_clause": [
+        {
+          "ref": "state34",
+          "op": "eq",
+          "rhs": "1",
+          "polarity": false
+        }
+      ]
+    },
+    {
+      "batch_id": "batch_f3_a3",
+      "attempt": 3,
+      "category": "B2_single_witness_lit_false_at_witness",
+      "witness": {
+        "ref": "state1480",
+        "next_value": "#b0"
+      },
+      "last_clause": [
+        {
+          "ref": "state1480",
+          "op": "eq",
+          "rhs": "1",
+          "polarity": true
+        }
+      ]
+    },
+    {
+      "batch_id": "batch_f3_a3",
+      "attempt": 3,
+      "category": "B2_single_witness_lit_false_at_witness",
+      "witness": {
+        "ref": "state1480",
+        "next_value": "#b0"
+      },
+      "last_clause": [
+        {
+          "ref": "state1480",
+          "op": "eq",
+          "rhs": "0",
+          "polarity": false
+        }
+      ]
+    },
+    {
+      "batch_id": "batch_f5_a2",
+      "attempt": 2,
+      "category": "C2_multi_or_other_disjunct_at_init",
+      "witness": {
+        "ref": "state74",
+        "next_value": "#b0"
+      },
+      "last_clause": [
+        {
+          "ref": "state74",
+          "op": "eq",
+          "rhs": "0",
+          "polarity": false
+        },
+        {
+          "ref": "state107",
+          "op": "eq",
+          "rhs": "0",
+          "polarity": false
+        }
+      ]
+    },
+    {
+      "batch_id": "batch_f4_a3",
+      "attempt": 3,
+      "category": "B2_single_witness_lit_false_at_witness",
+      "witness": {
+        "ref": "state634",
+        "next_value": "#b0"
+      },
+      "last_clause": [
+        {
+          "ref": "state634",
+          "op": "eq",
+          "rhs": "1",
+          "polarity": true
+        }
+      ]
+    },
+    {
+      "batch_id": "batch_f7_a2",
+      "attempt": 2,
+      "category": "B2_single_witness_lit_false_at_witness",
+      "witness": {
+        "ref": "state634",
+        "next_value": "#b0"
+      },
+      "last_clause": [
+        {
+          "ref": "state634",
+          "op": "eq",
+          "rhs": "1",
+          "polarity": true
+        }
+      ]
+    },
+    {
+      "batch_id": "batch_f5_a3",
+      "attempt": 3,
+      "category": "C2_multi_or_other_disjunct_at_init",
+      "witness": {
+        "ref": "state74",
+        "next_value": "#b0"
+      },
+      "last_clause": [
+        {
+          "ref": "state74",
+          "op": "eq",
+          "rhs": "0",
+          "polarity": false
+        },
+        {
+          "ref": "state107",
+          "op": "eq",
+          "rhs": "0",
+          "polarity": false
+        }
+      ]
+    },
+    {
+      "batch_id": "batch_f5_a3",
+      "attempt": 3,
+      "category": "C2_multi_or_other_disjunct_at_init",
+      "witness": {
+        "ref": "state74",
+        "next_value": "#b0"
+      },
+      "last_clause": [
+        {
+          "ref": "state74",
+          "op": "eq",
+          "rhs": "1",
+          "polarity": true
+        },
+        {
+          "ref": "state107",
+          "op": "eq",
+          "rhs": "0",
+          "polarity": false
+        }
+      ]
+    }
+  ],
+  "interpretation": {
+    "C2_or_bloat": "34.9% \u2014 reduce OR width; max_block_clauses=1; single disjunct from digest top-1",
+    "B1_direct_init_match": "0.5% \u2014 clause equals init (e.g. state=0 when init=0); add explicit anti-init examples",
+    "B2_cti_on_init_mismatch": "64.6% \u2014 single disjunct looks CTI-shaped but init witness differs (top: init0 + eq 1)",
+    "witness_not_in_cti": "56 entries (6.4%)"
+  },
+  "recommended_instrumentation": [
+    "C++ feedback: include clause_idx + full failed_clause disjuncts",
+    "C++ feedback: include which disjunct satisfied init (SAT model)",
+    "Prompt: init0 common \u2014 forbid pol=true,rhs=1 when witness shows state=0 at init"
+  ]
+}

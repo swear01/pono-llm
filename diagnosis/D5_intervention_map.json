@@ -7,8 +7,18 @@
   "interventions": [
     {
       "priority": 1,
+      "action": "Q2.4 + narrow OR: max_block_clauses=1; ban unrelated refs in same clause",
+      "expected_impact": "high \u2014 C2 OR-bloat 34.9%"
+    },
+    {
+      "priority": 1,
       "action": "Q2.1/Q2.3: ban init-true literals; force single-disjunct / negate digest top-1",
       "expected_impact": "high on rejected_initial"
+    },
+    {
+      "priority": 1,
+      "action": "Q2.1 init-aware: init0 forbid pol=true,rhs=1; require witness ref init check",
+      "expected_impact": "high \u2014 B2 CTI/init mismatch 64.6%"
     },
     {
       "priority": 2,
@@ -21,5 +31,11 @@
       "expected_impact": "medium \u2014 improve retry on attempt 2/3"
     }
   ],
+  "d3b_highlights": {
+    "C2_or_bloat": "34.9% \u2014 reduce OR width; max_block_clauses=1; single disjunct from digest top-1",
+    "B1_direct_init_match": "0.5% \u2014 clause equals init (e.g. state=0 when init=0); add explicit anti-init examples",
+    "B2_cti_on_init_mismatch": "64.6% \u2014 single disjunct looks CTI-shaped but init witness differs (top: init0 + eq 1)",
+    "witness_not_in_cti": "56 entries (6.4%)"
+  },
   "d4_go_no_go": "mixed"
 }

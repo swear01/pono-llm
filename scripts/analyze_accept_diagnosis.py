@@ -375,6 +375,125 @@ def analyze_responses(art: BenchArtifacts) -> dict[str, Any]:
     }
 
 
+def parse_witness_value_tag(val: str) -> str:
+    v = str(val)
+    if v in ("#b0", "0", "false"):
+        return "init0"
+    if v in ("#b1", "1", "true"):
+        return "init1"
+    return "init_wide"
+
+
+def disjunct_true_at_witness_ref(
+    dj: dict[str, Any], witness_ref: str, witness_val: str
+) -> bool | None:
+    """Heuristic: is this disjunct true when witness_ref has witness_val at init?"""
+    if dj.get("ref") != witness_ref:
+        return None
+    rv = parse_val(dj.get("rhs", ""))
+    wv = parse_val(witness_val)
+    if isinstance(rv, int) and isinstance(wv, int):
+        eq = rv == wv
+    else:
+        eq = str(rv) == str(wv)
+    pol = dj.get("polarity", True)
+    return eq if pol else (not eq)
+
+
+def cti_refs_from_request(req: dict[str, Any]) -> set[str]:
+    refs: set[str] = set()
+    for ent in req.get("cti_entries") or []:
+        cti = ent.get("cti") or {}
+        for lit in (cti.get("cube") or {}).get("literals") or []:
+            atom = lit.get("atom") or {}
+            if atom.get("ref"):
+                refs.add(str(atom["ref"]))
+        for lit in ent.get("literals") or []:
+            m = re.search(r"((?:state|input)\d+)", str(lit))
+            if m:
+                refs.add(m.group(1))
+    for row in (req.get("cti_digest") or {}).get("literal_stats") or []:
+        m = re.search(r"((?:state|input)\d+)", str(row.get("lit", "")))
+        if m:
+            refs.add(m.group(1))
+    return refs
+
+
+def parse_val(val: str) -> int | str:
+    v = str(val)
+    if v.startswith("#b"):
+        return int(v[2:] or "0", 2)
+    if v in ("true", "false"):
+        return 1 if v == "true" else 0
+    try:
+        return int(v)
+    except ValueError:
+        return v
+
+
+def classify_rejected_initial_entry(
+    fb: dict[str, Any],
+    resp: dict[str, Any] | None,
+    cti_refs: set[str],
+) -> dict[str, Any]:
+    wit = fb.get("witness") or {}
+    wref = str(wit.get("ref") or "")
+    wval = str(wit.get("next_value") or "")
+    if not wref:
+        return {"category": "no_witness"}
+    if not resp:
+        return {"category": "no_response_match", "witness": wit}
+
+    clauses = collect_clauses(resp)
+    if not clauses:
+        return {"category": "empty_response", "witness": wit}
+
+    last_clause = clauses[-1]
+    refs_in_last = {str(d.get("ref") or "") for d in last_clause}
+    wit_in_cti = wref in cti_refs
+    wit_disjuncts = [d for d in last_clause if d.get("ref") == wref]
+    wit_lit_true = any(
+        disjunct_true_at_witness_ref(d, wref, wval) is True for d in wit_disjuncts
+    )
+
+    if wref not in refs_in_last:
+        cat = "A_witness_not_in_last_clause"
+    elif len(last_clause) == 1:
+        cat = (
+            "B1_single_witness_lit_true_at_init"
+            if wit_lit_true
+            else "B2_single_witness_lit_false_at_witness"
+        )
+    elif wit_lit_true:
+        cat = "C1_multi_witness_lit_true_at_init"
+    else:
+        cat = "C2_multi_or_other_disjunct_at_init"
+
+    dj = last_clause[0] if len(last_clause) == 1 else None
+    pattern = None
+    if cat == "B1_single_witness_lit_true_at_init" and dj:
+        pattern = (
+            f"{parse_witness_value_tag(wval)}_clause_eq_{dj.get('rhs')}_pol_{dj.get('polarity', True)}"
+        )
+    elif cat == "B2_single_witness_lit_false_at_witness" and dj:
+        pattern = (
+            f"{parse_witness_value_tag(wval)}_clause_eq_{str(dj.get('rhs'))[:16]}"
+            f"_pol_{dj.get('polarity', True)}"
+        )
+
+    return {
+        "category": cat,
+        "witness": wit,
+        "witness_in_cti": wit_in_cti,
+        "last_clause_disjuncts": len(last_clause),
+        "response_clauses": len(clauses),
+        "pattern": pattern,
+        "last_clause": last_clause,
+        "source_cti_id": resp.get("source_cti_id"),
+        "attempt": resp.get("attempt"),
+    }
+
+
 def analyze_feedback(art: BenchArtifacts) -> dict[str, Any]:
     reason_counts: Counter[str] = Counter()
     witness_refs: Counter[str] = Counter()
@@ -496,6 +615,128 @@ def phase_d3(csv_rows: list[CsvRow], archive: Path) -> dict[str, Any]:
     }
 
 
+def phase_d3b(csv_rows: list[CsvRow], archive: Path) -> dict[str, Any]:
+    """Fine-grained rejected_initial / init-semantics taxonomy from feedback+responses."""
+    with_req = [r for r in csv_rows if r.requests > 0]
+    categories: Counter[str] = Counter()
+    patterns: Counter[str] = Counter()
+    init_val_tags: Counter[str] = Counter()
+    last_clause_sizes: Counter[int] = Counter()
+    witness_in_cti: Counter[str] = Counter()
+    by_tier: dict[str, Counter[str]] = defaultdict(Counter)
+    examples: dict[str, list[dict[str, Any]]] = defaultdict(list)
+    p040_rows: list[dict[str, Any]] = []
+
+    total_ri = 0
+    for row in with_req:
+        art = load_bench_artifacts(archive, row.slug)
+        if not art.requests:
+            continue
+        resps = {
+            (
+                r.get("source_cti_id"),
+                int(r.get("attempt") or 1),
+                int(r.get("sample_id") or 0),
+            ): r
+            for r in art.responses
+        }
+        for req in art.requests:
+            cti = cti_refs_from_request(req)
+            for fb in req.get("feedback") or []:
+                if fb.get("reason") != "rejected_initial":
+                    continue
+                total_ri += 1
+                try:
+                    meta = json.loads(fb.get("rejected_json") or "{}")
+                except json.JSONDecodeError:
+                    meta = {}
+                resp = resps.get(
+                    (
+                        meta.get("source_cti_id"),
+                        int(meta.get("attempt") or 1),
+                        int(meta.get("sample_id") or 0),
+                    )
+                )
+                entry = classify_rejected_initial_entry(fb, resp, cti)
+                cat = entry["category"]
+                categories[cat] += 1
+                by_tier[row.tier][cat] += 1
+                wit = entry.get("witness") or {}
+                init_val_tags[parse_witness_value_tag(str(wit.get("next_value", "")))] += 1
+                if entry.get("pattern"):
+                    patterns[entry["pattern"]] += 1
+                if entry.get("last_clause_disjuncts"):
+                    last_clause_sizes[int(entry["last_clause_disjuncts"])] += 1
+                witness_in_cti["in_cti" if entry.get("witness_in_cti") else "not_in_cti"] += 1
+                if len(examples[cat]) < 3:
+                    examples[cat].append(
+                        {
+                            "slug": row.slug,
+                            "tier": row.tier,
+                            "batch_id": req.get("batch_id"),
+                            "witness": wit,
+                            "pattern": entry.get("pattern"),
+                            "last_clause": entry.get("last_clause"),
+                            "response_clauses": entry.get("response_clauses"),
+                        }
+                    )
+                if row.slug.endswith("p040"):
+                    p040_rows.append(
+                        {
+                            "batch_id": req.get("batch_id"),
+                            "attempt": req.get("attempt"),
+                            "category": cat,
+                            "witness": wit,
+                            "last_clause": entry.get("last_clause"),
+                        }
+                    )
+
+    def share(cat: str) -> float:
+        return round(100.0 * categories[cat] / total_ri, 1) if total_ri else 0.0
+
+    return {
+        "total_rejected_initial_feedback": total_ri,
+        "note": (
+            "Categories use the last block_clause in the rejected response (C++ witness "
+            "source). B2 means witness ref is in that clause but its literal is false at "
+            "the witness init value — often init is #b0 while clause uses eq 1 (CTI pattern "
+            "copied without init check). C2 means multi-disjunct OR where another sibling "
+            "likely satisfies init."
+        ),
+        "categories": dict(categories.most_common()),
+        "category_share_pct": {k: share(k) for k in categories},
+        "init_witness_value_tags": dict(init_val_tags.most_common()),
+        "last_clause_disjunct_counts": dict(sorted(last_clause_sizes.items())),
+        "witness_in_cti": dict(witness_in_cti),
+        "top_b2_patterns": patterns.most_common(15),
+        "by_tier": {tier: dict(cnt.most_common()) for tier, cnt in by_tier.items()},
+        "examples": dict(examples),
+        "p040_detail": p040_rows,
+        "interpretation": {
+            "C2_or_bloat": (
+                f"{share('C2_multi_or_other_disjunct_at_init')}% — reduce OR width; "
+                "max_block_clauses=1; single disjunct from digest top-1"
+            ),
+            "B1_direct_init_match": (
+                f"{share('B1_single_witness_lit_true_at_init')}% — clause equals init "
+                "(e.g. state=0 when init=0); add explicit anti-init examples"
+            ),
+            "B2_cti_on_init_mismatch": (
+                f"{share('B2_single_witness_lit_false_at_witness')}% — single disjunct "
+                "looks CTI-shaped but init witness differs (top: init0 + eq 1)"
+            ),
+            "witness_not_in_cti": (
+                f"{witness_in_cti.get('not_in_cti', 0)} entries ({round(100*witness_in_cti.get('not_in_cti',0)/max(total_ri,1),1)}%)"
+            ),
+        },
+        "recommended_instrumentation": [
+            "C++ feedback: include clause_idx + full failed_clause disjuncts",
+            "C++ feedback: include which disjunct satisfied init (SAT model)",
+            "Prompt: init0 common — forbid pol=true,rhs=1 when witness shows state=0 at init",
+        ],
+    }
+
+
 def phase_d4(csv_rows: list[CsvRow], archive: Path, d1: dict[str, Any]) -> dict[str, Any]:
     """Heuristic ceiling analysis (offline; does not re-run C++ verifier)."""
     with_req = [r for r in csv_rows if r.requests > 0]
@@ -567,8 +808,14 @@ def phase_d4(csv_rows: list[CsvRow], archive: Path, d1: dict[str, Any]) -> dict[
     }
 
 
-def phase_d5(d1: dict[str, Any], d3: dict[str, Any], d4: dict[str, Any]) -> dict[str, Any]:
+def phase_d5(
+    d1: dict[str, Any],
+    d3: dict[str, Any],
+    d3b: dict[str, Any],
+    d4: dict[str, Any],
+) -> dict[str, Any]:
     ri_share = (d3.get("reason_share_pct") or {}).get("rejected_initial", 0)
+    cat_share = d3b.get("category_share_pct") or {}
     interventions = []
     if ri_share >= 60:
         interventions.append(
@@ -577,6 +824,23 @@ def phase_d5(d1: dict[str, Any], d3: dict[str, Any], d4: dict[str, Any]) -> dict
                 "action": "Q2.1/Q2.3: ban init-true literals; force single-disjunct / negate digest top-1",
                 "expected_impact": "high on rejected_initial",
             }
+        )
+    if cat_share.get("C2_multi_or_other_disjunct_at_init", 0) >= 20:
+        interventions.insert(
+            0,
+            {
+                "priority": 1,
+                "action": "Q2.4 + narrow OR: max_block_clauses=1; ban unrelated refs in same clause",
+                "expected_impact": f"high — C2 OR-bloat {cat_share.get('C2_multi_or_other_disjunct_at_init')}%",
+            },
+        )
+    if cat_share.get("B2_single_witness_lit_false_at_witness", 0) >= 30:
+        interventions.append(
+            {
+                "priority": 1,
+                "action": "Q2.1 init-aware: init0 forbid pol=true,rhs=1; require witness ref init check",
+                "expected_impact": f"high — B2 CTI/init mismatch {cat_share.get('B2_single_witness_lit_false_at_witness')}%",
+            },
         )
     if d4["heuristic_ceiling"]["mean_multi_clause_response_pct"] > 30:
         interventions.append(
@@ -609,6 +873,7 @@ def phase_d5(d1: dict[str, Any], d3: dict[str, Any], d4: dict[str, Any]) -> dict
             "global_phase_a_prime": "accept/request >= 40% only if D4 go_no_go allows",
         },
         "interventions": interventions,
+        "d3b_highlights": d3b.get("interpretation"),
         "d4_go_no_go": d4["go_no_go"],
     }
 
@@ -619,6 +884,7 @@ def write_markdown_summary(
     d1: dict[str, Any],
     d2: dict[str, Any],
     d3: dict[str, Any],
+    d3b: dict[str, Any],
     d4: dict[str, Any],
     d5: dict[str, Any],
 ) -> None:
@@ -671,6 +937,18 @@ def write_markdown_summary(
     ):
         lines.append(f"- {reason}: **{pct}%**")
 
+    lines.extend(["", "## D3b Init semantics (rejected_initial detail)", ""])
+    for cat, pct in sorted(
+        (d3b.get("category_share_pct") or {}).items(), key=lambda x: -x[1]
+    ):
+        lines.append(f"- {cat}: **{pct}%**")
+    interp = d3b.get("interpretation") or {}
+    for _key, text in interp.items():
+        lines.append(f"- {text}")
+    lines.append(
+        f"- Init witness tags: `{d3b.get('init_witness_value_tags')}`"
+    )
+
     lines.extend(
         [
             "",
@@ -705,7 +983,7 @@ def main() -> int:
     parser.add_argument("--output", type=Path, default=Path("diagnosis"))
     parser.add_argument(
         "--phase",
-        choices=["d0", "d1", "d2", "d3", "d4", "d5", "all"],
+        choices=["d0", "d1", "d2", "d3", "d3b", "d4", "d5", "all"],
         default="all",
     )
     args = parser.parse_args()
@@ -734,6 +1012,11 @@ def main() -> int:
         (args.output / "D3_failure_taxonomy.json").write_text(
             json.dumps(results["d3"], indent=2) + "\n"
         )
+    if args.phase in ("d3b", "all"):
+        results["d3b"] = phase_d3b(csv_rows, args.archive)
+        (args.output / "D3b_init_semantics.json").write_text(
+            json.dumps(results["d3b"], indent=2) + "\n"
+        )
     if args.phase in ("d4", "all"):
         d1 = results.get("d1") or phase_d1(csv_rows)
         results["d4"] = phase_d4(csv_rows, args.archive, d1)
@@ -743,8 +1026,9 @@ def main() -> int:
     if args.phase in ("d5", "all"):
         d1 = results.get("d1") or phase_d1(csv_rows)
         d3 = results.get("d3") or phase_d3(csv_rows, args.archive)
+        d3b = results.get("d3b") or phase_d3b(csv_rows, args.archive)
         d4 = results.get("d4") or phase_d4(csv_rows, args.archive, d1)
-        results["d5"] = phase_d5(d1, d3, d4)
+        results["d5"] = phase_d5(d1, d3, d3b, d4)
         (args.output / "D5_intervention_map.json").write_text(
             json.dumps(results["d5"], indent=2) + "\n"
         )
@@ -756,6 +1040,7 @@ def main() -> int:
             results["d1"],
             results["d2"],
             results["d3"],
+            results["d3b"],
             results["d4"],
             results["d5"],
         )
