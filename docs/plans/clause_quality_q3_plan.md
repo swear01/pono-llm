@@ -55,8 +55,8 @@
 | ID | 內容 | 檔案 | 依賴 |
 |----|------|------|------|
 | **Q3.0** | 5 輪 p040 + 11 案子集 re-baseline（HEAD 預設） | `scripts/ab_q3_subset_multiround.sh` | — |
-| **Q3.1** | Witness 修復模板：`init0`→禁 `ref=1 pol T`；feedback 附 `init_check: ref=witness_val` | `prompt_format.py`, `ic3_frame_v1.txt` | — |
-| **Q3.2** | Digest 導向：「用高頻 literal 的 **否定** 做單一 disjunct，勿照搬 CTI cube」 | `prompt_format.py`, `sidecar.py` | — |
+| **Q3.1** | Witness 修復模板：`init0`→禁 `ref=1 pol T`；feedback 附 `INIT_CHECK` / `FORBIDDEN` | `prompt_format.py`, `ic3_frame_v1.txt` | [詳規](clause_quality_q3_1_q3_2_plan.md) |
+| **Q3.2** | Digest top-1 **機械否定** + `FORBIDDEN` 抄襲列表 | `prompt_format.py`, `sidecar.py` | [詳規](clause_quality_q3_1_q3_2_plan.md) |
 | **Q3.3** | 每 clause ≤1 disjunct（prompt 硬規則 + 範例）；保留 mbc=3 作策略多樣性 | `ic3_frame_v1.txt` | 與 Q3.2 同批 |
 | **Q3.4** | `_negative_stats_from_feedback` 併入 `format_frame_snapshot`（attempt≥2） | `prompt_format.py` | Q2.3 已有 JSON |
 | **Q3.5** | 11 案子集 harness（來自 `analyze_accept_diagnosis.py` D1 `zero_accept_high_reject_subset`） | `scripts/`, `docs/` | Q3.0 |

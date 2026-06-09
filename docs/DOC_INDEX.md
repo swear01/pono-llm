@@ -41,6 +41,7 @@ Last updated: 2026-06-09 (Q2 shipped; Q3 clause quality plan)
 | [`plans/phase_a_postmortem_plan.md`](plans/phase_a_postmortem_plan.md) | **Phase A 事後分析** — batch_timeouts、accept 低、24 案 regression 計劃 |
 | [`plans/clause_quality_q2_plan.md`](plans/clause_quality_q2_plan.md) | **Phase Q2**（tag `post-q2-clause-quality`）— init prompt、enriched feedback |
 | [`plans/clause_quality_q3_plan.md`](plans/clause_quality_q3_plan.md) | **Phase Q3** — witness 模板、digest 否定、11 案子集 5 輪 gate |
+| [`plans/clause_quality_q3_1_q3_2_plan.md`](plans/clause_quality_q3_1_q3_2_plan.md) | **Q3.1+Q3.2 詳規** — FORBIDDEN 規則表、digest negate、A/B 門檻 |
 | [`diagnosis/Q2_current_method_summary.md`](../diagnosis/Q2_current_method_summary.md) | Q2 現行方法 p040 smoke 失敗模式（B2 100%、CTI 抄襲 98%） |
 
 ---
