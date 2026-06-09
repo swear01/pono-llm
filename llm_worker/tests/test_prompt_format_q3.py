@@ -8,6 +8,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from prompt_format import (
     _failed_clause_from_rejected_json,
+    _is_forbidden_witness_block_disjunct,
     collect_forbidden_positive_literals,
     disjunct_equals,
     forbidden_disjuncts_for_witness,
@@ -269,6 +270,77 @@ def test_build_user_prompt_includes_digest_hints():
     prompt = build_user_prompt(req, {}, 0)
     assert "Digest-derived block hints" in prompt
     assert "!state44=1" in prompt
+
+
+def test_digest_hints_skip_witness_forbidden_on_retry():
+    """Q3.2 must not suggest !state24=1 when init1 witness forbids it."""
+    req = {
+        "attempt": 2,
+        "cti_entries": [
+            {
+                "cti_id": "c1",
+                "cti": {
+                    "cube": {
+                        "literals": [
+                            {"atom": {"ref": "state24", "rhs": "#b1"}, "polarity": True},
+                            {"atom": {"ref": "state34", "rhs": "#b0"}, "polarity": True},
+                        ]
+                    }
+                },
+            }
+        ],
+        "feedback": [
+            {
+                "reason": "rejected_initial",
+                "witness": {"ref": "state24", "next_value": "#b1"},
+                "rejected_json": "{}",
+            }
+        ],
+    }
+    text = format_digest_block_hints(req)
+    assert "!state24=1" not in text
+    assert "!state34=0" in text
+    assert "witness-safe" in text.lower() or "FORBIDDEN" in text
+
+
+def test_pick_digest_literal_lines_skip_witness_forbidden():
+    req = {
+        "cti_digest": {
+            "literal_stats": [
+                {"lit": "state24=#b1", "count": 10},
+                {"lit": "state34=#b0", "count": 8},
+            ]
+        },
+        "feedback": [
+            {
+                "reason": "rejected_initial",
+                "witness": {"ref": "state24", "next_value": "#b1"},
+            }
+        ],
+    }
+    lits = pick_digest_literal_lines(req, max_n=3, skip_witness_forbidden=True)
+    assert lits == ["state34=#b0"]
+    dj = negate_digest_lit_to_disjunct("state24=#b1")
+    assert _is_forbidden_witness_block_disjunct(dj, req)
+
+
+def test_suggest_digest_negation_avoids_witness_forbidden_fallback():
+    req = {
+        "cti_digest": {"literal_stats": [{"lit": "state24=#b1", "count": 5}]},
+        "feedback": [
+            {
+                "reason": "rejected_initial",
+                "witness": {"ref": "state24", "next_value": "#b1"},
+            }
+        ],
+    }
+    lines = format_witness_repair_lines(
+        req["feedback"][0],
+        req=req,
+    )
+    joined = "\n".join(lines)
+    assert "!state24=1" not in joined.split("SUGGESTED")[-1]
+    assert "different from witness" in joined or "state24" not in joined.split("SUGGESTED")[-1]
 
 
 def test_build_batch_user_prompt_includes_witness_repair_on_retry():

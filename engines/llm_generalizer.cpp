@@ -696,18 +696,19 @@ void LLMGeneralizer::write_batch_request(size_t frame_idx,
     return buf.str();
   };
 
-  string line = serialize_line(export_indices, digest_json);
-  if (opts_.llm_cti_digest_
-      && line.size() > opts_.llm_batch_max_json_bytes_) {
+  string line;
+  if (opts_.llm_cti_digest_) {
+    // Always attach cti_digest (Q3.2 needs stats on every attempt, including retries).
     size_t max_cubes = opts_.llm_cti_digest_max_cubes_;
-    for (int shrink = 0; shrink < 4 && max_cubes > 0; ++shrink) {
+    for (int shrink = 0; shrink < 5 && max_cubes > 0; ++shrink) {
       build_cti_digest(buffered, export_indices, digest_json, max_cubes);
       line = serialize_line(export_indices, digest_json);
       if (line.size() <= opts_.llm_batch_max_json_bytes_) break;
       if (max_cubes <= 1) break;
-      max_cubes = max_cubes / 2;
-      if (max_cubes < 1) max_cubes = 1;
+      max_cubes = std::max(max_cubes / 2, size_t(1));
     }
+  } else {
+    line = serialize_line(export_indices, digest_json);
   }
 
   if (!append_jsonl_line(request_path_, line)) {

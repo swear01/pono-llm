@@ -178,10 +178,28 @@ def _format_disjunct_json(dj: dict[str, Any]) -> str:
     return json.dumps(compact, separators=(",", ":"))
 
 
+def _is_forbidden_witness_block_disjunct(dj: dict[str, Any], req: dict | None) -> bool:
+    """True when disjunct matches Q3.1 init FORBIDDEN template for any RI witness."""
+    if not req:
+        return False
+    for fb in req.get("feedback") or []:
+        if fb.get("reason") != "rejected_initial":
+            continue
+        wit = fb.get("witness") or {}
+        wref = str(wit.get("ref") or "")
+        wval = str(wit.get("next_value") or "")
+        if not wref or not wval:
+            continue
+        for tmpl in forbidden_disjuncts_for_witness(wref, wval):
+            if disjunct_equals(dj, tmpl):
+                return True
+    return False
+
+
 def _suggest_digest_negation(req: dict | None, witness_ref: str) -> str | None:
     if not req:
         return None
-    for lit in pick_digest_literal_lines(req, max_n=5):
+    for lit in pick_digest_literal_lines(req, max_n=5, skip_witness_forbidden=True):
         dj = negate_digest_lit_to_disjunct(lit)
         if not dj:
             continue
@@ -189,16 +207,10 @@ def _suggest_digest_negation(req: dict | None, witness_ref: str) -> str | None:
         if ref and ref != witness_ref:
             line = format_literal_line(ref, str(dj.get("rhs", "")), bool(dj.get("polarity", True)))
             return f"      SUGGESTED: digest negation {line} (JSON: {_format_disjunct_json(dj)})"
-    for lit in pick_digest_literal_lines(req, max_n=1):
-        dj = negate_digest_lit_to_disjunct(lit)
-        if dj:
-            line = format_literal_line(
-                str(dj.get("ref", "")),
-                str(dj.get("rhs", "")),
-                bool(dj.get("polarity", True)),
-            )
-            return f"      SUGGESTED: digest top-1 negation {line} (JSON: {_format_disjunct_json(dj)})"
-    return "      SUGGESTED: use a different ref from digest stats (not the witness ref)."
+    return (
+        "      SUGGESTED: digest negation on a ref different from witness "
+        "(never repeat feedback FORBIDDEN shapes)."
+    )
 
 
 def format_witness_repair_lines(
@@ -305,16 +317,31 @@ def _literal_line_from_cube(req: dict) -> list[str]:
     return lines
 
 
-def pick_digest_literal_lines(req: dict, max_n: int = 3) -> list[str]:
+def pick_digest_literal_lines(
+    req: dict,
+    max_n: int = 3,
+    *,
+    skip_witness_forbidden: bool = False,
+) -> list[str]:
     stats = (req.get("cti_digest") or {}).get("literal_stats") or []
     simple: list[str] = []
     for row in stats:
         lit = str(row.get("lit", "")).strip()
         if parse_digest_lit_line(lit):
             simple.append(lit)
-    if simple:
-        return simple[:max_n]
-    return _literal_line_from_cube(req)[:max_n]
+    candidates = simple if simple else _literal_line_from_cube(req)
+    if not skip_witness_forbidden:
+        return candidates[:max_n]
+
+    picked: list[str] = []
+    for lit in candidates:
+        dj = negate_digest_lit_to_disjunct(lit)
+        if dj and _is_forbidden_witness_block_disjunct(dj, req):
+            continue
+        picked.append(lit)
+        if len(picked) >= max_n:
+            break
+    return picked
 
 
 def collect_forbidden_positive_literals(req: dict, n: int = 5) -> list[str]:
@@ -331,18 +358,27 @@ def collect_forbidden_positive_literals(req: dict, n: int = 5) -> list[str]:
 
 def format_digest_block_hints(req: dict, max_hints: int = 3) -> str:
     """Q3.2 digest top-N negation suggestions for block clauses."""
-    lits = pick_digest_literal_lines(req, max_n=max_hints)
-    if not lits:
-        return ""
+    has_ri_feedback = any(
+        fb.get("reason") == "rejected_initial" for fb in req.get("feedback") or []
+    )
+    lits = pick_digest_literal_lines(
+        req, max_n=max_hints, skip_witness_forbidden=has_ri_feedback
+    )
 
     lines = [
         "Digest-derived block hints (primary strategy):",
         "  - Block must be FALSE on every CTI cube: negate high-frequency digest literals.",
         "  - Do NOT emit any disjunct identical to a positive CTI/digest literal below.",
     ]
+    if has_ri_feedback:
+        lines.append(
+            "  - Do NOT negate witness refs into shapes listed under feedback FORBIDDEN."
+        )
+
+    hint_rows = 0
     for i, lit in enumerate(lits, start=1):
         dj = negate_digest_lit_to_disjunct(lit)
-        if not dj:
+        if not dj or _is_forbidden_witness_block_disjunct(dj, req):
             continue
         block_line = format_literal_line(
             str(dj.get("ref", "")),
@@ -358,12 +394,19 @@ def format_digest_block_hints(req: dict, max_hints: int = 3) -> str:
         lines.append(f"  top-{i} CTI literal: {lit}{count}")
         lines.append(f"    suggested block disjunct: {block_line}")
         lines.append(f"    JSON: {_format_disjunct_json(dj)}")
+        hint_rows += 1
+
+    if has_ri_feedback and hint_rows == 0:
+        lines.append(
+            "  - No witness-safe digest negation among top literals; "
+            "use a different ref from digest stats or frame clause_digest."
+        )
 
     forbidden = collect_forbidden_positive_literals(req, n=5)
     if forbidden:
         lines.append("  FORBIDDEN (do not copy as block disjunct): " + " | ".join(forbidden))
 
-    if len(lines) <= 3:
+    if len(lines) <= 3 or (hint_rows == 0 and not forbidden):
         return ""
     return "\n".join(lines)
 
