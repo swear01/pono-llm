@@ -21,7 +21,9 @@ Canonical spec: [`ic3_frame_v1_integration.md`](ic3_frame_v1_integration.md)
 **Q4 plan:** [`plans/clause_quality_q4_harness_plan.md`](plans/clause_quality_q4_harness_plan.md)  
 Doc index: [`DOC_INDEX.md`](DOC_INDEX.md)
 
-LLM runs **online** during IC3IA proof: CTI → structured JSON → `rel_ind_check` → `constrain_frame` / `add_predicate`. **Q4 harness 完成**：ordered task card + C++ `init_raw` / `candidate_hints` / `feedback_raw`；sidecar `--harness-legacy` 供 A/B；`scripts/ab_q4_p040_multiround.sh` 驗收。下一步：跑 5-round smoke 看 accept/rej_init 是否達標。
+LLM runs **online** during IC3IA proof: CTI → structured JSON → `rel_ind_check` → `constrain_frame` / `add_predicate`. **Q4 harness 完成**：ordered task card + C++ `init_raw` / `candidate_hints` / `feedback_raw`；sidecar `--harness-legacy` 供 A/B；`scripts/ab_q4_p040_multiround.sh` 驗收。
+
+**2026-06-10 fix:** pono 既有 `ProofGoalQueue::clear()` UAF（`block_all` trace 路徑）— 見 [`BUG_ANALYSIS.md`](BUG_ANALYSIS.md) Bug #6；smoke 開頭會 `make pono-bin` 避免 stale libpono.so。
 
 **Legacy runtime (`cube_subset`, `qf_smt`, `PONO_LLM_ASSERT_LIFTED_LEMMAS`) will be deleted** when v1 lands — not deprecated.
 

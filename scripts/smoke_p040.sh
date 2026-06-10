@@ -29,6 +29,8 @@ if [[ ! -x "$ROOT/build/pono" ]]; then
   echo "ERROR: build/pono missing — run cmake build in $ROOT/build" >&2
   exit 1
 fi
+# Keep pono-bin and libpono.so in sync (stale .so → false segfaults in log_stats).
+make -C "$ROOT/build" -j"$(nproc)" pono-bin >/dev/null
 if [[ ! -f "$BTOR" ]]; then
   echo "ERROR: benchmark not found: $BTOR" >&2
   exit 1

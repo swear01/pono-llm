@@ -101,7 +101,19 @@ stderr=subprocess.DEVNULL,
 
 ---
 
-## Bug #6 (MODERATE): `process_llm_candidates()` 被呼叫的頻率太低
+## Bug #6 (CRITICAL, **已修 2026-06-10**): `ProofGoalQueue::clear()` use-after-free
+
+**位置**: `engines/ic3base.cpp` `ProofGoalQueue::clear()`；觸發於 `IC3Base::block_all()` → `reconstruct_trace()` 後 `proof_goals.clear()`。
+
+**問題（pono IC3 核心既有 bug，非 Q4 harness）**: `clear()` 先 `delete` 掉 `store_` 內所有 `ProofGoal*`，再對 `priority_queue` 做 `pop()`。`pop()` 會 heapify 並透過 `ProofGoalOrder` **讀取已釋放指標** → heap use-after-free。堆污染後症狀常出現在程式結尾 `LLMGeneralizer::log_stats()` 配置 `std::string` 時（誤判為 log_stats segfault）。
+
+**發現**: Q4 p040 smoke + AddressSanitizer；`SygusPdr::try_recursive_block_goal` 亦使用同一 `ProofGoalQueue`（析構時 `clear()`）。
+
+**修正**: delete 後以預設建構的 empty `priority_queue` 取代 `queue_`，不再 `pop` 已釋放元素。測試：`tests/test_proof_goal_queue.cpp`。
+
+---
+
+## Bug #7 (MODERATE): `process_llm_candidates()` 被呼叫的頻率太低
 
 **位置**: `engines/ic3base.cpp:177, 453`
 
@@ -115,7 +127,7 @@ stderr=subprocess.DEVNULL,
 
 ---
 
-## Bug #7 (MODERATE): `poll_candidates()` 的 JSON parsing 脆弱
+## Bug #8 (MODERATE): `poll_candidates()` 的 JSON parsing 脆弱
 
 **位置**: `engines/llm_generalizer.cpp:105-244`
 
@@ -126,7 +138,7 @@ stderr=subprocess.DEVNULL,
 
 ---
 
-## Bug #8 (MINOR): Sidecar 和 pono 之間的 race condition
+## Bug #9 (MINOR): Sidecar 和 pono 之間的 race condition
 
 **位置**: Scripts 與 sidecar 啟動流程
 
@@ -138,7 +150,7 @@ stderr=subprocess.DEVNULL,
 
 ---
 
-## Bug #9 (MODERATE): IC3IA baseline 也無法解任何題目
+## Bug #10 (MODERATE): IC3IA baseline 也無法解任何題目
 
 **數據**: 1052 benchmarks, Solved=0
 
@@ -149,7 +161,7 @@ stderr=subprocess.DEVNULL,
 
 ---
 
-## Bug #10 (MINOR): Sidecar log 中的 escape JSON 會 double-escape
+## Bug #11 (MINOR): Sidecar log 中的 escape JSON 會 double-escape
 
 **位置**: `engines/llm_generalizer.cpp:55` 和 `sidecar.py:46-50`
 
@@ -163,12 +175,13 @@ stderr=subprocess.DEVNULL,
 
 | Priority | Bug | Fix |
 |----------|-----|-----|
+| **P0** | #6: ProofGoalQueue UAF | ✅ `clear()` 重置 queue，不 pop 已 delete 指標；`test_proof_goal_queue` |
 | **P0** | #1: keep_literals 格式不匹配 | 修改 `cube_subset_to_blocking`，把 `keep_set` 比對邏輯改成用純變數名比對 |
 | **P0** | #2: Negated literals value 錯誤 | `collect_cti_literals` 中根據 literal polarity 設定 value |
 | **P1** | #4: Stats parsing 永遠取不到正確值 | 重寫 stats log 格式，在 C++ 輸出結構化 JSON stats line |
 | **P1** | #5: Sidecar 輸出被 suppress | 把 sidecar stderr 寫到檔案而非 DEVNULL |
 | **P2** | #3: Stats 只在非 timeout/error 時解析 | 改為總是解析 stats |
-| **P2** | #6: Polling 頻率不足 | 在 `block_all` 內部增加 polling 點 |
-| **P2** | #7: JSON parsing 脆弱 | 考慮用 nlohmann/json 或其他 library |
-| **P3** | #8: Race condition | 增加 sidecar health check / heartbeat |
-| **P3** | #9: Baseline 0 solved | 嘗試調整 bound, timeout, solver 參數 |
+| **P2** | #7: Polling 頻率不足 | 在 `block_all` 內部增加 polling 點 |
+| **P2** | #8: JSON parsing 脆弱 | 考慮用 nlohmann/json 或其他 library |
+| **P3** | #9: Race condition | 增加 sidecar health check / heartbeat |
+| **P3** | #10: Baseline 0 solved | 嘗試調整 bound, timeout, solver 參數 |

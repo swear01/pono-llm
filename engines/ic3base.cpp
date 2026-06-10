@@ -95,9 +95,11 @@ void ProofGoalQueue::clear()
     delete p;
   }
   store_.clear();
-  while (!queue_.empty()) {
-    queue_.pop();
-  }
+  // Do not pop queue_ after delete: priority_queue::pop heapifies and reads
+  // freed ProofGoal* (use-after-free). Replace with a fresh empty queue.
+  queue_ = std::priority_queue<ProofGoal *,
+                               std::vector<ProofGoal *>,
+                               ProofGoalOrder>();
 }
 
 void ProofGoalQueue::new_proof_goal(const IC3Formula & c,
