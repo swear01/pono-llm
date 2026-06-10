@@ -65,3 +65,13 @@ def test_validate_batch_request_missing_batch_id():
     ok, err = validate_batch_request(req)
     assert not ok
     assert "batch_id" in err
+
+
+def test_validate_batch_request_with_init_raw():
+    req = _minimal_batch()
+    req["init_raw"] = {
+        "refs": ["state5", "state34"],
+        "values": {"state5": "1", "state34": "#b0"},
+    }
+    ok, err = validate_batch_request(req)
+    assert ok, err

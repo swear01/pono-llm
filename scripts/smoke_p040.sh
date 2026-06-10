@@ -50,6 +50,7 @@ echo "snapshot_max_clauses=$SNAPSHOT_MAX parallel_samples=$PARALLEL_SAMPLES max_
 
 SIDECAR_EXTRA=()
 [[ -n "${LLM_PROVIDER:-}" ]] && SIDECAR_EXTRA+=(--provider "$LLM_PROVIDER")
+[[ "${HARNESS_LEGACY:-0}" == "1" ]] && SIDECAR_EXTRA+=(--harness-legacy)
 
 python3 -u "$ROOT/llm_worker/sidecar.py" \
   --req-path "$REQ" \

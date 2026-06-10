@@ -643,6 +643,21 @@ class IC3Base : public SafetyProver
 
   std::string format_llm_term_value(const smt::Term & val) const;
 
+  /** Reset-state model value for ref under init_label_ (empty if unknown). */
+  std::string get_init_value_at_reset(const std::string & ref);
+
+  /** Build init_raw JSON for batch request from digest refs + init values. */
+  std::string build_init_raw_json_for_llm(size_t frame_idx,
+                                          const std::string & batch_cti_id = "");
+
+  /** True when a single-disjunct block does not intersect initial state. */
+  bool is_init_safe_block_disjuncts(
+      const std::vector<IC3FrameDisjunct> & disjuncts);
+
+  /** Build candidate_hints JSON (digest neg + init_safe budget). */
+  std::string build_candidate_hints_json_for_llm(
+      size_t frame_idx, const std::string & batch_cti_id = "");
+
   bool try_extract_witness_from_refs(
       const std::vector<IC3FrameDisjunct> & refs,
       bool use_next_state,

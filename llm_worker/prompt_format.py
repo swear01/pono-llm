@@ -833,3 +833,137 @@ def format_cti_batch_all(entries: list[dict]) -> str:
             body = body_lines[0] if body_lines else "(empty)"
         lines.append(f"[{cid}] {body}")
     return "\n".join(lines)
+
+
+def render_legacy_user_prompt(
+    req: dict,
+    benchmark_ctx: dict,
+    sample_id: int,
+    *,
+    snapshot_max_clauses: int = 0,
+    format_benchmark_context_ref=None,
+) -> str:
+    """Q3 stacked prompt path (pre-Q4.1 harness) for --harness-legacy A/B."""
+    if format_benchmark_context_ref is None:
+        format_benchmark_context_ref = lambda ctx: json.dumps(
+            {"benchmark": ctx.get("benchmark")}, separators=(",", ":")
+        )
+
+    if req.get("type") == "ic3_frame_batch_request":
+        batch_id = req.get("batch_id", "")
+        attempt = int(req.get("attempt", 1))
+        feedback = req.get("feedback") or []
+        registry = benchmark_ctx.get("symbol_registry") or {}
+        refs = collect_refs_from_request(req)
+
+        parts = [
+            f"batch_id: {batch_id}",
+            f"frame_idx: {req.get('frame_idx')}",
+            f"attempt: {attempt}",
+            f"sample_id: {sample_id}",
+            "",
+            format_proof_context(req),
+            "",
+            sample_generalization_hint(sample_id),
+            "",
+            (
+                format_cti_batch_digest(req["cti_digest"], req.get("cti_entries") or [])
+                if req.get("cti_digest")
+                else format_cti_batch_all(req.get("cti_entries") or [])
+            ),
+        ]
+        digest_hints = format_digest_block_hints(req)
+        if digest_hints:
+            parts.extend(["", digest_hints])
+        parts.extend([
+            "",
+            format_frame_snapshot(
+                req.get("frame_snapshot", {}),
+                max_clauses=snapshot_max_clauses,
+                attempt=attempt,
+                has_feedback=bool(feedback),
+                feedback=feedback,
+            ),
+        ])
+        sym_hints = format_symbol_hints(refs, registry)
+        if sym_hints:
+            parts.extend(["", sym_hints])
+        if feedback:
+            parts.extend(["", format_feedback_block(feedback, req=req)])
+        if feedback or attempt > 1:
+            parts.extend(["", format_init_aware_block()])
+        if benchmark_ctx:
+            parts.extend([
+                "",
+                "Benchmark context (reference):",
+                format_benchmark_context_ref(benchmark_ctx),
+            ])
+        max_block_clauses = int(req.get("max_block_clauses", 3))
+        parts.extend([
+            "",
+            "Respond with ic3_frame_response JSON only.",
+            (
+                f"Output 1 to {max_block_clauses} independent block_clauses "
+                "(each inner array is one OR-clause, at most 8 disjuncts per clause)."
+            ),
+            "Clauses are alternative strategies; the verifier accepts the first valid clause and ignores the rest.",
+            "Each clause must falsify the bad region implied by digest stats / sample cubes and must not hold on initial state.",
+            "Use block_clauses: [[...], [...]] — not multiple top-level block_disjuncts keys.",
+            f"Set source_cti_id to {batch_id!r} and sample_id to {sample_id}.",
+        ])
+        return "\n".join(parts)
+
+    attempt = int(req.get("attempt", 1))
+    feedback = req.get("feedback") or []
+    registry = benchmark_ctx.get("symbol_registry") or {}
+    refs = collect_refs_from_request(req)
+
+    parts = [
+        f"frame_idx: {req.get('frame_idx')}",
+        f"cti_id: {req.get('cti_id')}",
+        f"attempt: {attempt}",
+        f"sample_id: {sample_id}",
+        "",
+        format_proof_context(req),
+        "",
+        sample_generalization_hint(sample_id),
+        "",
+        format_cti_literals(req.get("cti") or {}),
+    ]
+    digest_hints = format_digest_block_hints(req)
+    if digest_hints:
+        parts.extend(["", digest_hints])
+    parts.extend([
+        "",
+        format_frame_snapshot(
+            req.get("frame_snapshot", {}),
+            max_clauses=snapshot_max_clauses,
+            attempt=attempt,
+            has_feedback=bool(feedback),
+            feedback=feedback,
+        ),
+    ])
+    sym_hints = format_symbol_hints(refs, registry)
+    if sym_hints:
+        parts.extend(["", sym_hints])
+    if feedback:
+        parts.extend(["", format_feedback_block(feedback, req=req)])
+    if feedback or attempt > 1:
+        parts.extend(["", format_init_aware_block()])
+    if benchmark_ctx:
+        parts.extend([
+            "",
+            "Benchmark context (reference):",
+            format_benchmark_context_ref(benchmark_ctx),
+        ])
+    max_block_clauses = int(req.get("max_block_clauses", 3))
+    parts.extend([
+        "",
+        "Respond with ic3_frame_response JSON only.",
+        (
+            f"Output 1 to {max_block_clauses} independent block_clauses "
+            "(each inner array is one OR-clause, at most 8 disjuncts per clause)."
+        ),
+        f"Set source_cti_id to {req.get('cti_id')!r} and sample_id to {sample_id}.",
+    ])
+    return "\n".join(parts)

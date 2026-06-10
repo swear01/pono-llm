@@ -73,6 +73,10 @@ pip install -r llm_worker/requirements.txt
 
 `requirements.txt` 含 `openai` 套件 — 這是 **HTTP client library**（OpenAI-compatible SDK），用來呼叫 DeepSeek API，**不是**使用 OpenAI 的模型。DeepSeek 提供與 OpenAI Chat Completions 相同格式的 REST API，官方建議用此 SDK 連線。
 
+## JSON output mode
+
+Sidecar always calls the API with `response_format={"type":"json_object"}` (OpenAI-compatible). DeepSeek requires the word `json` in the system or user prompt; `prompts/ic3_frame_v1.txt` and the sidecar footer include it.
+
 ## Thinking mode (latency)
 
 `reasoning_effort=none` (default from pono and sidecar) maps to DeepSeek API `thinking.type=disabled` in [`deepseek_client.py`](deepseek_client.py). Single-call latency on `deepseek-v4-pro` is typically **4–6 s** with compact prompts; with thinking enabled, calls often exceed **90 s** despite short visible JSON.

@@ -216,6 +216,9 @@ def normalize_response(resp: Dict[str, Any], source_cti_id: str, sample_id: int,
         "symbols_used": symbols,
         "rationale": resp.get("rationale", ""),
     }
+    self_check = resp.get("self_check")
+    if isinstance(self_check, dict):
+        out["self_check"] = self_check
     if predicate:
         out["refine_predicate"] = predicate
     return out

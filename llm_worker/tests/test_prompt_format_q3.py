@@ -247,14 +247,16 @@ def test_sample_generalization_hint_q32():
     assert "never restate positive" in sample_generalization_hint(2).lower()
 
 
-def test_build_batch_user_prompt_includes_digest_hints():
+def test_build_batch_user_prompt_uses_q4_task_card():
     req = _digest_req()
     prompt = build_batch_user_prompt(req, {}, 0)
-    assert "Digest-derived block hints" in prompt
-    assert "!state215=1" in prompt
+    assert prompt.startswith("Self-check")
+    assert "MUST_FALSIFY" in prompt
+    assert "state215=#b1" in prompt
+    assert "CANDIDATES" in prompt
 
 
-def test_build_user_prompt_includes_digest_hints():
+def test_build_user_prompt_uses_q4_task_card():
     req = {
         "type": "ic3_frame_request",
         "frame_idx": 2,
@@ -270,8 +272,8 @@ def test_build_user_prompt_includes_digest_hints():
         "frame_snapshot": {"frame_idx": 2, "clauses": []},
     }
     prompt = build_user_prompt(req, {}, 0)
-    assert "Digest-derived block hints" in prompt
-    assert "!state44=1" in prompt
+    assert "MUST_FALSIFY" in prompt
+    assert "state44=1" in prompt
 
 
 def test_digest_hints_skip_witness_forbidden_on_retry():
@@ -426,5 +428,6 @@ def test_build_batch_user_prompt_includes_witness_repair_on_retry():
         }
     ]
     prompt = build_batch_user_prompt(req, {}, 0)
-    assert "FORBIDDEN" in prompt
-    assert "INIT_CHECK" in prompt
+    assert "REPAIR:" in prompt
+    assert "state19" in prompt
+    assert "init_witness" in prompt

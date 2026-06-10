@@ -487,7 +487,10 @@ ProverResult IC3Base::step(int i)
     vector<string> cti_keys;
     llm_gen_->collect_buffered_literal_keys(frontier_idx(), cti_keys);
     string snapshot = serialize_frame_snapshot_json(frontier_idx(), cti_keys);
-    llm_gen_->flush_frame_batch(frontier_idx(), snapshot);
+    string init_raw = build_init_raw_json_for_llm(frontier_idx());
+    string candidate_hints = build_candidate_hints_json_for_llm(frontier_idx());
+    llm_gen_->flush_frame_batch(
+        frontier_idx(), snapshot, init_raw, candidate_hints);
     if (options_.llm_sync_after_flush_ && options_.llm_batch_cti_) {
       const string & bid = llm_gen_->last_flushed_batch_id();
       if (!bid.empty()) {
@@ -1014,6 +1017,86 @@ string IC3Base::format_llm_term_value(const Term & val) const
     return val == solver_true_ ? "1" : "0";
   }
   return val->to_string();
+}
+
+string IC3Base::get_init_value_at_reset(const string & ref)
+{
+  if (ref.empty()) return "";
+  assert(solver_context_ == 0);
+  try {
+    Term sym = ts_.lookup(ref);
+    push_solver_context();
+    solver_->assert_formula(init_label_);
+    Result r = check_sat();
+    if (!r.is_sat()) {
+      pop_solver_context();
+      return "";
+    }
+    Term model_val = solver_->get_value(sym);
+    string formatted = format_llm_term_value(model_val);
+    pop_solver_context();
+    return formatted;
+  } catch (...) {
+    if (solver_context_ > 0) pop_solver_context();
+    return "";
+  }
+}
+
+string IC3Base::build_init_raw_json_for_llm(size_t frame_idx,
+                                            const string & batch_cti_id)
+{
+  if (!llm_gen_) return "";
+  vector<string> refs;
+  llm_gen_->collect_init_raw_refs(frame_idx, batch_cti_id, refs);
+  if (refs.empty()) return "";
+  unordered_map<string, string> values;
+  for (const string & ref : refs) {
+    string val = get_init_value_at_reset(ref);
+    if (!val.empty()) values[ref] = val;
+  }
+  return serialize_init_raw_json(refs, values);
+}
+
+bool IC3Base::is_init_safe_block_disjuncts(
+    const vector<IC3FrameDisjunct> & disjuncts)
+{
+  if (disjuncts.empty()) return false;
+  IC3Formula blocking = build_block_clause_from_disjuncts(disjuncts);
+  if (blocking.children.empty()) return false;
+  IC3Formula check_cube = ic3formula_negate(blocking);
+  return !check_intersects_initial(check_cube.term);
+}
+
+string IC3Base::build_candidate_hints_json_for_llm(size_t frame_idx,
+                                                   const string & batch_cti_id)
+{
+  if (!llm_gen_) return "";
+  vector<pair<string, size_t>> ranked;
+  llm_gen_->collect_digest_ranked_literals(frame_idx, batch_cti_id, ranked, 8);
+  if (ranked.empty()) return "";
+
+  vector<LLMCandidateHint> hints;
+  hints.reserve(ranked.size());
+  for (const auto & row : ranked) {
+    IC3FrameDisjunct dj;
+    if (!negate_digest_lit_to_disjunct(row.first, dj)) continue;
+    LLMCandidateHint hint;
+    hint.lit = row.first;
+    hint.count = row.second;
+    hint.block_disjunct = dj;
+    hint.init_safe = is_init_safe_block_disjuncts({dj});
+    if (!hint.init_safe) hint.reason = "init_true";
+    hints.push_back(hint);
+  }
+  stable_sort(hints.begin(),
+              hints.end(),
+              [](const LLMCandidateHint & a, const LLMCandidateHint & b) {
+                if (a.init_safe != b.init_safe) return a.init_safe > b.init_safe;
+                return a.count > b.count;
+              });
+  if (hints.size() > 8) hints.resize(8);
+  if (hints.empty()) return "";
+  return serialize_candidate_hints_json(hints);
 }
 
 bool IC3Base::try_extract_witness_from_refs(
@@ -2176,7 +2259,11 @@ void IC3Base::process_llm_candidates()
     llm_gen_->collect_cti_literal_keys(retry_cti_id, retry_cti_keys);
     std::string snapshot =
         serialize_frame_snapshot_json(retry_frame, retry_cti_keys);
-    llm_gen_->write_retry_request(retry_cti_id, snapshot);
+    std::string init_raw = build_init_raw_json_for_llm(retry_frame, retry_cti_id);
+    std::string candidate_hints =
+        build_candidate_hints_json_for_llm(retry_frame, retry_cti_id);
+    llm_gen_->write_retry_request(
+        retry_cti_id, snapshot, init_raw, candidate_hints);
   }
 }
 

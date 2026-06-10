@@ -121,7 +121,14 @@ def test_process_request_post_filters_witness_forbidden_on_retry():
             "rejected_json": "{}",
         }
     ]
-    responses, _, _ = process_request(RetryMockClient(), req, "system")
+    import sidecar
+
+    prev = sidecar.HARNESS_LEGACY
+    sidecar.HARNESS_LEGACY = True
+    try:
+        responses, _, _ = process_request(RetryMockClient(), req, "system")
+    finally:
+        sidecar.HARNESS_LEGACY = prev
     assert len(responses) == 1
     clause = responses[0]["block_clauses"][0]
     assert clause[0]["ref"] == "state34"

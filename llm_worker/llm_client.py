@@ -33,6 +33,9 @@ _OPENROUTER_REASONING_EFFORTS = frozenset(
     {"none", "minimal", "low", "medium", "high", "xhigh"}
 )
 
+# ic3_frame_response is small; json_object mode does not need 32k completion budget.
+DEFAULT_MAX_RESPONSE_TOKENS = 4096
+
 
 def get_api_key(provider: str | None = None):
     from env_config import get_api_key as _get
@@ -129,6 +132,12 @@ class LLMClient:
         else:
             payload["provider"] = self._openrouter_routing
 
+    def _apply_response_format(self, payload: dict) -> None:
+        payload["response_format"] = {"type": "json_object"}
+
+    def _message_content(self, text: str) -> str:
+        return (text or "").strip()
+
     def call(
         self,
         prompt: str,
@@ -136,19 +145,24 @@ class LLMClient:
         model_name: str | None = None,
         reasoning_effort: str | None = None,
         temperature: float | None = None,
+        max_tokens: int | None = None,
     ):
         model = model_name or self.model_name
         if system_prompt is None:
             system_prompt = (
-                "You are a hardware verification assistant specializing in "
-                "formal verification and lemma generalization for PDR/IC3. "
-                "Respond ONLY with valid JSON, no other text."
+                "You are a hardware verification assistant for PDR/IC3. "
+                "Output valid json matching ic3_frame_response v1."
             )
         temp = 0.3 if temperature is None else temperature
+        cap = max_tokens if max_tokens is not None else DEFAULT_MAX_RESPONSE_TOKENS
 
         if self._client is not None:
-            return self._call_openai(prompt, system_prompt, model, temp, reasoning_effort)
-        return self._call_direct(prompt, system_prompt, model, temp, reasoning_effort)
+            return self._call_openai(
+                prompt, system_prompt, model, temp, reasoning_effort, cap
+            )
+        return self._call_direct(
+            prompt, system_prompt, model, temp, reasoning_effort, cap
+        )
 
     def _call_openai(
         self,
@@ -157,6 +171,7 @@ class LLMClient:
         model_name: str,
         temperature: float,
         reasoning_effort: str | None = None,
+        max_tokens: int = DEFAULT_MAX_RESPONSE_TOKENS,
     ):
         start = time.time()
         kwargs = {
@@ -166,9 +181,10 @@ class LLMClient:
                 {"role": "user", "content": prompt},
             ],
             "temperature": temperature,
-            "max_tokens": 32768,
+            "max_tokens": max_tokens,
         }
         thinking_mode = self._apply_thinking_mode(kwargs, reasoning_effort)
+        self._apply_response_format(kwargs)
         self._apply_openrouter_routing(kwargs)
 
         try:
@@ -179,10 +195,8 @@ class LLMClient:
 
         elapsed = (time.time() - start) * 1000
         choice = response.choices[0]
-        text = choice.message.content or ""
+        text = self._message_content(choice.message.content or "")
         reasoning = getattr(choice.message, "reasoning_content", None) or ""
-        if not text.strip() and reasoning:
-            text = reasoning
         usage = response.usage
         prompt_tokens = getattr(usage, "prompt_tokens", 0) or 0
         completion_tokens = getattr(usage, "completion_tokens", 0) or 0
@@ -190,6 +204,7 @@ class LLMClient:
 
         stats: dict[str, Any] = {
             "provider": self.provider,
+            "json_mode": "json_object",
             "thinking_mode": thinking_mode,
             "prompt_tokens": prompt_tokens,
             "completion_tokens": completion_tokens,
@@ -217,6 +232,7 @@ class LLMClient:
         model_name: str,
         temperature: float,
         reasoning_effort: str | None = None,
+        max_tokens: int = DEFAULT_MAX_RESPONSE_TOKENS,
     ):
         import urllib.error
         import urllib.request
@@ -228,9 +244,10 @@ class LLMClient:
                 {"role": "user", "content": prompt},
             ],
             "temperature": temperature,
-            "max_tokens": 32768,
+            "max_tokens": max_tokens,
         }
         thinking_mode = self._apply_thinking_mode(payload, reasoning_effort)
+        self._apply_response_format(payload)
 
         self._apply_openrouter_routing(payload)
 
@@ -261,16 +278,15 @@ class LLMClient:
 
             choice = data["choices"][0]
             msg = choice["message"]
-            text = msg.get("content", "") or ""
+            text = self._message_content(msg.get("content", "") or "")
             reasoning = msg.get("reasoning_content", "") or ""
-            if not text.strip() and reasoning:
-                text = reasoning
             usage = data.get("usage", {})
             prompt_tokens = usage.get("prompt_tokens", 0)
             completion_tokens = usage.get("completion_tokens", 0)
             token_count = usage.get("total_tokens", 0)
             self.last_call_stats = {
                 "provider": self.provider,
+                "json_mode": "json_object",
                 "thinking_mode": thinking_mode,
                 "prompt_tokens": prompt_tokens,
                 "completion_tokens": completion_tokens,
@@ -326,44 +342,17 @@ class DeepSeekClient(LLMClient):
 
 
 def extract_json(text: str) -> str:
-    """Extract JSON object from LLM response. Strips markdown fencing."""
+    """Normalize API message content to a JSON object string.
+
+    With ``response_format=json_object`` the model returns bare JSON; this only
+    strips optional markdown fences if present.
+    """
     text = text.strip()
-    if text.startswith("```"):
-        lines = text.split("\n")
-        if lines[0].startswith("```"):
-            lines = lines[1:]
-        if lines and lines[-1].strip() == "```":
-            lines = lines[:-1]
-        text = "\n".join(lines).strip()
-
-    if text.startswith("{") and text.endswith("}"):
+    if not text.startswith("```"):
         return text
-
-    for marker in ('"block_disjuncts"', '"source_cti_id"', '"type"', '"actions"'):
-        idx = text.find(marker)
-        if idx == -1:
-            continue
-        depth = 0
-        start = idx
-        while start > 0:
-            start -= 1
-            if text[start] == "}":
-                depth += 1
-            elif text[start] == "{":
-                if depth == 0:
-                    break
-                depth -= 1
-        depth = 0
-        end = start
-        for i in range(start, len(text)):
-            if text[i] == "{":
-                depth += 1
-            elif text[i] == "}":
-                depth -= 1
-                if depth == 0:
-                    end = i + 1
-                    break
-        if start < end:
-            return text[start:end]
-
-    return text
+    lines = text.split("\n")
+    if lines[0].startswith("```"):
+        lines = lines[1:]
+    if lines and lines[-1].strip() == "```":
+        lines = lines[:-1]
+    return "\n".join(lines).strip()

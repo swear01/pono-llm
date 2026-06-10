@@ -236,7 +236,8 @@ class PonoOptions
         llm_cti_digest_(default_llm_cti_digest_),
         llm_cti_digest_max_cubes_(default_llm_cti_digest_max_cubes_),
         llm_cti_digest_top_lits_(default_llm_cti_digest_top_lits_),
-        llm_batch_max_json_bytes_(default_llm_batch_max_json_bytes_)
+        llm_batch_max_json_bytes_(default_llm_batch_max_json_bytes_),
+        llm_init_raw_max_refs_(default_llm_init_raw_max_refs_)
   {
   }
 
@@ -437,6 +438,7 @@ class PonoOptions
   size_t llm_cti_digest_max_cubes_;
   size_t llm_cti_digest_top_lits_;
   size_t llm_batch_max_json_bytes_;
+  size_t llm_init_raw_max_refs_;
 
  private:
   // Default options
@@ -548,6 +550,7 @@ class PonoOptions
   static const size_t default_llm_cti_digest_max_cubes_ = 16;
   static const size_t default_llm_cti_digest_top_lits_ = 40;
   static const size_t default_llm_batch_max_json_bytes_ = 500000;
+  static const size_t default_llm_init_raw_max_refs_ = 15;
 };
 
 // Useful functions for printing etc...

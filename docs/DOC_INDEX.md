@@ -4,7 +4,7 @@
 **Architecture:** [`ARCHITECTURE.md`](ARCHITECTURE.md)  
 **Handoff:** [`HANDOFF_CURRENT_STATE.md`](HANDOFF_CURRENT_STATE.md)
 
-Last updated: 2026-06-10 (Agent 須知: commit 後自動 push + 5-round smoke)
+Last updated: 2026-06-10 (Q4 harness 計劃 + JSON mode)
 
 > **Note:** `logs/formal_yield/` was removed from the repo (legacy offline artifacts). HISTORICAL docs may still reference that path; see `.gitignore`.
 
@@ -42,6 +42,7 @@ Last updated: 2026-06-10 (Agent 須知: commit 後自動 push + 5-round smoke)
 | [`plans/clause_quality_q2_plan.md`](plans/clause_quality_q2_plan.md) | **Phase Q2**（tag `post-q2-clause-quality`）— init prompt、enriched feedback |
 | [`plans/clause_quality_q3_plan.md`](plans/clause_quality_q3_plan.md) | **Phase Q3** — witness 模板、digest 否定、11 案子集 5 輪 gate |
 | [`plans/clause_quality_q3_1_q3_2_plan.md`](plans/clause_quality_q3_1_q3_2_plan.md) | **Q3.1+Q3.2 詳規** — FORBIDDEN 規則表、digest negate、A/B 門檻 |
+| [`plans/clause_quality_q4_harness_plan.md`](plans/clause_quality_q4_harness_plan.md) | **Phase Q4（進行中）** — harness 重設計、init_table、preprocessor task card；JSON mode ✅ |
 | [`diagnosis/Q2_current_method_summary.md`](../diagnosis/Q2_current_method_summary.md) | Q2 現行方法 p040 smoke 失敗模式（B2 100%、CTI 抄襲 98%） |
 
 ---

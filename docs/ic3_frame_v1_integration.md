@@ -41,6 +41,8 @@ See also [`ARCHITECTURE.md`](ARCHITECTURE.md).
 
 Layers 0–2 are stable → provider prefix cache. Layer 3–4 change each request; sidecar renders them as **compact line text** in the API user prompt (JSONL on disk stays JSON).
 
+**Phase Q4 (in progress):** sidecar renders an **ordered task card** via `harness_preprocess.render_task_card()` — Self-check → MUST_FALSIFY → INIT_TABLE first; compact CTI/frame at the bottom. See [`plans/clause_quality_q4_harness_plan.md`](plans/clause_quality_q4_harness_plan.md).
+
 **`bad_property` omitted from API prompts (2026-06, temporary):** C++ still writes the full bad-state BTOR expression to `benchmark_context.json` (`write_benchmark_context` in `llm_generalizer.cpp`). Sidecar **does not** include it in the user prompt sent to the LLM. On ILA-scale designs the serialized `bad_property` can exceed 1MB per request and dominated input tokens without helping blocking (CTI digest + frame digest already describe the bad region). Re-enable only after a bounded summary (e.g. truncated `property_name` or a few root literals), not the full formula tree.
 
 ### Sidecar compact serialization (Layer 3–4)
@@ -119,6 +121,10 @@ After each `block_all` phase, Pono flushes **one** batch line containing all CTI
 | `batch_id` | `batch_f{frame}_a{attempt}` |
 | `cti_entries[]` | Full mode: `{cti_id, cti}`. Digest mode: `{cti_id, literals[]}` (compact strings) |
 | `cti_digest` | Optional: `{cti_total, literal_stats[], ...}` when batch is large |
+| `init_raw` | `{refs[], values{ref→reset}}` from C++ (`IC3Base::build_init_raw_json_for_llm`); harness `INIT_TABLE` reads `values` on attempt 1 |
+| `candidate_hints` | digest neg + `init_safe` budget from C++ (`build_candidate_hints_json_for_llm`); harness ranks `[init_safe]` first |
+| `feedback_raw` | structured retry payload (`failed_clause`, `clause_idx`, `witness`); harness `REPAIR` + `CONSTRAINTS` |
+| Sidecar | default Q4 task card; `--harness-legacy` restores Q3 stacked prompt + witness post-filter |
 | `frame_snapshot` | May include `clauses_total` when C++ caps clauses |
 | `temperature` | `0.5` in request; sidecar uses it for API calls |
 | `parallel_samples` | K (default 1) |
@@ -286,10 +292,12 @@ Parallel = breadth; retry = depth. Both are used together.
 
 | Setting | Value |
 |---------|--------|
+| `response_format` | **`{"type":"json_object"}`** — always on (`llm_client.py`); no env toggle. Guarantees parseable JSON; schema still validated in `ic3_frame_schema.py`. Prompt must include the word `json` (system + user footer). |
+| `max_tokens` (completion) | **4096** default for ic3_frame responses |
 | `reasoning_effort` | **`none`** (default, required for latency) |
 | `thinking` | **DeepSeek direct:** `extra_body.thinking.type=disabled`. **OpenRouter:** `extra_body.reasoning.effort=none` + `exclude=true`. Omitting `reasoning_effort` does **not** disable thinking. |
 | `temperature` | `0` serial repair; `0.7–0.9` parallel sampling |
-| Logging | Sidecar `llm_log.jsonl`: `latency_ms`, `prompt_tokens`, …; C++ stderr: `LLM_BATCH_WAIT batch_id=… wait_ms=…` per sync wait; summary `LLM_STATS batch_waits batch_wait_ms_total batch_wait_ms_max` |
+| Logging | Sidecar `llm_log.jsonl`: `latency_ms`, `prompt_tokens`, `json_mode`, …; C++ stderr: `LLM_BATCH_WAIT batch_id=… wait_ms=…` per sync wait; summary `LLM_STATS batch_waits batch_wait_ms_total batch_wait_ms_max` |
 
 ### Latency (measured 2026-06-04, `deepseek-v4-pro`, thinking disabled)
 

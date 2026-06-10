@@ -140,6 +140,7 @@ enum optionIndex
   LLM_CTI_DIGEST_MAX_CUBES,
   LLM_CTI_DIGEST_TOP_LITS,
   LLM_BATCH_MAX_JSON_BYTES,
+  LLM_INIT_RAW_MAX_REFS,
 };
 
 struct Arg : public option::Arg
@@ -904,6 +905,12 @@ const option::Descriptor usage[] = {
     "llm-batch-max-json-bytes",
     Arg::Numeric,
     "  --llm-batch-max-json-bytes \tEnable CTI digest when batch JSON exceeds N bytes (default: 500000)" },
+  { LLM_INIT_RAW_MAX_REFS,
+    0,
+    "",
+    "llm-init-raw-max-refs",
+    Arg::Numeric,
+    "  --llm-init-raw-max-refs \tMax state refs in init_raw export (default: 15)" },
   { 0, 0, 0, 0, 0, 0 }
 };
 /*********************************** end Option Handling setup
@@ -1285,6 +1292,9 @@ ProverResult PonoOptions::parse_and_set_options(int argc,
           break;
         case LLM_BATCH_MAX_JSON_BYTES:
           llm_batch_max_json_bytes_ = std::stoul(opt.arg);
+          break;
+        case LLM_INIT_RAW_MAX_REFS:
+          llm_init_raw_max_refs_ = std::stoul(opt.arg);
           break;
         case UNKNOWN_OPTION:
           // not possible because Arg::Unknown returns ARG_ILLEGAL

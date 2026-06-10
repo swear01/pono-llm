@@ -26,21 +26,14 @@ from env_config import load_env, require_api_key, get_llm_provider, default_mode
 from llm_client import LLMClient, create_llm_client
 from ic3_frame_schema import normalize_response, validate_request, validate_response
 from jsonl_protocol import append_log_line, read_requests_batch, write_response
+from harness_preprocess import render_task_card
 from prompt_format import (
     apply_witness_forbidden_post_filter,
     batch_cti_total,
-    collect_refs_from_request,
-    format_cti_batch_all,
-    format_cti_batch_digest,
-    format_cti_literals,
-    format_digest_block_hints,
-    format_feedback_block,
-    format_frame_snapshot,
-    format_init_aware_block,
-    format_proof_context,
-    format_symbol_hints,
-    sample_generalization_hint,
+    render_legacy_user_prompt,
 )
+
+HARNESS_LEGACY = False
 
 V1_REQUEST_TYPES = frozenset({"ic3_frame_request", "ic3_frame_batch_request"})
 
@@ -79,68 +72,15 @@ def build_batch_user_prompt(
     sample_id: int,
     snapshot_max_clauses: int = 0,
 ) -> str:
-    batch_id = req.get("batch_id", "")
-    attempt = int(req.get("attempt", 1))
-    feedback = req.get("feedback") or []
-    registry = benchmark_ctx.get("symbol_registry") or {}
-    refs = collect_refs_from_request(req)
-
-    parts = [
-        f"batch_id: {batch_id}",
-        f"frame_idx: {req.get('frame_idx')}",
-        f"attempt: {attempt}",
-        f"sample_id: {sample_id}",
-        "",
-        format_proof_context(req),
-        "",
-        sample_generalization_hint(sample_id),
-        "",
-        (
-            format_cti_batch_digest(req["cti_digest"], req.get("cti_entries") or [])
-            if req.get("cti_digest")
-            else format_cti_batch_all(req.get("cti_entries") or [])
-        ),
-    ]
-    digest_hints = format_digest_block_hints(req)
-    if digest_hints:
-        parts.extend(["", digest_hints])
-    parts.extend([
-        "",
-        format_frame_snapshot(
-            req.get("frame_snapshot", {}),
-            max_clauses=snapshot_max_clauses,
-            attempt=attempt,
-            has_feedback=bool(feedback),
-            feedback=feedback,
-        ),
-    ])
-    sym_hints = format_symbol_hints(refs, registry)
-    if sym_hints:
-        parts.extend(["", sym_hints])
-    if feedback:
-        parts.extend(["", format_feedback_block(feedback, req=req)])
-    if feedback or attempt > 1:
-        parts.extend(["", format_init_aware_block()])
-    if benchmark_ctx:
-        parts.extend([
-            "",
-            "Benchmark context (reference):",
-            format_benchmark_context_ref(benchmark_ctx),
-        ])
-    max_block_clauses = int(req.get("max_block_clauses", 3))
-    parts.extend([
-        "",
-        "Respond with ic3_frame_response JSON only.",
-        (
-            f"Output 1 to {max_block_clauses} independent block_clauses "
-            "(each inner array is one OR-clause, at most 8 disjuncts per clause)."
-        ),
-        "Clauses are alternative strategies; the verifier accepts the first valid clause and ignores the rest.",
-        "Each clause must falsify the bad region implied by digest stats / sample cubes and must not hold on initial state.",
-        "Use block_clauses: [[...], [...]] — not multiple top-level block_disjuncts keys.",
-        f"Set source_cti_id to {batch_id!r} and sample_id to {sample_id}.",
-    ])
-    return "\n".join(parts)
+    if HARNESS_LEGACY:
+        return render_legacy_user_prompt(
+            req,
+            benchmark_ctx,
+            sample_id,
+            snapshot_max_clauses=snapshot_max_clauses,
+            format_benchmark_context_ref=format_benchmark_context_ref,
+        )
+    return render_task_card(req, sample_id=sample_id)
 
 
 def build_user_prompt(
@@ -149,64 +89,9 @@ def build_user_prompt(
     sample_id: int,
     snapshot_max_clauses: int = 0,
 ) -> str:
-    if req.get("type") == "ic3_frame_batch_request":
-        return build_batch_user_prompt(
-            req, benchmark_ctx, sample_id, snapshot_max_clauses=snapshot_max_clauses
-        )
-    attempt = int(req.get("attempt", 1))
-    feedback = req.get("feedback") or []
-    registry = benchmark_ctx.get("symbol_registry") or {}
-    refs = collect_refs_from_request(req)
-
-    parts = [
-        f"frame_idx: {req.get('frame_idx')}",
-        f"cti_id: {req.get('cti_id')}",
-        f"attempt: {attempt}",
-        f"sample_id: {sample_id}",
-        "",
-        format_proof_context(req),
-        "",
-        sample_generalization_hint(sample_id),
-        "",
-        format_cti_literals(req.get("cti", {})),
-    ]
-    digest_hints = format_digest_block_hints(req)
-    if digest_hints:
-        parts.extend(["", digest_hints])
-    parts.extend([
-        "",
-        format_frame_snapshot(
-            req.get("frame_snapshot", {}),
-            max_clauses=snapshot_max_clauses,
-            attempt=attempt,
-            has_feedback=bool(feedback),
-            feedback=feedback,
-        ),
-    ])
-    sym_hints = format_symbol_hints(refs, registry)
-    if sym_hints:
-        parts.extend(["", sym_hints])
-    if feedback:
-        parts.extend(["", format_feedback_block(feedback, req=req)])
-    if feedback or attempt > 1:
-        parts.extend(["", format_init_aware_block()])
-    if benchmark_ctx:
-        parts.extend([
-            "",
-            "Benchmark context (reference):",
-            format_benchmark_context_ref(benchmark_ctx),
-        ])
-    max_block_clauses = int(req.get("max_block_clauses", 3))
-    parts.extend([
-        "",
-        "Respond with ic3_frame_response JSON only.",
-        (
-            f"Output 1 to {max_block_clauses} independent block_clauses "
-            "(verifier accepts the first valid clause)."
-        ),
-        f"Set source_cti_id to {req.get('cti_id')!r} and sample_id to {sample_id}.",
-    ])
-    return "\n".join(parts)
+    return build_batch_user_prompt(
+        req, benchmark_ctx, sample_id, snapshot_max_clauses=snapshot_max_clauses
+    )
 
 
 def process_request(
@@ -262,7 +147,8 @@ def process_request(
         normalized = normalize_response(
             raw, source_id, sample_id, attempt, max_block_clauses=max_block_clauses
         )
-        normalized = apply_witness_forbidden_post_filter(normalized, req)
+        if HARNESS_LEGACY:
+            normalized = apply_witness_forbidden_post_filter(normalized, req)
         valid, verr = validate_response(
             normalized, max_block_clauses=max_block_clauses
         )
@@ -347,6 +233,7 @@ def handle_one_request(
         stats = getattr(client, "last_call_stats", None) or {}
         if stats:
             log_entry.update({
+                "json_mode": stats.get("json_mode"),
                 "thinking_mode": stats.get("thinking_mode"),
                 "prompt_tokens": stats.get("prompt_tokens"),
                 "completion_tokens": stats.get("completion_tokens"),
@@ -399,7 +286,15 @@ def main():
         choices=["", "deepseek", "openrouter"],
         help="LLM API provider (default: LLM_PROVIDER from .env or deepseek)",
     )
+    parser.add_argument(
+        "--harness-legacy",
+        action="store_true",
+        help="Use pre-Q4.1 stacked prompt (Q3 digest hints path) instead of task card",
+    )
     args = parser.parse_args()
+
+    global HARNESS_LEGACY
+    HARNESS_LEGACY = bool(args.harness_legacy)
 
     env_path = load_env()
     if env_path:
@@ -423,6 +318,7 @@ def main():
     print(f"[sidecar] Writing responses to {args.resp_path}")
     print(f"[sidecar] max_inflight_requests={args.max_inflight_requests}")
     print(f"[sidecar] snapshot_max_clauses={args.snapshot_max_clauses}")
+    print(f"[sidecar] harness_legacy={HARNESS_LEGACY}")
 
     processed_count = 0
     submitted_count = 0

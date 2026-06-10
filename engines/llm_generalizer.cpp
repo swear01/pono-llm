@@ -69,6 +69,22 @@ static string extract_state_ref(const string & name)
   return name;
 }
 
+static string escape_json_string(const string & s)
+{
+  ostringstream oss;
+  for (char c : s) {
+    switch (c) {
+      case '"': oss << "\\\""; break;
+      case '\\': oss << "\\\\"; break;
+      case '\n': oss << "\\n"; break;
+      case '\r': oss << "\\r"; break;
+      case '\t': oss << "\\t"; break;
+      default: oss << c;
+    }
+  }
+  return oss.str();
+}
+
 /** tellg() returns -1 at EOF; seekg(-1) fails and breaks append-only polling. */
 static bool response_offset_valid(streampos pos)
 {
@@ -89,6 +105,101 @@ std::string format_cti_literal_line(const CTILiteral & lit)
   if (rhs == "true") rhs = "1";
   if (rhs == "false") rhs = "0";
   return (lit.polarity ? "" : "!") + ref + "=" + rhs;
+}
+
+std::string ref_from_digest_lit_line(const string & lit)
+{
+  string text = lit;
+  while (!text.empty() && (text.front() == ' ' || text.front() == '\t')) {
+    text.erase(text.begin());
+  }
+  if (text.empty() || text.find('(') != string::npos
+      || text.find("bvor") != string::npos
+      || text.find("bvcomp") != string::npos) {
+    return "";
+  }
+  bool neg = !text.empty() && text[0] == '!';
+  size_t start = neg ? 1 : 0;
+  size_t eq = text.find('=', start);
+  if (eq == string::npos || eq <= start) return "";
+  string ref = text.substr(start, eq - start);
+  if (ref.empty()) return "";
+  return ref;
+}
+
+bool negate_digest_lit_to_disjunct(const string & lit, IC3FrameDisjunct & out)
+{
+  string text = lit;
+  while (!text.empty() && (text.front() == ' ' || text.front() == '\t')) {
+    text.erase(text.begin());
+  }
+  if (text.empty() || text.find('(') != string::npos
+      || text.find("bvor") != string::npos
+      || text.find("bvcomp") != string::npos) {
+    return false;
+  }
+  bool neg_prefix = !text.empty() && text[0] == '!';
+  size_t start = neg_prefix ? 1 : 0;
+  size_t eq = text.find('=', start);
+  if (eq == string::npos || eq <= start) return false;
+  string ref = text.substr(start, eq - start);
+  string rhs = text.substr(eq + 1);
+  if (ref.empty() || rhs.empty()) return false;
+  bool positive_pol = !neg_prefix;
+  out.ref = ref;
+  out.op = "eq";
+  out.rhs = rhs;
+  out.polarity = !positive_pol;
+  return true;
+}
+
+std::string serialize_init_raw_json(
+    const vector<string> & refs,
+    const unordered_map<string, string> & values)
+{
+  ostringstream out;
+  out << "{\"refs\":[";
+  for (size_t i = 0; i < refs.size(); ++i) {
+    if (i > 0) out << ",";
+    out << "\"" << escape_json_string(refs[i]) << "\"";
+  }
+  out << "],\"values\":{";
+  bool first_val = true;
+  for (const string & ref : refs) {
+    auto it = values.find(ref);
+    if (it == values.end() || it->second.empty()) continue;
+    if (!first_val) out << ",";
+    first_val = false;
+    out << "\"" << escape_json_string(ref) << "\":\""
+        << escape_json_string(it->second) << "\"";
+  }
+  out << "}}";
+  return out.str();
+}
+
+std::string serialize_candidate_hints_json(const vector<LLMCandidateHint> & hints)
+{
+  ostringstream out;
+  out << "[";
+  for (size_t i = 0; i < hints.size(); ++i) {
+    if (i > 0) out << ",";
+    const auto & h = hints[i];
+    out << "{\"lit\":\"" << escape_json_string(h.lit) << "\",";
+    out << "\"count\":" << h.count << ",";
+    out << "\"block_disjunct\":{";
+    out << "\"ref\":\"" << escape_json_string(h.block_disjunct.ref) << "\",";
+    out << "\"op\":\"" << escape_json_string(h.block_disjunct.op) << "\",";
+    out << "\"rhs\":\"" << escape_json_string(h.block_disjunct.rhs) << "\",";
+    out << "\"polarity\":" << (h.block_disjunct.polarity ? "true" : "false");
+    out << "},";
+    out << "\"init_safe\":" << (h.init_safe ? "true" : "false");
+    if (!h.reason.empty()) {
+      out << ",\"reason\":\"" << escape_json_string(h.reason) << "\"";
+    }
+    out << "}";
+  }
+  out << "]";
+  return out.str();
 }
 
 LLMGeneralizer::LLMGeneralizer(PonoOptions opts, const SmtSolver & solver)
@@ -251,6 +362,115 @@ void LLMGeneralizer::collect_cti_literal_refs(
   }
 }
 
+void LLMGeneralizer::collect_digest_ranked_literals(
+    size_t frame_idx,
+    const string & batch_cti_id,
+    vector<pair<string, size_t>> & out,
+    size_t max_lits) const
+{
+  out.clear();
+  vector<BufferedCTI> source;
+  if (!batch_cti_id.empty()) {
+    auto it = batch_store_.find(batch_cti_id);
+    if (it != batch_store_.end()) {
+      for (const auto & stored : it->second.ctis) {
+        BufferedCTI b;
+        b.ctx = stored.ctx;
+        source.push_back(b);
+      }
+    }
+  } else {
+    auto it = frame_cti_buffer_.find(frame_idx);
+    if (it != frame_cti_buffer_.end()) source = it->second;
+  }
+
+  unordered_map<string, size_t> lit_counts;
+  for (const auto & b : source) {
+    unordered_set<string> seen_lit;
+    for (const auto & lit : b.ctx.literals) {
+      string key = format_literal_line(lit);
+      if (seen_lit.insert(key).second) lit_counts[key]++;
+    }
+  }
+  vector<pair<string, size_t>> ranked(lit_counts.begin(), lit_counts.end());
+  sort(ranked.begin(),
+       ranked.end(),
+       [](const pair<string, size_t> & a, const pair<string, size_t> & b) {
+         return a.second > b.second;
+       });
+  const size_t cap = max_lits > 0 ? max_lits : opts_.llm_cti_digest_top_lits_;
+  if (ranked.size() > cap) ranked.resize(cap);
+  out.swap(ranked);
+}
+
+void LLMGeneralizer::collect_init_raw_refs(size_t frame_idx,
+                                           const string & batch_cti_id,
+                                           vector<string> & out) const
+{
+  out.clear();
+  const size_t max_refs = opts_.llm_init_raw_max_refs_;
+  if (max_refs == 0) return;
+
+  vector<BufferedCTI> source;
+  if (!batch_cti_id.empty()) {
+    auto it = batch_store_.find(batch_cti_id);
+    if (it != batch_store_.end()) {
+      for (const auto & stored : it->second.ctis) {
+        BufferedCTI b;
+        b.ctx = stored.ctx;
+        source.push_back(b);
+      }
+    }
+  } else {
+    auto it = frame_cti_buffer_.find(frame_idx);
+    if (it != frame_cti_buffer_.end()) source = it->second;
+  }
+
+  unordered_set<string> seen;
+  auto add_ref = [&](const string & ref) {
+    if (ref.empty() || seen.count(ref)) return;
+    seen.insert(ref);
+    out.push_back(ref);
+  };
+
+  unordered_map<string, size_t> lit_counts;
+  for (const auto & b : source) {
+    unordered_set<string> seen_lit;
+    for (const auto & lit : b.ctx.literals) {
+      string key = format_literal_line(lit);
+      if (seen_lit.insert(key).second) lit_counts[key]++;
+    }
+  }
+  vector<pair<string, size_t>> ranked(lit_counts.begin(), lit_counts.end());
+  sort(ranked.begin(),
+       ranked.end(),
+       [](const pair<string, size_t> & a, const pair<string, size_t> & b) {
+         return a.second > b.second;
+       });
+  const size_t top_lits = opts_.llm_cti_digest_top_lits_;
+  if (ranked.size() > top_lits) ranked.resize(top_lits);
+  for (const auto & row : ranked) {
+    add_ref(ref_from_digest_lit_line(row.first));
+    if (out.size() >= max_refs) return;
+  }
+
+  auto ingest_feedback = [&](const string & key) {
+    auto fb_it = feedback_by_cti_.find(key);
+    if (fb_it == feedback_by_cti_.end()) return;
+    for (const auto & fb : fb_it->second) {
+      add_ref(fb.witness_ref);
+      if (out.size() >= max_refs) return;
+    }
+  };
+
+  if (!batch_cti_id.empty()) {
+    ingest_feedback(batch_feedback_key(batch_cti_id));
+    if (out.size() < max_refs) ingest_feedback(batch_cti_id);
+  } else {
+    ingest_feedback("batch_f" + std::to_string(frame_idx));
+  }
+}
+
 void LLMGeneralizer::collect_cti_literal_keys(const string & cti_id,
                                               vector<string> & out) const
 {
@@ -289,7 +509,7 @@ static string sample_group_key(const string & cti_id, size_t attempt)
   return cti_id + "#" + std::to_string(attempt);
 }
 
-static void append_disjunct_json(ostringstream & out,
+static void append_disjunct_json(ostream & out,
                                  const IC3FrameDisjunct & d,
                                  const function<string(const string &)> & escape)
 {
@@ -379,6 +599,17 @@ void LLMGeneralizer::add_feedback(const string & cti_id,
                                       });
   fb.witness_ref = witness_ref;
   fb.witness_next_value = witness_next;
+  fb.clause_idx = clause_idx;
+  fb.sample_id = rejected.sample_id;
+  vector<vector<IC3FrameDisjunct>> clauses = rejected.block_clauses;
+  if (clauses.empty() && !rejected.block_disjuncts.empty()) {
+    clauses.push_back(rejected.block_disjuncts);
+  }
+  if (clause_idx != SIZE_MAX && clause_idx < clauses.size()) {
+    fb.failed_clause = clauses[clause_idx];
+  } else if (!clauses.empty()) {
+    fb.failed_clause = clauses.back();
+  }
   feedback_by_cti_[batch_feedback_key(cti_id)].push_back(fb);
 }
 
@@ -562,6 +793,33 @@ void LLMGeneralizer::write_request_for_cti(const CTIContext & ctx,
   stats_.num_requests++;
 }
 
+void LLMGeneralizer::append_feedback_raw_json(
+    ostream & out, const vector<LLMFeedbackEntry> & feedback) const
+{
+  out << "\"feedback_raw\":[";
+  for (size_t i = 0; i < feedback.size(); ++i) {
+    if (i > 0) out << ",";
+    const auto & fb = feedback[i];
+    out << "{\"reason\":\"" << escape_json(fb.reason) << "\",";
+    out << "\"witness\":{";
+    out << "\"ref\":\"" << escape_json(fb.witness_ref) << "\",";
+    out << "\"next_value\":\"" << escape_json(fb.witness_next_value) << "\"},";
+    out << "\"failed_clause\":[";
+    for (size_t di = 0; di < fb.failed_clause.size(); ++di) {
+      if (di > 0) out << ",";
+      append_disjunct_json(out, fb.failed_clause[di], [this](const string & s) {
+        return escape_json(s);
+      });
+    }
+    out << "],";
+    if (fb.clause_idx != SIZE_MAX) {
+      out << "\"clause_idx\":" << fb.clause_idx << ",";
+    }
+    out << "\"sample_id\":" << fb.sample_id << "}";
+  }
+  out << "]";
+}
+
 void LLMGeneralizer::serialize_batch_request(
     ostream & out,
     const string & batch_id,
@@ -571,7 +829,9 @@ void LLMGeneralizer::serialize_batch_request(
     const vector<size_t> & export_indices,
     const string & digest_json,
     const vector<LLMFeedbackEntry> & feedback,
-    const string & frame_snapshot_json)
+    const string & frame_snapshot_json,
+    const string & init_raw_json,
+    const string & candidate_hints_json)
 {
   out << "{";
   out << "\"schema_version\":1,";
@@ -628,6 +888,17 @@ void LLMGeneralizer::serialize_batch_request(
         << ",\"clauses\":[]},";
   }
 
+  if (!init_raw_json.empty()) {
+    out << "\"init_raw\":" << init_raw_json << ",";
+  }
+
+  if (!candidate_hints_json.empty()) {
+    out << "\"candidate_hints\":" << candidate_hints_json << ",";
+  }
+
+  append_feedback_raw_json(out, feedback);
+  out << ",";
+
   out << "\"feedback\":[";
   for (size_t i = 0; i < feedback.size(); ++i) {
     if (i > 0) out << ",";
@@ -645,7 +916,9 @@ void LLMGeneralizer::serialize_batch_request(
 void LLMGeneralizer::write_batch_request(size_t frame_idx,
                                         const string & frame_snapshot_json,
                                         const vector<BufferedCTI> & buffered,
-                                        size_t attempt_arg)
+                                        size_t attempt_arg,
+                                        const string & init_raw_json,
+                                        const string & candidate_hints_json)
 {
   if (buffered.empty()) return;
 
@@ -692,7 +965,9 @@ void LLMGeneralizer::write_batch_request(size_t frame_idx,
                             indices,
                             digest,
                             fb,
-                            frame_snapshot_json);
+                            frame_snapshot_json,
+                            init_raw_json,
+                            candidate_hints_json);
     return buf.str();
   };
 
@@ -726,7 +1001,9 @@ void LLMGeneralizer::write_batch_request(size_t frame_idx,
 }
 
 void LLMGeneralizer::flush_frame_batch(size_t frame_idx,
-                                       const string & frame_snapshot_json)
+                                       const string & frame_snapshot_json,
+                                       const string & init_raw_json,
+                                       const string & candidate_hints_json)
 {
   auto it = frame_cti_buffer_.find(frame_idx);
   if (it == frame_cti_buffer_.end() || it->second.empty()) {
@@ -735,7 +1012,12 @@ void LLMGeneralizer::flush_frame_batch(size_t frame_idx,
   }
 
   if (opts_.llm_batch_cti_) {
-    write_batch_request(frame_idx, frame_snapshot_json, it->second);
+    write_batch_request(frame_idx,
+                        frame_snapshot_json,
+                        it->second,
+                        0,
+                        init_raw_json,
+                        candidate_hints_json);
   } else {
     for (const auto & buffered : it->second) {
       write_request_for_cti(buffered.ctx, frame_snapshot_json);
@@ -828,7 +1110,9 @@ void LLMGeneralizer::take_retry_queue(vector<string> & out)
 }
 
 void LLMGeneralizer::write_retry_request(const string & cti_id,
-                                         const string & frame_snapshot_json)
+                                         const string & frame_snapshot_json,
+                                         const string & init_raw_json,
+                                         const string & candidate_hints_json)
 {
   if (is_cti_accepted(cti_id)) return;
 
@@ -843,8 +1127,12 @@ void LLMGeneralizer::write_retry_request(const string & cti_id,
       buffered.push_back(b);
     }
     size_t attempt = feedback_attempt(cti_id);
-    write_batch_request(
-        it->second.frame_idx, frame_snapshot_json, buffered, attempt);
+    write_batch_request(it->second.frame_idx,
+                        frame_snapshot_json,
+                        buffered,
+                        attempt,
+                        init_raw_json,
+                        candidate_hints_json);
     return;
   }
 

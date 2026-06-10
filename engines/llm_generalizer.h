@@ -34,6 +34,31 @@ struct CTILiteral
 /** Compact literal line for digest keys and JSONL (uses CTILiteral::polarity). */
 std::string format_cti_literal_line(const CTILiteral & lit);
 
+/** Parse digest lit line (e.g. state34=#b1) to state ref; skips complex lits. */
+std::string ref_from_digest_lit_line(const std::string & lit);
+
+/** Serialize init_raw object for batch JSONL. */
+std::string serialize_init_raw_json(
+    const std::vector<std::string> & refs,
+    const std::unordered_map<std::string, std::string> & values);
+
+/** Negate a simple digest lit line to a block disjunct; false on complex lits. */
+bool negate_digest_lit_to_disjunct(const std::string & lit,
+                                   IC3FrameDisjunct & out);
+
+struct LLMCandidateHint
+{
+  std::string lit;
+  size_t count = 0;
+  IC3FrameDisjunct block_disjunct;
+  bool init_safe = false;
+  std::string reason;
+};
+
+/** Serialize candidate_hints array for batch JSONL. */
+std::string serialize_candidate_hints_json(
+    const std::vector<LLMCandidateHint> & hints);
+
 struct CTIContext
 {
   std::string cti_id;
@@ -56,6 +81,9 @@ struct LLMFeedbackEntry
   std::string rejected_json;
   std::string witness_ref;
   std::string witness_next_value;
+  size_t clause_idx = SIZE_MAX;
+  size_t sample_id = 0;
+  std::vector<IC3FrameDisjunct> failed_clause;
 };
 
 struct LLMValidationResult
@@ -138,12 +166,26 @@ class LLMGeneralizer
   void buffer_cti_context(size_t frame_idx,
                           const CTIContext & ctx,
                           const smt::TermVec & cube_children);
+  void collect_init_raw_refs(size_t frame_idx,
+                             const std::string & batch_cti_id,
+                             std::vector<std::string> & out) const;
+
+  void collect_digest_ranked_literals(
+      size_t frame_idx,
+      const std::string & batch_cti_id,
+      std::vector<std::pair<std::string, size_t>> & out,
+      size_t max_lits = 0) const;
+
   void flush_frame_batch(size_t frame_idx,
-                         const std::string & frame_snapshot_json);
+                         const std::string & frame_snapshot_json,
+                         const std::string & init_raw_json = "",
+                         const std::string & candidate_hints_json = "");
   void flush_retries(const std::string & frame_snapshot_json);
   void take_retry_queue(std::vector<std::string> & out);
   void write_retry_request(const std::string & cti_id,
-                           const std::string & frame_snapshot_json);
+                           const std::string & frame_snapshot_json,
+                           const std::string & init_raw_json = "",
+                           const std::string & candidate_hints_json = "");
   void register_outstanding_samples(const std::string & cti_id, size_t attempt);
   void note_response_processed(const std::string & cti_id, size_t attempt);
   bool all_parallel_samples_received(const std::string & cti_id,
@@ -239,12 +281,20 @@ class LLMGeneralizer
                                const std::vector<size_t> & export_indices,
                                const std::string & digest_json,
                                const std::vector<LLMFeedbackEntry> & feedback,
-                               const std::string & frame_snapshot_json);
+                               const std::string & frame_snapshot_json,
+                               const std::string & init_raw_json,
+                               const std::string & candidate_hints_json);
+
+  void append_feedback_raw_json(std::ostream & out,
+                                const std::vector<LLMFeedbackEntry> & feedback)
+      const;
 
   void write_batch_request(size_t frame_idx,
                            const std::string & frame_snapshot_json,
                            const std::vector<BufferedCTI> & buffered,
-                           size_t attempt = 0);
+                           size_t attempt = 0,
+                           const std::string & init_raw_json = "",
+                           const std::string & candidate_hints_json = "");
 
   PonoOptions opts_;
   smt::SmtSolver solver_;
