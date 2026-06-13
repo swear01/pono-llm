@@ -1,119 +1,90 @@
 # Handoff: Current State
 
-**Last updated:** 2026-06-10 (Q4 harness 計劃 + JSON mode)  
+**Last updated:** 2026-06-14 — 策略轉向：reactive blocking → proactive invariant injection  
 **Branch:** `main` (pono-llm research fork)
 
-## Agent 須知（git / 驗收）
+---
 
-1. **Commit 後自動 push** — 每次完成 commit，**直接 `git push origin main`** 到 GitHub，不需詢問使用者。（除非使用者明確說不要 push。）
-2. **Clause quality 變更** — unit test 通過後，**直接跑 5 輪 p040 smoke**（見 [`plans/clause_quality_q3_plan.md`](plans/clause_quality_q3_plan.md) Agent 須知），不需詢問。
+## ⚠️ 重大策略轉向（2026-06-14）
 
-```bash
-git push origin main
-MAX_ATTEMPTS=3 STRICT=0 ROUNDS=5 bash scripts/ab_q3_p040_multiround.sh
+**Q2/Q3/Q4 方向已封存。** 三個階段均達到 0% accept rate。根因是策略問題，不是 prompt 問題：
+
+- LLM 被放在錯誤的位置（per-CTI reactive blocking，bit-level literal 猜測）
+- LLM 對 `state512`, `state798` 這些匿名 ref 沒有任何 domain knowledge
+- SAME-column impossibility：p040 frame-1 的 93% digest ref 在 init 和 CTI 有相同值，無法單 disjunct blocking
+- Prompt 語意反轉：`ic3_frame_v1.txt` 說 clause FALSE at init；C++ 要 TRUE at init（根本原因之一）
+
+→ 詳見 `docs/archive/plans/README.md`
+
+---
+
+## Active Direction
+
+**新方向：Proactive Semantic Invariant Injection**  
+**主計劃：** [`docs/plans/semantic_invariant_injection_v1_plan.md`](plans/semantic_invariant_injection_v1_plan.md)
+
+核心邏輯：
+
+```
+給 LLM：RTL 語意（Verilog 名稱 + transition pseudo-code + property）
+問 LLM：「這個電路應該有哪些不變量？」
+C++ 批次驗算：init_safe + rel_ind_check + CTI blocking power
+注入存活的 invariants → IC3 從更強的起點跑
 ```
 
-## Active direction
-
-**Phase Q4 — Harness 重設計（精簡 task card + init 預處理）**
-
-Canonical spec: [`ic3_frame_v1_integration.md`](ic3_frame_v1_integration.md)  
-**Q4 plan:** [`plans/clause_quality_q4_harness_plan.md`](plans/clause_quality_q4_harness_plan.md)  
-Doc index: [`DOC_INDEX.md`](DOC_INDEX.md)
-
-LLM runs **online** during IC3IA proof: CTI → structured JSON → `rel_ind_check` → `constrain_frame` / `add_predicate`. **Q4 harness 完成**：ordered task card + C++ `init_raw` / `candidate_hints` / `feedback_raw`；sidecar `--harness-legacy` 供 A/B；`scripts/ab_q4_p040_multiround.sh` 驗收。
-
-**2026-06-10 fix:** pono 既有 `ProofGoalQueue::clear()` UAF（`block_all` trace 路徑）— 見 [`BUG_ANALYSIS.md`](BUG_ANALYSIS.md) Bug #6；smoke 開頭會 `make pono-bin` 避免 stale libpono.so。
-
-**Legacy runtime (`cube_subset`, `qf_smt`, `PONO_LLM_ASSERT_LIFTED_LEMMAS`) will be deleted** when v1 lands — not deprecated.
+**一個好的 invariant 可以消滅幾百個 CTI。** 這才是 LLM 的槓桿點。
 
 ---
 
-## v1 design summary
+## Agent 須知
 
-| Topic | Decision |
-|-------|----------|
-| I/O | `ic3_frame_request` / `ic3_frame_response` v1 only |
-| Block | 1 OR clause per response (multi-disjunct OK) |
-| Multi-block per response | **Yes** — up to N `block_clauses` per response (default 3), first valid wins |
-| Parallel samples | K API calls per batch flush (default **1**); optional `--llm-parallel-samples K>1` |
-| Retry | Feedback + witness, max attempts (default 3 rounds) |
-| Cache | Prompt layers 0–2 fixed per circuit; log cached_tokens |
-| API | `reasoning_effort=none` default; **`response_format=json_object` 永久開啟** |
-| Verilog | Required in `symbol_registry` when mapped |
-| Frame | `frame_idx` from request only (no `frame_hint`) |
+1. **Commit 後自動 push** — 每次 commit 後直接 `git push origin main`
+2. **不要**再動 `llm_worker/prompts/ic3_frame_v1.txt` 的 blocking clause prompt — 舊路線
+3. **不要**再跑 `ab_q3_p040_multiround.sh` / `ab_q4_p040_multiround.sh` — 舊基準
+4. **新 smoke 基準**（待建）：`scripts/smoke_semantic_invariant.sh` — 量 CTI elimination rate
 
 ---
 
-## Key files (current → v1)
+## 現有可用建構積木
 
-### Keep / extend
-
-| Path | Role |
-|------|------|
-| `engines/ic3base.cpp` | CTI capture, validation, `constrain_frame` |
-| `engines/llm_generalizer.cpp` | JSONL IPC |
-| `engines/ic3ia.cpp` | `add_predicate` |
-| `frontends/btor2_encoder.cpp` | `symbol_map_` → Verilog registry |
-| `llm_worker/sidecar.py` | Rewrite for v1 prompt + parallel + retry |
-| `llm_worker/deepseek_client.py` | Add `reasoning_effort`, temperature modes |
-
-### Planned new
-
-| Path | Role |
-|------|------|
-| `engines/ic3_frame_ast.{h,cpp}` | AST → Term / IC3Formula |
-| `llm_worker/ic3_frame_schema.py` | JSON schema validator |
-| `llm_worker/prompts/ic3_frame_v1.txt` | Single prompt template |
-
-### Delete with v1
-
-| Path | Reason |
-|------|--------|
-| `llm_worker/prompts/cube_subset.txt` | Replaced by v1 |
-| `llm_worker/prompts/qf_smt.txt` | Replaced by v1 |
-| `LLMCandidate` cube_subset/qf_smt fields | Replaced by `IC3FrameResponse` |
-| `ic3ia.cpp` `PONO_LLM_ASSERT_LIFTED_LEMMAS` block | Path 1 removed |
-| `--llm-candidate-language` | Removed |
+| 模組 | 路徑 | 作用 |
+|------|------|------|
+| Invariant schema | `llm_worker/lemma_schema.py` | 8 種不變量模板 |
+| Template prompt | `llm_worker/template_prompt.py` | 語意 bundle → LLM prompt |
+| CTI cluster 分析 | `llm_worker/clause_cluster.py` | CTI batch 結構分析 |
+| Transition 萃取 | `llm_worker/transition_slice.py` | 轉移函數 pseudo-code |
+| MVP E2E driver | `llm_worker/run_mvp.py` | 端到端 pilot 測試用 |
+| `rel_ind_check`, `constrain_frame` | `engines/ic3base.cpp` | C++ formal 驗算 |
+| `refine_predicate` AST | `engines/ic3_frame_ast.cpp` | Predicate 格式 |
+| `is_init_safe_block_disjuncts` | `engines/ic3base.cpp:1062` | Init check |
 
 ---
 
-## Historical research (archived docs)
+## 本週最高優先事項
 
-Offline closed-loop found `r_pipe_req ⇒ o_wb_stall` (Bitwuzla standalone). Clause lifting 26/30 verified. Injection prototype existed (25/26 injectable). These informed v1 but are **not** the runtime path.
+1. **S1**：生成 p040 的設計語意 bundle（讓 LLM 讀到 Verilog 名稱，不是 stateNN）
+2. **S2**：LLM 生成 10–20 個候選 invariants for p040
+3. **S3**：C++ 批次驗算腳本（init_safe + rel_ind + CTI blocking power）
+4. **S4**：手動 A/B — 有無 invariant injection 的 CTI 數對比
 
-See tagged **HISTORICAL** files in [`DOC_INDEX.md`](DOC_INDEX.md).
+詳見 `docs/plans/semantic_invariant_injection_v1_plan.md`。
 
 ---
 
-## HWMCC baseline 實驗狀態（2026-06-07）
+## 其他基礎設施狀態
 
 | 項目 | 狀態 |
 |------|------|
-| Output dir | `bench_results/hwmcc_baseline_20260607` |
-| 首輪 baseline | 已 suspend（~168 案在 `nohup.log`） |
-| Harness 修正 | `_parse_pono_stdout`；`baseline-patch`；`--skip-partial` |
-| 進行中 | `baseline-patch` → `results_baseline_partial.csv` |
-| 下一步 | `baseline --skip-partial` resume → `results_baseline.csv`（1052 案） |
-
-SOP：[`hwmcc_experiment_tiers.md`](hwmcc_experiment_tiers.md) § 中斷恢復。
-
----
-
-## Immediate next task
-
-1. 完成 `baseline-patch` + `baseline --skip-partial` → 全量 `results_baseline.csv`
-2. `--phase report` + `find-solvable` → `candidates.json`
-3. Phase E LLM 子集（candidates ∩ baseline 解出 + p040）
-4. Rewrite sidecar (layers, parallel K, retry, reasoning_effort=none)
-5. Delete legacy paths listed above
-6. E2E qspiflash p040
+| HWMCC baseline | `bench_results/hwmcc_baseline_20260607`；首輪 ~168 案 suspend |
+| JSONL IPC（C++ ↔ sidecar） | 保留；改為 batch invariant request mode |
+| BUG: ProofGoalQueue UAF | ✅ 已修（`c478d89`），smoke 開頭 `make pono-bin` |
+| Legacy paths（cube_subset, qf_smt） | 待刪除（不急） |
 
 ---
 
 ## Do not do
 
-- Do not extend `cube_subset` / qf_smt / text lemma grammar
-- Do not treat Path 1 injection as production integration
-- Do not add free-form SMT parser
-- Do not use `reasoning_effort` > none for latency-sensitive online path
+- 繼續投資 per-CTI blocking clause prompt 優化
+- 修 `ic3_frame_v1.txt` 的語意反轉（對新方向無意義）
+- 用 `rejected_initial` / `accept/API` 作為主要研究指標
+- 把 `harness_preprocess.py` 的 task card 再加功能

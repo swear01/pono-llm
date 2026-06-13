@@ -1,6 +1,12 @@
 # IC3 Frame v1 — Online LLM Integration Spec
 
-**Status:** Canonical integration spec (2026-06-03)  
+> ⚠️ **2026-06-14 WARNING — Strategy Retired**
+> The per-CTI blocking clause strategy described in this spec achieved 0% accept rate across Q2/Q3/Q4.
+> The **JSONL IPC infrastructure** (C++ ↔ sidecar protocol, symbol_registry, rel_ind_check API) remains valid and is reused by the new direction.
+> The **prompt strategy** (ic3_frame_v1.txt, harness_preprocess.py task card, per-CTI blocking) is **retired**.
+> Active plan: `docs/plans/semantic_invariant_injection_v1_plan.md`
+
+**Status:** Infrastructure reference only — strategy section superseded  
 **Replaces:** `cube_subset`, `qf_smt`, `LLMCandidateLanguage`, Path 1 `PONO_LLM_ASSERT_LIFTED_LEMMAS`, offline lemma mining as runtime path
 
 Legacy runtime code and prompts listed in [§ Legacy deletion](#legacy-deletion) **will be deleted** (not deprecated).
