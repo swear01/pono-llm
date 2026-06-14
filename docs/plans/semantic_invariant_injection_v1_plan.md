@@ -1,246 +1,405 @@
-# Semantic Invariant Injection — 新主計劃 v1
+# LLM Semantic Guidance for IC3 — Implementation Plan v2
 
-**狀態：** 🟢 Active — 取代 Q2/Q3/Q4 blocking clause 路線  
+**狀態：** 🟢 Active  
 **日期：** 2026-06-14  
-**前置診斷：** Q2–Q4 達 0% accept；根因在策略，不在 prompt — 見 `docs/archive/plans/README.md`
+**取代：** Q2/Q3/Q4 reactive per-CTI blocking（0% accept，已刪除）
 
 ---
 
-## 一句話策略轉向
+## 一句話策略
 
-> **從「LLM 擋子彈」（per-CTI reactive blocking）→「LLM 預測子彈方向」（proactive semantic invariant generation）**
-
-IC3 的真正瓶頸不是 SAT 驗算，而是**設計語意的盲目**：solver 對電路行為一無所知，只能暴力搜索。LLM 讀過大量 RTL，有隱含的 hardware domain knowledge。把 LLM 放在語意層，讓 C++ 繼續做它最擅長的驗算。
+> **LLM 不猜 bit-level literal；LLM 看電路語意、生成 invariants，C++ 做所有 formal 驗算。**
 
 ---
 
-## 為什麼之前的方向沒有爆發力
+## 為什麼之前的方向沒用
 
-| 舊架構 | 問題 |
-|--------|------|
-| 每個 CTI 問一次 LLM | 4–6s/call × 數千 CTI = 不可行 |
-| 輸入：`stateNN` 統計數字 | LLM 對 `state512` 沒有任何 domain knowledge |
-| 輸出：bit-level literal | 必須猜對具體值才能通過 SAT；LLM 做不到 |
-| 驗算：per-CTI reject | 一次 block 一個 CTI，槓桿為 1 |
-| 語意反轉 bug | prompt 說 clause FALSE at init；C++ 要 TRUE at init |
+| 舊架構問題 | 根因 |
+|-----------|------|
+| per-CTI reactive：每個 CTI 問一次 LLM | 4-6s × 數千 CTI = 不可行 |
+| 輸入是 `state512`, `state798` | LLM 對匿名 ref 沒有 domain knowledge |
+| 輸出要 bit-level literal 值 | 必須猜對具體值才過 SAT；LLM 做不到 |
+| 驗算：per-CTI reject | 槓桿 = 1（blockl 一個 CTI） |
+| prompt 語意反轉 | `clause_false_at_init` 問反了 |
+
+**新方向的槓桿：一個 invariant 消滅幾百個 CTI，LLM 只需一次 API call。**
 
 ---
 
-## 新架構
+## 架構：四個 Stage
 
 ```
-Phase 0  設計語意萃取（一次性，每個 benchmark）
-  BTOR2 + symbol_registry + property
-    → 關鍵 state variable Verilog 名稱
-    → 轉移函數 pseudo-code（next(X) = ite(...)）
-    → bad property 的自然語言描述
+Stage 0  Pre-flight（IC3 啟動前）
+  RTL 語意 bundle → LLM → 10-20 個候選 invariants → C++ 批次驗算 → 注入 F0
 
-Phase 1  LLM 語意不變量生成（一次 or 少數幾次 API call）
-  輸入：設計語意 bundle（RTL level，有意義的名稱）
-  問：「這個電路應該滿足哪些 invariants？」
-  輸出：10–20 個候選不變量（predicate AST，有直覺說明）
+Stage 1  IC3 正常執行（含監控）
+  IC3 正常跑，同時監控三個觸發條件：
+    T1: CTI cluster density（同 frame 連續相似 CTI）
+    T2: Frame clause plateau（連續 R 輪無新 clause）
+    T3: Frame clause budget exceeded
 
-Phase 2  C++ 批次驗算（不需 LLM）
-  對每個候選 P：
-    ① init_safe：init ⊨ P ？（C++ SAT query）
-    ② rel_ind_check(frame_0, P)：P ∧ T ⊨ P' ？
-    ③ CTI-blocking power：現有 CTI pool 中有幾個被 P 消除？
+Stage 2  Mid-run 同步引導（任一條件觸發）
+  現場証據 bundle → LLM → Type 1/2/3 候選 → C++ 驗算 → 注入
+  注入後：重置 cooldown，繼續 Stage 1
 
-Phase 3  注入 + 量測
-  constrain_frame(0..K, surviving_invariants)
-  對比：有注入 vs 無注入 → CTI 數、frame 數、wall clock
+Stage 3  迴圈
+  如果再次卡住 → 回到 Stage 2（有 cooldown 避免連續觸發）
 ```
 
-**關鍵槓桿：** 一個好的 invariant 可以消滅幾百個 CTI。LLM 只需要一次 API call。
+---
+
+## 三種 LLM 輸出類型
+
+| 類型 | 用途 | C++ 處理 |
+|------|------|----------|
+| **Type 1: 新 invariant** | 直接消滅 CTI cluster | `constrain_frame(0..K, predicate)` |
+| **Type 2: clause lifting** | 把 N 個具體 clause 合併為 1 個更強的表達 | 替換現有 frame clauses |
+| **Type 3: IC3IA predicate** | 增加抽象 predicate，讓 IC3IA 精化 | `add_predicate(predicate)` |
 
 ---
 
-## 為什麼這個方向有爆發力
+## 可復用的現有代碼
 
-1. **槓桿比：** 現在 accept rate = 0，即使修到 10% 也是每個 CTI blocking 1 個。新方向：1 個 invariant 可能消滅 50–500 個 CTI。
-
-2. **LLM 的真實 alpha：** LLM 知道 FIFO 有 `rd_ptr ≤ wr_ptr`，知道 FSM 有互斥狀態，知道 counter 有 boundary。這些知識 SAT solver 完全沒有。這才是 LLM 應該貢獻的東西。
-
-3. **介面匹配：** 給 LLM `imgfifo_wr_ptr`, `imgfifo_depth`, `wr_en`（有語意的 Verilog 名稱）讓它推理。不要給它 `state512`, `state798`（沒有任何意義）。
-
-4. **失敗代價低：** 一次 LLM call 花 10 秒，驗算 20 個候選花 1 秒，全部 fail 也只損失 11 秒。現在每個 CTI 都等 4–6 秒還是全失敗。
-
----
-
-## 已有的建構積木（不用從頭蓋）
-
-| 模組 | 位置 | 狀態 |
-|------|------|------|
-| Invariant schema 定義（8 種） | `llm_worker/lemma_schema.py` | ✅ 完整 |
-| Template prompt builder | `llm_worker/template_prompt.py` | ✅ 完整 |
-| CTI cluster 分析 | `llm_worker/clause_cluster.py` | ✅ 完整 |
-| Transition pseudo-code 萃取 | `llm_worker/transition_slice.py` | ✅ 骨架（需 BTOR2 → readable 補強） |
-| MVP E2E driver | `llm_worker/run_mvp.py` | ✅ 可執行（需針對 p040 調整） |
-| `is_init_safe_block_disjuncts` | `engines/ic3base.cpp:1062` | ✅ C++ SAT check 就緒 |
-| `rel_ind_check` | `engines/ic3base.cpp:577` | ✅ |
-| `constrain_frame` | `engines/ic3base.cpp` | ✅ |
-| `refine_predicate` AST | `engines/ic3_frame_ast.cpp` | ✅ parse 就緒，inject 還是 stub |
-| symbol_registry（Verilog 名稱） | C++ + `benchmark_context.json` | ✅ |
-
-**缺的是「策略層」，不是「工具層」。**
+| 模組 | 路徑 | 復用方式 |
+|------|------|---------|
+| JSONL IPC 協議 | `jsonl_protocol.py` | 完全不動，新加 request type |
+| LLM API client | `llm_client.py` | 完全不動 |
+| 環境設定 | `env_config.py` | 完全不動 |
+| Sidecar 輪詢主迴圈 | `sidecar.py` | 已清理為乾淨 shell，加 handler 即可 |
+| `constrain_frame` | `engines/ic3base.cpp` | 注入 invariant 的核心路徑 |
+| `is_init_safe_block_disjuncts` | `engines/ic3base.cpp:1062` | Init check 復用 |
+| `rel_ind_check` | `engines/ic3base.cpp:577` | Induction check 復用 |
+| `serialize_frame_snapshot_json` | `engines/ic3base.cpp:2020` | Frame clause 序列化 |
+| `build_cti_digest` | `engines/llm_generalizer.cpp` | CTI cluster 統計 |
+| `write_benchmark_context` | `engines/llm_generalizer.cpp` | symbol_registry 輸出 |
+| `symbol_registry` | `engines/llm_generalizer.h` | Verilog 名稱對應 |
+| `benchmark_context.json` | C++ 輸出 | Stage 0 RTL 語意來源 |
 
 ---
 
-## 2 週執行計劃
+## JSON Schemas
 
-### Week 1 — Minimum Viable Experiment（最小可驗實驗）
+### Stage 0 Request（`ic3_stage0_request`）
 
-#### Task S1：設計語意 bundle for p040（Day 1–2）
-
-**目標：** 讓 LLM 讀到有意義的電路描述，不是 `stateNN` 數字。
-
-1. 從 `symbol_registry` 提取 `vgasim_imgfifo-p040` 的 Verilog 名稱
-2. 補強 `transition_slice.py`：從 C++ dump 的 BTOR2 next-state 方程式，轉成可讀的 pseudo-code（`if (wr_en && !full) imgfifo_wr_ptr' = imgfifo_wr_ptr + 1`）
-3. 從 `bad_property` 提取性質自然語言描述
-4. 輸出：`/tmp/p040_semantic_bundle.json`
-
-**驗收：** 人工閱讀 bundle，確認 LLM 看到的是有語意的電路描述，不是匿名 stateNN。
-
----
-
-#### Task S2：LLM invariant 生成（Day 2–3）
-
-**目標：** 得到 10–20 個候選 invariants。
-
-1. 用現有 `template_prompt.py` + `lemma_schema.py` 構建 prompt
-2. 讓 LLM 生成候選 invariants（用 Verilog 名稱，不是 stateNN）
-3. Parse 輸出為 `refine_predicate` AST 或 `block_clause` 形式
-
-**Prompt 核心問題：**
-```
-你是硬體驗證專家。以下是 vgasim_imgfifo 電路和待驗 property。
-列出 10–20 個你認為應該成立的不變量，用於協助 IC3 模型檢查。
-格式要求：
-- 只用電路本身的狀態變數（不含輸入）
-- 用 guarded_implication 或 mutual_exclusion 格式
-- 每個附上直覺說明
-
-Property: imgfifo 的輸出應永遠不超過 N 個 pixel
-Circuit: [semantic bundle]
+```json
+{
+  "type": "ic3_stage0_request",
+  "request_id": "stage0_vgasim_p040",
+  "benchmark": "vgasim_imgfifo-p040",
+  "property_desc": "imgfifo output never exceeds valid count",
+  "hot_variables": [
+    {"ref": "state512", "verilog": "imgfifo_wr_ptr", "width": 13, "init": "0"},
+    {"ref": "state798", "verilog": "imgfifo_rd_ptr", "width": 13, "init": "0"},
+    {"ref": "state21",  "verilog": "imgfifo_count",  "width": 14, "init": "0"}
+  ],
+  "transition_sketch": [
+    "if (wr_en && !full): imgfifo_wr_ptr' = imgfifo_wr_ptr + 1",
+    "if (rd_en && !empty): imgfifo_rd_ptr' = imgfifo_rd_ptr + 1",
+    "imgfifo_count' = imgfifo_wr_ptr' - imgfifo_rd_ptr'"
+  ]
+}
 ```
 
-**驗收：** LLM 輸出包含有語意的候選（如 `wr_ptr ≤ depth`），不是隨機 literal。
+### Stage 2 Request（`ic3_stage2_request`）
+
+```json
+{
+  "type": "ic3_stage2_request",
+  "request_id": "stage2_f3_t42",
+  "trigger": "T2_plateau",
+  "proof_state": {
+    "current_frame": 3,
+    "frames_stuck_rounds": 12,
+    "total_cti_count": 89,
+    "frame_clause_count": 47
+  },
+  "hot_variables": [ /* 同 stage0 */ ],
+  "cti_cluster": [
+    {"verilog": {"imgfifo_wr_ptr": 7, "imgfifo_rd_ptr": 4, "imgfifo_count": 3}},
+    {"verilog": {"imgfifo_wr_ptr": 9, "imgfifo_rd_ptr": 6, "imgfifo_count": 3}}
+  ],
+  "frame_clause_clusters": [
+    {"pattern_desc": "count=3 variations", "count": 12,
+     "example_verilog": "imgfifo_count≠3 ∨ imgfifo_rd_ptr≠4"}
+  ],
+  "previously_injected": ["imgfifo_count < 8"]
+}
+```
+
+### Response（兩種 request 共用）
+
+```json
+{
+  "type": "ic3_invariant_response",
+  "request_id": "stage2_f3_t42",
+  "candidates": [
+    {
+      "id": 1,
+      "kind": "Type1_invariant",
+      "verilog_expr": "imgfifo_count == imgfifo_wr_ptr - imgfifo_rd_ptr",
+      "predicate_ast": {"op": "eq",
+        "lhs": {"ref": "state21"},
+        "rhs": {"op": "sub", "lhs": {"ref": "state512"}, "rhs": {"ref": "state798"}}},
+      "intuition": "count tracks wr_ptr minus rd_ptr"
+    },
+    {
+      "id": 2,
+      "kind": "Type2_lift",
+      "subsumes_pattern": "count=3 variations",
+      "verilog_expr": "imgfifo_count + imgfifo_rd_ptr <= imgfifo_depth",
+      "predicate_ast": { "op": "ule", "lhs": {"op": "add", ...}, "rhs": {...} },
+      "intuition": "unify 12 specific clauses"
+    },
+    {
+      "id": 3,
+      "kind": "Type3_predicate",
+      "verilog_expr": "imgfifo_full == (imgfifo_count >= imgfifo_depth)",
+      "predicate_ast": { "op": "eq", ... },
+      "intuition": "full signal semantics"
+    }
+  ]
+}
+```
 
 ---
 
-#### Task S3：C++ 批次驗算腳本（Day 3–4）
+## C++ 實作計劃
 
-**目標：** 量出每個候選的存活率和 CTI-blocking power。
+### 改動 1：Stage 0 觸發（`llm_generalizer.cpp`，~80 行）
+
+位置：`IC3Base::initialize()` 結尾，IC3 主迴圈開始前。
+
+```cpp
+if (llm_gen_ && llm_gen_->has_stage0_enabled()) {
+    string req_json = llm_gen_->build_stage0_request_json(
+        property_desc_, init_raw_json_          // 從現有 field 取
+    );
+    llm_gen_->write_jsonl_request(req_json);    // 寫 JSONL
+    llm_gen_->sync_wait_and_apply_invariants(); // 同步 poll + 注入
+}
+```
+
+`build_stage0_request_json()`：
+- `hot_variables`：從 `symbol_registry_` 取 Verilog 名稱 + width + init value
+- `transition_sketch`：從 BTOR2 next-state equations 轉為 pseudo-code（每個 hot var 一行）
+- Hot variables = 出現在 `init_raw_json_` 的前 N 個 ref
+
+### 改動 2：Stage 2 觸發條件（`ic3base.cpp`，~100 行）
+
+位置：`IC3Base::block_all()` 每輪 flush 後，或主迴圈 frame 推進失敗時。
+
+```cpp
+bool should_trigger = false;
+string trigger_reason;
+size_t fi = frontier_idx();
+
+if (llm_gen_->cti_cluster_density(fi) >= LLM_CLUSTER_THRESHOLD) {
+    should_trigger = true; trigger_reason = "T1_cluster";
+}
+if (llm_gen_->frames_stuck_rounds() >= LLM_STUCK_ROUNDS) {
+    should_trigger = true; trigger_reason = "T2_plateau";
+}
+if (frames_.at(fi).size() >= LLM_CLAUSE_BUDGET) {
+    should_trigger = true; trigger_reason = "T3_budget";
+}
+
+if (should_trigger && !llm_gen_->stage2_cooldown_active()) {
+    string req = llm_gen_->build_stage2_request_json(fi, trigger_reason);
+    llm_gen_->write_jsonl_request(req);
+    llm_gen_->sync_wait_and_apply_invariants();
+    llm_gen_->reset_stage2_cooldown(LLM_COOLDOWN_CTIS);
+}
+```
+
+### 改動 3：Response 處理（`llm_generalizer.cpp`，~150 行）
+
+`sync_wait_and_apply_invariants()`：
+1. Poll `resp_path_` 直到看到 `request_id` 匹配的 response（最多 `LLM_TIMEOUT_MS`）
+2. 對每個 candidate：
+   - `parse_predicate_ast(cand["predicate_ast"])` → `Term`
+   - `is_init_safe_from_predicate(term)` → init check
+   - **Type 1 / Type 2**：`constrain_frame(0, term)` 注入 F0
+   - **Type 3**：`try_apply_llm_refine_predicate(term)` 傳給 IC3IA
+3. 更新 stats：`num_stage0_injected`, `num_stage2_triggered`, `num_stage2_accepted`
+
+### 新 field/method 清單（`llm_generalizer.h`）
+
+```cpp
+// State
+bool stage0_enabled_ = false;
+int  stage2_cooldown_remaining_ = 0;
+int  frames_stuck_rounds_ = 0;
+string last_invariant_request_id_;
+
+// Methods
+string build_stage0_request_json(const string& property_desc, const string& init_raw);
+string build_stage2_request_json(size_t frame_idx, const string& trigger_reason);
+void   write_jsonl_request(const string& req_json);
+void   sync_wait_and_apply_invariants();
+bool   stage2_cooldown_active() const;
+void   reset_stage2_cooldown(int cooldown_ctis);
+int    cti_cluster_density(size_t frame_idx) const;
+int    frames_stuck_rounds() const;
+```
+
+---
+
+## Python 實作計劃
+
+### 新檔：`llm_worker/invariant_sidecar.py`（~200 行）
 
 ```python
-# scripts/validate_invariant_candidates.py
-# 輸入：candidates.json（LLM 輸出）+ IC3 run 的 CTI log
-# 對每個 candidate：
-#   1. init_safe check（呼叫 pono SMT context）
-#   2. rel_ind_check(frame_0)
-#   3. 計算：這個 invariant 能消滅 CTI pool 中幾個 CTI？
-# 輸出：candidate_fate.json（每個候選的 pass/fail + CTI elimination count）
+# handle_stage0_request / handle_stage2_request 的具體實作
+# 由 sidecar.py import
+
+def handle_stage0_request(client, request):
+    prompt = build_stage0_prompt(request)
+    text, tokens, latency_ms = client.call(
+        prompt,
+        system_prompt=INVARIANT_SYSTEM_PROMPT,
+        reasoning_effort="low",
+    )
+    candidates = parse_invariant_response(text)
+    return {
+        "type": "ic3_invariant_response",
+        "request_id": request["request_id"],
+        "candidates": candidates,
+        "_token_count": tokens,
+        "_latency_ms": latency_ms,
+    }
+
+def handle_stage2_request(client, request):
+    # 同上，但 prompt 包含 CTI cluster + frame clause evidence
+    ...
 ```
 
-**驗收指標（go/no-go）：**
+### 新檔：`llm_worker/invariant_prompt.py`（~150 行）
 
-| 結果 | 解讀 |
-|------|------|
-| ≥1 個候選通過 init + rel_ind | ✅ 架構可行，繼續 |
-| 通過的候選消滅 ≥10% CTI | 🚀 有爆發力，full integration |
-| 0 個通過但失敗原因是 init（不是 induction） | LLM 生成了 unsafe predicate；調整 prompt 加 init 指引 |
-| 0 個通過且失敗原因是 induction | Predicate 太弱；換成更強的 schema 或加條件 |
-| 全部 schema_fail / parse_fail | Interface 問題，修 schema + parse |
+**Stage 0 System Prompt：**
+```
+你是硬體驗證專家。給定電路語意和待驗 property，
+列出 10-15 個候選不變量（invariants）。
+- 只用 state variables（不含 input）
+- 用 predicate_ast 格式輸出（JSON array）
+- 每個附 verilog_expr（可讀）和 intuition（直覺說明）
+- kind 選: Type1_invariant, Type2_lift, Type3_predicate
+```
 
----
+**Stage 2 User Prompt 核心：**
+```
+IC3 在 frame {N} 卡住了（{M} 輪無進展）。
+觸發原因：{trigger}
 
-#### Task S4：手動 A/B 量測（Day 4–5）
+觀察到的 CTI cluster（{K} 個 CTI，Verilog 名稱）：
+{cti_cluster}
 
-對 p040：
-1. Run baseline：`pono -e ic3ia -k 5 vgasim_imgfifo-p040.btor2`，記錄 CTI 數、frame 數
-2. 把通過驗算的 invariants 手動 `constrain_frame(0, ...)` 注入
-3. Re-run，記錄 CTI 數、frame 數
-4. 計算：CTI 減少 %、frame 減少 %、wall clock 改善
+Frame clause 分布（{N} 個 clause）：
+{frame_clause_clusters}
 
----
+已注入過的 invariants：{previously_injected}
 
-### Week 2 — Integration + Scaling
+請分析這些 CTI 的共同模式，提供：
+- Type1: 能消滅這個 cluster 的 invariant
+- Type2: 能統合分散 clause 的更強表達式
+- Type3: IC3IA predicate 建議（可選）
+```
 
-#### Task S5：C++ Batch Injection API（Day 6–7）
+### 修改：`sidecar.py`（已完成）
 
-把 Phase 1 手動注入自動化：
-- `--llm-gen-mode invariant-inject`：在 IC3 啟動前，調用一次 LLM → 批次驗算 → 自動注入
-- 不需要 per-CTI API call
-
-#### Task S6：2–3 個其他 benchmark（Day 7–9）
-
-測試 generalizability：
-- 選 SAME 率低的 benchmark（讓 CTI pool 的 diversity 更高）
-- 用相同 LLM invariant pipeline
-- 測：是否在不同 benchmark 都有 CTI reduction？
-
-#### Task S7：量化爆發力（Day 10）
-
-整理實驗結果：
-- 最佳 invariant 的 CTI elimination 率
-- IC3 frame count reduction
-- 總 LLM API calls vs 舊路（現在：千次 per-CTI calls；新路：1–3 次 per-circuit calls）
-- 如果有 HWMCC benchmark 在注入後首次 solve → 這就是爆發力
+```python
+from invariant_sidecar import handle_stage0_request, handle_stage2_request
+```
+在 `handle_stage0_request` / `handle_stage2_request` 實作完成後，替換掉 stub。
 
 ---
 
-## 關鍵設計決策
+## 檔案清單
 
-### LLM 的角色定位
+| 檔案 | 動作 | 估計規模 |
+|------|------|---------|
+| `llm_worker/sidecar.py` | 已清理為 shell ✅ | 200 行 |
+| `llm_worker/invariant_sidecar.py` | **新建** | ~200 行 |
+| `llm_worker/invariant_prompt.py` | **新建** | ~150 行 |
+| `engines/llm_generalizer.h` | 新 fields + method 宣告 | +50 行 |
+| `engines/llm_generalizer.cpp` | Stage 0/2 request building + response handling | +300 行 |
+| `engines/ic3base.cpp` | Stage 2 觸發條件 | +80 行 |
+| `engines/ic3_frame_ast.cpp` | `parse_predicate_ast` from JSON | +100 行（可能已有基礎） |
 
-| 做 | 不做 |
-|----|------|
-| 從 RTL 語意推理不變量 | 猜 bit-level literal 值 |
-| 批次生成 10–20 個候選 | per-CTI 反應式生成 |
-| 提供直覺說明（可 debug） | 假裝能驗算 SAT |
-| 使用 Verilog 名稱 | 操作 stateNN 匿名 ref |
+---
 
-### C++ 的角色定位
+## 實作順序
 
-- 所有 formal 驗算（init, induction, CTI blocking）：C++ 做
-- LLM 不做任何 verify，只做 generate + explain
-- 兩者清楚分工，不混淆
+### Week 1 — Minimum Viable Path
 
-### 成功的定義
+```
+Day 1-2  Python 先行（不需要 C++）
+  - invariant_prompt.py：Stage 0 prompt builder
+  - invariant_sidecar.py：handle_stage0_request
+  - 手動測試：把 p040 的 benchmark_context.json 當 Stage 0 request 輸入，
+    確認 LLM 輸出是 Verilog 名稱的 candidates，不是 stateNN
 
-**最小成功：** ≥1 個 LLM 生成的 invariant 通過 C++ 驗算，並消滅 ≥5% 的 CTI pool  
-**中等成功：** IC3 在有注入的情況下 frame count 減少 ≥20%  
-**爆發性成功：** 有 benchmark 因注入而首次在時限內 solve
+Day 3  Stage 0 C++ request building
+  - llm_generalizer.cpp: build_stage0_request_json
+    （hot_variables from symbol_registry + init values）
+  - 手動 trigger：在 initialize() 加 flag --llm-stage0
+  - smoke: pono 啟動 → request JSONL 出現 → sidecar 回應 → response JSONL 出現
+
+Day 4  Response parsing + injection
+  - parse_predicate_ast()（JSON → IC3 Term）
+  - sync_wait_and_apply_invariants()：init check + constrain_frame
+  - Smoke metric: 有幾個 candidate 通過 init check？有幾個通過 rel_ind?
+
+Day 5  A/B 量測 Stage 0
+  - 對 p040：有/無 Stage 0 injection 的 CTI 數、frame 數、wall clock
+  - Go/no-go decision
+```
+
+### Week 2 — Stage 2 Mid-run（如果 Stage 0 A/B 通過）
+
+```
+Day 6  Stage 2 Python
+  - invariant_prompt.py: build_stage2_prompt（加 CTI cluster + frame evidence）
+  - invariant_sidecar.py: handle_stage2_request
+
+Day 7  Stage 2 C++ trigger conditions
+  - ic3base.cpp: T1/T2/T3 trigger detection + cooldown
+  - llm_generalizer.cpp: build_stage2_request_json（CTI cluster in Verilog names）
+  - Smoke: p040 跑到卡 → Stage 2 trigger log 出現
+
+Day 8-10  量測 + 調整
+  - A/B: 有/無 Stage 2 的差異
+  - Adjust: 調整 threshold（T2 plateau rounds, T3 budget）
+  - Scale: 2-3 個其他 benchmark
+```
+
+---
+
+## Go / No-go 標準
+
+| 指標 | 目標 | 意義 |
+|------|------|------|
+| Stage 0 候選 init_safe 率 | ≥ 30% | LLM 生成的 invariant 有基本品質 |
+| Stage 0 候選 inductive 率 | ≥ 10% | 通過完整驗算 |
+| Stage 0 後 CTI 數下降 | ≥ 15% | Pre-flight injection 有效 |
+| Stage 2 後 CTI 數下降 | ≥ 10% | Mid-run guidance 有效 |
+| Type 2 lift 成功 | ≥ 1 次/run | Clause 合併機制有作用 |
+| Wall clock 增加 | ≤ 20% | LLM latency 可接受（同步模式） |
+
+**爆發性成功：** 有 HWMCC benchmark 因 invariant injection 而首次在時限內 solve。
 
 ---
 
 ## 停損條件
 
-**停止並考慮其他方向，如果：**
-
-- 10 個以上 benchmark 試下來，LLM 候選的 init_safe 率 < 10%（LLM 生成的 invariant 連初始狀態都過不了 → LLM 對 init semantics 理解不足）
-- CTI elimination rate 在所有 benchmark 都 < 2%（invariant 太弱，對 IC3 沒有實質幫助）
-- 以上發生時：考慮 offline mining（從已 solved 的 proof artifact 中 lift invariants）或 LLM-guided predicate selection（給 LLM 預選好的 predicate pool，讓它排序而非生成）
-
----
-
-## 與現有基礎設施的關係
-
-| 現有 | 新方向是否需要 |
-|------|--------------|
-| JSONL IPC（C++ ↔ sidecar） | ✅ 保留，改為 batch request mode |
-| `rel_ind_check`, `constrain_frame` | ✅ 核心路徑不變 |
-| `refine_predicate` AST | ✅ 主要輸出格式之一 |
-| `ic3_frame_v1.txt` prompt | ❌ 不再使用；改用 `template_prompt.py` |
-| `harness_preprocess.py` | ❌ per-CTI task card；不再需要 |
-| `candidate_hints`, `init_raw` C++ fields | ⚠️ 可用於 Phase 2 驗算加速，但不是 LLM 輸入 |
-| `lemma_schema.py`, `template_prompt.py` | ✅ **核心，這是新方向的基礎** |
+- 10 個 benchmark 試下來 init_safe 率 < 10%（LLM 不了解 init semantics → 換 prompt 策略）
+- CTI elimination 在所有 benchmark < 2%（invariant 太弱 → 換 schema 或加條件）
 
 ---
 
 ## Agent 須知
 
-1. **新 smoke 基準：** `scripts/smoke_semantic_invariant.sh`（待建）— 不再跑 `ab_q3_p040_multiround.sh`
-2. **Commit 後 push**：每次 commit 後 `git push origin main`
-3. **不要**再動 `ic3_frame_v1.txt` 的 clause blocking prompt；那個路線已封存
-4. **不要**跑 per-CTI accept rate 作為主要指標；新指標是 CTI elimination rate + frame reduction
+1. **Commit 後 push**：每次 commit 後 `git push origin main`
+2. **新 smoke 基準**：`scripts/smoke_semantic_invariant.sh`（待建）
+3. **不要**跑舊的 `ab_q*` 腳本（已刪除）
+4. **不要**再動 per-CTI blocking clause 路線
+5. **Stage 0 先做**：驗證 LLM 輸出品質再做 Stage 2

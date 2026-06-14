@@ -1,10 +1,9 @@
 #!/usr/bin/env python3
 """
-Pono LLM Sidecar -- IC3 Frame v1 online integration.
+Pono LLM Sidecar — Semantic Invariant Guidance.
 
-Reads ic3_frame_request from JSONL (written by Pono C++),
-calls LLM API with parallel K samples,
-writes ic3_frame_response lines (polled by Pono C++).
+Reads ic3_stage0_request / ic3_stage2_request from JSONL (written by pono C++),
+calls LLM API, writes ic3_invariant_response lines back.
 
 Usage:
     python sidecar.py --req-path /tmp/pono_llm_requests.jsonl \
@@ -13,7 +12,6 @@ Usage:
 """
 
 import argparse
-import hashlib
 import json
 import os
 import threading
@@ -24,25 +22,12 @@ from typing import Optional
 
 from env_config import load_env, require_api_key, get_llm_provider, default_model
 from llm_client import LLMClient, create_llm_client
-from ic3_frame_schema import normalize_response, validate_request, validate_response
 from jsonl_protocol import append_log_line, read_requests_batch, write_response
-from harness_preprocess import render_task_card
-from prompt_format import (
-    apply_witness_forbidden_post_filter,
-    batch_cti_total,
-    render_legacy_user_prompt,
-)
 
-HARNESS_LEGACY = False
-
-V1_REQUEST_TYPES = frozenset({"ic3_frame_request", "ic3_frame_batch_request"})
-
-
-def load_prompt(prompt_dir: str) -> str:
-    path = Path(prompt_dir) / "ic3_frame_v1.txt"
-    if path.exists():
-        return path.read_text()
-    return ""
+SUPPORTED_REQUEST_TYPES = frozenset({
+    "ic3_stage0_request",
+    "ic3_stage2_request",
+})
 
 
 def load_benchmark_context(path: str) -> dict:
@@ -52,201 +37,95 @@ def load_benchmark_context(path: str) -> dict:
         return json.load(f)
 
 
-def format_benchmark_context_ref(benchmark_ctx: dict) -> str:
-    """Layer-1 benchmark reference for API prompts.
+# ---------------------------------------------------------------------------
+# Request handlers (stubs — to be filled in by invariant_sidecar.py)
+# ---------------------------------------------------------------------------
 
-    ``bad_property`` remains in ``benchmark_context.json`` on disk but is
-    intentionally omitted from the LLM user prompt (full BTOR bad expr can be
-    MB-scale; CTI/frame digest carries the actionable blocking signal).
-    See ``docs/ic3_frame_v1_integration.md`` (Prompt layers).
+def handle_stage0_request(client: LLMClient, request: dict) -> dict:
     """
-    return json.dumps(
-        {"benchmark": benchmark_ctx.get("benchmark")},
-        separators=(",", ":"),
-    )
+    Pre-flight: given RTL semantic bundle, ask LLM for invariant candidates.
+    Returns ic3_invariant_response dict.
+    TODO: implement in llm_worker/invariant_sidecar.py and import here.
+    """
+    raise NotImplementedError("handle_stage0_request not yet implemented")
 
 
-def build_batch_user_prompt(
-    req: dict,
-    benchmark_ctx: dict,
-    sample_id: int,
-    snapshot_max_clauses: int = 0,
-) -> str:
-    if HARNESS_LEGACY:
-        return render_legacy_user_prompt(
-            req,
-            benchmark_ctx,
-            sample_id,
-            snapshot_max_clauses=snapshot_max_clauses,
-            format_benchmark_context_ref=format_benchmark_context_ref,
-        )
-    return render_task_card(req, sample_id=sample_id)
+def handle_stage2_request(client: LLMClient, request: dict) -> dict:
+    """
+    Mid-run: given CTI cluster + frame clause evidence, ask LLM for guidance.
+    Returns ic3_invariant_response dict (Type1/Type2/Type3 candidates).
+    TODO: implement in llm_worker/invariant_sidecar.py and import here.
+    """
+    raise NotImplementedError("handle_stage2_request not yet implemented")
 
 
-def build_user_prompt(
-    req: dict,
-    benchmark_ctx: dict,
-    sample_id: int,
-    snapshot_max_clauses: int = 0,
-) -> str:
-    return build_batch_user_prompt(
-        req, benchmark_ctx, sample_id, snapshot_max_clauses=snapshot_max_clauses
-    )
+# ---------------------------------------------------------------------------
+# Dispatch
+# ---------------------------------------------------------------------------
 
-
-def process_request(
-    client: LLMClient,
-    req: dict,
-    system_prompt: str,
-    snapshot_max_clauses: int = 0,
-) -> tuple:
-    ok, err = validate_request(req)
-    if not ok:
-        raise ValueError(f"Invalid request: {err}")
-
-    benchmark_ctx = load_benchmark_context(req.get("benchmark_context_path", ""))
-    parallel_samples = int(req.get("parallel_samples", 1))
-    reasoning_effort = req.get("reasoning_effort", "none")
-    model_name = req.get("model") or None
-    source_id = req.get("batch_id") or req.get("cti_id", "")
-    attempt = int(req.get("attempt", 1))
-    if req.get("type") == "ic3_frame_batch_request":
-        temperature = float(req.get("temperature", 0.5))
-    else:
-        temperature = float(req.get("temperature", 0.8))
-
-    total_tokens = 0
-    total_latency = 0.0
-
-    def _call_sample(sample_id: int):
-        user_prompt = build_user_prompt(
-            req, benchmark_ctx, sample_id, snapshot_max_clauses=snapshot_max_clauses
-        )
-        max_block_clauses = int(req.get("max_block_clauses", 3))
-        try:
-            text, tokens, latency_ms = client.call(
-                user_prompt,
-                system_prompt=system_prompt,
-                model_name=model_name,
-                reasoning_effort=reasoning_effort,
-                temperature=temperature,
-            )
-        except Exception as e:
-            normalized = normalize_response(
-                {"block_clauses": [], "rationale": f"api_error: {e}"},
-                source_id,
-                sample_id,
-                attempt,
-                max_block_clauses=max_block_clauses,
-            )
-            return sample_id, normalized, 0, 0.0
-        try:
-            raw = json.loads(text)
-        except json.JSONDecodeError:
-            raw = {"block_disjuncts": [], "rationale": "LLM response was not valid JSON"}
-        normalized = normalize_response(
-            raw, source_id, sample_id, attempt, max_block_clauses=max_block_clauses
-        )
-        if HARNESS_LEGACY:
-            normalized = apply_witness_forbidden_post_filter(normalized, req)
-        valid, verr = validate_response(
-            normalized, max_block_clauses=max_block_clauses
-        )
-        if not valid:
-            normalized["rationale"] = f"{normalized.get('rationale', '')} [{verr}]"
-        return sample_id, normalized, tokens, latency_ms
-
-    responses = []
-    with ThreadPoolExecutor(max_workers=parallel_samples) as pool:
-        futs = [pool.submit(_call_sample, sid) for sid in range(parallel_samples)]
-        by_id = {}
-        for fut in as_completed(futs):
-            sample_id, normalized, tokens, latency_ms = fut.result()
-            by_id[sample_id] = (normalized, tokens, latency_ms)
-        for sample_id in range(parallel_samples):
-            normalized, tokens, latency_ms = by_id[sample_id]
-            responses.append(normalized)
-            total_tokens += tokens
-            total_latency += latency_ms
-
-    return responses, total_tokens, total_latency / max(parallel_samples, 1)
-
-
-def handle_one_request(
+def dispatch_request(
     client: LLMClient,
     request: dict,
-    system_prompt: str,
     resp_path: str,
     log_path: str,
     write_lock: threading.Lock,
     request_index: int,
-    snapshot_max_clauses: int = 0,
 ) -> tuple[int, int, float]:
-    """Process one request line; thread-safe writes to resp/log files."""
-    benchmark_ctx = load_benchmark_context(request.get("benchmark_context_path", ""))
-    user_prompt = build_user_prompt(
-        request, benchmark_ctx, 0, snapshot_max_clauses=snapshot_max_clauses
-    )
-    user_prompt_bytes = len(user_prompt.encode("utf-8"))
-    system_prompt_bytes = len(system_prompt.encode("utf-8"))
+    """Route one request by type, write response + log. Thread-safe."""
+    req_type = request.get("type", "")
+    request_id = request.get("request_id", f"req_{request_index}")
+    t_start = time.time()
 
-    parallel_samples = int(request.get("parallel_samples", 1))
-    max_block_clauses = int(request.get("max_block_clauses", 3))
-    source_id = request.get("batch_id") or request.get("cti_id", "")
-    attempt = int(request.get("attempt", 1))
     try:
-        responses, token_count, latency_ms = process_request(
-            client, request, system_prompt, snapshot_max_clauses=snapshot_max_clauses
-        )
-    except Exception as e:
-        responses = [
-            normalize_response(
-                {"block_clauses": [], "rationale": f"api_error: {e}"},
-                source_id,
-                sid,
-                attempt,
-                max_block_clauses=max_block_clauses,
-            )
-            for sid in range(parallel_samples)
-        ]
+        if req_type == "ic3_stage0_request":
+            resp = handle_stage0_request(client, request)
+        elif req_type == "ic3_stage2_request":
+            resp = handle_stage2_request(client, request)
+        else:
+            raise ValueError(f"Unknown request type: {req_type}")
+        token_count = resp.pop("_token_count", 0)
+        latency_ms = resp.pop("_latency_ms", (time.time() - t_start) * 1000)
+    except NotImplementedError as e:
+        print(f"[sidecar] req #{request_index} ({req_type}): not implemented — {e}")
+        resp = {
+            "type": "ic3_invariant_response",
+            "request_id": request_id,
+            "candidates": [],
+            "error": str(e),
+        }
         token_count = 0
-        latency_ms = 0.0
+        latency_ms = (time.time() - t_start) * 1000
+    except Exception as e:
+        print(f"[sidecar] req #{request_index} ({req_type}): error — {e}")
+        import traceback
+        traceback.print_exc()
+        resp = {
+            "type": "ic3_invariant_response",
+            "request_id": request_id,
+            "candidates": [],
+            "error": str(e),
+        }
+        token_count = 0
+        latency_ms = (time.time() - t_start) * 1000
+
     with write_lock:
-        for resp in responses:
-            write_response(resp_path, resp)
-        log_entry = {
+        write_response(resp_path, resp)
+        append_log_line(log_path, {
             "timestamp": time.time(),
             "request_index": request_index,
-            "request_type": request.get("type"),
-            "batch_id": request.get("batch_id"),
-            "cti_id": request.get("cti_id"),
-            "cti_total": batch_cti_total(request),
-            "parallel_samples": len(responses),
+            "request_type": req_type,
+            "request_id": request_id,
             "token_count": token_count,
             "latency_ms": latency_ms,
-            "user_prompt_bytes": user_prompt_bytes,
-            "system_prompt_bytes": system_prompt_bytes,
-            "prompt_hash": hashlib.sha256(
-                json.dumps(request, sort_keys=True).encode()
-            ).hexdigest()[:16],
-        }
-        stats = getattr(client, "last_call_stats", None) or {}
-        if stats:
-            log_entry.update({
-                "json_mode": stats.get("json_mode"),
-                "thinking_mode": stats.get("thinking_mode"),
-                "prompt_tokens": stats.get("prompt_tokens"),
-                "completion_tokens": stats.get("completion_tokens"),
-                "reasoning_chars": stats.get("reasoning_chars"),
-            })
-        append_log_line(log_path, log_entry)
-    return len(responses), token_count, latency_ms
+        })
+
+    return 1, token_count, latency_ms
 
 
 def drain_completed(
     inflight: dict[Future, int],
 ) -> list[tuple[int, int, float, Optional[Exception]]]:
-    """Collect finished futures. Returns (responses, tokens, latency, error)."""
+    """Collect finished futures. Returns (n_resp, tokens, latency, error)."""
     done: list[tuple[int, int, float, Optional[Exception]]] = []
     finished = [fut for fut in list(inflight) if fut.done()]
     for fut in finished:
@@ -254,47 +133,31 @@ def drain_completed(
         try:
             n_resp, tokens, lat = fut.result()
             done.append((n_resp, tokens, lat, None))
-            print(
-                f"[sidecar] req #{req_index}: wrote {n_resp} responses, "
-                f"{tokens} tokens, {lat:.0f}ms avg"
-            )
+            print(f"[sidecar] req #{req_index}: done, {tokens} tokens, {lat:.0f}ms")
         except Exception as e:
             done.append((0, 0, 0.0, e))
             print(f"[sidecar] req #{req_index} error: {e}")
-            import traceback
-            traceback.print_exc()
     return done
 
 
+# ---------------------------------------------------------------------------
+# Main polling loop
+# ---------------------------------------------------------------------------
+
 def main():
-    parser = argparse.ArgumentParser(description="Pono LLM Sidecar (IC3 Frame v1)")
+    parser = argparse.ArgumentParser(description="Pono LLM Sidecar (Semantic Invariant)")
     parser.add_argument("--req-path", default="/tmp/pono_llm_requests.jsonl")
     parser.add_argument("--resp-path", default="/tmp/pono_llm_responses.jsonl")
     parser.add_argument("--log-path", default="/tmp/pono_llm_log.jsonl")
-    parser.add_argument("--prompt-dir", default="llm_worker/prompts/")
     parser.add_argument("--poll-interval", type=float, default=1.0)
     parser.add_argument("--max-requests", type=int, default=0,
-                        help="Max total requests to process (0=unlimited)")
-    parser.add_argument("--max-inflight-requests", type=int, default=8,
-                        help="Max concurrent request lines in flight")
-    parser.add_argument("--snapshot-max-clauses", type=int, default=0,
-                        help="Max frame clauses in prompt (0=all, compact line format)")
+                        help="Max total requests (0=unlimited)")
+    parser.add_argument("--max-inflight", type=int, default=4,
+                        help="Max concurrent requests")
     parser.add_argument("--model", default="")
-    parser.add_argument(
-        "--provider",
-        default="",
-        choices=["", "deepseek", "openrouter"],
-        help="LLM API provider (default: LLM_PROVIDER from .env or deepseek)",
-    )
-    parser.add_argument(
-        "--harness-legacy",
-        action="store_true",
-        help="Use pre-Q4.1 stacked prompt (Q3 digest hints path) instead of task card",
-    )
+    parser.add_argument("--provider", default="",
+                        choices=["", "deepseek", "openrouter"])
     args = parser.parse_args()
-
-    global HARNESS_LEGACY
-    HARNESS_LEGACY = bool(args.harness_legacy)
 
     env_path = load_env()
     if env_path:
@@ -311,14 +174,10 @@ def main():
     except (RuntimeError, ValueError) as e:
         print(f"[sidecar] ERROR: {e}")
         return 1
-    system_prompt = load_prompt(args.prompt_dir)
-    write_lock = threading.Lock()
 
-    print(f"[sidecar] IC3 Frame v1, polling {args.req_path}")
+    write_lock = threading.Lock()
+    print(f"[sidecar] Semantic Invariant mode, polling {args.req_path}")
     print(f"[sidecar] Writing responses to {args.resp_path}")
-    print(f"[sidecar] max_inflight_requests={args.max_inflight_requests}")
-    print(f"[sidecar] snapshot_max_clauses={args.snapshot_max_clauses}")
-    print(f"[sidecar] harness_legacy={HARNESS_LEGACY}")
 
     processed_count = 0
     submitted_count = 0
@@ -326,7 +185,7 @@ def main():
     inflight: dict[Future, int] = {}
 
     try:
-        with ThreadPoolExecutor(max_workers=args.max_inflight_requests) as request_pool:
+        with ThreadPoolExecutor(max_workers=args.max_inflight) as pool:
             while True:
                 for _, _, _, err in drain_completed(inflight):
                     if err is None:
@@ -336,7 +195,7 @@ def main():
                     if not inflight:
                         break
 
-                slots = args.max_inflight_requests - len(inflight)
+                slots = args.max_inflight - len(inflight)
                 if slots > 0:
                     if args.max_requests > 0:
                         slots = min(slots, args.max_requests - submitted_count)
@@ -350,24 +209,19 @@ def main():
 
                         for request in requests:
                             req_type = request.get("type", "")
-                            if req_type not in V1_REQUEST_TYPES:
-                                print(f"[sidecar] Skipping non-v1 request type: {req_type}")
+                            if req_type not in SUPPORTED_REQUEST_TYPES:
+                                print(f"[sidecar] skipping unsupported type: {req_type}")
                                 submitted_count += 1
                                 processed_count += 1
                                 continue
 
                             req_index = submitted_count
                             submitted_count += 1
-                            fut = request_pool.submit(
-                                handle_one_request,
-                                client,
-                                request,
-                                system_prompt,
-                                args.resp_path,
-                                args.log_path,
-                                write_lock,
-                                req_index,
-                                args.snapshot_max_clauses,
+                            fut = pool.submit(
+                                dispatch_request,
+                                client, request,
+                                args.resp_path, args.log_path,
+                                write_lock, req_index,
                             )
                             inflight[fut] = req_index
 
