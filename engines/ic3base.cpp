@@ -2245,7 +2245,7 @@ std::string IC3Base::serialize_frame_snapshot_json(
 
 void IC3Base::process_llm_candidates()
 {
-  if (!llm_gen_ || !llm_gen_->enabled()) return;
+  if (!llm_gen_ || !llm_gen_->is_async_cti()) return;
 
   auto responses = llm_gen_->poll_responses();
   if (responses.empty()) return;

@@ -119,18 +119,12 @@ static size_t find_json_matching_close(const string & s, size_t open_pos,
 /** Parse the value of a JSON string field from a JSON object/line. */
 static string parse_json_string_field(const string & s, const string & key)
 {
-  string needle = "\"" + key + "\"";
+  // Include ':' so we land past the separator and avoid searching for ':' twice.
+  string needle = "\"" + key + "\":";
   size_t pos = s.find(needle);
   if (pos == string::npos) return {};
-  pos = s.find('"', pos + needle.size());
-  if (pos == string::npos) return {};
-  // Skip optional ':' and whitespace
-  size_t val_start = s.find('"', pos + 1);
-  // Handle ": " case — find the actual value quote after the key's closing quote
-  // pos is the closing quote of the key; next non-space char should be ':'
-  size_t colon = s.find(':', pos);
-  if (colon == string::npos) return {};
-  val_start = s.find('"', colon + 1);
+  // Skip optional whitespace after ':', then find opening quote of value.
+  size_t val_start = s.find('"', pos + needle.size());
   if (val_start == string::npos) return {};
   size_t val_end = val_start + 1;
   bool esc = false;
