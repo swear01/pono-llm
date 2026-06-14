@@ -4,6 +4,7 @@ End-to-end integration tests for LLM_GEN_SEMANTIC mode.
 Phase 1: Functional — verify Stage 0/2 JSONL plumbing works correctly.
 Phase 2: Effectiveness — verify that injecting the correct predicate reduces
          IC3IA's CEGAR refinement iterations.
+Phase 3: Stage 2 trigger — verify that Stage 2 fires automatically when IC3 gets stuck.
 
 Requires: pono binary built at ../../build/pono
 Tests are skipped if binary not found.
@@ -18,7 +19,7 @@ import textwrap
 import threading
 import time
 from pathlib import Path
-from typing import List, Optional
+from typing import Dict, List, Optional
 
 import pytest
 
@@ -110,6 +111,66 @@ def _spawn_responder(req_path: Path, resp_path: Path,
 
     def _worker():
         results["request"] = _watch_and_respond(req_path, resp_path, candidates)
+
+    t = threading.Thread(target=_worker, daemon=True)
+    t.start()
+    t.results = results
+    return t
+
+
+def _watch_all_requests(req_path: Path, resp_path: Path,
+                        candidates_by_type: Dict[str, list],
+                        max_requests: int = 2,
+                        timeout: float = 90.0) -> List[dict]:
+    """
+    Background worker: respond to multiple requests by type.
+    candidates_by_type: {"ic3_stage0_request": [...], "ic3_stage2_request": [...]}
+    Returns list of all request objects handled.
+    """
+    seen_ids: set = set()
+    handled: list = []
+    deadline = time.monotonic() + timeout
+
+    while time.monotonic() < deadline and len(handled) < max_requests:
+        if req_path.exists():
+            with open(req_path) as fh:
+                for raw in fh:
+                    raw = raw.strip()
+                    if not raw:
+                        continue
+                    try:
+                        obj = json.loads(raw)
+                    except json.JSONDecodeError:
+                        continue
+                    req_type = obj.get("type", "")
+                    req_id = obj.get("request_id", "")
+                    if not req_id or req_id in seen_ids:
+                        continue
+                    if req_type not in candidates_by_type:
+                        continue
+                    seen_ids.add(req_id)
+                    cands = candidates_by_type[req_type]
+                    resp = {
+                        "type": "ic3_invariant_response",
+                        "request_id": req_id,
+                        "candidates": cands,
+                    }
+                    # Append (multiple responses may coexist in same file)
+                    with open(resp_path, "a") as rf:
+                        rf.write(json.dumps(resp) + "\n")
+                    handled.append(obj)
+        time.sleep(0.05)
+    return handled
+
+
+def _spawn_multi_responder(req_path: Path, resp_path: Path,
+                           candidates_by_type: Dict[str, list],
+                           max_requests: int = 2) -> threading.Thread:
+    results: dict = {"handled": []}
+
+    def _worker():
+        results["handled"] = _watch_all_requests(
+            req_path, resp_path, candidates_by_type, max_requests)
 
     t = threading.Thread(target=_worker, daemon=True)
     t.start()
@@ -355,3 +416,97 @@ class TestStage0Effectiveness:
                             f"Expected 0 injected for init-unsafe predicate, got {injected}"
                         return
         pytest.fail("Stage 0 injection log line not found")
+
+
+# ===========================================================================
+# Phase 3 — Stage 2 trigger tests
+# ===========================================================================
+
+
+@SKIP_NO_PONO
+@SKIP_NO_BENCH
+class TestStage2Trigger:
+    """Verify Stage 2 fires automatically when IC3 is stuck for >= 3 rounds.
+
+    Uses ab_sync.btor2 (hard without the hint) with Stage 0 responding empty,
+    so the stuck counter increments each IC3 step and T2_plateau fires after 3.
+    A fake multi-responder handles both Stage 0 and the subsequent Stage 2 call.
+    """
+
+    def _run_with_multi_responder(self, tmp_path: Path, *,
+                                  stage0_cands: list = None,
+                                  stage2_cands: list = None,
+                                  k: int = 8,
+                                  timeout: int = 120) -> tuple:
+        req = tmp_path / "req.jsonl"
+        resp = tmp_path / "resp.jsonl"
+        t = _spawn_multi_responder(req, resp, {
+            "ic3_stage0_request": stage0_cands or [],
+            "ic3_stage2_request": stage2_cands or [],
+        }, max_requests=2)
+        result = subprocess.run(
+            [str(PONO_BIN), "-e", "ic3ia", "-v", "2",
+             "--llm-gen-mode", "semantic",
+             "--llm-req-path", str(req),
+             "--llm-resp-path", str(resp),
+             "-k", str(k),
+             str(AB_SYNC_BTOR2)],
+            capture_output=True, text=True, timeout=timeout,
+        )
+        t.join(timeout=10)
+        return result, t.results["handled"]
+
+    def test_stage2_fires_within_3_steps(self, tmp_path):
+        """Stage 2 request appears in JSONL after Stage 0 returns empty candidates."""
+        result, handled = self._run_with_multi_responder(tmp_path)
+
+        types_seen = [h["type"] for h in handled]
+        assert "ic3_stage2_request" in types_seen, (
+            f"Expected Stage 2 request; handled types: {types_seen}\n"
+            f"--- stderr ---\n{result.stderr[:600]}"
+        )
+
+    def test_stage2_request_has_correct_fields(self, tmp_path):
+        """Stage 2 request contains type, trigger, proof_state, cti_cluster."""
+        result, handled = self._run_with_multi_responder(tmp_path)
+
+        s2_reqs = [h for h in handled if h["type"] == "ic3_stage2_request"]
+        assert s2_reqs, "No Stage 2 request found"
+        req = s2_reqs[0]
+
+        assert req["type"] == "ic3_stage2_request"
+        assert req.get("trigger") in ("T1_cluster", "T2_plateau", "T3_budget"), \
+            f"Unexpected trigger: {req.get('trigger')}"
+        ps = req.get("proof_state", {})
+        assert "frame_idx" in ps, "proof_state missing frame_idx"
+        assert "total_cti_count" in ps, "proof_state missing total_cti_count"
+        assert isinstance(req.get("cti_cluster"), list), "cti_cluster should be a list"
+
+    def test_stage2_trigger_is_t2_plateau(self, tmp_path):
+        """The trigger after 3 stuck rounds should be T2_plateau."""
+        result, handled = self._run_with_multi_responder(tmp_path)
+
+        s2_reqs = [h for h in handled if h["type"] == "ic3_stage2_request"]
+        assert s2_reqs, "No Stage 2 request found"
+        assert s2_reqs[0]["trigger"] == "T2_plateau", \
+            f"Expected T2_plateau, got {s2_reqs[0].get('trigger')}"
+
+    def test_stage2_pono_logs_trigger(self, tmp_path):
+        """pono logs 'IC3: Stage 2 trigger=T2_plateau' in stderr."""
+        result, handled = self._run_with_multi_responder(tmp_path)
+
+        stage2_lines = [l for l in result.stderr.splitlines()
+                        if "Stage 2 trigger" in l]
+        assert stage2_lines, (
+            f"Expected 'Stage 2 trigger' in stderr\n{result.stderr[:600]}"
+        )
+
+    def test_stage2_empty_response_no_crash(self, tmp_path):
+        """Stage 2 empty response is handled gracefully (no crash)."""
+        result, handled = self._run_with_multi_responder(
+            tmp_path, stage2_cands=[])
+
+        assert result.returncode in (0, 1, 255), \
+            f"Unexpected return code {result.returncode}"
+        assert "Stage 2" in result.stderr, \
+            f"Stage 2 log not found in stderr\n{result.stderr[:600]}"
