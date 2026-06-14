@@ -178,13 +178,22 @@ def parse_btor2(path: str) -> BTOR2Info:
                 except ValueError:
                     pass
 
-            # Other ops: record deps for COI BFS
+            # Other ops: record deps for COI BFS.
+            # ops like slice/sext/uext have literal integer args that are NOT
+            # node references — only their first data argument is a node ref.
             elif op not in ("sort", "constraint", "output", "justice", "fair"):
                 arg_linenos = []
-                for tok in parts[2:]:
-                    ln = _parse_int_lineno(tok)
+                # slice N SORT EXPR HIGH LOW  — only EXPR (parts[3]) is a node ref
+                # sext/uext N SORT EXPR WIDTH — only EXPR (parts[3]) is a node ref
+                if op in ("slice", "sext", "uext") and len(parts) >= 4:
+                    ln = _parse_int_lineno(parts[3])
                     if ln is not None and ln != lineno:
                         arg_linenos.append(ln)
+                else:
+                    for tok in parts[2:]:
+                        ln = _parse_int_lineno(tok)
+                        if ln is not None and ln != lineno:
+                            arg_linenos.append(ln)
                 raw_deps[lineno] = arg_linenos
 
     # Resolve init values for states
@@ -225,13 +234,17 @@ def parse_btor2(path: str) -> BTOR2Info:
 def hot_refs_near_bad(info: BTOR2Info, depth: int = 3) -> List[str]:
     """
     Return stateNN refs reachable from the bad property within `depth` BFS hops.
+
+    When a state variable is found we also enqueue its next-expression so that
+    variables influencing the found state's transition are discovered too.
     Result is sorted by lineno for determinism.
     """
     if info.bad_lineno < 0:
         return []
 
+    state_linenos: Set[int] = {sv.lineno for sv in info.states}
     visited: Set[int] = set()
-    frontier = {info.bad_lineno}
+    frontier: Set[int] = {info.bad_lineno}
     state_refs: Set[str] = set()
 
     for _ in range(depth):
@@ -240,9 +253,14 @@ def hot_refs_near_bad(info: BTOR2Info, depth: int = 3) -> List[str]:
             if ln in visited:
                 continue
             visited.add(ln)
-            ref = f"state{ln}"
-            if any(sv.lineno == ln for sv in info.states):
+            if ln in state_linenos:
+                ref = f"state{ln}"
                 state_refs.add(ref)
+                # Also follow this state's next-expression so we discover
+                # state variables that influence its transition.
+                nxt = info.next_map.get(ref)
+                if nxt is not None and nxt not in visited:
+                    next_frontier.add(nxt)
             for dep in info.deps.get(ln, []):
                 if dep not in visited:
                     next_frontier.add(dep)
@@ -272,33 +290,119 @@ def build_hot_variables(info: BTOR2Info, refs: List[str]) -> List[dict]:
     return result
 
 
+def _node_formula(info: BTOR2Info, ln: int,
+                  state_by_ln: Dict[int, StateVar],
+                  input_by_ln: Dict[int, InputVar],
+                  const_by_ln: Dict[int, str],
+                  depth: int = 3) -> str:
+    """Recursively build a short formula string for node ln."""
+    if depth == 0:
+        return f"node{ln}"
+    if ln in state_by_ln:
+        sv = state_by_ln[ln]
+        return sv.symbol or sv.ref
+    if ln in input_by_ln:
+        return input_by_ln[ln].symbol
+    if ln in const_by_ln:
+        return const_by_ln[ln]
+
+    deps = info.deps.get(ln, [])
+
+    def arg(i: int) -> str:
+        if i < len(deps):
+            return _node_formula(info, deps[i], state_by_ln, input_by_ln,
+                                 const_by_ln, depth - 1)
+        return "?"
+
+    # Find the op name from the parsed node_sketch (fallback)
+    sketch = info.node_sketch.get(ln, "")
+    if sketch:
+        return sketch
+
+    # We don't store op per node, so fall back to arg listing
+    if len(deps) == 1:
+        return f"f({arg(0)})"
+    if len(deps) == 2:
+        return f"f({arg(0)}, {arg(1)})"
+    if len(deps) >= 3:
+        return f"f({arg(0)}, {arg(1)}, {arg(2)})"
+    return f"node{ln}"
+
+
 def build_transition_sketch(info: BTOR2Info, refs: List[str]) -> List[str]:
     """
-    Very shallow transition sketch: just list which state variables have next-state
-    logic, and describe the inputs they depend on.
+    Build a readable transition sketch for hot state variables.
+
+    For each hot state variable, produces a line like:
+      a' = ite(i_reset, 0, a+1)
+      c' = depends on [state7, state8]
+
+    Uses a BFS through the next-expression DAG to find all state/input
+    variables that influence the transition, avoiding false matches from
+    literal integer arguments (e.g. bit indices in slice).
     """
     lines = []
-    input_by_lineno = {iv.lineno: iv.symbol for iv in info.inputs}
-    state_by_lineno = {sv.lineno: sv for sv in info.states}
+    input_by_ln: Dict[int, InputVar] = {iv.lineno: iv for iv in info.inputs}
+    state_by_ln: Dict[int, StateVar] = {sv.lineno: sv for sv in info.states}
+    const_by_ln: Dict[int, str] = {}
+
+    # Build const map from node_sketch if populated, else from deps (const/constd nodes)
+    for ln, sk in info.node_sketch.items():
+        if sk.lstrip("-").isdigit():
+            const_by_ln[ln] = sk
+
+    def _bfs_deps(start_ln: int, self_ln: int) -> Tuple[List[str], List[str]]:
+        """BFS from start_ln; return (input_deps, state_deps) avoiding self_ln."""
+        visited: Set[int] = set()
+        frontier: Set[int] = {start_ln}
+        inp_deps: List[str] = []
+        st_deps: List[str] = []
+        seen: Set[int] = set()
+
+        while frontier:
+            nxt: Set[int] = set()
+            for n in frontier:
+                if n in visited:
+                    continue
+                visited.add(n)
+                if n in input_by_ln:
+                    if n not in seen:
+                        inp_deps.append(input_by_ln[n].symbol)
+                        seen.add(n)
+                elif n in state_by_ln:
+                    if n not in seen and n != self_ln:
+                        sv = state_by_ln[n]
+                        st_deps.append(sv.symbol or sv.ref)
+                        seen.add(n)
+                    # Do NOT recurse into state's own transitions
+                else:
+                    for d in info.deps.get(n, []):
+                        if d not in visited:
+                            nxt.add(d)
+            frontier = nxt
+        return inp_deps, st_deps
 
     for ref in refs:
         next_ln = info.next_map.get(ref)
+        sv = state_by_ln.get(int(ref[5:]))
+        if sv is None:
+            continue
+        name = sv.symbol or ref
+
         if next_ln is None:
             continue
-        # Find input deps one level deep
-        deps = info.deps.get(next_ln, [])
-        input_deps = [input_by_lineno[d] for d in deps if d in input_by_lineno]
-        state_deps = [f"state{d}" for d in deps if d in state_by_lineno and d != int(ref[5:])]
 
-        sv = state_by_lineno.get(int(ref[5:]))
-        name = sv.symbol if (sv and sv.symbol) else ref
+        inp_deps, st_deps = _bfs_deps(next_ln, sv.lineno)
+
         dep_parts = []
-        if input_deps:
-            dep_parts.append("inputs: " + ", ".join(input_deps[:4]))
-        if state_deps:
-            dep_parts.append("states: " + ", ".join(state_deps[:4]))
+        if inp_deps:
+            dep_parts.append("inputs: " + ", ".join(inp_deps[:6]))
+        if st_deps:
+            dep_parts.append("states: " + ", ".join(st_deps[:6]))
+
         if dep_parts:
             lines.append(f"{name}' depends on {'; '.join(dep_parts)}")
         else:
             lines.append(f"{name}' has next-state logic")
+
     return lines
