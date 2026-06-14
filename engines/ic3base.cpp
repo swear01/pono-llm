@@ -188,6 +188,9 @@ ProverResult IC3Base::check_until(int k)
   // ever initializing base classes
   assert(initialized_);
 
+  // Stage 0: synchronous pre-flight LLM call to seed invariant candidates.
+  if (llm_gen_ && llm_gen_->is_semantic_guidance()) do_stage0_llm_call();
+
   ProverResult res;
   RefineResult ref_res;
   int i = reached_k_ + 1;
@@ -505,6 +508,9 @@ ProverResult IC3Base::step(int i)
   }
 
   process_llm_candidates();  // poll for LLM candidates after blocking phase
+
+  // Stage 2: check whether to fire synchronous mid-run LLM guidance.
+  check_stage2_trigger();
 
   logger.log(1, "Propagation phase at frame {}", i);
   // propagation phase
@@ -1664,6 +1670,109 @@ bool IC3Base::try_apply_llm_refine_predicate(const Term & pred)
   (void)pred;
   return false;
 }
+
+// ---------------------------------------------------------------------------
+// Semantic guidance — Stage 0 / Stage 2
+// ---------------------------------------------------------------------------
+
+bool IC3Base::do_stage0_llm_call()
+{
+  if (!llm_gen_ || !llm_gen_->is_semantic_guidance()) return false;
+
+  string req_json = llm_gen_->build_stage0_request_json();
+  llm_gen_->write_invariant_request(req_json);
+  const string req_id = llm_gen_->last_invariant_request_id();
+  logger.log(1, "IC3: Stage 0 LLM pre-flight, request_id={}", req_id);
+
+  // Synchronous poll: wait up to 60 s for the sidecar to respond.
+  const unsigned kStage0TimeoutMs = 60000;
+  vector<IC3FramePredicateNode> candidates;
+  if (!llm_gen_->poll_invariant_response(req_id, kStage0TimeoutMs, candidates)) {
+    logger.log(1, "IC3: Stage 0 timeout after {}ms", kStage0TimeoutMs);
+    return false;
+  }
+
+  llm_gen_->stats_.num_stage0_candidates += candidates.size();
+  int injected = 0;
+  for (const auto & node : candidates) {
+    injected += apply_invariant_candidate(node);
+  }
+  llm_gen_->stats_.num_stage0_injected += static_cast<size_t>(injected);
+  logger.log(1, "IC3: Stage 0 injected {}/{} candidates", injected, candidates.size());
+  return injected > 0;
+}
+
+int IC3Base::apply_invariant_candidate(const IC3FramePredicateNode & node)
+{
+  smt::Term pred = build_predicate_term(solver_, ts_, node);
+  if (!pred) return 0;
+  if (try_apply_llm_refine_predicate(pred)) {
+    logger.log(1, "IC3: LLM invariant candidate injected: {}", pred);
+    return 1;
+  }
+  return 0;
+}
+
+void IC3Base::check_stage2_trigger()
+{
+  if (!llm_gen_ || !llm_gen_->is_semantic_guidance()) return;
+
+  // Increment the "stuck" counter every step() we reach without a proof.
+  llm_gen_->update_stuck_counter(false);
+
+  if (llm_gen_->stage2_cooldown_active()) {
+    llm_gen_->decrement_cooldown();
+    return;
+  }
+
+  const size_t frame = frontier_idx();
+  const int density = llm_gen_->cti_cluster_density(frame);
+  const int stuck = llm_gen_->stuck_rounds();
+
+  string trigger;
+  if (stuck >= 8) trigger = "T3_budget";
+  else if (stuck >= 3) trigger = "T2_plateau";
+  else if (density >= 5) trigger = "T1_cluster";
+
+  if (trigger.empty()) return;
+
+  auto cti_cluster = llm_gen_->collect_frame_cti_cluster(frame, 8);
+  const size_t total_cti_count = static_cast<size_t>(density);
+  const size_t frame_clause_count = frames_[frame].size();
+
+  string req_json = llm_gen_->build_stage2_request_json(
+      frame, trigger, total_cti_count, frame_clause_count, cti_cluster);
+  llm_gen_->write_invariant_request(req_json);
+  const string req_id = llm_gen_->last_invariant_request_id();
+  logger.log(1, "IC3: Stage 2 trigger={} frame={} req_id={}", trigger, frame, req_id);
+
+  llm_gen_->stats_.num_stage2_triggered++;
+
+  const unsigned kStage2TimeoutMs = 30000;
+  vector<IC3FramePredicateNode> candidates;
+  int injected = 0;
+  if (!llm_gen_->poll_invariant_response(req_id, kStage2TimeoutMs, candidates)) {
+    logger.log(1, "IC3: Stage 2 timeout after {}ms", kStage2TimeoutMs);
+  } else {
+    llm_gen_->stats_.num_stage2_candidates += candidates.size();
+    for (const auto & node : candidates) {
+      injected += apply_invariant_candidate(node);
+    }
+    llm_gen_->stats_.num_stage2_injected += static_cast<size_t>(injected);
+    logger.log(1,
+               "IC3: Stage 2 injected {}/{} candidates",
+               injected,
+               candidates.size());
+  }
+
+  // If injection succeeded, reset stuck counter so T3 doesn't immediately re-fire.
+  if (injected > 0) llm_gen_->update_stuck_counter(true);
+
+  // Cooldown: don't fire Stage 2 again for the next 10 calls.
+  llm_gen_->reset_stage2_cooldown(10);
+}
+
+// ---------------------------------------------------------------------------
 
 bool IC3Base::try_accept_first_block_clause(
     const string & cti_id,

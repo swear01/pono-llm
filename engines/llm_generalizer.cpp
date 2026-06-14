@@ -96,6 +96,54 @@ static streampos safe_response_offset(streampos pos)
   return response_offset_valid(pos) ? pos : streampos(0);
 }
 
+/** Find the matching closing character for open_ch at open_pos, respecting nesting
+ *  and JSON string literals. Returns string::npos if not found. */
+static size_t find_json_matching_close(const string & s, size_t open_pos,
+                                       char open_ch, char close_ch)
+{
+  int depth = 0;
+  bool in_str = false;
+  bool escape = false;
+  for (size_t i = open_pos; i < s.size(); ++i) {
+    char c = s[i];
+    if (escape) { escape = false; continue; }
+    if (c == '\\' && in_str) { escape = true; continue; }
+    if (c == '"') { in_str = !in_str; continue; }
+    if (in_str) continue;
+    if (c == open_ch) { ++depth; }
+    else if (c == close_ch) { if (--depth == 0) return i; }
+  }
+  return string::npos;
+}
+
+/** Parse the value of a JSON string field from a JSON object/line. */
+static string parse_json_string_field(const string & s, const string & key)
+{
+  string needle = "\"" + key + "\"";
+  size_t pos = s.find(needle);
+  if (pos == string::npos) return {};
+  pos = s.find('"', pos + needle.size());
+  if (pos == string::npos) return {};
+  // Skip optional ':' and whitespace
+  size_t val_start = s.find('"', pos + 1);
+  // Handle ": " case — find the actual value quote after the key's closing quote
+  // pos is the closing quote of the key; next non-space char should be ':'
+  size_t colon = s.find(':', pos);
+  if (colon == string::npos) return {};
+  val_start = s.find('"', colon + 1);
+  if (val_start == string::npos) return {};
+  size_t val_end = val_start + 1;
+  bool esc = false;
+  while (val_end < s.size()) {
+    char c = s[val_end];
+    if (esc) { esc = false; ++val_end; continue; }
+    if (c == '\\') { esc = true; ++val_end; continue; }
+    if (c == '"') break;
+    ++val_end;
+  }
+  return s.substr(val_start + 1, val_end - val_start - 1);
+}
+
 }  // namespace
 
 std::string format_cti_literal_line(const CTILiteral & lit)
@@ -229,6 +277,214 @@ bool LLMGeneralizer::is_async_cti() const
 {
   return opts_.llm_gen_mode_ == LLM_GEN_ASYNC_CTI;
 }
+
+bool LLMGeneralizer::is_semantic_guidance() const
+{
+  return opts_.llm_gen_mode_ == LLM_GEN_SEMANTIC;
+}
+
+// ---------------------------------------------------------------------------
+// Semantic guidance — Stage 0 / Stage 2
+// ---------------------------------------------------------------------------
+
+string LLMGeneralizer::build_stage0_request_json() const
+{
+  auto ts = chrono::duration_cast<chrono::milliseconds>(
+                chrono::steady_clock::now().time_since_epoch())
+                .count();
+  ostringstream req_id_oss;
+  req_id_oss << "inv_s0_" << ts;
+  string req_id = req_id_oss.str();
+
+  ostringstream oss;
+  oss << "{\"type\":\"ic3_stage0_request\",\"schema_version\":1";
+  oss << ",\"request_id\":\"" << req_id << "\"";
+  oss << ",\"benchmark\":\"" << escape_json(benchmark_name_) << "\"";
+  oss << ",\"property_desc\":\"" << escape_json(bad_expr_) << "\"";
+  oss << ",\"btor2_path\":\"" << escape_json(opts_.filename_) << "\"";
+  oss << ",\"symbol_registry\":{";
+  bool first = true;
+  for (const auto & kv : symbol_registry_) {
+    if (!first) oss << ",";
+    first = false;
+    oss << "\"" << escape_json(kv.first) << "\":{";
+    oss << "\"kind\":\"" << escape_json(kv.second.kind) << "\"";
+    oss << ",\"width\":" << kv.second.width;
+    oss << ",\"btor2_line\":" << kv.second.btor2_line;
+    if (!kv.second.verilog.empty()) {
+      oss << ",\"verilog\":\"" << escape_json(kv.second.verilog) << "\"";
+    }
+    oss << "}";
+  }
+  oss << "}}";
+  return oss.str();
+}
+
+string LLMGeneralizer::build_stage2_request_json(
+    size_t frame_idx,
+    const string & trigger,
+    size_t total_cti_count,
+    size_t frame_clause_count,
+    const vector<unordered_map<string, string>> & cti_cluster) const
+{
+  auto ts = chrono::duration_cast<chrono::milliseconds>(
+                chrono::steady_clock::now().time_since_epoch())
+                .count();
+  ostringstream req_id_oss;
+  req_id_oss << "inv_s2_f" << frame_idx << "_" << ts;
+  string req_id = req_id_oss.str();
+
+  ostringstream oss;
+  oss << "{\"type\":\"ic3_stage2_request\",\"schema_version\":1";
+  oss << ",\"request_id\":\"" << req_id << "\"";
+  oss << ",\"benchmark\":\"" << escape_json(benchmark_name_) << "\"";
+  oss << ",\"property_desc\":\"" << escape_json(bad_expr_) << "\"";
+  oss << ",\"btor2_path\":\"" << escape_json(opts_.filename_) << "\"";
+  oss << ",\"trigger\":\"" << escape_json(trigger) << "\"";
+  oss << ",\"proof_state\":{";
+  oss << "\"frame_idx\":" << frame_idx;
+  oss << ",\"total_cti_count\":" << total_cti_count;
+  oss << ",\"frame_clause_count\":" << frame_clause_count;
+  oss << "}";
+  oss << ",\"cti_cluster\":[";
+  bool first_cti = true;
+  for (const auto & cti : cti_cluster) {
+    if (!first_cti) oss << ",";
+    first_cti = false;
+    oss << "{";
+    bool first_kv = true;
+    for (const auto & kv : cti) {
+      if (!first_kv) oss << ",";
+      first_kv = false;
+      oss << "\"" << escape_json(kv.first) << "\":\"" << escape_json(kv.second) << "\"";
+    }
+    oss << "}";
+  }
+  oss << "]}";
+  return oss.str();
+}
+
+void LLMGeneralizer::write_invariant_request(const string & req_json)
+{
+  last_invariant_request_id_ = parse_json_string_field(req_json, "request_id");
+  if (!append_jsonl_line(request_path_, req_json)) {
+    logger.log(1, "LLM: failed to write invariant request to {}", request_path_);
+  }
+}
+
+bool LLMGeneralizer::poll_invariant_response(
+    const string & request_id,
+    unsigned timeout_ms,
+    vector<IC3FramePredicateNode> & candidates_out)
+{
+  using clock = chrono::steady_clock;
+  candidates_out.clear();
+  const auto deadline = clock::now() + chrono::milliseconds(timeout_ms);
+
+  while (true) {
+    ifstream fin(response_path_);
+    if (fin.is_open()) {
+      // Full-file scan to avoid stale streampos issues on appended files.
+      fin.seekg(0);
+      string line;
+      while (getline(fin, line)) {
+        if (line.empty() || line[0] != '{') continue;
+        if (line.find(request_id) == string::npos) continue;
+        if (line.find("\"ic3_invariant_response\"") == string::npos) continue;
+        // Confirm request_id matches (guard against substring false positives).
+        string found_id = parse_json_string_field(line, "request_id");
+        if (found_id != request_id) continue;
+
+        // Extract the candidates array.
+        size_t arr_pos = line.find("\"candidates\"");
+        if (arr_pos != string::npos) {
+          size_t bracket_pos = line.find('[', arr_pos);
+          if (bracket_pos != string::npos) {
+            size_t bracket_end =
+                find_json_matching_close(line, bracket_pos, '[', ']');
+            if (bracket_end != string::npos) {
+              string arr = line.substr(bracket_pos + 1,
+                                       bracket_end - bracket_pos - 1);
+              size_t cur = 0;
+              while (cur < arr.size()) {
+                size_t obj_start = arr.find('{', cur);
+                if (obj_start == string::npos) break;
+                size_t obj_end =
+                    find_json_matching_close(arr, obj_start, '{', '}');
+                if (obj_end == string::npos) break;
+                string candidate =
+                    arr.substr(obj_start, obj_end - obj_start + 1);
+                IC3FramePredicateNode node;
+                if (extract_predicate_ast_field(candidate, node)) {
+                  candidates_out.push_back(node);
+                }
+                cur = obj_end + 1;
+              }
+            }
+          }
+        }
+        return true;
+      }
+    }
+
+    if (clock::now() >= deadline) return false;
+    this_thread::sleep_for(chrono::milliseconds(100));
+  }
+}
+
+void LLMGeneralizer::update_stuck_counter(bool made_progress)
+{
+  if (made_progress) {
+    frames_stuck_rounds_ = 0;
+  } else {
+    ++frames_stuck_rounds_;
+  }
+}
+
+void LLMGeneralizer::reset_stage2_cooldown(int cooldown_ctis)
+{
+  stage2_cooldown_remaining_ = cooldown_ctis;
+}
+
+bool LLMGeneralizer::stage2_cooldown_active() const
+{
+  return stage2_cooldown_remaining_ > 0;
+}
+
+void LLMGeneralizer::decrement_cooldown()
+{
+  if (stage2_cooldown_remaining_ > 0) --stage2_cooldown_remaining_;
+}
+
+int LLMGeneralizer::cti_cluster_density(size_t frame_idx) const
+{
+  auto it = frame_cti_buffer_.find(frame_idx);
+  if (it == frame_cti_buffer_.end()) return 0;
+  return static_cast<int>(it->second.size());
+}
+
+vector<unordered_map<string, string>> LLMGeneralizer::collect_frame_cti_cluster(
+    size_t frame_idx, size_t max_ctis) const
+{
+  vector<unordered_map<string, string>> result;
+  auto it = frame_cti_buffer_.find(frame_idx);
+  if (it == frame_cti_buffer_.end()) return result;
+  const auto & buffered = it->second;
+  size_t n = min(buffered.size(), max_ctis);
+  for (size_t i = 0; i < n; ++i) {
+    unordered_map<string, string> cti_map;
+    for (const auto & lit : buffered[i].ctx.literals) {
+      string ref = extract_state_ref(lit.varname);
+      if (!ref.empty() && ref.rfind("state", 0) == 0) {
+        cti_map[ref] = lit.value;
+      }
+    }
+    if (!cti_map.empty()) result.push_back(cti_map);
+  }
+  return result;
+}
+
+// ---------------------------------------------------------------------------
 
 string LLMGeneralizer::make_cti_id(size_t frame_idx,
                                    const vector<CTILiteral> & literals) const

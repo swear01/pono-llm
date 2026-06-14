@@ -114,12 +114,14 @@ const std::unordered_map<std::string, JusticeTranslator> str2livenessalg({
 enum LLMGenMode
 {
   LLM_GEN_NONE = 0,
-  LLM_GEN_ASYNC_CTI
+  LLM_GEN_ASYNC_CTI,
+  LLM_GEN_SEMANTIC   // Stage 0 pre-flight + Stage 2 mid-run invariant guidance
 };
 
 const std::unordered_map<std::string, LLMGenMode> str2llmgenmode({
     { "none", LLM_GEN_NONE },
     { "async-cti", LLM_GEN_ASYNC_CTI },
+    { "semantic", LLM_GEN_SEMANTIC },
 });
 
 /*************************************** Options class

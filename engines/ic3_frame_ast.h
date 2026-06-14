@@ -58,4 +58,16 @@ smt::Term build_predicate_term(const smt::SmtSolver & solver,
                                const TransitionSystem & ts,
                                const IC3FramePredicateNode & node);
 
+/** Parse a JSON object string into a predicate node.
+ *  The string must be a valid JSON object (e.g., {"form":"eq","args":[...]}).
+ *  Returns a node with valid=false on parse error.
+ */
+IC3FramePredicateNode parse_predicate_ast_from_json(const std::string & json_obj);
+
+/** Extract and parse the "predicate_ast" field from a JSON object/line.
+ *  Returns true and populates out if found and valid; false otherwise.
+ */
+bool extract_predicate_ast_field(const std::string & line,
+                                 IC3FramePredicateNode & out);
+
 }  // namespace pono

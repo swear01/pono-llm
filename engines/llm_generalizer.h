@@ -120,6 +120,12 @@ struct GeneralizationStats
   size_t total_tokens = 0;
   size_t accepted_budget = 0;
   double total_llm_time_ms = 0.0;
+  // Semantic guidance stats (Stage 0 / Stage 2)
+  size_t num_stage0_candidates = 0;
+  size_t num_stage0_injected = 0;
+  size_t num_stage2_triggered = 0;
+  size_t num_stage2_candidates = 0;
+  size_t num_stage2_injected = 0;
 
   void reset()
   {
@@ -143,6 +149,11 @@ struct GeneralizationStats
     total_tokens = 0;
     accepted_budget = 0;
     total_llm_time_ms = 0.0;
+    num_stage0_candidates = 0;
+    num_stage0_injected = 0;
+    num_stage2_triggered = 0;
+    num_stage2_candidates = 0;
+    num_stage2_injected = 0;
   }
 };
 
@@ -153,6 +164,51 @@ class LLMGeneralizer
 
   bool enabled() const;
   bool is_async_cti() const;
+  bool is_semantic_guidance() const;   // LLM_GEN_SEMANTIC mode
+
+  // --- Semantic guidance (Stage 0 / Stage 2) ---
+
+  /** Build ic3_stage0_request JSON from current symbol_registry + bad_expr.
+   *  Must be called after write_benchmark_context(). */
+  std::string build_stage0_request_json() const;
+
+  /** Build ic3_stage2_request JSON for the given frame.
+   *  cti_cluster: recent CTIs in the frame (stateNN → value string pairs).
+   *  trigger: "T1_cluster" | "T2_plateau" | "T3_budget" */
+  std::string build_stage2_request_json(
+      size_t frame_idx,
+      const std::string & trigger,
+      size_t total_cti_count,
+      size_t frame_clause_count,
+      const std::vector<std::unordered_map<std::string, std::string>> & cti_cluster)
+      const;
+
+  /** Write a request JSON line to the request JSONL file. */
+  void write_invariant_request(const std::string & req_json);
+
+  /** Synchronously poll the response file for the given request_id.
+   *  Blocks up to timeout_ms milliseconds.
+   *  Fills candidates_out with parsed IC3FramePredicateNode candidates.
+   *  Returns true if a matching response was found, false on timeout. */
+  bool poll_invariant_response(
+      const std::string & request_id,
+      unsigned timeout_ms,
+      std::vector<IC3FramePredicateNode> & candidates_out);
+
+  // Stage 2 trigger state
+  void update_stuck_counter(bool made_progress);
+  int  stuck_rounds() const { return frames_stuck_rounds_; }
+  void reset_stage2_cooldown(int cooldown_ctis);
+  bool stage2_cooldown_active() const;
+  void decrement_cooldown();
+  int  cti_cluster_density(size_t frame_idx) const;
+
+  /** Collect up to max_ctis buffered CTIs for frame_idx as state→value maps.
+   *  Each map entry uses the state ref (e.g. "state34") as the key. */
+  std::vector<std::unordered_map<std::string, std::string>>
+  collect_frame_cti_cluster(size_t frame_idx, size_t max_ctis = 8) const;
+
+  std::string last_invariant_request_id() const { return last_invariant_request_id_; }
 
   std::string make_cti_id(size_t frame_idx,
                           const std::vector<CTILiteral> & literals) const;
@@ -304,10 +360,16 @@ class LLMGeneralizer
   std::string log_path_;
   std::string benchmark_context_path_;
   std::streampos last_response_pos_ = 0;
+  std::streampos last_invariant_response_pos_ = 0;  // separate position for invariant responses
 
   bool benchmark_context_written_ = false;
   std::string benchmark_name_;
   std::string bad_expr_;
+
+  // Stage 0 / Stage 2 guidance state
+  std::string last_invariant_request_id_;
+  int frames_stuck_rounds_ = 0;
+  int stage2_cooldown_remaining_ = 0;
 
   std::unordered_map<std::string, SymbolRegistryEntry> symbol_registry_;
 

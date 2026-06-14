@@ -21,6 +21,7 @@ from pathlib import Path
 from typing import Optional
 
 from env_config import load_env, require_api_key, get_llm_provider, default_model
+from invariant_sidecar import handle_stage0_request, handle_stage2_request
 from llm_client import LLMClient, create_llm_client
 from jsonl_protocol import append_log_line, read_requests_batch, write_response
 
@@ -35,28 +36,6 @@ def load_benchmark_context(path: str) -> dict:
         return {}
     with open(path) as f:
         return json.load(f)
-
-
-# ---------------------------------------------------------------------------
-# Request handlers (stubs — to be filled in by invariant_sidecar.py)
-# ---------------------------------------------------------------------------
-
-def handle_stage0_request(client: LLMClient, request: dict) -> dict:
-    """
-    Pre-flight: given RTL semantic bundle, ask LLM for invariant candidates.
-    Returns ic3_invariant_response dict.
-    TODO: implement in llm_worker/invariant_sidecar.py and import here.
-    """
-    raise NotImplementedError("handle_stage0_request not yet implemented")
-
-
-def handle_stage2_request(client: LLMClient, request: dict) -> dict:
-    """
-    Mid-run: given CTI cluster + frame clause evidence, ask LLM for guidance.
-    Returns ic3_invariant_response dict (Type1/Type2/Type3 candidates).
-    TODO: implement in llm_worker/invariant_sidecar.py and import here.
-    """
-    raise NotImplementedError("handle_stage2_request not yet implemented")
 
 
 # ---------------------------------------------------------------------------

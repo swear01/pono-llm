@@ -559,4 +559,14 @@ IC3FrameResponse parse_ic3_frame_response_line(const string & line)
   return res;
 }
 
+IC3FramePredicateNode parse_predicate_ast_from_json(const string & json_obj)
+{
+  return parse_predicate_node(json_obj);
+}
+
+bool extract_predicate_ast_field(const string & line, IC3FramePredicateNode & out)
+{
+  return parse_predicate_field(line, "predicate_ast", out);
+}
+
 }  // namespace pono

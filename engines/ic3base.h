@@ -697,6 +697,11 @@ class IC3Base : public SafetyProver
 
   virtual bool try_apply_llm_refine_predicate(const smt::Term & pred);
 
+  // Semantic guidance hooks (Stage 0 pre-flight / Stage 2 mid-run)
+  bool do_stage0_llm_call();
+  int  apply_invariant_candidate(const IC3FramePredicateNode & node);
+  void check_stage2_trigger();
+
   std::string serialize_frame_snapshot_json(
       size_t frame_idx,
       const std::vector<std::string> & cti_literal_keys = {}) const;
