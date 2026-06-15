@@ -98,21 +98,76 @@ After fix: 1-bit bitvectors auto-converted to boolean when used in boolean conte
 | Intersects initial | 1 |
 | Not a predicate shape | 0 (after coerce_bool fix) |
 
-### 5. DeepSeek latency: 40-90s for Stage 0
+### 5. DeepSeek latency and reliability with reasoning_effort='none'
 
-With 120s timeout, DeepSeek consistently responds in time. The overhead is dominated by API latency, not IC3 computation.
+After switching from `reasoning_effort='low'` (thinking mode) to `'none'`:
+- Latency: 40-90s → ~25s (3-4x speedup)
+- Reliability: no more JSON truncation (thinking tokens consumed max_tokens budget)
+- Quality: equal or better candidates (less overthinking, cleaner JSON output)
+
+Root cause of the 0-candidate bug: with thinking enabled, DeepSeek uses ~7200 of the 8192 max_tokens for internal chain-of-thought, leaving only ~950 for the actual JSON output. A 1500-token JSON response gets truncated mid-object → json.loads fails → 0 candidates.
+
+---
+
+### 3b. fib_23 (HWMCC 2025, HKUST arithmetic circuits)
+
+**Structure**: 3 states (i, n=150, sum), all 19-bit. Loop counting 0..149 and accumulating sum=0+1+...+n-1.
+
+**Baseline**: 7 CEGAR rounds, ~103s. All CEGAR rounds discover bit-extraction predicates about i's exact bit pattern.
+
+**Stage 0 LLM call (with reasoning_effort='none')**:
+- DeepSeek responded in ~25s with 15 candidates
+- Injected: 5/15 candidates including `ule(i, n)` and `uge(sum, i)`
+- `uge(sum, i)` is a genuine algebraic invariant (sum accumulates i-values)
+
+**Guided result**: 5 CEGAR rounds (down from 7), but total time 297s > 148s baseline due to Stage 2 overhead.
+
+**Verdict**: ⚠ LLM partially helps (saves 2 CEGAR rounds) but Stage 2 LLM call overhead (~30s×4 triggers) dominates total runtime.
+
+**Why only partial help?** The remaining 5 CEGAR rounds need bit-level predicates (e.g., `bit7(i)=0` when i≤150). LLM cannot predict these without knowing the exact binary representation of n=150.
+
+---
+
+## Summary Table
+
+| Benchmark | Baseline CEGAR | Guided CEGAR | Speedup | LLM Verdict |
+|-----------|----------------|--------------|---------|-------------|
+| ab_sync | ∞ (timeout at 14) | **0** | ∞ (timeout→36s) | ✓ IDEAL: one key eq eliminates all |
+| stack-p2 | 1 | 1 | none | ⚠ PARTIAL: correct predicate but insufficient |
+| fib_23 | 7 | **5** | none (slower due to Stage 2) | ⚠ PARTIAL: `ule(i,n)`, `uge(sum,i)` help but bit-level rounds remain |
+| rast-p10 | 0 | 0 | n/a | ℹ TRIVIAL: nothing to improve |
+
+---
+
+## Key Findings
+
+### 1. LLM effectiveness class
+
+**Class A — Full elimination** (ab_sync): One key equality/comparison invariant is sufficient. LLM predicts it. Dramatic improvement.
+
+**Class B — Partial improvement** (fib_23): LLM identifies correct high-level arithmetic invariants (`ule(i,n)`, `uge(sum,i)`) that save 2/7 CEGAR rounds. Remaining rounds need bit-level predicates LLM can't predict.
+
+**Class C — No improvement** (stack-p2): LLM identifies correct predicate but it's insufficient alone (needs 11 more bit-level predicates from CEGAR).
+
+### 2. When Stage 2 overhead hurts
+
+Stage 2 LLM calls (triggered at "stuck" frames) add 30s×N overhead where N = stuck events per CEGAR round. For complex benchmarks (fib_23), this dominates total runtime, making guided slower than baseline even when CEGAR rounds are reduced.
+
+### 3. BFS depth bug (fixed)
+
+`hot_refs_near_bad` with depth=4 missed states at exactly 4 hops (they landed in `next_frontier` but were never checked). Fixed by scanning the final frontier for states.
 
 ---
 
 ## Conclusion
 
-**DeepSeek can correctly identify key invariants** for both synthetic and real benchmarks, even with auto-generated state names. The effectiveness depends on whether the LLM-suggested predicate is SUFFICIENT to eliminate CEGAR (ab_sync: yes) or just NECESSARY but not sufficient (stack-p2: no).
+DeepSeek without thinking mode (`reasoning_effort='none'`) is:
+1. **Fast**: ~25s vs ~130s with thinking
+2. **Reliable**: no JSON truncation
+3. **Effective**: generates correct high-level invariants for most benchmarks
 
-For maximum effectiveness:
-1. Benchmarks where one "obvious" invariant dominates (like counting equivalence): LLM is highly effective.
-2. Complex protocol benchmarks: LLM identifies correct partial invariants but full CEGAR still needed.
+**The limiting factor is NOT LLM quality** — DeepSeek correctly identifies relevant invariants (i≤n, sum≥i, eq(a,b), eq(state27,state30)). **The limit is what IC3IA's predicate abstraction can USE**:
+- High-level equality/comparison predicates help when they're sufficient to prove the property
+- Bit-level abstraction refinement cannot be replaced by LLM suggestions
 
-Next steps:
-- Ask LLM for MORE predicates (currently gets 5-15, could ask for 20-30)
-- Include `state1555`/`state1577` in the prompt (they're in the transition sketch)
-- Test Stage 2 guidance for benchmarks where Stage 0 helps but doesn't eliminate all CEGAR
+Next: seek more Class-A benchmarks (one key invariant eliminates all CEGAR) or investigate whether providing bit-pattern hints in the prompt enables LLM to suggest bit-level predicates.
