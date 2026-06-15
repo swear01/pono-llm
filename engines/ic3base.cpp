@@ -1684,8 +1684,8 @@ bool IC3Base::do_stage0_llm_call()
   const string req_id = llm_gen_->last_invariant_request_id();
   logger.log(1, "IC3: Stage 0 LLM pre-flight, request_id={}", req_id);
 
-  // Synchronous poll: wait up to 60 s for the sidecar to respond.
-  const unsigned kStage0TimeoutMs = 60000;
+  // Synchronous poll: wait up to 120 s for the sidecar to respond.
+  const unsigned kStage0TimeoutMs = 120000;
   vector<IC3FramePredicateNode> candidates;
   if (!llm_gen_->poll_invariant_response(req_id, kStage0TimeoutMs, candidates)) {
     logger.log(1, "IC3: Stage 0 timeout after {}ms", kStage0TimeoutMs);

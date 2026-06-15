@@ -90,7 +90,7 @@ def build_stage0_prompt(request: dict) -> str:
     inputs = request.get("inputs", [])
     if inputs:
         parts.append("INPUT PORTS (for context):")
-        for iv in inputs[:20]:
+        for iv in inputs[:30]:
             sym = iv.get("symbol", iv.get("ref", "?"))
             w = iv.get("width", "?")
             parts.append(f"  {sym} (width={w})")

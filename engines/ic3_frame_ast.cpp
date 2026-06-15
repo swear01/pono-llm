@@ -6,6 +6,7 @@
 
 #include <cctype>
 #include <stdexcept>
+#include <string>
 
 using namespace smt;
 using namespace std;
@@ -330,6 +331,20 @@ static Term build_node_term(const SmtSolver & solver,
                             const TransitionSystem & ts,
                             const IC3FramePredicateNode & node);
 
+// Coerce a 1-bit bitvector term to boolean by comparing to #b1.
+// Bool terms pass through unchanged; other widths throw.
+static Term coerce_bool(const SmtSolver & solver, const Term & t)
+{
+  Sort s = t->get_sort();
+  if (s->get_sort_kind() == BOOL) return t;
+  if (s->get_sort_kind() == BV && s->get_width() == 1) {
+    Sort bv1 = solver->make_sort(BV, 1);
+    return solver->make_term(Equal, t, solver->make_term("1", bv1));
+  }
+  throw runtime_error("cannot coerce non-boolean term (width="
+                      + to_string(s->get_width()) + ") to bool");
+}
+
 static Term build_compare(const SmtSolver & solver,
                           const TransitionSystem & ts,
                           PrimOp op,
@@ -389,12 +404,12 @@ static Term build_node_term(const SmtSolver & solver,
 
   if (node.form == "not") {
     if (node.args.size() != 1) throw runtime_error("not needs 1 arg");
-    return solver->make_term(Not, build_node_term(solver, ts, node.args[0]));
+    return solver->make_term(Not, coerce_bool(solver, build_node_term(solver, ts, node.args[0])));
   }
   if (node.form == "implies") {
     if (node.args.size() != 2) throw runtime_error("implies needs 2 args");
-    Term ant = build_node_term(solver, ts, node.args[0]);
-    Term cons = build_node_term(solver, ts, node.args[1]);
+    Term ant = coerce_bool(solver, build_node_term(solver, ts, node.args[0]));
+    Term cons = coerce_bool(solver, build_node_term(solver, ts, node.args[1]));
     return solver->make_term(Implies, ant, cons);
   }
 
@@ -402,7 +417,7 @@ static Term build_node_term(const SmtSolver & solver,
     if (node.args.empty()) throw runtime_error("and/or needs args");
     TermVec children;
     for (const auto & arg : node.args) {
-      children.push_back(build_node_term(solver, ts, arg));
+      children.push_back(coerce_bool(solver, build_node_term(solver, ts, arg)));
     }
     PrimOp op = (node.form == "and") ? And : Or;
     return solver->make_term(op, children);
