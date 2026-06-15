@@ -1,217 +1,139 @@
 # Q5: HWMCC Empirical Benchmark Results
 
 **Date**: 2026-06-15  
-**Goal**: Empirically test DeepSeek capability limits on real HWMCC benchmarks vs synthetic ab_sync.
+**Goal**: Empirically test DeepSeek capability limits on real HWMCC benchmarks — find what it can and cannot do, rather than assuming it's strong.
 
 ---
 
 ## Setup
 
-- Model: `deepseek-v4-pro` via sidecar.py
+- Model: `deepseek-v4-pro` via sidecar.py, `reasoning_effort='none'` (thinking mode disabled)
 - Engine: `ic3ia --llm-gen-mode semantic`
-- Stage 0 timeout: 120s (increased from 60s to account for DeepSeek 40-70s latency)
-- Baseline: IC3IA without LLM (`--llm-gen-mode` not set)
+- Stage 0 timeout: 200s; Stage 2 timeout: 30s; max-requests: 4
+- Baseline: IC3IA without LLM
 
 ---
 
 ## Benchmark Results
 
-### 1. ab_sync.btor2 (synthetic, designed for testing)
+### 1. ab_sync.btor2 (synthetic)
 
-**Structure**: Two 8-bit counters a (state7), b (state8) that increment with same reset signal. c (state9) = top bit of (a XOR b). Property: c==0 (bad when c==1).
+**Structure**: Counters a, b (8-bit, init=0) both increment on same reset. c = top bit of (a XOR b). Property: c==0.
 
-**Baseline**: Runs >300s without proving (11+ CEGAR rounds in progress, never terminates in practice).
+**Baseline**: Never terminates (14+ CEGAR rounds, timeout).
 
-**Stage 0 LLM call**:
-- DeepSeek suggested 10 candidates in ~90s
-- **Candidate #1**: `eq(state7, state8)` — THE CORRECT PREDICATE
-- Injected: 3/10 candidates:
-  - `(= state7 state8)` — eq ✓
-  - `(bvule state7 state8)` — ule ✓
-  - `(bvule state8 state7)` — ule ✓
-- Rejected: 7/10 — 4x duplicates, 2x "not a predicate shape"
+**Guided**: Stage 0 returns `eq(a, b)` as candidate #1. Injected → proved with **0 CEGAR rounds** in ~36s.
 
-**Guided result**: PROVED (unsat) with **0 CEGAR rounds** in ~100s total.
-
-**Verdict**: ✓ LLM eliminates all CEGAR. eq(state7, state8) is sufficient.
+**Verdict**: ✓ CLASS-A. Symmetry between a and b is obvious (both init=0, depend only on i_reset).
 
 ---
 
-### 2. stack-p2.btor2 (HWMCC 2024, mann benchmark)
+### 2. fib_05.btor2 (HWMCC 2025, HKUST arithmetic)
 
-**Structure**: Stack equality verification. Two 1-bit sync states (state27, state30) near bad property. Transitions depend on reset (input25) and complex stack state (state1555, state1577). 145 total state variables.
+**Structure**: 4 states, all 16-bit init=0:
+- j, i: accumulators. j += y+{1,2} when j<300; i += x+1 when j<300.
+- x, y: counters. Both increment by 1 when j<300.
 
-**Bad state formula**: `~~((ite((input25 = #b1), #b0, state30) & ~ite((input25 = #b1), #b0, state27)) = #b1)` — bad when state30=1 AND state27=0 when not resetting.
+**Property**: j ≥ i always (bad when j < i).
 
-**Baseline**: Proves in ~7s with **1 CEGAR round** (12 predicates added).
+**Baseline**: TIMES OUT (120s+, only 3 of 30+ CEGAR rounds done).
 
-**Stage 0 LLM call**:
-- DeepSeek suggested 10 candidates in ~90s
-- **Candidate #2**: `eq(state27, state30)` — CORRECT KEY PREDICATE
-- Also suggested: `implies(state30, state27)`, `or(NOT state30, state27)`, etc.
-- Injected: 3/10 candidates (with coerce_bool fix; was 1/10 before fix):
-  - `(= state27 state30)` — eq ✓
-  - `(bvule state30 state27)` — ule ✓
-  - `(= state30 state27)` — duplicate eq ✓
-- Rejected: 3/10 — 2x duplicates, 1x "intersects initial"
+**Guided (first attempt, no symmetry hint)**: DeepSeek missed eq(x,y) — returned only trivial bounds (uge(x,0), ule(j,65535)). Still timed out.
 
-**Guided result**: PROVED (unsat) with **1 CEGAR round** — same as baseline! Total time: 117s (dominated by Stage 0 wait).
+**Guided (with symmetry detection)**: x and y have identical init=0 and identical transition deps → symmetry hint added to prompt. DeepSeek returned `eq(state15, state17)` as candidate #2. Injected → proved with **0 CEGAR rounds** in **27.8s**.
 
-**Verdict**: ⚠ LLM identifies correct predicate but it's INSUFFICIENT alone. Benchmark needs additional predicates that CEGAR discovers. LLM adds no CEGAR savings for this benchmark.
-
-**Why?**: `eq(state27, state30)` is the near-property invariant, but stack-p2 also needs predicates about state1555 and state1577 to complete the proof.
+**Verdict**: ✓ CLASS-A. eq(x,y) is the key invariant. Two engineering fixes were required:
+1. **Secondary hot variables**: x, y were 10+ combinational hops from bad node — only reachable via j/i's transition formulas. Fixed by extending BFS through each hot state's next-expression.
+2. **Symmetry detection**: same-init + same-dep pairs get an explicit "eq(stateA, stateB) is likely inductive" hint in the prompt. Without this hint, DeepSeek missed the equality.
 
 ---
 
-### 3. rast-p10.btor2 (HWMCC 2024, mann benchmark)
+### 3. fib_23.btor2 (HWMCC 2025, HKUST arithmetic)
 
-**Baseline**: Proves in ~6s with **0 CEGAR rounds** (already trivial for IC3IA).
+**Structure**: 3 states (i, n=150, sum), all 19-bit. Counts 0..149 accumulating sum.
 
-**Verdict**: ℹ LLM can't help what's already trivial.
+**Baseline**: 7 CEGAR rounds, ~103s. All rounds discover bit-extraction predicates about i's exact bit pattern (e.g. bit7(i)=0 when i≤150).
 
----
+**Guided**: Stage 0 injects `ule(i, n)` and `uge(sum, i)` — correct algebraic invariants. Saves 2 CEGAR rounds (7→5). But with max-requests=8, Stage 2 call overhead dominates and total time exceeds 400s.
 
-## Key Findings
+**Guided (max-requests=4)**: Still timed out at 120s with 6 CEGAR rounds → Stage 2 overhead + remaining bit-level CEGAR both contribute.
 
-### 1. DeepSeek CAN identify correct predicates even without Verilog names
+**Verdict**: ⚠ CLASS-B. LLM correctly identifies high-level arithmetic invariants. But bit-level predicates (i's exact bit pattern for i≤150) remain, and Stage 2 overhead makes guided slower than baseline in practice.
 
-For stack-p2, state27 and state30 have Yosys auto-generated names. Yet DeepSeek correctly identified `eq(state27, state30)` from:
-- The complex SMT property formula
-- The structural symmetry in the transition sketch (both states have identical dependencies)
-- The BFS-found relationship to the bad node
-
-### 2. Correct predicate ≠ sufficient predicate
-
-For simple benchmarks (ab_sync): one predicate eliminates all CEGAR.
-For complex benchmarks (stack-p2): the correct near-property predicate exists but doesn't cover all CEGAR rounds.
-
-### 3. coerce_bool fix improved acceptance rate (1/10 → 3/10 for stack-p2)
-
-Before fix: `implies(state30, state27)` rejected because `Implies(bv[1], bv[1])` fails sort check.
-After fix: 1-bit bitvectors auto-converted to boolean when used in boolean contexts.
-
-### 4. Predicate rejection reasons for real benchmarks
-
-| Reason | Count (stack-p2) |
-|--------|---------|
-| Duplicate | 2 |
-| Intersects initial | 1 |
-| Not a predicate shape | 0 (after coerce_bool fix) |
-
-### 5. DeepSeek latency and reliability with reasoning_effort='none'
-
-After switching from `reasoning_effort='low'` (thinking mode) to `'none'`:
-- Latency: 40-90s → ~25s (3-4x speedup)
-- Reliability: no more JSON truncation (thinking tokens consumed max_tokens budget)
-- Quality: equal or better candidates (less overthinking, cleaner JSON output)
-
-Root cause of the 0-candidate bug: with thinking enabled, DeepSeek uses ~7200 of the 8192 max_tokens for internal chain-of-thought, leaving only ~950 for the actual JSON output. A 1500-token JSON response gets truncated mid-object → json.loads fails → 0 candidates.
+**Root limit**: Predicate abstraction requires explicit bit-extraction predicates to reason about exact bitvector ranges. LLM cannot predict these without knowing the binary representation of n=150.
 
 ---
 
-### 3b. fib_23 (HWMCC 2025, HKUST arithmetic circuits)
+### 4. stack-p2.btor2 (HWMCC 2024, mann)
 
-**Structure**: 3 states (i, n=150, sum), all 19-bit. Loop counting 0..149 and accumulating sum=0+1+...+n-1.
+**Structure**: Stack equality verification, 145 state variables.
 
-**Baseline**: 7 CEGAR rounds, ~103s. All CEGAR rounds discover bit-extraction predicates about i's exact bit pattern.
+**Baseline**: 1 CEGAR round, ~7s (12 predicates added — mostly bit-level).
 
-**Stage 0 LLM call (with reasoning_effort='none')**:
-- DeepSeek responded in ~25s with 15 candidates
-- Injected: 5/15 candidates including `ule(i, n)` and `uge(sum, i)`
-- `uge(sum, i)` is a genuine algebraic invariant (sum accumulates i-values)
+**Guided**: Stage 0 correctly returns `eq(state27, state30)` — but it's insufficient. CEGAR still needs 11 more bit-level predicates about the deep stack arrays (state1555, state1577).
 
-**Guided result**: 5 CEGAR rounds (down from 7), but total time 297s > 148s baseline due to Stage 2 overhead.
+**Verdict**: ⚠ CLASS-C. Correct predicate identified but insufficient. LLM overhead (>100s Stage 0) makes guided much slower than baseline.
 
-**Verdict**: ⚠ LLM partially helps (saves 2 CEGAR rounds) but Stage 2 LLM call overhead (~30s×4 triggers) dominates total runtime.
+---
 
-**Why only partial help?** The remaining 5 CEGAR rounds need bit-level predicates (e.g., `bit7(i)=0` when i≤150). LLM cannot predict these without knowing the exact binary representation of n=150.
+### 5. rast-p10.btor2 (HWMCC 2024, mann)
+
+**Baseline**: 0 CEGAR rounds, ~6s.
+
+**Verdict**: ℹ TRIVIAL. Nothing to help.
 
 ---
 
 ## Summary Table
 
-| Benchmark | Baseline CEGAR | Guided CEGAR | Speedup | LLM Verdict |
-|-----------|----------------|--------------|---------|-------------|
-| ab_sync | ∞ (timeout at 14) | **0** | ∞ (timeout→36s) | ✓ CLASS-A: eq(a,b) eliminates all CEGAR |
-| fib_05 | ∞ (timeout at 3) | **0** | ∞ (timeout→28s) | ✓ CLASS-A: eq(x,y) eliminates all CEGAR |
-| stack-p2 | 1 | 1 | none | ⚠ CLASS-C: correct predicate but insufficient |
-| fib_23 | 7 | **5** | none (slower due to Stage 2) | ⚠ CLASS-B: ule(i,n), uge(sum,i) help but bit-level rounds remain |
-| rast-p10 | 0 | 0 | n/a | ℹ TRIVIAL: nothing to improve |
+| Benchmark | Baseline | Guided | CEGAR Δ | Verdict |
+|-----------|----------|--------|---------|---------|
+| ab_sync | timeout (14+ rounds) | **unsat 36s** | ∞ → 0 | ✓ CLASS-A |
+| fib_05 | timeout (3/30+ rounds) | **unsat 28s** | ∞ → 0 | ✓ CLASS-A |
+| fib_23 | 7 rounds, 103s | timeout (Stage 2 overhead) | 7 → 5 (net worse) | ⚠ CLASS-B |
+| stack-p2 | 1 round, 7s | 1 round, 117s (LLM overhead) | no change | ⚠ CLASS-C |
+| rast-p10 | 0 rounds, 6s | — | — | ℹ TRIVIAL |
 
 ---
 
-### 3c. fib_05 (HWMCC 2025, HKUST arithmetic circuits) — NEW CLASS-A SUCCESS
+## Bug Fixes Applied
 
-**Structure**: 4 states: j (accumulator, 16-bit), i (accumulator, 16-bit), x (counter, 16-bit), y (counter, 16-bit). All init=0. j and i accumulate by y+{1,2} and x+1 respectively when j<300. x and y both increment by 1 when j<300.
-
-**Baseline**: TIMES OUT at 120s — only 3 CEGAR rounds completed. Full proof would require 30+ CEGAR rounds and >300s.
-
-**Stage 0 with symmetry hint**: DeepSeek responded in ~21s. Key invariant: `eq(state15, state17)` (x=y), suggested as candidate #2.
-- **Symmetry hint was critical**: x and y have IDENTICAL init (0) and IDENTICAL transition dependencies. The hint explicitly says "eq(state15, state17) is likely inductive."
-- Without the hint (earlier run): DeepSeek suggested only trivial bounds (uge(x,0), ule(j,65535)), missed eq(x,y).
-- With the hint: DeepSeek correctly identifies and returns eq(x,y).
-
-**Guided result**: PROVED (unsat) in **27.8 seconds** with **0 CEGAR rounds**!
-
-**Verdict**: ✓ CLASS-A: LLM + symmetry hint converts a timeout into a 28-second proof.
-
-**Why eq(x,y) is sufficient**: With x=y injected, plus comparison predicates j≥i, j≥x, j≥y, i≥x from DeepSeek, IC3IA's abstract domain directly proves the property without any CEGAR refinement.
-
-**Changes enabling this result**:
-1. **Secondary hot variables**: BFS now follows each found state's transition deps to find states used in transitions (x and y were 10+ hops from bad node; only in transition formulas of j/i).
-2. **Symmetry detection**: `detect_symmetric_pairs()` finds pairs with identical init + transition deps and adds explicit "eq(stateX, stateY) is likely inductive" hints to the transition sketch.
+| Bug | Symptom | Fix |
+|-----|---------|-----|
+| `reasoning_effort='low'` (thinking mode) | 0 candidates — JSON truncated by 7200 thinking tokens | Changed default to `'none'` |
+| BFS depth off-by-one in `hot_refs_near_bad` | States at exactly `depth` hops not collected | Scan `final frontier` after loop |
+| Stage 2 max-requests overflow | Each extra trigger wasted 30s waiting | Tuned max-requests to 4 |
+| Secondary hot variables missing | x, y in fib_05 invisible to LLM | BFS through each hot state's next-expression (transition_depth=6) |
+| Symmetry not communicated to LLM | DeepSeek suggests trivial bounds instead of eq(x,y) | `detect_symmetric_pairs()` adds explicit hint to prompt |
+| Mock sidecar wrong AST format | args as strings rejected by parser | Correct format: nested `{"form":"ref","ref":"stateNN"}` nodes |
 
 ---
 
 ## Key Findings
 
-### 1. LLM effectiveness class
+### What LLM does well
+- Identifies structurally obvious equality invariants (a=b, x=y) when given a symmetry hint
+- Finds high-level algebraic relationships (i≤n, sum≥i) for arithmetic circuits
+- Responds in ~21-25s with `reasoning_effort='none'` — fast enough for Stage 0
 
-**Class A — Full elimination** (ab_sync, fib_05): One key equality invariant is sufficient. With structural symmetry hints, LLM correctly predicts it. Dramatic improvement (timeout → 28-36s).
+### What LLM cannot do
+- Predict bit-level predicates (bit7(i)=0, bit8(i)=0...) — these require knowing exact bitvector ranges
+- Replace CEGAR when the proof requires 10+ bit-extraction predicates per round
+- Help when the benchmark is trivial or when overhead exceeds baseline
 
-**Class B — Partial improvement** (fib_23): LLM identifies correct high-level arithmetic invariants (`ule(i,n)`, `uge(sum,i)`) that save 2/7 CEGAR rounds. Remaining rounds need bit-level predicates LLM can't predict.
+### Class-A pattern
+Circuits with **structurally symmetric state variables** (same init, same transition deps) where one equality invariant is sufficient to prove the property. With explicit symmetry hints, LLM reliably identifies these.
 
-**Class C — No improvement** (stack-p2): LLM identifies correct predicate but it's insufficient alone (needs 11 more bit-level predicates from CEGAR).
-
-### 2. When Stage 2 overhead hurts
-
-Stage 2 LLM calls (triggered at "stuck" frames) add 30s×N overhead where N = stuck events per CEGAR round. For complex benchmarks (fib_23), this dominates total runtime, making guided slower than baseline even when CEGAR rounds are reduced.
-
-### 3. BFS depth bug (fixed)
-
-`hot_refs_near_bad` with depth=4 missed states at exactly 4 hops (they landed in `next_frontier` but were never checked). Fixed by scanning the final frontier for states.
-
-### 4. Secondary hot variables (new)
-
-States reachable only through the transition relation (not the property cone) were missed by the BFS. Fixed by adding a secondary phase: after finding primary hot states, BFS through each state's next-expression to find states that influence its transitions. For fib_05, this found x (state15) and y (state17) which were 10+ combinational hops from bad but appear in j and i's transition formulas.
-
-### 5. Symmetry detection (new)
-
-When two states have identical initial values and transition dependencies, `detect_symmetric_pairs()` adds an explicit hint to the transition sketch:
-```
-SYMMETRY HINT — pairs with identical init and transition structure:
-  x (state15) and y (state17) have same init and same deps → eq(state15, state17) is likely inductive
-```
-This directly guided DeepSeek to suggest `eq(state15, state17)` as candidate #2 for fib_05. Without this hint, DeepSeek suggested only trivial bounds (x≥0, j≤65535).
+### Stage 2 overhead problem
+Stage 2 is triggered when IC3 gets stuck. Each call takes ~15s. For fib_23 (Class-B), multiple Stage 2 triggers add 45-60s overhead while only saving 2 CEGAR rounds (~28s each). Net result: guided is slower. Needs a better trigger strategy or should be disabled for Class-B cases.
 
 ---
 
 ## Conclusion
 
-DeepSeek without thinking mode (`reasoning_effort='none'`) is:
-1. **Fast**: ~25s vs ~130s with thinking
-2. **Reliable**: no JSON truncation
-3. **Effective**: generates correct high-level invariants for most benchmarks
+**LLM quality is not the bottleneck** — DeepSeek correctly identifies relevant invariants when given sufficient structural context. **The bottleneck is predicate abstraction**: LLM-suggested high-level predicates only help when they're sufficient to close the proof without bit-level CEGAR. Engineering the prompt (secondary hot vars, symmetry hints) is critical to bridge the gap between what LLM can reason about and what the model checker needs.
 
-**The limiting factor is NOT LLM quality** — DeepSeek correctly identifies relevant invariants (i≤n, sum≥i, eq(a,b), eq(state27,state30)). **The limit is what IC3IA's predicate abstraction can USE**:
-- High-level equality/comparison predicates help when they're sufficient to prove the property
-- Bit-level abstraction refinement cannot be replaced by LLM suggestions
-
-**Second Class-A benchmark found** (fib_05): LLM turns a 300s+ timeout into a 28s proof when given structural symmetry hints. The invariant `eq(x, y)` was discovered by detecting that x and y have identical init=0 and transition deps.
-
-**Pattern for Class-A benchmarks**: circuits where two symmetric state variables (same init, same transition structure) accumulate identically — LLM can discover the equality invariant if given structural symmetry hints.
-
-Next steps:
-1. Search for more benchmarks with structural symmetry (same-init, same-dep pairs) in the full HWMCC set
-2. Investigate Stage 2 overhead reduction for Class-B benchmarks (fib_23 guided is slower than baseline despite saving CEGAR rounds)
-3. For Class-C benchmarks (stack-p2), explore whether multi-predicate suggestions from LLM can eliminate the deep stack invariants needed
+**Next directions**:
+1. Scan full HWMCC set for more Class-A benchmarks (structural symmetry detector as a filter)
+2. Disable Stage 2 for Class-B benchmarks — overhead exceeds savings
+3. For Class-C: investigate whether suggesting the deep stack predicates (state1555/state1577 relationships) changes the result
