@@ -266,6 +266,12 @@ def hot_refs_near_bad(info: BTOR2Info, depth: int = 3) -> List[str]:
                     next_frontier.add(dep)
         frontier = next_frontier
 
+    # Also scan the final frontier: states found at exactly `depth` hops are
+    # in next_frontier after the last iteration but never get processed.
+    for ln in frontier:
+        if ln not in visited and ln in state_linenos:
+            state_refs.add(f"state{ln}")
+
     # Sort by lineno
     return sorted(state_refs, key=lambda r: int(r[5:]))
 

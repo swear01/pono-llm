@@ -35,6 +35,7 @@ BENCHMARKS = {
     "stack-p2": Path("/home/swear01/hwmcc_benchmarks/2024/btor2/2020/mann/stack-p2.btor2"),
     "rast-p10": Path("/home/swear01/hwmcc_benchmarks/2024/btor2/2020/mann/rast-p10.btor2"),
     "h_Arbiter": Path("/home/swear01/hwmcc_benchmarks/2024/btor2/2019/goel/opensource/h_Arbiter/h_Arbiter.btor2"),
+    "fib_23": Path("/home/swear01/hwmcc_benchmarks/2025/wordlevel/bv/2024/hkust/arithmetic_circuits/fib_23/fib_23.btor2"),
 }
 
 

@@ -71,7 +71,7 @@ def _enrich_request_with_btor2(request: dict) -> dict:
 def _call_llm(client: LLMClient, user_prompt: str, request: dict) -> tuple[str, int, float]:
     """Wrapper around client.call with request-level overrides."""
     model_name = request.get("model") or None
-    reasoning_effort = request.get("reasoning_effort", "low")
+    reasoning_effort = request.get("reasoning_effort", "none")
     text, tokens, latency_ms = client.call(
         user_prompt,
         system_prompt=INVARIANT_SYSTEM_PROMPT,
