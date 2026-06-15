@@ -41,7 +41,6 @@ Last updated: 2026-06-15 (Stage 0/2 pivot + full archive migration)
 | [`plans/openrouter_provider_policy.md`](plans/openrouter_provider_policy.md) | OpenRouter v4-flash provider filtering policy |
 | [`plans/experiment_parallel_policy.md`](plans/experiment_parallel_policy.md) | Parallel experiment defaults, server capacity, harness params |
 | [`plans/experiment_plan_review.md`](plans/experiment_plan_review.md) | Experiment plan review + lessons from first round |
-| [`plans/p040-smoke-session-latency-plan.md`](plans/p040-smoke-session-latency-plan.md) | p040 smoke session latency plan |
 
 ## Technical references (current)
 
@@ -60,9 +59,10 @@ Last updated: 2026-06-15 (Stage 0/2 pivot + full archive migration)
 
 ## Archived (historical)
 
-All pre-Stage-0/2 research lives under [`../archive/docs/`](../archive/docs/) — 69 docs
+All pre-Stage-0/2 research lives under [`../archive/docs/`](../archive/docs/) — 70 docs
 covering Path 1 injection, offline lemma-mining / closed-loop synthesis, Q2–Q4
-harness work, case studies, and one-off audits. Each carries an archive header.
+harness work (incl. the p040 smoke plan), case studies, and one-off audits. Each
+carries an archive header.
 Not active truth.
 
 ---

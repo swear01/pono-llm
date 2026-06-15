@@ -1,3 +1,8 @@
+> Archived: 2026-06-15
+> Reason: Q-phase p040 smoke plan (status: 實作中 2026-06-04); its infrastructure (scripts/smoke_p040.sh + ab_q2/q3/q4_p040_*.sh) was deleted as dead code in aebe2dd during the v2 pivot
+> Replacement: docs/plans/semantic_invariant_injection_v1_plan.md
+> Status: historical only; do not use as active truth.
+
 # p040 Smoke：Session 隔離 + Latency 優化計畫
 
 **狀態：** 實作中（2026-06-04）；checkpoint commit `6e4c8e2`
