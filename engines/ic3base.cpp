@@ -1704,6 +1704,16 @@ bool IC3Base::do_stage0_llm_call()
 
 int IC3Base::apply_invariant_candidate(const IC3FramePredicateNode & node)
 {
+  // Auto-split top-level "and" conjunctions: each conjunct is tried separately.
+  // This lets the LLM suggest compound invariants and have the atomic parts injected.
+  if (node.form == "and" && node.args.size() > 1) {
+    int injected = 0;
+    for (const auto & child : node.args) {
+      injected += apply_invariant_candidate(child);
+    }
+    return injected;
+  }
+
   smt::Term pred = build_predicate_term(solver_, ts_, node);
   if (!pred) return 0;
   if (try_apply_llm_refine_predicate(pred)) {

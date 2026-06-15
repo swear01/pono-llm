@@ -34,7 +34,7 @@ BENCHMARKS = {
     "ab_sync": ROOT / "tests" / "benchmarks" / "ab_sync.btor2",
     "stack-p2": Path("/home/swear01/hwmcc_benchmarks/2024/btor2/2020/mann/stack-p2.btor2"),
     "rast-p10": Path("/home/swear01/hwmcc_benchmarks/2024/btor2/2020/mann/rast-p10.btor2"),
-    "h_Arbiter": Path("/home/swear01/hwmcc_benchmarks/2024/btor2/2019/goel/opensource/h_Arbiter/h_Arbiter.btor2"),
+    "fib_05": Path("/home/swear01/hwmcc_benchmarks/2025/wordlevel/bv/2024/hkust/arithmetic_circuits/fib_05/fib_05.btor2"),
     "fib_23": Path("/home/swear01/hwmcc_benchmarks/2025/wordlevel/bv/2024/hkust/arithmetic_circuits/fib_23/fib_23.btor2"),
 }
 
@@ -154,7 +154,7 @@ def run_guided(name: str, btor2: Path, timeout_s: int,
             "--log-path", str(log),
             "--provider", "deepseek",
             "--model", "deepseek-v4-pro",
-            "--max-requests", "2",
+            "--max-requests", "4",
             "--poll-interval", "0.5",
         ],
         cwd=str(LLM_WORKER),

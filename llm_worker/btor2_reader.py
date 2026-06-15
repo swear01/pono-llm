@@ -231,12 +231,16 @@ def parse_btor2(path: str) -> BTOR2Info:
     return info
 
 
-def hot_refs_near_bad(info: BTOR2Info, depth: int = 3) -> List[str]:
+def hot_refs_near_bad(info: BTOR2Info, depth: int = 3,
+                      transition_depth: int = 6) -> List[str]:
     """
-    Return stateNN refs reachable from the bad property within `depth` BFS hops.
+    Return stateNN refs reachable from the bad property within `depth` BFS hops,
+    plus states found within `transition_depth` hops through each found state's
+    next-expression (secondary hot variables from transition logic).
 
-    When a state variable is found we also enqueue its next-expression so that
-    variables influencing the found state's transition are discovered too.
+    The secondary phase catches state variables that don't appear in the
+    combinational property cone but are key invariant variables (e.g. loop
+    counters that feed into hot-state transitions).
     Result is sorted by lineno for determinism.
     """
     if info.bad_lineno < 0:
@@ -271,6 +275,30 @@ def hot_refs_near_bad(info: BTOR2Info, depth: int = 3) -> List[str]:
     for ln in frontier:
         if ln not in visited and ln in state_linenos:
             state_refs.add(f"state{ln}")
+
+    # Secondary phase: for each primary hot state, BFS through its
+    # next-expression up to `transition_depth` hops to find state variables
+    # that appear in the transition logic (not visible from the property cone).
+    for ref in list(state_refs):
+        nxt_ln = info.next_map.get(ref)
+        if nxt_ln is None:
+            continue
+        t_frontier: Set[int] = {nxt_ln}
+        t_visited: Set[int] = set(visited)
+        for _ in range(transition_depth):
+            t_next: Set[int] = set()
+            for ln in t_frontier:
+                if ln in t_visited:
+                    continue
+                t_visited.add(ln)
+                if ln in state_linenos:
+                    state_refs.add(f"state{ln}")
+                    # Don't recurse into this secondary state's own transitions
+                else:
+                    for dep in info.deps.get(ln, []):
+                        if dep not in t_visited:
+                            t_next.add(dep)
+            t_frontier = t_next
 
     # Sort by lineno
     return sorted(state_refs, key=lambda r: int(r[5:]))
@@ -335,6 +363,67 @@ def _node_formula(info: BTOR2Info, ln: int,
     return f"node{ln}"
 
 
+def detect_symmetric_pairs(info: BTOR2Info, refs: List[str]) -> List[Tuple[str, str]]:
+    """
+    Find pairs of hot state variables that likely maintain an equality invariant.
+
+    Two states are "symmetric" if they have:
+    1. The same initial value (or both have no init)
+    2. Identical transition dependency sets (same input deps + same state deps,
+       excluding self-references)
+
+    Returns a list of (refA, refB) pairs where eq(refA, refB) is likely inductive.
+    """
+    input_by_ln: Dict[int, InputVar] = {iv.lineno: iv for iv in info.inputs}
+    state_by_ln: Dict[int, StateVar] = {sv.lineno: sv for sv in info.states}
+
+    def _bfs_dep_sets(start_ln: int, self_ln: int) -> Tuple[frozenset, frozenset]:
+        """Return (frozenset of input names, frozenset of state refs) excluding self."""
+        visited: Set[int] = set()
+        frontier: Set[int] = {start_ln}
+        inp_deps: Set[str] = set()
+        st_deps: Set[str] = set()
+        while frontier:
+            nxt: Set[int] = set()
+            for n in frontier:
+                if n in visited:
+                    continue
+                visited.add(n)
+                if n in input_by_ln:
+                    inp_deps.add(input_by_ln[n].symbol)
+                elif n in state_by_ln:
+                    if n != self_ln:
+                        sv = state_by_ln[n]
+                        st_deps.add(sv.ref)
+                else:
+                    for d in info.deps.get(n, []):
+                        if d not in visited:
+                            nxt.add(d)
+            frontier = nxt
+        return frozenset(inp_deps), frozenset(st_deps)
+
+    # Collect (init_value, inp_deps, st_deps) for each ref
+    sig: Dict[str, Tuple] = {}
+    for ref in refs:
+        sv = state_by_ln.get(int(ref[5:]))
+        if sv is None:
+            continue
+        nxt_ln = info.next_map.get(ref)
+        if nxt_ln is None:
+            continue
+        inp, st = _bfs_dep_sets(nxt_ln, sv.lineno)
+        sig[ref] = (sv.init_value or "0", inp, st)
+
+    # Find pairs with identical signatures
+    pairs: List[Tuple[str, str]] = []
+    ref_list = [r for r in refs if r in sig]
+    for i, a in enumerate(ref_list):
+        for b in ref_list[i + 1:]:
+            if sig[a] == sig[b]:
+                pairs.append((a, b))
+    return pairs
+
+
 def build_transition_sketch(info: BTOR2Info, refs: List[str]) -> List[str]:
     """
     Build a readable transition sketch for hot state variables.
@@ -346,6 +435,8 @@ def build_transition_sketch(info: BTOR2Info, refs: List[str]) -> List[str]:
     Uses a BFS through the next-expression DAG to find all state/input
     variables that influence the transition, avoiding false matches from
     literal integer arguments (e.g. bit indices in slice).
+    Also appends symmetry annotations when pairs of states have identical
+    initial values and transition dependencies.
     """
     lines = []
     input_by_ln: Dict[int, InputVar] = {iv.lineno: iv for iv in info.inputs}
@@ -410,5 +501,18 @@ def build_transition_sketch(info: BTOR2Info, refs: List[str]) -> List[str]:
             lines.append(f"{name}' depends on {'; '.join(dep_parts)}")
         else:
             lines.append(f"{name}' has next-state logic")
+
+    # Append symmetry hints for pairs of states with identical transition signatures.
+    pairs = detect_symmetric_pairs(info, refs)
+    if pairs:
+        lines.append("")
+        lines.append("SYMMETRY HINT — pairs with identical init and transition structure:")
+        for a, b in pairs:
+            sv_a = state_by_ln.get(int(a[5:]))
+            sv_b = state_by_ln.get(int(b[5:]))
+            na = (sv_a.symbol or a) if sv_a else a
+            nb = (sv_b.symbol or b) if sv_b else b
+            lines.append(f"  {na} ({a}) and {nb} ({b}) have same init and same deps"
+                         f" → eq({a}, {b}) is likely inductive")
 
     return lines
