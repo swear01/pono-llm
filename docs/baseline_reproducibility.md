@@ -1,5 +1,5 @@
 > **ACTIVE for v1 (2026-06-03)** — IC3IA nondeterminism affects E2E metrics design.  
-> Spec: [`ic3_frame_v1_integration.md`](ic3_frame_v1_integration.md)
+> Spec: [`ARCHITECTURE.md`](ARCHITECTURE.md)
 
 # Baseline Reproducibility
 

@@ -16,7 +16,7 @@
 
 Compact prompt 改的是 **sidecar 呼叫 API 時的 HTTP body**，不是 JSONL 檔案大小。
 
-每次 API call 在 [`llm_worker/deepseek_client.py`](../llm_worker/deepseek_client.py) 送：
+每次 API call 在 [`llm_worker/llm_client.py`](../../llm_worker/llm_client.py) 送：
 
 ```text
 messages[0] system  ← ic3_frame_v1.txt（~2.4 KB）
@@ -64,7 +64,7 @@ messages[1] user    ← build_user_prompt() 產出（compact line text）
 
 ### thinking disabled A/B（2026-06-04，同模型 `deepseek-v4-pro`）
 
-[`deepseek_client.py`](../../llm_worker/deepseek_client.py) 將 `reasoning_effort=none` 對應為 `extra_body.thinking.type=disabled`（**omit `reasoning_effort` 不等於關閉 thinking**）。
+[`llm_client.py`](../../llm_worker/llm_client.py) 將 `reasoning_effort=none` 對應為 `extra_body.thinking.type=disabled`（**omit `reasoning_effort` 不等於關閉 thinking**）。
 
 | 場景 | user bytes | prompt_tok | completion_tok | reasoning_chars | latency |
 |------|------------|------------|----------------|-----------------|---------|
@@ -90,7 +90,7 @@ messages[1] user    ← build_user_prompt() 產出（compact line text）
 
 ### 方案
 
-新增 [`scripts/smoke_p040.sh`](../../scripts/smoke_p040.sh)（或 `llm_worker/smoke_e2e.py`）：
+新增 `scripts/smoke_p040.sh`（或 `llm_worker/smoke_e2e.py`）：
 
 ```text
 RUN_DIR=$(mktemp -d /tmp/pono_smoke_XXXXXX)
@@ -167,7 +167,7 @@ thinking disabled 後單次 call 約 **4–6s**（見上表）。Smoke 預設 `-
 5. [x] **C++ 統計** — `lookup_miss`、`rejected_initial`、`missing_block`、`attempt_mismatch`；`final_llm_poll()` + `pono.cpp` exit drain
 6. [x] **prompt** — block 須在 CTI 下 false、不可滿足 initial
 7. [x] **smoke drain** — `DRAIN_SEC` 等待 sidecar 追平、`MAX_INFLIGHT=8`
-8. [ ] **Batch smoke** — 見 [batch-cti-single-conclusion-plan.md](batch-cti-single-conclusion-plan.md)：`PARALLEL_SAMPLES=3`、`requests`≈frame 輪數、`cti_total` in log、sync on 時 `candidates`≈requests×K
+8. [ ] **Batch smoke** — 見 `batch-cti-single-conclusion-plan.md` (plan removed)：`PARALLEL_SAMPLES=3`、`requests`≈frame 輪數、`cti_total` in log、sync on 時 `candidates`≈requests×K
 
 ---
 

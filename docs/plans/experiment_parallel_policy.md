@@ -2,7 +2,7 @@
 
 **狀態：** 已實施（harness + 文件）  
 **日期：** 2026-06  
-**相關：** [`hwmcc_experiment_tiers.md`](../hwmcc_experiment_tiers.md)、[`ic3_frame_v1_integration.md`](../ic3_frame_v1_integration.md)
+**相關：** [`hwmcc_experiment_tiers.md`](../hwmcc_experiment_tiers.md)、[`ARCHITECTURE.md`](../ARCHITECTURE.md)
 
 ---
 

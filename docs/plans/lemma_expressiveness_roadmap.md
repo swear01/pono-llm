@@ -2,7 +2,7 @@
 
 **狀態：** 待實驗 — 先用現有 protocol 跑 Phase E/Q，再依數據決定是否啟動  
 **日期：** 2026-06  
-**相關：** [`ic3_frame_v1_integration.md`](../ic3_frame_v1_integration.md)、[`experiment_plan_review.md`](experiment_plan_review.md)、[`ic3ia_predicate_mapping_audit.md`](../ic3ia_predicate_mapping_audit.md)
+**相關：** [`ARCHITECTURE.md`](../ARCHITECTURE.md)、[`experiment_plan_review.md`](experiment_plan_review.md)、[`ic3ia_predicate_mapping_audit.md`](../ic3ia_predicate_mapping_audit.md)
 
 ---
 
@@ -162,7 +162,7 @@ Phase E/Q（現 protocol）
 | [`engines/ic3base.cpp`](../../engines/ic3base.cpp) | `try_apply_llm_refine_predicate`（目前 stub） |
 | [`engines/ic3_frame_ast.cpp`](../../engines/ic3_frame_ast.cpp) | `build_predicate_term` |
 | [`engines/ic3base.cpp`](../../engines/ic3base.cpp) | `try_accept_first_block_clause` |
-| [`llm_worker/ic3_frame_schema.py`](../../llm_worker/ic3_frame_schema.py) | predicate validate |
+| [`llm_worker/jsonl_protocol.py`](../../llm_worker/jsonl_protocol.py) | predicate validate |
 | [`docs/ic3ia_predicate_mapping_audit.md`](../ic3ia_predicate_mapping_audit.md) | IC3IA 映射約束 |
 
 ---

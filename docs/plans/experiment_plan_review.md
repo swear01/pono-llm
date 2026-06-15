@@ -2,7 +2,7 @@
 
 **狀態：** 進行中（Track A / 八開 / Phase L 已完成；**Baseline 全量 → find-solvable → Phase E LLM**）  
 **日期：** 2026-06  
-**相關：** [`experiment_parallel_policy.md`](experiment_parallel_policy.md)、[`frame_snapshot_quality_plan.md`](frame_snapshot_quality_plan.md)、[`hwmcc_experiment_tiers.md`](../hwmcc_experiment_tiers.md)
+**相關：** [`experiment_parallel_policy.md`](experiment_parallel_policy.md)、[`hwmcc_experiment_tiers.md`](../hwmcc_experiment_tiers.md)
 
 ---
 

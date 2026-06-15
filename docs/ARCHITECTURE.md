@@ -1,6 +1,6 @@
 # Pono + LLM 架構說明 (IC3 Frame v1)
 
-> **Canonical spec:** [`ic3_frame_v1_integration.md`](ic3_frame_v1_integration.md)  
+> **Canonical spec:** [`semantic_invariant_injection_v1_plan.md`](plans/semantic_invariant_injection_v1_plan.md)  
 > Legacy `cube_subset` / `qf_smt` / Path 1 assert injection **will be deleted** (not deprecated).
 
 ## 整體流程
@@ -70,7 +70,7 @@ pono-llm/
 
 ## Request / Response
 
-Full schemas: [`ic3_frame_v1_integration.md`](ic3_frame_v1_integration.md).
+Full schemas: [`semantic_invariant_injection_v1_plan.md`](plans/semantic_invariant_injection_v1_plan.md).
 
 - Request 權威欄位：`frame_idx`, `cti_id`, `cti`, `frame_snapshot`（`symbol_registry` 在 `benchmark_context.json`）
 - Response：最多 1× `block` + 0~1× `refine_predicate`；無 `frame_hint`

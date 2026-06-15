@@ -342,4 +342,4 @@ python3 scripts/run_benchmarks.py --phase hwmcc \
 
 - 平行政策：[`plans/experiment_parallel_policy.md`](plans/experiment_parallel_policy.md)
 - 總檢視：[`plans/experiment_plan_review.md`](plans/experiment_plan_review.md)
-- 協議：[`ic3_frame_v1_integration.md`](ic3_frame_v1_integration.md)
+- 協議：[`ARCHITECTURE.md`](ARCHITECTURE.md)
