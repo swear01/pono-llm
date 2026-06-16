@@ -49,6 +49,10 @@ class BTOR2Info:
     next_map: Dict[str, int] = field(default_factory=dict)
     # lineno → human-readable sketch (best effort)
     node_sketch: Dict[int, str] = field(default_factory=dict)
+    # lineno → BTOR2 op string (for expression-level comparison)
+    ops: Dict[int, str] = field(default_factory=dict)
+    # lineno → const value string (for canonical hashing of constants)
+    consts: Dict[int, str] = field(default_factory=dict)
 
 
 _YOSYS_AUTO = re.compile(r"\$auto\$|\$techmap|\\|:execute\$|:246:|:245:|:222:|:256:")
@@ -182,6 +186,7 @@ def parse_btor2(path: str) -> BTOR2Info:
             # ops like slice/sext/uext have literal integer args that are NOT
             # node references — only their first data argument is a node ref.
             elif op not in ("sort", "constraint", "output", "justice", "fair"):
+                info.ops[lineno] = op
                 arg_linenos = []
                 # slice N SORT EXPR HIGH LOW  — only EXPR (parts[3]) is a node ref
                 # sext/uext N SORT EXPR WIDTH — only EXPR (parts[3]) is a node ref
@@ -221,6 +226,8 @@ def parse_btor2(path: str) -> BTOR2Info:
                 lineno_to_const[lineno] = "1"
             elif parts[1] == "ones":
                 lineno_to_const[lineno] = "all-ones"
+
+    info.consts = lineno_to_const
 
     for sv in info.states:
         val_ln = init_map.get(sv.lineno)
@@ -279,12 +286,14 @@ def hot_refs_near_bad(info: BTOR2Info, depth: int = 3,
     # Secondary phase: for each primary hot state, BFS through its
     # next-expression up to `transition_depth` hops to find state variables
     # that appear in the transition logic (not visible from the property cone).
+    # Use state_linenos as seed (not full visited) so the primary BFS's
+    # intermediate nodes don't accidentally block secondary exploration.
     for ref in list(state_refs):
         nxt_ln = info.next_map.get(ref)
         if nxt_ln is None:
             continue
         t_frontier: Set[int] = {nxt_ln}
-        t_visited: Set[int] = set(visited)
+        t_visited: Set[int] = set()
         for _ in range(transition_depth):
             t_next: Set[int] = set()
             for ln in t_frontier:
@@ -363,19 +372,73 @@ def _node_formula(info: BTOR2Info, ln: int,
     return f"node{ln}"
 
 
+def _expr_canonical_hash(
+    info: BTOR2Info,
+    ln: int,
+    self_ln: int,
+    input_by_ln: Dict[int, "InputVar"],
+    state_by_ln: Dict[int, "StateVar"],
+    cache: Dict,
+    depth: int = 30,
+) -> str:
+    """
+    Compute a canonical structural hash of the expression rooted at `ln`.
+    Self-references (state at `self_ln`) are replaced by placeholder "SELF".
+    Used to compare next-state expressions for two states after substituting
+    each state's own reference with "SELF" — if hashes match, the expressions
+    are structurally identical and the equality invariant is inductive.
+    """
+    key = (ln, self_ln)
+    if key in cache:
+        return cache[key]
+    if depth == 0:
+        return f"#{ln}"
+
+    if ln == self_ln:
+        cache[key] = "SELF"
+        return "SELF"
+    if ln in input_by_ln:
+        h = f"INP:{input_by_ln[ln].symbol}"
+        cache[key] = h
+        return h
+    if ln in state_by_ln:
+        h = f"ST:{state_by_ln[ln].ref}"
+        cache[key] = h
+        return h
+    if ln in info.consts:
+        h = f"CONST:{info.consts[ln]}"
+        cache[key] = h
+        return h
+
+    op = info.ops.get(ln, "?")
+    children = info.deps.get(ln, [])
+    child_hashes = [
+        _expr_canonical_hash(info, c, self_ln, input_by_ln, state_by_ln, cache, depth - 1)
+        for c in children
+    ]
+    h = f"{op}({','.join(child_hashes)})"
+    cache[key] = h
+    return h
+
+
 def detect_symmetric_pairs(info: BTOR2Info, refs: List[str]) -> List[Tuple[str, str]]:
     """
     Find pairs of hot state variables that likely maintain an equality invariant.
 
-    Two states are "symmetric" if they have:
-    1. The same initial value (or both have no init)
-    2. Identical transition dependency sets (same input deps + same state deps,
-       excluding self-references)
+    Two states A and B form a symmetric pair if:
+    1. They have the same initial value (or both have no init)
+    2. Their next-state expressions are STRUCTURALLY IDENTICAL after substituting
+       each state's self-reference with a SELF placeholder.
 
-    Returns a list of (refA, refB) pairs where eq(refA, refB) is likely inductive.
+    This is stronger than dep-set matching: it guarantees eq(A, B) is inductive
+    (given eq(A, B) in the current state and no cross-references between A and B).
+
+    Falls back to dep-set matching if expression hashing is unavailable (e.g., no ops).
     """
     input_by_ln: Dict[int, InputVar] = {iv.lineno: iv for iv in info.inputs}
     state_by_ln: Dict[int, StateVar] = {sv.lineno: sv for sv in info.states}
+
+    use_expr_hash = bool(info.ops)  # available if parser stored ops
 
     def _bfs_dep_sets(start_ln: int, self_ln: int) -> Tuple[frozenset, frozenset]:
         """Return (frozenset of input names, frozenset of state refs) excluding self."""
@@ -402,8 +465,8 @@ def detect_symmetric_pairs(info: BTOR2Info, refs: List[str]) -> List[Tuple[str, 
             frontier = nxt
         return frozenset(inp_deps), frozenset(st_deps)
 
-    # Collect (init_value, inp_deps, st_deps) for each ref
-    sig: Dict[str, Tuple] = {}
+    # Phase 1: dep-set filtering (fast)
+    dep_sigs: Dict[str, Tuple] = {}
     for ref in refs:
         sv = state_by_ln.get(int(ref[5:]))
         if sv is None:
@@ -412,16 +475,42 @@ def detect_symmetric_pairs(info: BTOR2Info, refs: List[str]) -> List[Tuple[str, 
         if nxt_ln is None:
             continue
         inp, st = _bfs_dep_sets(nxt_ln, sv.lineno)
-        sig[ref] = (sv.init_value or "0", inp, st)
+        dep_sigs[ref] = (sv.init_value or "0", inp, st)
 
-    # Find pairs with identical signatures
-    pairs: List[Tuple[str, str]] = []
-    ref_list = [r for r in refs if r in sig]
+    dep_candidates: List[Tuple[str, str]] = []
+    ref_list = [r for r in refs if r in dep_sigs]
     for i, a in enumerate(ref_list):
         for b in ref_list[i + 1:]:
-            if sig[a] == sig[b]:
-                pairs.append((a, b))
-    return pairs
+            if dep_sigs[a] == dep_sigs[b]:
+                dep_candidates.append((a, b))
+
+    if not use_expr_hash or not dep_candidates:
+        return dep_candidates
+
+    # Phase 2: expression hash for dep-set candidates only (precise)
+    # Compute hash per-state lazily; cache shared across all pairs.
+    cache: Dict = {}
+    expr_hash_cache: Dict[str, str] = {}
+
+    def _get_expr_hash(ref: str) -> str:
+        if ref in expr_hash_cache:
+            return expr_hash_cache[ref]
+        sv = state_by_ln[int(ref[5:])]
+        nxt_ln = info.next_map[ref]
+        h = _expr_canonical_hash(info, nxt_ln, sv.lineno,
+                                 input_by_ln, state_by_ln, cache)
+        expr_hash_cache[ref] = h
+        return h
+
+    confirmed: List[Tuple[str, str]] = []
+    for a, b in dep_candidates:
+        try:
+            if _get_expr_hash(a) == _get_expr_hash(b):
+                confirmed.append((a, b))
+        except RecursionError:
+            # Fall back to dep-set match for very deep expressions
+            confirmed.append((a, b))
+    return confirmed
 
 
 def build_transition_sketch(info: BTOR2Info, refs: List[str]) -> List[str]:
@@ -501,18 +590,5 @@ def build_transition_sketch(info: BTOR2Info, refs: List[str]) -> List[str]:
             lines.append(f"{name}' depends on {'; '.join(dep_parts)}")
         else:
             lines.append(f"{name}' has next-state logic")
-
-    # Append symmetry hints for pairs of states with identical transition signatures.
-    pairs = detect_symmetric_pairs(info, refs)
-    if pairs:
-        lines.append("")
-        lines.append("SYMMETRY HINT — pairs with identical init and transition structure:")
-        for a, b in pairs:
-            sv_a = state_by_ln.get(int(a[5:]))
-            sv_b = state_by_ln.get(int(b[5:]))
-            na = (sv_a.symbol or a) if sv_a else a
-            nb = (sv_b.symbol or b) if sv_b else b
-            lines.append(f"  {na} ({a}) and {nb} ({b}) have same init and same deps"
-                         f" → eq({a}, {b}) is likely inductive")
 
     return lines

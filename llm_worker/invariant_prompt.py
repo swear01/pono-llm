@@ -63,7 +63,10 @@ Sort candidates: most-likely-inductive first.
 
 def build_stage0_prompt(request: dict) -> str:
     benchmark = request.get("benchmark", "unknown")
+    # Truncate property_desc: pono can send a multi-MB circuit formula; cap at 200 chars.
     property_desc = request.get("property_desc", "(unknown property)")
+    if isinstance(property_desc, str) and len(property_desc) > 200:
+        property_desc = property_desc[:200] + "...(truncated)"
     hot_vars = request.get("hot_variables", [])
     transition_sketch = request.get("transition_sketch", [])
 
@@ -102,9 +105,27 @@ def build_stage0_prompt(request: dict) -> str:
             parts.append(f"  {line}")
         parts.append("")
 
+    sym_pairs = request.get("symmetric_pairs", [])
+    if sym_pairs:
+        parts.append("STRUCTURAL EQUALITY INVARIANTS (very likely inductive — MUST include as candidates):")
+        for sp in sym_pairs[:12]:
+            a, b, na, nb = sp["refA"], sp["refB"], sp["nameA"], sp["nameB"]
+            if na != a:
+                parts.append(f"  eq({a}, {b})  [{na} == {nb}]")
+            else:
+                parts.append(f"  eq({a}, {b})")
+        if len(sym_pairs) > 12:
+            parts.append(f"  ... and {len(sym_pairs)-12} more equality pairs")
+        parts.append(
+            "  These pairs have IDENTICAL init values and transition structure, so they"
+            " are guaranteed to stay equal. Include ALL of the above as eq() candidates."
+        )
+        parts.append("")
+
     parts.append(
         "Generate 5-15 candidate invariants for this circuit. "
         "Focus on:\n"
+        "  - The EQUALITY INVARIANTS listed above (include ALL of them)\n"
         "  - Monotonicity / counter bounds\n"
         "  - Mutual exclusion between state bits\n"
         "  - Relationships between related state variables\n"

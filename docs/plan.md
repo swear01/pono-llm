@@ -1,21 +1,31 @@
 # Plan
 
-**Active plan:** [`docs/plans/semantic_invariant_injection_v1_plan.md`](plans/semantic_invariant_injection_v1_plan.md)  
-**Handoff:** [`docs/HANDOFF_CURRENT_STATE.md`](HANDOFF_CURRENT_STATE.md)
+**Status:** Stage 0 + Stage 2 implementation complete. Exhaustive benchmark scan done.
 
-## In Progress
+## Completed
 
-Stage 0 + Stage 2 skeleton is built and tested. Now filling in content:
+- Stage 0: deterministic sym_pair injection + LLM ordering hints (gated on sym_pairs)
+- Stage 2: gated on sym_pairs AND cti_count > 0; safety filter; previously_injected populated
+- `_expr_canonical_hash()` in `btor2_reader.py`: structural expression matching for precise sym_pair detection
+- Secondary BFS bug fixed (empty t_visited in secondary phase)
+- `property_desc` truncation to 200 chars (prevents HTTP 413 on large circuits)
+- `_is_safe_candidate()` safety filter: ref-ref comparisons only
+- **Exhaustive HWMCC 2020/2024/2025 BV scan**: ~900 benchmarks, only fib_05 is Class-A
 
-1. **`llm_worker/invariant_prompt.py`** — Stage 0 + Stage 2 prompt builders (convert `benchmark_context.json` → prompt)
-2. **`llm_worker/invariant_sidecar.py`** — `handle_stage0_request`, `handle_stage2_request` handlers
+## Current State: fib_05 Only
 
-## Next Up
+fib_05 is the only Class-A benchmark across all HWMCC BV benchmarks. Constraints:
+- ≤20 states required (IC3IA frame computation too slow otherwise)
+- Structural sym_pair required (deterministic injection source)
+- eq(A,B) must be the key missing invariant (current safety filter scope)
 
-3. C++: `build_stage0_request_json` + `sync_wait_and_apply_invariants` in `llm_generalizer.cpp`
-4. C++: Stage 2 trigger conditions (T1/T2/T3) in `ic3base.cpp`
-5. C++: `parse_predicate_ast` from JSON (`engines/ic3_frame_ast.cpp`)
-6. **A/B gate**: CTI elimination rate with vs. without Stage 0 injection → go/no-go for Stage 2
+## Next Steps (strategic, pending decision)
+
+1. **Name-pattern sym_pairs**: miter circuits have `impl_A.x` / `impl_B.x` — name similarity
+   instead of expression hash could unlock 34 miter benchmarks
+2. **Relaxed safety filter**: allow arithmetic invariants (`x+y==C`, `x<=C`) for GCD/counter class
+3. **Alternative benchmark suites**: cache coherence, concurrent protocol benchmarks
+4. **Accept current scope**: fib_05 as proof-of-concept; pivot to paper writing
 
 ## Do Not Do
 

@@ -14,6 +14,7 @@ from btor2_reader import (
     hot_refs_near_bad,
     build_hot_variables,
     build_transition_sketch,
+    detect_symmetric_pairs,
 )
 from invariant_prompt import (
     INVARIANT_SYSTEM_PROMPT,
@@ -27,7 +28,7 @@ from llm_client import LLMClient
 _MAX_TOKENS = 8192
 
 # BFS depth from bad node for hot variable selection
-_HOT_DEPTH = 4
+_HOT_DEPTH = 6
 
 
 def _load_btor2(btor2_path: str) -> Optional[BTOR2Info]:
@@ -65,6 +66,18 @@ def _enrich_request_with_btor2(request: dict) -> dict:
         {"ref": iv.ref, "symbol": iv.symbol, "width": iv.width}
         for iv in info.inputs
     ]
+    # Detect symmetric pairs (likely inductive eq invariants) filtered to hot refs
+    # and to pairs where both states have known init values.
+    state_by_ref = {sv.ref: sv for sv in info.states}
+    all_pairs = detect_symmetric_pairs(info, refs)
+    sym_pairs = []
+    for a, b in all_pairs:
+        sv_a, sv_b = state_by_ref.get(a), state_by_ref.get(b)
+        if sv_a and sv_b and sv_a.init_value is not None and sv_b.init_value is not None:
+            na = sv_a.symbol or a
+            nb = sv_b.symbol or b
+            sym_pairs.append({"refA": a, "refB": b, "nameA": na, "nameB": nb})
+    enriched["symmetric_pairs"] = sym_pairs
     return enriched
 
 
@@ -82,19 +95,97 @@ def _call_llm(client: LLMClient, user_prompt: str, request: dict) -> tuple[str, 
     return text, tokens, latency_ms
 
 
+_REF_REF_FORMS = frozenset([
+    "eq", "ne", "uge", "ule", "ugt", "ult", "sge", "sle", "sgt", "slt",
+])
+
+
+def _is_safe_candidate(cand: dict) -> bool:
+    """
+    Allow only binary comparisons (eq/ne/uge/ule/…) where BOTH operands are plain
+    state-variable refs. Rejects anything with a const, bvand/bvor, or nested expr.
+
+    Candidates from parse_invariant_response() have the predicate_ast nested inside
+    a "predicate_ast" key. We unwrap that before checking.
+    """
+    ast = cand.get("predicate_ast", cand)  # unwrap LLM candidate format if present
+    form = ast.get("form", "")
+    args = ast.get("args", [])
+    if form in _REF_REF_FORMS and len(args) == 2:
+        a, b = args[0], args[1]
+        if a.get("form") == "ref" and b.get("form") == "ref":
+            return True
+    return False
+
+
+def _make_eq_candidate(ref_a: str, ref_b: str) -> dict:
+    """Create a fully-formatted eq(A,B) candidate in the same format as parse_invariant_response."""
+    return {
+        "id": 0,
+        "kind": "Type1_invariant",
+        "verilog_expr": "",
+        "predicate_ast": {
+            "form": "eq",
+            "args": [{"form": "ref", "ref": ref_a}, {"form": "ref", "ref": ref_b}],
+        },
+        "intuition": "structural symmetric pair (expression-hash verified)",
+    }
+
+
+def _filter_candidates(candidates: list, label: str, request_id: str) -> list:
+    """Apply _is_safe_candidate and log how many were dropped."""
+    before = len(candidates)
+    safe = [c for c in candidates if _is_safe_candidate(c)]
+    dropped = before - len(safe)
+    if dropped:
+        print(f"[inv_sidecar] {label} {request_id}: filtered {dropped} risky, "
+              f"{len(safe)} safe remain")
+    return safe
+
+
 def handle_stage0_request(client: LLMClient, request: dict) -> dict:
     """
     Pre-flight invariant generation.
 
-    Reads RTL semantic bundle from the request (btor2_path → parsed hot_variables
-    and transition_sketch) and asks LLM for invariant candidates.
+    Always injects eq(A,B) for each structural symmetric pair (deterministic, no LLM
+    randomness for this critical class). Also asks LLM for additional ref-ref ordering
+    invariants (filtered to exclude const-bound hallucinations).
     """
     request_id = request.get("request_id", "unknown")
     enriched = _enrich_request_with_btor2(request)
-    user_prompt = build_stage0_prompt(enriched)
-    text, tokens, latency_ms = _call_llm(client, user_prompt, enriched)
-    candidates = parse_invariant_response(text)
-    print(f"[inv_sidecar] stage0 {request_id}: {len(candidates)} candidates "
+
+    # Deterministic: eq(A,B) for each structural symmetric pair (expression-hash verified)
+    sym_pairs = enriched.get("symmetric_pairs", [])
+    sym_pair_frozensets = {frozenset([sp["refA"], sp["refB"]]) for sp in sym_pairs}
+    det_candidates = [_make_eq_candidate(sp["refA"], sp["refB"]) for sp in sym_pairs]
+
+    # LLM: additional suggestions — only ask when sym_pairs give the LLM useful context.
+    # Without structural equality evidence, LLM generates unreliable ordering invariants
+    # that cause net regression (wrong bounds at loop termination, etc.).
+    if sym_pairs:
+        user_prompt = build_stage0_prompt(enriched)
+        text, tokens, latency_ms = _call_llm(client, user_prompt, enriched)
+        llm_raw = parse_invariant_response(text)
+        llm_safe = _filter_candidates(llm_raw, "stage0", request_id)
+    else:
+        llm_safe = []
+        tokens, latency_ms = 0, 0.0
+        print(f"[inv_sidecar] stage0 {request_id}: no sym_pairs, skipping LLM")
+
+    # Deduplicate: drop LLM eq(A,B) already covered by the deterministic sym_pair candidates
+    llm_novel = []
+    for c in llm_safe:
+        ast = c.get("predicate_ast", c)
+        if ast.get("form") == "eq" and len(ast.get("args", [])) == 2:
+            a, b = ast["args"]
+            if (a.get("form") == "ref" and b.get("form") == "ref"
+                    and frozenset([a["ref"], b["ref"]]) in sym_pair_frozensets):
+                continue  # already injected deterministically
+        llm_novel.append(c)
+
+    candidates = det_candidates + llm_novel
+    print(f"[inv_sidecar] stage0 {request_id}: {len(det_candidates)} sym_pair + "
+          f"{len(llm_novel)} LLM = {len(candidates)} candidates "
           f"({tokens} tokens, {latency_ms:.0f}ms)")
     return {
         "type": "ic3_invariant_response",
@@ -108,13 +199,47 @@ def handle_stage0_request(client: LLMClient, request: dict) -> dict:
 def handle_stage2_request(client: LLMClient, request: dict) -> dict:
     """
     Mid-run guidance: CTI cluster + frame clause evidence → LLM → Type1/2/3 candidates.
+
+    Only runs the LLM call when structural symmetric pairs are present: without that
+    evidence, Stage 2 ordering suggestions are unreliable and cause net regression
+    (extra CEGAR rounds from wrong invariants exceed the rounds saved by correct ones).
     """
     request_id = request.get("request_id", "unknown")
     enriched = _enrich_request_with_btor2(request)
+    trigger = request.get("trigger", "?")
+
+    sym_pairs = enriched.get("symmetric_pairs", [])
+    if not sym_pairs:
+        print(f"[inv_sidecar] stage2 {request_id} ({trigger}): no sym_pairs, skipping LLM")
+        return {
+            "type": "ic3_invariant_response",
+            "request_id": request_id,
+            "candidates": [],
+        }
+
+    # Skip Stage 2 LLM when there are 0 CTIs: T2_plateau with no counterexamples
+    # gives the LLM nothing concrete to reason about (tends to return 0 useful candidates).
+    proof_state = enriched.get("proof_state", {})
+    cti_count = proof_state.get("total_cti_count", -1)
+    if cti_count == 0:
+        print(f"[inv_sidecar] stage2 {request_id} ({trigger}): 0 CTIs, skipping LLM")
+        return {
+            "type": "ic3_invariant_response",
+            "request_id": request_id,
+            "candidates": [],
+        }
+
+    # Inform the LLM about sym_pair invariants already injected at Stage 0
+    already_injected = [f"eq({sp['refA']}, {sp['refB']})" for sp in sym_pairs]
+    if already_injected and not enriched.get("previously_injected"):
+        enriched = dict(enriched)
+        enriched["previously_injected"] = already_injected
+
     user_prompt = build_stage2_prompt(enriched)
     text, tokens, latency_ms = _call_llm(client, user_prompt, enriched)
     candidates = parse_invariant_response(text)
-    trigger = request.get("trigger", "?")
+    # Same safety filter as Stage 0: reject const bounds and complex subexpressions
+    candidates = _filter_candidates(candidates, "stage2", request_id)
     print(f"[inv_sidecar] stage2 {request_id} ({trigger}): {len(candidates)} candidates "
           f"({tokens} tokens, {latency_ms:.0f}ms)")
     return {
