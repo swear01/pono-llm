@@ -2,26 +2,52 @@
 
 ## What This Is
 
-**pono-llm** is a research fork of [Pono](https://github.com/stanford-centaur/pono), an SMT-based hardware model checker from Stanford. The fork adds online LLM-guided invariant generation for the IC3/IC3IA verification engine. LLM sees circuit semantics and generates invariants that C++ formally validates before injecting into IC3 frames — one good invariant eliminates hundreds of CTIs instead of querying the LLM per-CTI.
+**pono-llm** is a research fork of [Pono](https://github.com/stanford-centaur/pono), an SMT-based hardware model checker from Stanford. The fork adds LLM-guided invariant pre-processing for circuits compiled from C programs: LLM sees circuit semantics (actual transition formulas, variable names) and generates arithmetic loop invariants that are formally verified and injected as BTOR2 `constraint` statements before the model checker runs.
 
 ## Key Concepts / Domain
 
 - **IC3/IC3IA**: Property-directed reachability (PDR) model checking algorithm; IC3IA adds predicate abstraction for bit-vector designs.
-- **Frame (Fᵢ)**: A set of clauses over-approximating states reachable in ≤i steps. The core invariant data structure.
-- **CTI (Counterexample To Induction)**: A state that violates the property in induction; must be blocked by generalizing a new clause into the frame.
-- **constrain_frame(k, clause)**: C++ API to inject a new clause into frame k.
 - **BTOR2**: Binary format for hardware transition systems; Pono's primary input.
+- **Software-origin circuit**: A BTOR2 circuit compiled from a C program. Variable names (i, n, x, y, sum) are preserved in state labels. These circuits have loop-like transition structures that LLM can reason about.
+- **BTOR2 constraint injection**: Adding `constraint` statements to BTOR2 before IC3IA runs. The constraints restrict the state space; IC3IA solves in <0.3s on pre-constrained circuits.
+- **Pre-processing pipeline** (`llm_worker/invariant_arith.py`): Detects software-origin circuits, injects structural invariants, calls LLM for arithmetic invariants, verifies each candidate with IC3IA as oracle, injects sound ones.
+- **Sidecar**: Python process for mid-run LLM calls during IC3IA execution (Stage 0/2). Less critical now that pre-processing works; handles non-software-origin circuits.
 - **smt-switch**: Solver-agnostic C++ SMT API (Bitwuzla backend used here).
-- **Sidecar**: Python process that owns all LLM API calls; communicates with C++ via JSONL files (IPC).
-- **Stage 0**: Pre-flight LLM query — sends circuit semantic context, gets invariant candidates before IC3 starts.
-- **Stage 2**: Mid-run LLM query — triggered by CTI cluster density (T1), frame plateau (T2), or clause budget (T3).
+
+## How It Works
+
+```
+software-origin BTOR2
+    ↓ detect (C-style var names, output labels)
+    ↓ Phase 1: inject sym_pair equalities (eq(x,y) when structurally identical)
+    ↓ Phase 2: LLM generates arithmetic invariants using formula-level transition sketch
+    ↓ Phase 3: multi-round IC3IA verification (round-1 fast, round-2 with helpers)
+    ↓ inject sound invariants as BTOR2 constraint statements
+constrained BTOR2
+    ↓
+pono --engine ic3ia → UNSAT in <0.3s
+```
+
+## Results (2026-06-17)
+
+8 software-origin benchmarks proved (6 from HWMCC 2024/2025, 2 from HWMCC 2020):
+
+| Circuit | Pattern | Key invariants |
+|---------|---------|----------------|
+| 93.c | linear counter | x+y==3*i |
+| 77.c | two-counter | x>=i, y>=450-i |
+| fib_05 | sym loop | eq(x,y) |
+| fib_23 | triangular sum | 2*sum<=i*(i-1) |
+| fib_30 | triangular sum | 2*c<=i*(i-1) |
+| fib_37 | counter bound | x<=n, m<=x |
+| paper_v3 | chasing counter | x<=y, y>=x |
+| vcegar_QF_BV_ar | Fibonacci bound | b<=a |
+
+Preprocessing: 9–47s. IC3IA on constrained BTOR2: 0.02–0.3s (78–∞s baseline).
 
 ## External Resources
 
-- IPC protocol / schema: [`llm_worker/jsonl_protocol.py`](../llm_worker/jsonl_protocol.py) — stable JSONL request/response protocol (the old `ic3_frame_v1_integration.md` spec doc was deleted in the v2 cleanup; the schema now lives in code)
 - Architecture: [`docs/ARCHITECTURE.md`](ARCHITECTURE.md)
-- Doc index: [`docs/DOC_INDEX.md`](DOC_INDEX.md)
-- Active plan: [`docs/plans/semantic_invariant_injection_v1_plan.md`](plans/semantic_invariant_injection_v1_plan.md)
-- Handoff: [`docs/HANDOFF_CURRENT_STATE.md`](HANDOFF_CURRENT_STATE.md)
-- LLM sidecar: [`llm_worker/README.md`](../llm_worker/README.md)
+- Active plan: [`docs/plan.md`](plan.md)
+- Handoff state: [`docs/HANDOFF_CURRENT_STATE.md`](HANDOFF_CURRENT_STATE.md)
 - Upstream Pono: https://github.com/stanford-centaur/pono

@@ -29,20 +29,31 @@
 - Exhaustive HWMCC 2020/2024/2025 BV scan: ~900 benchmarks
 - Secondary BFS bug fix; `property_desc` truncation; safety filter
 
-## Current Results: All 6 Software-Origin Benchmarks
+## Current Results: 8 Software-Origin Benchmarks
 
-All 6 HWMCC software-origin benchmarks proved UNSAT:
+8 HWMCC software-origin benchmarks proved UNSAT:
+
+**HWMCC 2024/2025 (arithmetic circuits):**
 
 | Benchmark | Total time | Key invariants injected |
 |-----------|-----------|------------------------|
-| 93.c      | ~16s      | `x+y==3*i`, `i<=n` |
+| 93.c      | ~20s      | `x+y==3*i`, `i<=n` |
 | 77.c      | ~9s       | `x>=i`, `y>=450-i` |
-| fib_05    | ~12s      | `eq(x,y)` (sym_pair) |
-| fib_23    | ~28s      | `i<=n`, `2*sum<=i*(i-1)` |
-| fib_30    | ~29s      | `i<=n`, `2*c<=i*(i-1)` |
-| fib_37    | ~8s       | `x<=n`, `m<=x` |
+| fib_05    | ~24s      | `eq(x,y)` (sym_pair) |
+| fib_23    | ~33s      | `i<=n`, `2*sum<=i*(i-1)` |
+| fib_30    | ~30–47s   | `i<=n`, `2*c<=i*(i-1)` |
+| fib_37    | ~9s       | `x<=n`, `m<=x` |
 
-pono IC3IA on constrained BTOR2: 0.02–0.2s (down from 78–∞s baseline).
+**HWMCC 2020 (goel benchmarks, new):**
+
+| Benchmark | Total time | Key invariants injected |
+|-----------|-----------|------------------------|
+| paper_v3  | ~15s      | `x<=y`, `y>=x` |
+| vcegar_QF_BV_ar | ~30s | `b<=a` (Fibonacci bound) |
+
+pono IC3IA on constrained BTOR2: 0.02–0.3s (down from 78–∞s baseline).
+
+**Not helped** (complex state machines / heap ops): vis_arrays_buf_bug, h_RCU — LLM generates only const-bound candidates (auto-filtered).
 
 ## Next Steps
 
