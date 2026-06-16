@@ -17,6 +17,7 @@ from __future__ import annotations
 import os
 import re
 import subprocess
+import sys
 import tempfile
 from typing import Dict, List, Optional, Tuple
 
@@ -30,6 +31,9 @@ from btor2_reader import BTOR2Info, parse_btor2
 _C_IDENT = re.compile(r'^[a-z_][a-z0-9_]*$', re.IGNORECASE)
 _BAD_PREFIXES = ('state', 'v1_buf', 'v2_buf', 'reset0', 'valid', 'ap_', 'pc[')
 _BAD_CHARS = ('!', '{', '(', '`', '.')
+_BAD_PATTERNS = (
+    '__',   # Verilog hierarchy flattening: module__submodule
+)
 
 
 def detect_software_origin(info: BTOR2Info) -> bool:
@@ -37,7 +41,8 @@ def detect_software_origin(info: BTOR2Info) -> bool:
     Return True if circuit likely originated from a C program:
     - At least 2 state variables with short, clean C-identifier names
     - No HLS-generated prefixes (u1., ap_CS_fsm, etc.)
-    - Names like i, n, x, y, sum, a, b, counter
+    - No Verilog hierarchy names (double underscore: module__submodule)
+    - Names like i, n, x, y, sum, a, b, counter (short, single-level)
     """
     clean = []
     for sv in info.states:
@@ -46,9 +51,11 @@ def detect_software_origin(info: BTOR2Info) -> bool:
             continue
         if any(c in name for c in _BAD_CHARS):
             continue
+        if any(p in name for p in _BAD_PATTERNS):
+            continue
         if any(name.startswith(p) for p in _BAD_PREFIXES):
             continue
-        if _C_IDENT.match(name) and len(name) <= 20:
+        if _C_IDENT.match(name) and len(name) <= 12:
             clean.append(sv)
     return len(clean) >= 2
 
@@ -62,9 +69,11 @@ def get_software_vars(info: BTOR2Info):
             continue
         if any(c in name for c in _BAD_CHARS):
             continue
+        if any(p in name for p in _BAD_PATTERNS):
+            continue
         if any(name.startswith(p) for p in _BAD_PREFIXES):
             continue
-        if _C_IDENT.match(name) and len(name) <= 20:
+        if _C_IDENT.match(name) and len(name) <= 12:
             result.append(sv)
     return result
 
@@ -142,10 +151,15 @@ def build_software_prompt(request: dict, info: BTOR2Info) -> str:
         "  2. PRESERVED by every transition step",
         "  3. Expressed over the state variables listed above",
         "",
+        "CRITICAL RULE: NEVER use division in invariants. Use multiplication equivalents:",
+        "  WRONG: sum == i*(i-1)/2",
+        "  RIGHT: mul(const(2), sum) == mul(i, sub(i, const(1)))  [i.e. 2*sum == i*(i-1)]",
+        "",
         "Think about relationships between variables that hold throughout the loop:",
         "  - Linear combinations (e.g., x + y == 3 * i)",
         "  - Counter bounds (e.g., i <= n)",
-        "  - Conservation laws (e.g., sum == i*(i-1)/2)",
+        "  - Triangular sums: 2*sum == i*(i-1)  NOT sum == i*(i-1)/2",
+        "  - Equality invariants (e.g., x == y when both updated identically)",
         "  - Phase conditions (e.g., x == 2*i when mode==0)",
         "",
         "OUTPUT FORMAT — return a single JSON object:",
@@ -429,7 +443,7 @@ def inject_as_constraints(asts: List[dict], btor2_path: str) -> Tuple[Optional[s
     try:
         info = parse_btor2(btor2_path)
     except Exception as e:
-        print(f"[arith] inject: parse error: {e}")
+        print(f"[arith] inject: parse error: {e}", file=sys.stderr)
         return None, 0
 
     with open(btor2_path) as f:
@@ -443,7 +457,7 @@ def inject_as_constraints(asts: List[dict], btor2_path: str) -> Tuple[Optional[s
             builder.emit_constraint(pred_ln)
             injected += 1
         except Exception as e:
-            print(f"[arith] inject: AST→BTOR2 error for {ast}: {e}")
+            print(f"[arith] inject: AST→BTOR2 error for {ast}: {e}", file=sys.stderr)
 
     if injected == 0:
         return None, 0
@@ -466,23 +480,96 @@ def _ast_has_arithmetic(ast: dict) -> bool:
     return any(_ast_has_arithmetic(a) for a in ast.get("args", []))
 
 
+def _is_proof_fast(btor2_path: str, timeout_s: int = 3) -> bool:
+    """Return True if IC3IA proves the circuit within timeout_s seconds."""
+    try:
+        r = subprocess.run(
+            [PONO_BIN, '-e', 'ic3ia', '-k', '500', btor2_path],
+            capture_output=True, text=True, timeout=timeout_s + 1
+        )
+        result = r.stdout.strip().split('\n')[0] if r.stdout.strip() else ""
+        return result == 'unsat'
+    except (subprocess.TimeoutExpired, Exception):
+        return False
+
+
+def _has_accumulator_pattern(info: BTOR2Info, sw_vars) -> bool:
+    """
+    Return True if any software variable accumulates another software variable.
+    Pattern: X's next-expr contains add(A, B) where B is another sw var.
+    Example: sum' = sum + i — sum accumulates i, so triangular invariants exist.
+    """
+    sw_linenos = {sv.lineno for sv in sw_vars}
+    for sv in sw_vars:
+        next_ln = info.next_map.get(sv.ref)
+        if next_ln is None:
+            continue
+        visited: set = set()
+        stack = [next_ln]
+        while stack:
+            ln = stack.pop()
+            if ln in visited:
+                continue
+            visited.add(ln)
+            if info.ops.get(ln) == "add":
+                all_deps = info.deps.get(ln, [])
+                for arg in (all_deps[1:] if all_deps else []):
+                    if arg in sw_linenos and arg != sv.lineno:
+                        return True
+            for dep in info.deps.get(ln, []):
+                if dep not in visited:
+                    stack.append(dep)
+    return False
+
+
+def _build_retry_prompt(req: dict, info: BTOR2Info) -> str:
+    """Prompt for retry when only simple bounds were found on first LLM attempt."""
+    base = build_software_prompt(req, info)
+    hint = "\n".join([
+        "",
+        "=== RETRY: PREVIOUS ATTEMPT FOUND ONLY SIMPLE BOUNDS ===",
+        "Simple comparison invariants were verified but are INSUFFICIENT.",
+        "The model checker still times out — a stronger arithmetic invariant is needed.",
+        "",
+        "FIND AN INVARIANT USING MULTIPLICATION.",
+        "",
+        "KEY PATTERN: If a variable ACCUMULATES another variable each step:",
+        "  acc' = acc + counter  →  invariant: 2*acc == counter*(counter-1)",
+        "  Example: sum' = sum + i  →  2*sum == i*(i-1)",
+        "  Example:   c' = c + i   →  2*c == i*(i-1)",
+        "",
+        "Try the INEQUALITY version first (often easier for the verifier):",
+        "  {\"form\": \"ule\", \"args\": [",
+        "    {\"form\": \"mul\", \"args\": [{\"form\":\"const\",\"const\":\"2\",\"width\":W}, {\"form\":\"ref\",\"ref\":\"state_ACC\"}]},",
+        "    {\"form\": \"mul\", \"args\": [{\"form\":\"ref\",\"ref\":\"state_I\"}, {\"form\":\"sub\",\"args\":[{\"form\":\"ref\",\"ref\":\"state_I\"},{\"form\":\"const\",\"const\":\"1\",\"width\":W}]}]}",
+        "  ]}",
+        "  meaning: 2*acc <= i*(i-1)",
+        "",
+        "Generate ONLY candidates with mul in their predicate_ast.",
+        "=== END RETRY HINT ===",
+    ])
+    return base + hint
+
+
 def preprocess_software_benchmark(
     btor2_path: str,
     client,
     request: Optional[dict] = None,
-    timeout_s: int = 20,
+    timeout_s: int = 8,
 ) -> Tuple[str, int]:
     """
-    Full LLM-driven pre-processing for software-origin benchmarks.
+    Full pre-processing for software-origin benchmarks.
 
     1. Detect software origin (C-style variable names).
-    2. Build prompt and call LLM.
-    3. Verify each candidate via IC3IA (verify_invariant).
-    4. Inject sound invariants as BTOR2 `constraint` statements.
+    2. Inject structural sym-pair equalities (e.g. eq(x,y) for structurally equal vars).
+    3. Build LLM prompt and call LLM for arithmetic loop invariants.
+    4. Verify each LLM candidate via IC3IA (verify_invariant).
+    5. Inject all sound invariants as BTOR2 `constraint` statements.
 
     Returns (constrained_btor2_path, n_injected).
     If not software-origin or no sound invariants found, returns (btor2_path, 0).
     """
+    from btor2_reader import detect_symmetric_pairs, hot_refs_near_bad
     from invariant_prompt import INVARIANT_SYSTEM_PROMPT, parse_invariant_response
     try:
         info = parse_btor2(btor2_path)
@@ -497,6 +584,34 @@ def preprocess_software_benchmark(
     req.setdefault("benchmark", os.path.basename(btor2_path))
     req.setdefault("btor2_path", btor2_path)
 
+    sw_vars = get_software_vars(info)
+    sw_refs = [sv.ref for sv in sw_vars]
+
+    # Phase 1: inject structural sym-pair equalities before calling LLM.
+    # If two state vars have identical init values and identical transition
+    # dependency structure, eq(A,B) is inductive — inject it without LLM.
+    sound_asts: List[dict] = []
+    injected_sym_pairs: set = set()
+    try:
+        sym_pairs = detect_symmetric_pairs(info, sw_refs)
+        for ref_a, ref_b in sym_pairs:
+            eq_ast = {
+                "form": "eq",
+                "args": [{"form": "ref", "ref": ref_a}, {"form": "ref", "ref": ref_b}],
+            }
+            ok, reason = verify_invariant(eq_ast, btor2_path, timeout_s=timeout_s)
+            sym_a = next((sv.symbol for sv in sw_vars if sv.ref == ref_a), ref_a)
+            sym_b = next((sv.symbol for sv in sw_vars if sv.ref == ref_b), ref_b)
+            if ok:
+                print(f"[preprocess_sw] SOUND sym_pair eq({sym_a},{sym_b})", file=sys.stderr)
+                sound_asts.append(eq_ast)
+                injected_sym_pairs.add(frozenset([ref_a, ref_b]))
+            else:
+                print(f"[preprocess_sw] sym_pair eq({sym_a},{sym_b}) rejected ({reason})", file=sys.stderr)
+    except Exception as e:
+        print(f"[preprocess_sw] sym_pair detection failed: {e}", file=sys.stderr)
+
+    # Phase 2: call LLM for arithmetic invariants
     prompt = build_software_prompt(req, info)
     try:
         text, tokens, ms = client.call(
@@ -506,16 +621,34 @@ def preprocess_software_benchmark(
             max_tokens=2048,
         )
     except Exception as e:
-        print(f"[preprocess_sw] LLM call failed: {e}")
-        return btor2_path, 0
+        print(f"[preprocess_sw] LLM call failed: {e}", file=sys.stderr)
+        if not sound_asts:
+            return btor2_path, 0
+        # Fall through — inject sym_pairs even if LLM failed
+        text = '{"candidates":[]}'
 
+    # Phase 3: verify LLM candidates in two rounds.
+    # Round 1: verify each candidate against original circuit (fast timeout).
+    # Round 2: for those that timed out, retry with all Round-1 sound invariants
+    #          injected as constraints (strengthened circuit). This handles
+    #          invariants that are only verifiable conditioned on simpler invariants
+    #          (e.g., 2*sum==i*(i-1) is only tractable for IC3IA when i<=n is known).
     candidates = parse_invariant_response(text)
-    sound_asts = []
+    r1_candidates = []  # (ast, expr) pairs to verify in round 1
     for c in candidates:
         ast = c.get("predicate_ast")
         expr = c.get("verilog_expr", "?")
         if not ast:
             continue
+        # Skip eq(A,B) pairs already covered by sym_pair injection
+        if ast.get("form") == "eq":
+            args = ast.get("args", [])
+            if (len(args) == 2 and args[0].get("form") == "ref"
+                    and args[1].get("form") == "ref"):
+                pair = frozenset([args[0]["ref"], args[1]["ref"]])
+                if pair in injected_sym_pairs:
+                    print(f"[preprocess_sw] skipping duplicate sym_pair {expr!r}", file=sys.stderr)
+                    continue
         # Only inject predicates with arithmetic content (add/mul/sub).
         # Pure ref-ref comparisons (i<=n) are also kept as they're cheap structural bounds.
         # Skip ref-const comparisons (n==40, i<=40) — they add IC3IA predicate dimensions
@@ -525,20 +658,152 @@ def preprocess_software_benchmark(
         is_ref_ref = (len(args) == 2 and
                       all(a.get("form") == "ref" for a in args))
         if not (has_arith or is_ref_ref):
-            print(f"[preprocess_sw] skipping const-bound {expr!r}")
+            print(f"[preprocess_sw] skipping const-bound {expr!r}", file=sys.stderr)
             continue
-        ok, reason = verify_invariant(ast, btor2_path, timeout_s=timeout_s)
+        r1_candidates.append((ast, expr))
+
+    # Round 1: quick scan (short timeout) to find easy invariants.
+    # Many candidates are quick to verify (<1s); expensive ones time out fast.
+    r1_timeout = min(4, timeout_s)
+    r2_retry: List[Tuple[dict, str]] = []
+    for ast, expr in r1_candidates:
+        ok, reason = verify_invariant(ast, btor2_path, timeout_s=r1_timeout)
         if ok:
-            print(f"[preprocess_sw] SOUND {expr!r}")
+            print(f"[preprocess_sw] SOUND {expr!r}", file=sys.stderr)
             sound_asts.append(ast)
+        elif "timeout" in reason:
+            print(f"[preprocess_sw] timeout → round2 retry: {expr!r}", file=sys.stderr)
+            r2_retry.append((ast, expr))
+            # For eq(A,B) that timed out: also try ule(A,B) which is weaker but verifiable.
+            if ast.get("form") == "eq" and len(ast.get("args", [])) == 2:
+                ule_ast = {"form": "ule", "args": ast["args"]}
+                r2_retry.append((ule_ast, f"{expr} [→ ule fallback]"))
         else:
-            print(f"[preprocess_sw] rejected {expr!r} ({reason})")
+            print(f"[preprocess_sw] rejected {expr!r} ({reason})", file=sys.stderr)
+
+    # Round 2: verify timed-out candidates with all round-1 sound invariants as helpers.
+    # Sound invariants hold at all reachable states, so injecting them doesn't change
+    # the reachable set — verification against the strengthened circuit is still sound.
+    if r2_retry and sound_asts:
+        helper_path, _ = inject_as_constraints(sound_asts, btor2_path)
+        if helper_path:
+            for ast, expr in r2_retry:
+                ok, reason = verify_invariant(ast, helper_path, timeout_s=timeout_s + 2)
+                if ok:
+                    print(f"[preprocess_sw] SOUND (r2+helpers) {expr!r}", file=sys.stderr)
+                    sound_asts.append(ast)
+                else:
+                    print(f"[preprocess_sw] rejected (r2) {expr!r} ({reason})", file=sys.stderr)
+            os.unlink(helper_path)
 
     if not sound_asts:
         return btor2_path, 0
 
+    # Deduplicate sound ASTs by canonical JSON representation
+    import json
+    seen_ast_keys: set = set()
+    deduped: List[dict] = []
+    for ast in sound_asts:
+        key = json.dumps(ast, sort_keys=True)
+        if key not in seen_ast_keys:
+            seen_ast_keys.add(key)
+            deduped.append(ast)
+    if len(deduped) < len(sound_asts):
+        print(f"[preprocess_sw] deduplicated {len(sound_asts)} → {len(deduped)} constraints",
+              file=sys.stderr)
+    sound_asts = deduped
+
+    # -----------------------------------------------------------------------
+    # Retry: if no arithmetic invariants found but the circuit has an
+    # accumulator pattern (X' = X + Y where Y is another sw var), the LLM
+    # likely generated only simple bounds. Retry with an explicit hint.
+    # -----------------------------------------------------------------------
+    _MAX_LLM_RETRIES = 2
+    for _retry in range(_MAX_LLM_RETRIES):
+        if any(_ast_has_arithmetic(a) for a in sound_asts):
+            break
+        if not _has_accumulator_pattern(info, sw_vars):
+            break
+        # Probe: if current sound_asts already prove the circuit quickly, skip.
+        # This avoids a wasted retry for circuits like fib_05 where sym_pair
+        # equalities are sufficient even though they're not "arithmetic".
+        if sound_asts:
+            _probe_path, _ = inject_as_constraints(sound_asts, btor2_path)
+            if _probe_path:
+                _probe_fast = _is_proof_fast(_probe_path, timeout_s=3)
+                os.unlink(_probe_path)
+                if _probe_fast:
+                    break
+        print(f"[preprocess_sw] no arithmetic invariants; retry {_retry+1}/{_MAX_LLM_RETRIES}",
+              file=sys.stderr)
+        try:
+            retry_text, _, _ = client.call(
+                _build_retry_prompt(req, info),
+                system_prompt=INVARIANT_SYSTEM_PROMPT,
+                reasoning_effort=req.get("reasoning_effort", "none"),
+                max_tokens=2048,
+            )
+        except Exception as e:
+            print(f"[preprocess_sw] LLM retry failed: {e}", file=sys.stderr)
+            break
+        retry_cands = parse_invariant_response(retry_text)
+        retry_arith: List[Tuple[dict, str]] = [
+            (c["predicate_ast"], c.get("verilog_expr", "?"))
+            for c in retry_cands
+            if c.get("predicate_ast") and _ast_has_arithmetic(c["predicate_ast"])
+        ]
+        if not retry_arith:
+            print(f"[preprocess_sw] retry {_retry+1}: LLM generated no arithmetic candidates",
+                  file=sys.stderr)
+            continue
+
+        # Round 1: verify with existing sound_asts as helpers
+        retry_helper_path: Optional[str] = None
+        if sound_asts:
+            retry_helper_path, _ = inject_as_constraints(sound_asts, btor2_path)
+
+        r2_retry_new: List[Tuple[dict, str]] = []
+        new_sound: List[dict] = []
+        for ast, expr in retry_arith:
+            target = retry_helper_path or btor2_path
+            ok, reason = verify_invariant(ast, target, timeout_s=r1_timeout)
+            if ok:
+                print(f"[preprocess_sw] SOUND (retry-r1) {expr!r}", file=sys.stderr)
+                new_sound.append(ast)
+            elif "timeout" in reason:
+                r2_retry_new.append((ast, expr))
+                if ast.get("form") == "eq" and len(ast.get("args", [])) == 2:
+                    ule_ast = {"form": "ule", "args": ast["args"]}
+                    r2_retry_new.append((ule_ast, f"{expr} [→ ule fallback]"))
+
+        # Round 2: timed-out candidates with expanded helper set
+        if r2_retry_new:
+            combined = list(sound_asts) + new_sound
+            r2h, _ = inject_as_constraints(combined, btor2_path) if combined else (None, 0)
+            if r2h:
+                for ast, expr in r2_retry_new:
+                    ok, reason = verify_invariant(ast, r2h, timeout_s=timeout_s + 2)
+                    if ok:
+                        print(f"[preprocess_sw] SOUND (retry-r2) {expr!r}", file=sys.stderr)
+                        new_sound.append(ast)
+                os.unlink(r2h)
+
+        if retry_helper_path:
+            os.unlink(retry_helper_path)
+
+        if new_sound:
+            sound_asts.extend(new_sound)
+            seen_r: set = set()
+            deduped_r: List[dict] = []
+            for ast in sound_asts:
+                k = json.dumps(ast, sort_keys=True)
+                if k not in seen_r:
+                    seen_r.add(k)
+                    deduped_r.append(ast)
+            sound_asts = deduped_r
+
     constrained_path, n = inject_as_constraints(sound_asts, btor2_path)
     if constrained_path:
-        print(f"[preprocess_sw] injected {n} constraints → {constrained_path}")
+        print(f"[preprocess_sw] injected {n} constraints → {constrained_path}", file=sys.stderr)
         return constrained_path, n
     return btor2_path, 0
