@@ -1555,7 +1555,10 @@ void IC3Base::init_llm_symbol_registry(
 {
   if (!llm_gen_) return;
   unordered_map<string, SymbolRegistryEntry> registry;
-  for (const auto & sv : ts_.statevars()) {
+  // Use prover_interface_ts() so that IC3IA (which has an abstract ts_ with no
+  // state vars yet) uses its concrete ts (conc_ts_) that's already populated.
+  const TransitionSystem & src_ts = prover_interface_ts();
+  for (const auto & sv : src_ts.statevars()) {
     string name = simplify_cti_literal(sv);
     SymbolRegistryEntry e;
     e.kind = "state";
@@ -1572,7 +1575,7 @@ void IC3Base::init_llm_symbol_registry(
     if (it != verilog_map.end()) e.verilog = it->second;
     registry[name] = e;
   }
-  for (const auto & iv : ts_.inputvars()) {
+  for (const auto & iv : src_ts.inputvars()) {
     string name = simplify_cti_literal(iv);
     SymbolRegistryEntry e;
     e.kind = "input";

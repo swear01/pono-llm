@@ -423,6 +423,16 @@ static Term build_node_term(const SmtSolver & solver,
     return solver->make_term(op, children);
   }
 
+  if (node.form == "add" || node.form == "sub" || node.form == "mul") {
+    if (node.args.size() != 2) throw runtime_error("add/sub/mul needs 2 args");
+    PrimOp op = BVAdd;
+    if (node.form == "sub") op = BVSub;
+    if (node.form == "mul") op = BVMul;
+    Term lhs = build_node_term(solver, ts, node.args[0]);
+    Term rhs = build_node_term(solver, ts, node.args[1]);
+    return solver->make_term(op, lhs, rhs);
+  }
+
   if (node.form == "bvand" || node.form == "bvor" || node.form == "bvxor") {
     if (node.args.size() != 2) throw runtime_error("bv op needs 2 args");
     PrimOp op = BVAnd;

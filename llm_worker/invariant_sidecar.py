@@ -16,6 +16,13 @@ from btor2_reader import (
     build_transition_sketch,
     detect_symmetric_pairs,
 )
+from invariant_arith import (
+    detect_software_origin,
+    build_software_prompt,
+    verify_invariant,
+    inject_as_constraints,
+    _ast_has_arithmetic,
+)
 from invariant_prompt import (
     INVARIANT_SYSTEM_PROMPT,
     build_stage0_prompt,
@@ -143,16 +150,89 @@ def _filter_candidates(candidates: list, label: str, request_id: str) -> list:
     return safe
 
 
+def _handle_software_origin_stage0(
+    client: LLMClient, request: dict, info: "BTOR2Info", request_id: str
+) -> tuple[list, int, float]:
+    """
+    Software-origin path: LLM generates arithmetic loop invariants,
+    each candidate is verified sound via verify_invariant.
+
+    Sound arithmetic invariants are injected as BTOR2 constraints into a temp
+    file and written to request["btor2_path"].constrained (for external runners).
+    Returns (verified_candidates, tokens, latency_ms).
+    """
+    btor2_path = request.get("btor2_path", "")
+    user_prompt = build_software_prompt(request, info)
+    text, tokens, latency_ms = _call_llm(client, user_prompt, request)
+    raw = parse_invariant_response(text)
+
+    verified = []
+    sound_asts = []
+    for c in raw:
+        ast = c.get("predicate_ast")
+        expr = c.get("verilog_expr", "?")
+        if not ast:
+            continue
+        # Skip pure const-bound constraints (ref-const comparisons) — they slow IC3IA
+        args = ast.get("args", [])
+        has_arith = _ast_has_arithmetic(ast)
+        is_ref_ref = len(args) == 2 and all(a.get("form") == "ref" for a in args)
+        if not (has_arith or is_ref_ref):
+            print(f"[inv_sidecar] sw_stage0 {request_id}: skip const-bound {expr!r}")
+            continue
+        ok, reason = verify_invariant(ast, btor2_path, timeout_s=20)
+        if ok:
+            print(f"[inv_sidecar] sw_stage0 {request_id}: SOUND {expr!r}")
+            verified.append(c)
+            sound_asts.append(ast)
+        else:
+            print(f"[inv_sidecar] sw_stage0 {request_id}: rejected {expr!r} ({reason})")
+
+    # Write constrained BTOR2 for external pre-processing runners
+    if sound_asts:
+        constrained_path, n = inject_as_constraints(sound_asts, btor2_path)
+        if constrained_path:
+            marker = btor2_path + ".constrained"
+            try:
+                import shutil
+                shutil.copy2(constrained_path, marker)
+                print(f"[inv_sidecar] sw_stage0 {request_id}: "
+                      f"constrained BTOR2 → {marker}")
+            except Exception:
+                pass
+
+    return verified, tokens, latency_ms
+
+
 def handle_stage0_request(client: LLMClient, request: dict) -> dict:
     """
     Pre-flight invariant generation.
 
-    Always injects eq(A,B) for each structural symmetric pair (deterministic, no LLM
-    randomness for this critical class). Also asks LLM for additional ref-ref ordering
-    invariants (filtered to exclude const-bound hallucinations).
+    For software-origin circuits (C-derived, clean variable names like i,n,x,y):
+      LLM generates arithmetic loop invariants; each is verified sound before injection.
+
+    For hardware circuits with structural symmetric pairs:
+      Always injects eq(A,B) for each sym_pair (deterministic); LLM for extras.
     """
     request_id = request.get("request_id", "unknown")
     enriched = _enrich_request_with_btor2(request)
+
+    # Check for software-origin first (C-derived circuits with preserved names)
+    btor2_path = request.get("btor2_path", "")
+    info = _load_btor2(btor2_path)
+    if info and detect_software_origin(info) and not enriched.get("symmetric_pairs"):
+        sw_candidates, tokens, latency_ms = _handle_software_origin_stage0(
+            client, request, info, request_id
+        )
+        print(f"[inv_sidecar] stage0 {request_id}: software-origin, "
+              f"{len(sw_candidates)} sound candidates ({tokens} tokens, {latency_ms:.0f}ms)")
+        return {
+            "type": "ic3_invariant_response",
+            "request_id": request_id,
+            "candidates": sw_candidates,
+            "_token_count": tokens,
+            "_latency_ms": latency_ms,
+        }
 
     # Deterministic: eq(A,B) for each structural symmetric pair (expression-hash verified)
     sym_pairs = enriched.get("symmetric_pairs", [])
