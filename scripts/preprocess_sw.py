@@ -32,8 +32,8 @@ from llm_client import create_llm_client
 def main() -> None:
     parser = argparse.ArgumentParser(description="Pre-process software-origin BTOR2 with LLM invariants")
     parser.add_argument("btor2", help="Path to BTOR2 file")
-    parser.add_argument("--timeout-verify", type=int, default=20,
-                        help="Per-candidate verification timeout in seconds (default: 20)")
+    parser.add_argument("--timeout-verify", type=int, default=8,
+                        help="Per-candidate verification timeout in seconds (default: 8)")
     args = parser.parse_args()
 
     load_env()

@@ -1,3 +1,8 @@
+> Archived: 2026-06-17
+> Reason: Legacy pre-v1 bug analysis (cube_subset code path deleted)
+> Replacement: none
+> Status: historical only; do not use as active truth.
+
 > **HISTORICAL — legacy `cube_subset` bugs (2026-06-03).** Code path **will be deleted** with IC3 Frame v1.  
 > See [`ARCHITECTURE.md`](ARCHITECTURE.md). Below documents pre-v1 failures.
 

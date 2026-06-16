@@ -1,27 +1,24 @@
 # Roadmap
 
-## Backlog
-
-- **Stage 2 full trigger logic** — T1/T2/T3 monitors in `ic3base.cpp`
-- **Stage 3** — cooldown loop after Stage 2 injection
-- **X1–X4 lemma expressiveness expansion** — see `docs/plans/lemma_expressiveness_roadmap.md`; gated on Phase Q data
-- Python smoke script: `scripts/smoke_semantic_invariant.sh`
-- OpenRouter v4-flash provider policy — `docs/plans/openrouter_provider_policy.md`
-
 ## Recently Done
 
-- **Exhaustive HWMCC scan**: ~900 BV benchmarks, fib_05 is the only Class-A (2026-06)
+- **General method achieved (2026-06-17)**: All 6 HWMCC software-origin benchmarks proved via BTOR2 constraint injection
+- **Multi-round verification**: round-1 quick scan + round-2 with helper constraints
+- **ule fallback for eq candidates**: when eq(A,B) times out, auto-try ule(A,B)
+- **Deduplication**: sound ASTs deduplicated by canonical JSON key before injection
+- **Formula-rich transition sketch**: `_decode_expr()` renders actual formulas (c' = (i>=n? c : c+i))
+- **Output-label extraction**: unnamed states in fib_30/fib_37 now detected via `output` BTOR2 statements
+- **Sym_pair injection before LLM**: fib_05 eq(x,y) injected deterministically without LLM
+- **LLM stdout fixed**: `[llm]` and `[preprocess_sw]` messages now go to stderr only
+- **Exhaustive HWMCC scan**: ~900 BV benchmarks, 6 software-origin benchmarks found
 - Stage 0 reliability hardening: deterministic sym_pair injection, LLM gated on sym_pairs
-- Stage 2 gating: sym_pairs AND cti_count>0 required; skips T2_plateau (0 CTI) case
-- `_expr_canonical_hash()`: structural expression matching replaces dep-set matching for sym_pairs
-- Secondary BFS bug fix: empty t_visited prevents primary phase blocking secondary exploration
-- `property_desc` truncation (200 chars) — prevents HTTP 413 on 2.3MB+ circuit formulas
-- `_is_safe_candidate()` safety filter: ref-ref only, rejects const bounds and arithmetic
-- Q5 diagnosis: secondary hot vars, symmetry detection, fib_05 Class-A result
-- Stage 0 + Stage 2 E2E integration tests (live DeepSeek + request_id parsing)
-- HWMCC benchmark runner + predicate coercion for 1-bit BVs
-- ProofGoalQueue UAF fix
-- JSONL IPC protocol (stable)
-- CTI digest (`build_cti_digest`) + frame snapshot serialization
-- Symbol registry + `benchmark_context.json` output
-- Q2/Q3/Q4 code deleted; sidecar cleaned up as Stage 0/2 shell
+- Q5 diagnosis: secondary hot vars, symmetry detection, fib_05 Class-A result (reactive approach)
+
+## Backlog
+
+- **Reliability improvement**: retry loop if few sound invariants found
+- **Parallel verification**: concurrent `verify_invariant` calls to reduce wall time
+- **Broader benchmark scan**: sv-benchmarks, HWMCC 2020 non-BV, custom circuits
+- **Paper/report**: method, results, comparison with baseline
+- Stage 2 full trigger logic (T1/T2/T3 monitors) — low priority given new pre-processing wins
+- OpenRouter provider policy documentation

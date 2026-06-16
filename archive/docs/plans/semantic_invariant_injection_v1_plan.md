@@ -1,6 +1,11 @@
+> Archived: 2026-06-17
+> Reason: Superseded by general pre-processing method (BTOR2 constraint injection)
+> Replacement: docs/HANDOFF_CURRENT_STATE.md
+> Status: historical only; do not use as active truth.
+
 # LLM Semantic Guidance for IC3 — Implementation Plan v2
 
-**狀態：** 🟢 Active  
+**狀態：** 🔴 Archived (superseded 2026-06-17)  
 **日期：** 2026-06-14  
 **取代：** Q2/Q3/Q4 reactive per-CTI blocking（0% accept，已刪除）
 

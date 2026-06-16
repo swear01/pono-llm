@@ -88,6 +88,8 @@ def parse_btor2(path: str) -> BTOR2Info:
     raw_deps: Dict[int, List[int]] = {}
     # state lineno → init expr lineno
     init_map: Dict[int, int] = {}
+    # state lineno → name extracted from output statements (for unnamed states)
+    output_labels: Dict[int, str] = {}
 
     with open(path) as f:
         for raw_line in f:
@@ -182,10 +184,21 @@ def parse_btor2(path: str) -> BTOR2Info:
                 except ValueError:
                     pass
 
+            # Output: N output REF [NAME]
+            # When states lack explicit symbols, Yosys may record names via output stmts.
+            elif op == "output" and len(parts) >= 4:
+                try:
+                    ref_ln = int(parts[2])
+                    name = parts[3]
+                    if _is_meaningful_symbol(name):
+                        output_labels[ref_ln] = name
+                except (ValueError, IndexError):
+                    pass
+
             # Other ops: record deps for COI BFS.
             # ops like slice/sext/uext have literal integer args that are NOT
             # node references — only their first data argument is a node ref.
-            elif op not in ("sort", "constraint", "output", "justice", "fair"):
+            elif op not in ("sort", "constraint", "justice", "fair"):
                 info.ops[lineno] = op
                 arg_linenos = []
                 # slice N SORT EXPR HIGH LOW  — only EXPR (parts[3]) is a node ref
@@ -200,6 +213,11 @@ def parse_btor2(path: str) -> BTOR2Info:
                         if ln is not None and ln != lineno:
                             arg_linenos.append(ln)
                 raw_deps[lineno] = arg_linenos
+
+    # Apply output labels to unnamed states (Yosys sometimes encodes names this way)
+    for sv in info.states:
+        if sv.symbol is None and sv.lineno in output_labels:
+            sv.symbol = output_labels[sv.lineno]
 
     # Resolve init values for states
     lineno_to_const: Dict[int, str] = {}
@@ -513,60 +531,139 @@ def detect_symmetric_pairs(info: BTOR2Info, refs: List[str]) -> List[Tuple[str, 
     return confirmed
 
 
+def _decode_expr(
+    info: "BTOR2Info",
+    ln: int,
+    input_by_ln: Dict[int, "InputVar"],
+    state_by_ln: Dict[int, "StateVar"],
+    depth: int = 0,
+    max_depth: int = 6,
+    _cache: Optional[Dict] = None,
+) -> str:
+    """
+    Recursively decode a BTOR2 expression node into a human-readable formula string.
+    Returns a simplified C-like expression.
+
+    BTOR2 convention: for all non-trivial ops, deps[0] is the sort node (bitvec/array).
+    Data args start at deps[1]. For ite: deps[1]=cond, deps[2]=then, deps[3]=else.
+    """
+    if _cache is None:
+        _cache = {}
+    if ln in _cache:
+        return _cache[ln]
+    if depth > max_depth:
+        return "..."
+
+    if ln in input_by_ln:
+        r = input_by_ln[ln].symbol
+        _cache[ln] = r
+        return r
+    if ln in state_by_ln:
+        sv = state_by_ln[ln]
+        r = sv.symbol or sv.ref
+        _cache[ln] = r
+        return r
+
+    op = info.ops.get(ln)
+
+    # Const: look up in info.consts (binary string) and convert to decimal
+    if op in ("const", "constd") or (op is None and ln in info.consts):
+        raw = info.consts.get(ln, "")
+        if raw:
+            try:
+                val = int(raw, 2) if set(raw) <= {'0', '1'} else int(raw)
+                result = str(val)
+            except ValueError:
+                result = raw
+        else:
+            result = f"const{ln}"
+        _cache[ln] = result
+        return result
+
+    if op is None:
+        r = f"node{ln}"
+        _cache[ln] = r
+        return r
+
+    # BTOR2 dep layout differs by op:
+    # - uext/sext/slice: parser only records the data expr (not sort) → data_args = all_deps
+    # - all other ops: parser records sort+all_data → data_args = all_deps[1:] (skip sort)
+    all_deps = info.deps.get(ln, [])
+    if op in ("uext", "sext", "slice"):
+        data_args = all_deps  # no sort in deps for these (parser handles specially)
+    else:
+        data_args = all_deps[1:] if all_deps else []  # skip sort arg
+
+    def mk(**kw2: int) -> str:
+        return ""  # not used
+
+    def child(i: int) -> str:
+        if i >= len(data_args):
+            return "?"
+        return _decode_expr(info, data_args[i], input_by_ln, state_by_ln,
+                            depth + 1, max_depth, _cache)
+
+    result: str
+    if op == "ite" and len(data_args) >= 3:
+        cond = child(0)
+        then_ = child(1)
+        else_ = child(2)
+        if cond in ("rst", "reset") and then_ == "0":
+            result = else_
+        else:
+            result = f"({cond} ? {then_} : {else_})"
+    elif op == "add" and len(data_args) >= 2:
+        result = f"({child(0)} + {child(1)})"
+    elif op == "sub" and len(data_args) >= 2:
+        result = f"({child(0)} - {child(1)})"
+    elif op == "mul" and len(data_args) >= 2:
+        result = f"({child(0)} * {child(1)})"
+    elif op in ("uext", "sext") and data_args:
+        result = child(0)  # extension invisible at high level
+    elif op == "not" and data_args:
+        result = f"!{child(0)}"
+    elif op in ("and", "bvand") and len(data_args) >= 2:
+        result = f"({child(0)} && {child(1)})"
+    elif op in ("or", "bvor") and len(data_args) >= 2:
+        result = f"({child(0)} || {child(1)})"
+    elif op == "ult" and len(data_args) >= 2:
+        result = f"({child(0)} < {child(1)})"
+    elif op == "ulte" and len(data_args) >= 2:
+        result = f"({child(0)} <= {child(1)})"
+    elif op == "ugt" and len(data_args) >= 2:
+        result = f"({child(0)} > {child(1)})"
+    elif op == "ugte" and len(data_args) >= 2:
+        result = f"({child(0)} >= {child(1)})"
+    elif op in ("slt", "slte", "sgt", "sgte") and len(data_args) >= 2:
+        _ops = {"slt": "<s", "slte": "<=s", "sgt": ">s", "sgte": ">=s"}
+        result = f"({child(0)} {_ops[op]} {child(1)})"
+    elif op == "eq" and len(data_args) >= 2:
+        result = f"({child(0)} == {child(1)})"
+    elif op == "neq" and len(data_args) >= 2:
+        result = f"({child(0)} != {child(1)})"
+    elif op in ("const", "constd"):
+        result = info.consts.get(ln, f"const{ln}")
+    else:
+        shown = [child(i) for i in range(min(len(data_args), 4))]
+        result = f"{op}({', '.join(shown)})"
+
+    _cache[ln] = result
+    return result
+
+
 def build_transition_sketch(info: BTOR2Info, refs: List[str]) -> List[str]:
     """
     Build a readable transition sketch for hot state variables.
 
-    For each hot state variable, produces a line like:
-      a' = ite(i_reset, 0, a+1)
-      c' = depends on [state7, state8]
+    For each hot state variable, produces the actual formula like:
+      c' = (rst ? 0 : (i >= n ? c : (c + i)))
+      i' = (rst ? 0 : (i >= n ? i : (i + 1)))
 
-    Uses a BFS through the next-expression DAG to find all state/input
-    variables that influence the transition, avoiding false matches from
-    literal integer arguments (e.g. bit indices in slice).
-    Also appends symmetry annotations when pairs of states have identical
-    initial values and transition dependencies.
+    Falls back to dependency list if formula decoding fails.
     """
     lines = []
     input_by_ln: Dict[int, InputVar] = {iv.lineno: iv for iv in info.inputs}
     state_by_ln: Dict[int, StateVar] = {sv.lineno: sv for sv in info.states}
-    const_by_ln: Dict[int, str] = {}
-
-    # Build const map from node_sketch if populated, else from deps (const/constd nodes)
-    for ln, sk in info.node_sketch.items():
-        if sk.lstrip("-").isdigit():
-            const_by_ln[ln] = sk
-
-    def _bfs_deps(start_ln: int, self_ln: int) -> Tuple[List[str], List[str]]:
-        """BFS from start_ln; return (input_deps, state_deps) avoiding self_ln."""
-        visited: Set[int] = set()
-        frontier: Set[int] = {start_ln}
-        inp_deps: List[str] = []
-        st_deps: List[str] = []
-        seen: Set[int] = set()
-
-        while frontier:
-            nxt: Set[int] = set()
-            for n in frontier:
-                if n in visited:
-                    continue
-                visited.add(n)
-                if n in input_by_ln:
-                    if n not in seen:
-                        inp_deps.append(input_by_ln[n].symbol)
-                        seen.add(n)
-                elif n in state_by_ln:
-                    if n not in seen and n != self_ln:
-                        sv = state_by_ln[n]
-                        st_deps.append(sv.symbol or sv.ref)
-                        seen.add(n)
-                    # Do NOT recurse into state's own transitions
-                else:
-                    for d in info.deps.get(n, []):
-                        if d not in visited:
-                            nxt.add(d)
-            frontier = nxt
-        return inp_deps, st_deps
 
     for ref in refs:
         next_ln = info.next_map.get(ref)
@@ -574,21 +671,14 @@ def build_transition_sketch(info: BTOR2Info, refs: List[str]) -> List[str]:
         if sv is None:
             continue
         name = sv.symbol or ref
-
         if next_ln is None:
             continue
 
-        inp_deps, st_deps = _bfs_deps(next_ln, sv.lineno)
-
-        dep_parts = []
-        if inp_deps:
-            dep_parts.append("inputs: " + ", ".join(inp_deps[:6]))
-        if st_deps:
-            dep_parts.append("states: " + ", ".join(st_deps[:6]))
-
-        if dep_parts:
-            lines.append(f"{name}' depends on {'; '.join(dep_parts)}")
-        else:
-            lines.append(f"{name}' has next-state logic")
+        try:
+            formula = _decode_expr(info, next_ln, input_by_ln, state_by_ln)
+            lines.append(f"{name}' = {formula}")
+        except Exception:
+            # Fall back to dependency summary
+            lines.append(f"{name}' = (complex expression)")
 
     return lines

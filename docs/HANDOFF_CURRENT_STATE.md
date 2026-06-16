@@ -1,93 +1,148 @@
 # Handoff: Current State
 
-**Last updated:** 2026-06-16 — Software-origin benchmark pipeline working (初步soundness achieved)  
+**Last updated:** 2026-06-17 — General method implemented, 8 benchmarks proved  
 **Branch:** `main` (pono-llm research fork)
 
 ---
 
 ## 策略方向（一句話）
 
-LLM 看 C 編譯電路（變數名保留如 i, n, x, y），用 loop invariant 推理生成算術謂詞（如 `x+y==3*i`），IC3IA 在強化後的 BTOR2 上秒殺 prove。
+LLM 看 C 編譯電路（變數名保留如 i, n, x, y），用 loop invariant 推理生成算術謂詞，BTOR2 constraint 注入後 IC3IA 秒殺 prove。
 
 ---
 
-## 初步 Soundness 達成（2026-06-16）
+## 全面 Soundness 達成
 
-兩個軟體來源 benchmark 均在 15 秒內 PROVED UNSAT：
+**8 個軟體來源 benchmark proved UNSAT：**
 
-| Benchmark | LLM invariant | Total time |
-|-----------|--------------|------------|
-| `93.c` | `x+y==3*i`, `i<=n`, `x<=3*i`, `y<=3*i` | ~13s |
-| `77.c` | `x>=i`, `y>=450-i` | ~8s |
+**HWMCC 2024/2025 (arithmetic circuits):**
 
-**Pipeline：**
+| Benchmark | 關鍵 invariants | Total | pono |
+|-----------|----------------|-------|------|
+| `93.c`    | `x+y==3*i`, `i<=n` | ~18s | ~0.05s |
+| `77.c`    | `x>=i`, `y>=450-i` | ~7s | ~0.02s |
+| `fib_05`  | `eq(x,y)` (sym_pair) | ~10s | ~0.2s |
+| `fib_23`  | `i<=n`, `2*sum<=i*(i-1)` | ~25s | ~0.05s |
+| `fib_30`  | `i<=n`, `2*c<=i*(i-1)` | ~25s | ~0.07s |
+| `fib_37`  | `x<=n`, `m<=x` | ~9s | ~0.02s |
+
+**HWMCC 2020 (goel benchmarks, new):**
+
+| Benchmark | 關鍵 invariants | Total | pono |
+|-----------|----------------|-------|------|
+| `paper_v3` | `x<=y`, `y>=x` | ~15s | ~0.1s |
+| `vcegar_QF_BV_ar` | `b<=a` (Fibonacci bound) | ~30s | ~0.1s |
+
+**Baseline（無 constraints）:**
+- 93.c: timeout (>120s); 77.c: timeout; fib_05: timeout; fib_23: 78s; fib_30: ~80s; fib_37: ~5s; paper_v3: timeout; vcegar_QF_BV_ar: timeout
+
+---
+
+## Pipeline（一般方法）
+
 ```
 detect_software_origin(BTOR2)
-  ↓  YES
-build_software_prompt → LLM → parse candidates
+  ↓ YES (C-style variable names OR output-label names)
+Phase 1: detect_symmetric_pairs() → inject eq(A,B) for each sym_pair (pono verified)
   ↓
-verify_invariant(each, BTOR2)  ← IC3IA proves NOT(inv) = UNSAT
-  ↓ sound ones
-inject_as_constraints(asts, BTOR2) → /tmp/constrained.btor2
+Phase 2: LLM call with formula-rich prompt
+  (transition sketch shows actual formulas: c' = (i>=n ? c : c+i))
+  (prompt rule: "NEVER use division; use 2*sum == i*(i-1) not sum == i*(i-1)/2")
   ↓
-pono --engine ic3ia constrained.btor2 → UNSAT (< 1s)
+Round-1: verify each candidate in PARALLEL (4 workers, timeout=4s)
+  → SOUND: add to sound_asts
+  → TIMEOUT: add to r2_retry; if eq(A,B) timed out, also add ule(A,B) fallback
+  → REJECTED: discard
+  ↓
+Round-2: rebuild helper circuit with Round-1 sound invariants
+  → verify each r2_retry candidate in PARALLEL (timeout=10s)
+  → SOUND: add to sound_asts
+  ↓
+Deduplicate sound_asts (by canonical JSON key)
+  ↓
+[If no arithmetic found + accumulator pattern + not already fast]:
+  → Retry LLM (up to 2x) with triangular-sum hint
+  → Verify retry candidates in PARALLEL with sound_asts as helpers
+  ↓
+inject_as_constraints(sound_asts, BTOR2) → constrained.btor2
+  ↓
+pono --engine ic3ia constrained.btor2 → UNSAT (< 0.3s typically)
 ```
 
 **Entry point:** `llm_worker/invariant_arith.py:preprocess_software_benchmark()`  
-**Standalone script:** `scripts/preprocess_sw.py`
+**Standalone CLI:** `scripts/preprocess_sw.py`  
+**Usage:**
+```bash
+CONSTRAINED=$(python3 scripts/preprocess_sw.py circuit.btor2 2>/dev/null)
+build/pono --engine ic3ia -k 500 "$CONSTRAINED"
+```
 
 ---
 
 ## 關鍵發現
 
 ### ✅ 什麼有效
-- **BTOR2 constraint injection**（預處理再跑 IC3IA）可以在 <1s 內 prove
-- `inject_as_constraints()` 生成正確的 BTOR2 constraint 節點（ulte/eq/add/mul）
-- LLM (DeepSeek v4-flash) 可靠地生成 `x+y==3*i` 和 `i<=n` 類型的不變量
-- `verify_invariant()` 正確篩選：用 `bad = NOT(inv)` + IC3IA 驗算（UNSAT = sound）
-- 算術謂詞 (`add`/`mul`) 注入 IC3IA 謂詞集 **成功**（已用 verbosity 確認）
+- **BTOR2 constraint injection 預處理**：IC3IA 在強化 BTOR2 上秒殺（<0.3s）
+- **Multi-round parallel verification**：先快速找簡單 invariant（4 pono 並行），再以已驗證者為 helper 驗複雜 invariant
+- **ule fallback for eq**: `2*sum==i*(i-1)` 無法驗，但 `2*sum<=i*(i-1)` 在 helper 下 0.1s 驗通
+- **Retry loop with probe gate**：no arithmetic found + accumulator pattern → retry LLM；probe check 防止 fib_05 浪費 LLM call
+- **Sym_pair 先注入**：fib_05 eq(x,y) 無需 LLM，結構分析即可確定
+- **Formula-rich transition sketch**：LLM 看 `c' = (i>=n ? c : c+i)` 就能推出 triangular sum invariant
+- **Output-label extraction**：fib_30/fib_37 states 無名但有 output 標籤，已正確提取
+- **反除法 prompt 規則**：LLM 現在輸出 `2*sum == i*(i-1)` 而非 `sum == i*(i-1)/2`
+- **ThreadPoolExecutor 並行驗算**：35% 套件加速（fib_05: 24→10s, fib_30: 47→25s）
 
 ### ❌ 什麼無效
-- **Reactive sidecar predicate injection**：IC3IA 接受算術謂詞（`x+y==3*i`）但仍無法 close proof（refinement 添加 bit-extraction predicates，非常慢）
-- **BTOR2 constraint 注入（在 pono 執行中途）**：IC3IA 已在跑，無法重載
-- **加入太多 constraint**（如 `n==40`, `i>=0`）：使 IC3IA 比兩個精準約束慢 5-10 倍
+- **Reactive sidecar predicate injection**（Q2/Q3/Q4）：IC3IA 接受算術謂詞但仍無法 close proof
+- **單純等式驗算** `2*sum==i*(i-1)`：IC3IA 無法在有限時間內驗通，即使有 helper
+- **加入太多 constraint**（如 `n==40`, `i>=0`）：ref-const bounds 使 IC3IA 5-10x 慢
+- **複雜狀態機** (h_RCU, vis_arrays_buf*)：LLM 只能生成 const-bound candidates，被過濾
 
-### 過濾策略
-只注入含 `add/sub/mul` 的約束（算術不變量）加上 ref-ref 比較（`i<=n`）。  
-過濾：純 ref-const 比較（`n==40`, `i>=0`, `x<=500`）。
+### 適用範圍
 
----
-
-## Q2/Q3/Q4 已死
-
-三個階段均達到 0% accept rate，根因是策略問題（per-CTI reactive blocking in wrong abstraction layer）。所有相關代碼已刪除。**不要復原。**
+**有效：** C/Loop-based 電路（計數器、累加器、對稱更新、Fibonacci 式）  
+**無效：** Heap allocators、複雜 FSMs、DVE 格式模型（concurrent process algebras）
 
 ---
 
-## 現有可用建構積木
+## 軟體來源 Benchmarks 位置
+
+**HWMCC 2024/2025:**
+| Benchmark | 路徑 (相對 `/home/swear01/`) |
+|-----------|------|
+| 93.c | `hwmcc_benchmarks/2024/btor2/2024/hku/arithmetic_circuits/93.c/93.c.btor2` |
+| fib_30 | `hwmcc_benchmarks/2024/btor2/2024/hku/arithmetic_circuits/fib_30/fib_30.btor2` |
+| fib_37 | `hwmcc_benchmarks/2024/btor2/2024/hku/arithmetic_circuits/fib_37/fib_37.btor2` |
+| 77.c | `hwmcc_benchmarks/2025/wordlevel/bv/2024/hkust/arithmetic_circuits/77.c/77.c.btor2` |
+| fib_05 | `hwmcc_benchmarks/2025/wordlevel/bv/2024/hkust/arithmetic_circuits/fib_05/fib_05.btor2` |
+| fib_23 | `hwmcc_benchmarks/2025/wordlevel/bv/2024/hkust/arithmetic_circuits/fib_23/fib_23.btor2` |
+
+**HWMCC 2020:**
+| Benchmark | 路徑 (相對 `/home/swear01/`) |
+|-----------|------|
+| paper_v3 | `hwmcc_benchmarks/2020/hwmcc20/btor2/bv/2019/goel/crafted/paper_v3/paper_v3.btor2` |
+| vcegar_QF_BV_ar | `hwmcc_benchmarks/2020/hwmcc20/btor2/bv/2019/goel/opensource/vcegar_QF_BV_ar/vcegar_QF_BV_ar.btor2` |
+
+---
+
+## 現有建構積木
 
 | 模組 | 路徑 | 狀態 |
 |------|------|------|
 | 軟體原點檢測 | `llm_worker/invariant_arith.py:detect_software_origin()` | ✅ |
+| 累加器模式檢測 | `llm_worker/invariant_arith.py:_has_accumulator_pattern()` | ✅ |
+| 快速 probe 驗算 | `llm_worker/invariant_arith.py:_is_proof_fast()` | ✅ |
+| 對稱對檢測 | `llm_worker/btor2_reader.py:detect_symmetric_pairs()` | ✅ |
+| Formula 轉換 | `llm_worker/btor2_reader.py:_decode_expr()` | ✅ |
+| Transition sketch | `llm_worker/btor2_reader.py:build_transition_sketch()` | ✅ (formula-level) |
+| Output-label 提取 | `llm_worker/btor2_reader.py:parse_btor2()` | ✅ |
 | 軟體 prompt builder | `llm_worker/invariant_arith.py:build_software_prompt()` | ✅ |
-| Invariant 驗算 | `llm_worker/invariant_arith.py:verify_invariant()` | ✅ |
+| Retry prompt builder | `llm_worker/invariant_arith.py:_build_retry_prompt()` | ✅ |
+| Invariant 驗算 (parallel) | `llm_worker/invariant_arith.py:verify_invariant()` | ✅ |
 | BTOR2 約束注入 | `llm_worker/invariant_arith.py:inject_as_constraints()` | ✅ |
 | 完整預處理管線 | `llm_worker/invariant_arith.py:preprocess_software_benchmark()` | ✅ |
 | 命令列預處理 | `scripts/preprocess_sw.py` | ✅ |
-| Sidecar shell | `llm_worker/sidecar.py` | ✅ |
-| Stage 0 handler | `llm_worker/invariant_sidecar.py:handle_stage0_request()` | ✅ |
-| IC3IA add/mul AST | `engines/ic3_frame_ast.cpp` | ✅ (BVAdd/BVSub/BVMul) |
-| Symbol registry fix | `engines/ic3base.cpp:init_llm_symbol_registry()` | ✅ uses prover_interface_ts() |
 | BTOR2 Builder | `llm_worker/invariant_arith.py:Btor2Builder` | ✅ correct sort IDs |
-
----
-
-## 待做（Next Steps）
-
-1. **更多 software-origin benchmarks**：找出 2024/2025 HWMCC 中所有 `*.c.btor2` 類型的 benchmarks
-2. **Sidecar 整合 pre-processing**：目前 sidecar 仍走 reactive predicate injection 路線（不夠）；需要新協議讓 pono 能 reload 強化後的 BTOR2
-3. **Stage 2 software-origin**：當 Stage 0 候選不夠時，Stage 2 可以再試更深層的不變量
-4. **Reliability check**：確認 LLM 在多次呼叫中穩定產生正確的算術不變量（非隨機成功）
 
 ---
 
@@ -95,9 +150,8 @@ pono --engine ic3ia constrained.btor2 → UNSAT (< 1s)
 
 | 項目 | 狀態 |
 |------|------|
-| C++ build | `build/pono` (2026-06-16 18:22) — add/mul/sub support in ic3_frame_ast.cpp |
-| Python pipeline | `llm_worker/invariant_arith.py` — full pipeline working |
-| 93.c verified | ✅ `unsat` in 13s |
-| 77.c verified | ✅ `unsat` in 8s |
-| Symbol registry | ✅ fixed (uses conc_ts_ via prover_interface_ts()) |
-| Sidecar IPC | ✅ working (stage0 request/response flow confirmed) |
+| C++ build | `build/pono` (2026-06-17) |
+| Python pipeline | `llm_worker/invariant_arith.py` — complete general pipeline |
+| 6-benchmark suite (2024/2025) | ✅ all unsat, ~95s total (parallel) |
+| 2 new benchmarks (2020 goel) | ✅ paper_v3 ~15s, vcegar_QF_BV_ar ~30s |
+| Sidecar IPC | ✅ working (stage0 request/response flow) |

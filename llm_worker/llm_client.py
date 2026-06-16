@@ -85,12 +85,14 @@ class LLMClient:
             self._openrouter_routing = resolve_openrouter_provider_routing()
             print(
                 f"[llm] provider={self.provider} base_url={self.base_url} "
-                f"model={self.model_name} routing={routing_summary(self._openrouter_routing)}"
+                f"model={self.model_name} routing={routing_summary(self._openrouter_routing)}",
+                file=__import__("sys").stderr,
             )
         else:
             print(
                 f"[llm] provider={self.provider} base_url={self.base_url} "
-                f"model={self.model_name}"
+                f"model={self.model_name}",
+                file=__import__("sys").stderr,
             )
         self.last_call_stats: dict[str, Any] = {}
 

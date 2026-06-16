@@ -5,7 +5,7 @@
 | `engines/` | IC3/IC3IA engine (C++): `ic3base.cpp`, `ic3ia.cpp`, `llm_generalizer.cpp` |
 | `core/` | Transition system types (FTS, RTS), term/sort abstractions |
 | `frontends/` | BTOR2 parser, Verilog frontend hooks |
-| `llm_worker/` | Python sidecar: `sidecar.py`, `invariant_sidecar.py`, `invariant_prompt.py`, `llm_client.py`, `jsonl_protocol.py` |
+| `llm_worker/` | Python sidecar + pre-processor: `sidecar.py`, `invariant_sidecar.py`, `invariant_arith.py`, `invariant_prompt.py`, `btor2_reader.py`, `llm_client.py`, `jsonl_protocol.py` |
 | `options/` | CLI option definitions |
 | `modifiers/` | Transition system modifiers (cone of influence, etc.) |
 | `refiners/` | CEGAR refinement components |
@@ -13,7 +13,7 @@
 | `smt/` | SMT utility wrappers |
 | `utils/` | Logging, timing, misc utilities |
 | `tests/` | C++ tests (googletest) + Python tests (`tests/python/`) |
-| `scripts/` | Benchmark harness: `run_benchmarks.py`, experiment scripts |
+| `scripts/` | Benchmark harness + `preprocess_sw.py` (software-origin BTOR2 pre-processor CLI) |
 | `benchmarks/` | Micro-benchmarks and BTOR2 test cases |
 | `bench_results/` | Experiment output (not in git) |
 | `docs/` | All docs; `docs/plans/` = active plans; `docs/superpowers/` = HISTORICAL |
