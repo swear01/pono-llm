@@ -18,7 +18,7 @@
 ## Decisions
 
 - **Pre-processing over reactive injection**: Inject verified BTOR2 constraints BEFORE pono runs. IC3IA on constrained BTOR2 proves in <0.3s.
-- **Multi-round verification**: Round-1 with 4s timeout finds easy invariants. Round-2 with helpers finds complex ones that need simpler invariants to be in place first.
+- **Multi-round parallel verification**: Round-1 (4s timeout, parallel up to 4 workers) finds easy invariants. Round-2 with helpers finds complex ones. ThreadPoolExecutor over `subprocess.run` — each pono process is independent, safe to parallelize. Gives 25-57% speedup.
 - **Retry loop with probe gate**: If no arithmetic invariants found AND `_has_accumulator_pattern()` detects a variable accumulating another sw var, retry LLM with explicit triangular-sum hint. Probe gate (`_is_proof_fast`, 3s timeout) skips retry when current constraints already prove the circuit (prevents wasted retry on fib_05 which is solved by sym_pair alone).
 - **Python sidecar, not in-process**: LLM calls are async; out-of-process prevents blocking IC3's main loop.
 - **Formula-rich transition sketch**: Show `c' = (i>=n ? c : c+i)` not `c' depends on states: i, n` — LLM needs the actual formula to infer triangular number invariants.

@@ -19,6 +19,7 @@ import re
 import subprocess
 import sys
 import tempfile
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from typing import Dict, List, Optional, Tuple
 
 from btor2_reader import BTOR2Info, parse_btor2
@@ -662,24 +663,31 @@ def preprocess_software_benchmark(
             continue
         r1_candidates.append((ast, expr))
 
-    # Round 1: quick scan (short timeout) to find easy invariants.
-    # Many candidates are quick to verify (<1s); expensive ones time out fast.
+    # Round 1: parallel scan (short timeout) to find easy invariants.
+    # Candidates are verified concurrently — up to 4 pono processes at once.
     r1_timeout = min(4, timeout_s)
     r2_retry: List[Tuple[dict, str]] = []
-    for ast, expr in r1_candidates:
-        ok, reason = verify_invariant(ast, btor2_path, timeout_s=r1_timeout)
-        if ok:
-            print(f"[preprocess_sw] SOUND {expr!r}", file=sys.stderr)
-            sound_asts.append(ast)
-        elif "timeout" in reason:
-            print(f"[preprocess_sw] timeout → round2 retry: {expr!r}", file=sys.stderr)
-            r2_retry.append((ast, expr))
-            # For eq(A,B) that timed out: also try ule(A,B) which is weaker but verifiable.
-            if ast.get("form") == "eq" and len(ast.get("args", [])) == 2:
-                ule_ast = {"form": "ule", "args": ast["args"]}
-                r2_retry.append((ule_ast, f"{expr} [→ ule fallback]"))
-        else:
-            print(f"[preprocess_sw] rejected {expr!r} ({reason})", file=sys.stderr)
+    if r1_candidates:
+        _n_workers = min(len(r1_candidates), 4)
+        with ThreadPoolExecutor(max_workers=_n_workers) as _pool:
+            _futs = {
+                _pool.submit(verify_invariant, ast, btor2_path, r1_timeout): (ast, expr)
+                for ast, expr in r1_candidates
+            }
+            for _fut in as_completed(_futs):
+                ast, expr = _futs[_fut]
+                ok, reason = _fut.result()
+                if ok:
+                    print(f"[preprocess_sw] SOUND {expr!r}", file=sys.stderr)
+                    sound_asts.append(ast)
+                elif "timeout" in reason:
+                    print(f"[preprocess_sw] timeout → round2 retry: {expr!r}", file=sys.stderr)
+                    r2_retry.append((ast, expr))
+                    if ast.get("form") == "eq" and len(ast.get("args", [])) == 2:
+                        ule_ast = {"form": "ule", "args": ast["args"]}
+                        r2_retry.append((ule_ast, f"{expr} [→ ule fallback]"))
+                else:
+                    print(f"[preprocess_sw] rejected {expr!r} ({reason})", file=sys.stderr)
 
     # Round 2: verify timed-out candidates with all round-1 sound invariants as helpers.
     # Sound invariants hold at all reachable states, so injecting them doesn't change
@@ -687,13 +695,20 @@ def preprocess_software_benchmark(
     if r2_retry and sound_asts:
         helper_path, _ = inject_as_constraints(sound_asts, btor2_path)
         if helper_path:
-            for ast, expr in r2_retry:
-                ok, reason = verify_invariant(ast, helper_path, timeout_s=timeout_s + 2)
-                if ok:
-                    print(f"[preprocess_sw] SOUND (r2+helpers) {expr!r}", file=sys.stderr)
-                    sound_asts.append(ast)
-                else:
-                    print(f"[preprocess_sw] rejected (r2) {expr!r} ({reason})", file=sys.stderr)
+            _r2_timeout = timeout_s + 2
+            with ThreadPoolExecutor(max_workers=min(len(r2_retry), 4)) as _pool2:
+                _futs2 = {
+                    _pool2.submit(verify_invariant, ast, helper_path, _r2_timeout): (ast, expr)
+                    for ast, expr in r2_retry
+                }
+                for _fut2 in as_completed(_futs2):
+                    ast, expr = _futs2[_fut2]
+                    ok, reason = _fut2.result()
+                    if ok:
+                        print(f"[preprocess_sw] SOUND (r2+helpers) {expr!r}", file=sys.stderr)
+                        sound_asts.append(ast)
+                    else:
+                        print(f"[preprocess_sw] rejected (r2) {expr!r} ({reason})", file=sys.stderr)
             os.unlink(helper_path)
 
     if not sound_asts:
@@ -757,35 +772,47 @@ def preprocess_software_benchmark(
                   file=sys.stderr)
             continue
 
-        # Round 1: verify with existing sound_asts as helpers
+        # Round 1: verify with existing sound_asts as helpers (parallel)
         retry_helper_path: Optional[str] = None
         if sound_asts:
             retry_helper_path, _ = inject_as_constraints(sound_asts, btor2_path)
 
         r2_retry_new: List[Tuple[dict, str]] = []
         new_sound: List[dict] = []
-        for ast, expr in retry_arith:
-            target = retry_helper_path or btor2_path
-            ok, reason = verify_invariant(ast, target, timeout_s=r1_timeout)
-            if ok:
-                print(f"[preprocess_sw] SOUND (retry-r1) {expr!r}", file=sys.stderr)
-                new_sound.append(ast)
-            elif "timeout" in reason:
-                r2_retry_new.append((ast, expr))
-                if ast.get("form") == "eq" and len(ast.get("args", [])) == 2:
-                    ule_ast = {"form": "ule", "args": ast["args"]}
-                    r2_retry_new.append((ule_ast, f"{expr} [→ ule fallback]"))
+        _rtgt = retry_helper_path or btor2_path
+        with ThreadPoolExecutor(max_workers=min(len(retry_arith), 4)) as _pr1:
+            _rfuts = {
+                _pr1.submit(verify_invariant, ast, _rtgt, r1_timeout): (ast, expr)
+                for ast, expr in retry_arith
+            }
+            for _rf in as_completed(_rfuts):
+                ast, expr = _rfuts[_rf]
+                ok, reason = _rf.result()
+                if ok:
+                    print(f"[preprocess_sw] SOUND (retry-r1) {expr!r}", file=sys.stderr)
+                    new_sound.append(ast)
+                elif "timeout" in reason:
+                    r2_retry_new.append((ast, expr))
+                    if ast.get("form") == "eq" and len(ast.get("args", [])) == 2:
+                        ule_ast = {"form": "ule", "args": ast["args"]}
+                        r2_retry_new.append((ule_ast, f"{expr} [→ ule fallback]"))
 
-        # Round 2: timed-out candidates with expanded helper set
+        # Round 2: timed-out candidates with expanded helper set (parallel)
         if r2_retry_new:
             combined = list(sound_asts) + new_sound
             r2h, _ = inject_as_constraints(combined, btor2_path) if combined else (None, 0)
             if r2h:
-                for ast, expr in r2_retry_new:
-                    ok, reason = verify_invariant(ast, r2h, timeout_s=timeout_s + 2)
-                    if ok:
-                        print(f"[preprocess_sw] SOUND (retry-r2) {expr!r}", file=sys.stderr)
-                        new_sound.append(ast)
+                with ThreadPoolExecutor(max_workers=min(len(r2_retry_new), 4)) as _pr2:
+                    _rfuts2 = {
+                        _pr2.submit(verify_invariant, ast, r2h, timeout_s + 2): (ast, expr)
+                        for ast, expr in r2_retry_new
+                    }
+                    for _rf2 in as_completed(_rfuts2):
+                        ast, expr = _rfuts2[_rf2]
+                        ok, reason = _rf2.result()
+                        if ok:
+                            print(f"[preprocess_sw] SOUND (retry-r2) {expr!r}", file=sys.stderr)
+                            new_sound.append(ast)
                 os.unlink(r2h)
 
         if retry_helper_path:
