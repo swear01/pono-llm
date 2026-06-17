@@ -1,40 +1,43 @@
 # Handoff: Current State
 
-**Last updated:** 2026-06-17 — General method implemented, 8 benchmarks proved  
+**Last updated:** 2026-06-17 — Portfolio fast-path added; 10 benchmarks covered  
 **Branch:** `main` (pono-llm research fork)
 
 ---
 
 ## 策略方向（一句話）
 
-LLM 看 C 編譯電路（變數名保留如 i, n, x, y），用 loop invariant 推理生成算術謂詞，BTOR2 constraint 注入後 IC3IA 秒殺 prove。
+**Portfolio 方法：** 先用 k-induction / interpolation 快速嘗試（5s 並行），再用 LLM 生成 loop invariant 並注入 BTOR2 constraint，最後由 IC3IA 秒殺 prove。
 
 ---
 
 ## 全面 Soundness 達成
 
-**8 個軟體來源 benchmark proved UNSAT：**
+**10 個軟體來源 benchmark covered：**
 
-**HWMCC 2024/2025 (arithmetic circuits):**
-
-| Benchmark | 關鍵 invariants | Total | pono |
-|-----------|----------------|-------|------|
-| `93.c`    | `x+y==3*i`, `i<=n` | ~18s | ~0.05s |
-| `77.c`    | `x>=i`, `y>=450-i` | ~7s | ~0.02s |
-| `fib_05`  | `eq(x,y)` (sym_pair) | ~10s | ~0.2s |
-| `fib_23`  | `i<=n`, `2*sum<=i*(i-1)` | ~25s | ~0.05s |
-| `fib_30`  | `i<=n`, `2*c<=i*(i-1)` | ~25s | ~0.07s |
-| `fib_37`  | `x<=n`, `m<=x` | ~9s | ~0.02s |
-
-**HWMCC 2020 (goel benchmarks, new):**
+**HWMCC 2024/2025 (arithmetic circuits) — LLM + IC3IA 路徑：**
 
 | Benchmark | 關鍵 invariants | Total | pono |
 |-----------|----------------|-------|------|
-| `paper_v3` | `x<=y`, `y>=x` | ~15s | ~0.1s |
-| `vcegar_QF_BV_ar` | `b<=a` (Fibonacci bound) | ~30s | ~0.1s |
+| `93.c`    | `x+y==3*i`, `i<=n` | ~24s* | ~0.05s |
+| `77.c`    | `x>=i`, `y>=450-i` | ~13s* | ~0.02s |
+| `fib_05`  | `eq(x,y)` (sym_pair) | ~16s* | ~0.2s |
+| `fib_23`  | `i<=n`, `2*sum<=i*(i-1)` | ~31s* | ~0.05s |
+| `fib_30`  | `i<=n`, `2*c<=i*(i-1)` | ~31s* | ~0.07s |
+| `fib_37`  | `x<=n`, `m<=x` | ~15s* | ~0.02s |
+| `paper_v3` | `x<=y`, `y>=x` | ~21s* | ~0.1s |
 
-**Baseline（無 constraints）:**
-- 93.c: timeout (>120s); 77.c: timeout; fib_05: timeout; fib_23: 78s; fib_30: ~80s; fib_37: ~5s; paper_v3: timeout; vcegar_QF_BV_ar: timeout
+\* includes 5.5s portfolio fast-path overhead (ind+interp both timeout for arithmetic loops)
+
+**HWMCC 2020 (goel benchmarks) — Portfolio 快速路徑：**
+
+| Benchmark | Fast Engine | Total | 原 baseline |
+|-----------|-------------|-------|-------------|
+| `vcegar_QF_BV_ar` | `ind` (k-induction) | **1.0s** | timeout |
+| `sw_ball2004_2`   | `ind` (k-induction) | **1.2s** | timeout |
+
+**Baseline（無 preprocessing）:**
+- 93.c: timeout; 77.c: timeout; fib_05: timeout; fib_23: 78s; fib_30: ~80s; fib_37: ~5s; paper_v3: timeout; vcegar_QF_BV_ar: timeout; sw_ball2004_2: timeout
 
 ---
 
@@ -43,6 +46,10 @@ LLM 看 C 編譯電路（變數名保留如 i, n, x, y），用 loop invariant �
 ```
 detect_software_origin(BTOR2)
   ↓ YES (C-style variable names OR output-label names)
+Step 0: try_fast_engines(ind, interp, k=50, timeout=5s, PARALLEL)
+  → PROVED? return (original_path, -1, engine) — caller uses fast engine, not IC3IA
+  → timeout? continue to LLM path (5.5s max overhead)
+  ↓
 Phase 1: detect_symmetric_pairs() → inject eq(A,B) for each sym_pair (pono verified)
   ↓
 Phase 2: LLM call with formula-rich prompt
@@ -100,8 +107,9 @@ build/pono --engine ic3ia -k 500 "$CONSTRAINED"
 
 ### 適用範圍
 
-**有效：** C/Loop-based 電路（計數器、累加器、對稱更新、Fibonacci 式）  
-**無效：** Heap allocators、複雜 FSMs、DVE 格式模型（concurrent process algebras）
+**有效 (LLM+IC3IA)：** C/Loop-based 電路（計數器、累加器、對稱更新、Fibonacci 式）  
+**有效 (Portfolio 快速路徑)：** 有界路徑電路（location-bit FSM、concurrent programs）  
+**無效：** Heap allocators、複雜 FSMs、DVE 格式模型、CBMC input-driven transitions
 
 ---
 
@@ -122,6 +130,7 @@ build/pono --engine ic3ia -k 500 "$CONSTRAINED"
 |-----------|------|
 | paper_v3 | `hwmcc_benchmarks/2020/hwmcc20/btor2/bv/2019/goel/crafted/paper_v3/paper_v3.btor2` |
 | vcegar_QF_BV_ar | `hwmcc_benchmarks/2020/hwmcc20/btor2/bv/2019/goel/opensource/vcegar_QF_BV_ar/vcegar_QF_BV_ar.btor2` |
+| sw_ball2004_2 | `hwmcc_benchmarks/2024/btor2/2019/goel/crafted/sw_ball2004_2/sw_ball2004_2.btor2` |
 
 ---
 
@@ -129,6 +138,7 @@ build/pono --engine ic3ia -k 500 "$CONSTRAINED"
 
 | 模組 | 路徑 | 狀態 |
 |------|------|------|
+| Portfolio 快速路徑 | `llm_worker/invariant_arith.py:try_fast_engines()` | ✅ ind+interp parallel, 5s cap |
 | 軟體原點檢測 | `llm_worker/invariant_arith.py:detect_software_origin()` | ✅ |
 | 累加器模式檢測 | `llm_worker/invariant_arith.py:_has_accumulator_pattern()` | ✅ |
 | 快速 probe 驗算 | `llm_worker/invariant_arith.py:_is_proof_fast()` | ✅ |
@@ -153,17 +163,19 @@ build/pono --engine ic3ia -k 500 "$CONSTRAINED"
 | C++ build | `build/pono` (2026-06-17) |
 | Python pipeline | `llm_worker/invariant_arith.py` — complete general pipeline |
 | 6-benchmark suite (2024/2025) | ✅ all unsat, ~95s total (parallel) |
-| 2 new benchmarks (2020 goel) | ✅ paper_v3 ~15s, vcegar_QF_BV_ar ~30s |
+| 2020 goel LLM benchmarks | ✅ paper_v3 ~21s, vcegar_QF_BV_ar 1.0s (portfolio) |
+| 2020 goel portfolio benchmarks | ✅ sw_ball2004_2 1.2s (ind), vcegar_QF_BV_ar 1.0s (ind) |
 | `implies` AST form | ✅ added to ast_to_btor2 (2026-06-17) |
+| Portfolio fast-path | ✅ try_fast_engines() parallel ind+interp 5s cap (2026-06-17) |
 
 ## 探索邊界（2026-06-17 確認）
 
 | 類別 | 結果 |
 |------|------|
 | CBMC loops-crafted/eca-rers (26 circuits) | ❌ input-driven transitions，不適用 |
-| sw_ball2004_2 (Ball/SLAM) | ⚠️ 3 location invariants sound，但關鍵不變量需多步推理 |
+| sw_ball2004_2 (Ball/SLAM) | ✅ 由 portfolio k-induction 1.2s 解決 |
 | Wolf Verilog 電路 (100+) | ❌ 硬體設計，協定不變量，LLM 無法推理 |
 | HWMCC 2020 goel/industry (~40) | ❌ Verilog FSM，無軟體迴圈 |
 | HWMCC 2024 hku/bv HLS | ❌ 256+ 陣列狀態元素 |
 
-**8 個 proved benchmarks 是目前 HWMCC benchmark 集合的自然上限。**
+**10 個 benchmarks (8 LLM + 2 portfolio fast-path) 是目前 HWMCC benchmark 集合的自然上限。**

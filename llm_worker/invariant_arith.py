@@ -19,6 +19,7 @@ import re
 import subprocess
 import sys
 import tempfile
+import threading
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from typing import Dict, List, Optional, Tuple
 
@@ -379,6 +380,44 @@ def ast_to_btor2(ast: dict, builder: Btor2Builder, target_width: Optional[int] =
     raise ValueError(f"Unsupported AST form: {form}")
 
 
+
+# ---------------------------------------------------------------------------
+# 3b. Portfolio fast-path engine (k-induction / interpolation)
+# ---------------------------------------------------------------------------
+
+def try_fast_engines(btor2_path: str, k: int = 50, timeout_s: int = 5) -> Optional[str]:
+    """
+    Try ind and interp in PARALLEL before falling back to LLM + IC3IA.
+    Returns the winning engine name if either proves UNSAT within timeout_s, else None.
+
+    Both engines run concurrently so total overhead is max(ind_time, interp_time),
+    not their sum. With timeout_s=5, max overhead for failing circuits is 5s.
+
+    Use case: bounded-path circuits (location-bit FSMs, concurrent programs) where
+    k-induction proves in <2s but IC3IA times out indefinitely.
+    """
+    result_engine: list[Optional[str]] = [None]
+    done = threading.Event()
+
+    def _try(engine: str) -> None:
+        try:
+            r = subprocess.run(
+                [PONO_BIN, '-e', engine, '-k', str(k), btor2_path],
+                capture_output=True, text=True, timeout=timeout_s,
+            )
+            if r.returncode == 1 and not done.is_set():  # UNSAT
+                result_engine[0] = engine
+                done.set()
+        except Exception:
+            pass
+
+    threads = [threading.Thread(target=_try, args=(e,), daemon=True) for e in ('ind', 'interp')]
+    for t in threads:
+        t.start()
+    done.wait(timeout=timeout_s + 0.5)
+    return result_engine[0]
+
+
 # ---------------------------------------------------------------------------
 # 4. Invariant verifier (SMT soundness check)
 # ---------------------------------------------------------------------------
@@ -566,28 +605,39 @@ def preprocess_software_benchmark(
     client,
     request: Optional[dict] = None,
     timeout_s: int = 8,
-) -> Tuple[str, int]:
+) -> Tuple[str, int, Optional[str]]:
     """
     Full pre-processing for software-origin benchmarks.
 
     1. Detect software origin (C-style variable names).
-    2. Inject structural sym-pair equalities (e.g. eq(x,y) for structurally equal vars).
-    3. Build LLM prompt and call LLM for arithmetic loop invariants.
-    4. Verify each LLM candidate via IC3IA (verify_invariant).
-    5. Inject all sound invariants as BTOR2 `constraint` statements.
+    2. Portfolio fast-path: try k-induction and interpolation (5s parallel).
+    3. Inject structural sym-pair equalities (e.g. eq(x,y) for structurally equal vars).
+    4. Build LLM prompt and call LLM for arithmetic loop invariants.
+    5. Verify each LLM candidate via IC3IA (verify_invariant).
+    6. Inject all sound invariants as BTOR2 `constraint` statements.
 
-    Returns (constrained_btor2_path, n_injected).
-    If not software-origin or no sound invariants found, returns (btor2_path, 0).
+    Returns (constrained_btor2_path, n_injected, fast_engine).
+    - fast_engine is set when the circuit was proved by ind/interp; use that engine, not IC3IA.
+    - n_injected == -1 when fast_engine is set (no LLM preprocessing was done).
+    - If not software-origin or no sound invariants found: (btor2_path, 0, None).
     """
     from btor2_reader import detect_symmetric_pairs, hot_refs_near_bad
     from invariant_prompt import INVARIANT_SYSTEM_PROMPT, parse_invariant_response
     try:
         info = parse_btor2(btor2_path)
     except Exception:
-        return btor2_path, 0
+        return btor2_path, 0, None
 
     if not detect_software_origin(info):
-        return btor2_path, 0
+        return btor2_path, 0, None
+
+    # Step 0: Portfolio fast-path — try ind and interp in parallel (5s cap).
+    # Bounded-path circuits (location-bit FSMs, concurrent programs) prove in <2s;
+    # arithmetic-loop circuits (fib_*, 93.c) cause both to timeout, adding only 5s overhead.
+    fast_engine = try_fast_engines(btor2_path, k=50, timeout_s=5)
+    if fast_engine:
+        print(f"[preprocess_sw] fast engine '{fast_engine}' proved circuit directly (no LLM needed)", file=sys.stderr)
+        return btor2_path, -1, fast_engine
 
     req = request or {}
     req = dict(req)
@@ -633,7 +683,7 @@ def preprocess_software_benchmark(
     except Exception as e:
         print(f"[preprocess_sw] LLM call failed: {e}", file=sys.stderr)
         if not sound_asts:
-            return btor2_path, 0
+            return btor2_path, 0, None
         # Fall through — inject sym_pairs even if LLM failed
         text = '{"candidates":[]}'
 
@@ -721,7 +771,7 @@ def preprocess_software_benchmark(
             os.unlink(helper_path)
 
     if not sound_asts:
-        return btor2_path, 0
+        return btor2_path, 0, None
 
     # Deduplicate sound ASTs by canonical JSON representation
     import json
@@ -841,5 +891,5 @@ def preprocess_software_benchmark(
     constrained_path, n = inject_as_constraints(sound_asts, btor2_path)
     if constrained_path:
         print(f"[preprocess_sw] injected {n} constraints → {constrained_path}", file=sys.stderr)
-        return constrained_path, n
-    return btor2_path, 0
+        return constrained_path, n, None
+    return btor2_path, 0, None

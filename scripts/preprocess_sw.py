@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
 """
-Software-benchmark pre-processor.
+Software-benchmark pre-processor (portfolio mode).
 
 Detects software-origin BTOR2 circuits (C-compiled with preserved variable names),
-calls LLM to generate arithmetic loop invariants, verifies them as inductive,
-and injects sound ones as BTOR2 `constraint` statements.
+first tries k-induction and interpolation as a fast portfolio check, then falls
+back to LLM-generated arithmetic loop invariants verified and injected as BTOR2
+`constraint` statements for IC3IA.
 
 Outputs the path of the constrained BTOR2 (or the original path if nothing was injected).
 
@@ -14,6 +15,16 @@ Usage:
 Example integration with pono:
     CONSTRAINED=$(python3 scripts/preprocess_sw.py circuit.btor2)
     build/pono --engine ic3ia -k 500 $CONSTRAINED
+
+    # For the portfolio fast path (check stderr for FAST_ENGINE=<engine>):
+    python3 scripts/preprocess_sw.py circuit.btor2 2>/tmp/sw.log
+    ENGINE=$(grep 'FAST_ENGINE=' /tmp/sw.log | head -1 | sed 's/.*FAST_ENGINE=//')
+    if [ -n "$ENGINE" ]; then
+        build/pono --engine "$ENGINE" -k 500 circuit.btor2
+    else
+        CONSTRAINED=$(cat /tmp/constrained_path)
+        build/pono --engine ic3ia -k 500 "$CONSTRAINED"
+    fi
 """
 from __future__ import annotations
 
@@ -43,9 +54,13 @@ def main() -> None:
         sys.exit(1)
 
     client = create_llm_client()
-    constrained, n_injected = preprocess_software_benchmark(
+    constrained, n_injected, fast_engine = preprocess_software_benchmark(
         args.btor2, client, timeout_s=args.timeout_verify
     )
+
+    if fast_engine:
+        # Signal to caller: use this engine, not IC3IA
+        print(f"FAST_ENGINE={fast_engine}", file=sys.stderr)
 
     if n_injected > 0:
         print(f"[preprocess_sw] {n_injected} constraints injected", file=sys.stderr)
