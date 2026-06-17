@@ -35,9 +35,30 @@ Exhaustive scan of all HWMCC 2020/2024/2025 benchmarks for extension opportuniti
 
 **Result**: 8 proved benchmarks is the natural ceiling within existing HWMCC sets.
 
+## Architecture Extensions (2026-06-17)
+
+### Portfolio Fast-Path Engine (A1) — DONE
+- `try_fast_engines()`: ind + interp parallel, 5s cap before LLM
+- sw_ball2004_2 (1.2s ind), vcegar_QF_BV_ar (1.0s ind) added to covered set
+- `preprocess_software_benchmark()` returns 3-tuple `(path, n_injected, fast_engine)`
+
+### BAD Condition in LLM Prompt (A2/A3) — DONE
+- `build_bad_condition_text()`: decodes bad_lineno, strips and(1,.) + not(not(.)) wrappers
+- Examples: fib_23 shows `!((i < n) || (sum > 0))`, 93.c shows `((i >= n) && (n*3 != x+y))`
+- LLM now knows exactly what condition to disprove
+
+### Simulation Trace in LLM Prompt (A4) — DONE
+- `simulate_circuit_trajectory()` + `_eval_node()`: forward-simulate 9 steps, all inputs=0
+- fib_23 trace reveals sum=0,0,1,3,6,10,15,21,28 (triangular numbers — invariant obvious)
+- 93.c trace reveals x=2i, y=i at each step (x+y=3*i invariant obvious)
+- 93.c now generates correct invariant consistently (6/6 LLM samples agree)
+- 77.c (constant with selector=0): all_same detection skips trace automatically
+
 ## Backlog
 
 - **Paper/report**: write up method, results, comparison with baseline for publication
 - **HLS benchmark via toolchain**: Vivado HLS from C source → BTOR2; would require external toolchain
 - **Location-conditioned invariant chain**: For sw_ball2004_2-type circuits; requires multi-step verification strategy beyond IC3IA oracle
-- **Stage 2 full trigger logic**: Low priority given pre-processing wins
+- **Chain-of-thought prompting** (A5): 3-step CoT prompt: decompose goal → derive conditions → generate invariants
+- **IC3 Generalization Hook** (B2): Hook LLM into IC3's generalization step (requires C++ pono changes)
+- **SyGuS template synthesis** (B4): LLM suggests invariant shape, CVC5 fills coefficients

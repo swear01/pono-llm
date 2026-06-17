@@ -22,32 +22,28 @@ detect_software_origin → portfolio(ind/interp 5s) → LLM invariant → verify
 - k-induction + interpolation 並行 5s
 - sw_ball2004_2 (1.2s), vcegar_QF_BV_ar (1.0s) 解決
 
-### A2: BAD 條件結構反向分析
-**做法：** 解析 `bad' = bad OR trigger`，自動提取 `NOT(trigger)` 作為不變量候選  
-**實作：** `btor2_reader.py` 新增 `extract_bad_trigger()` (~50 行)  
-**適用：** 任何有 OR-structured bad transition 的電路  
-**預期效果：** 可能幫助部分 CBMC 或 FSM 電路找到第一個 sound candidate  
-**風險：** 許多電路 bad 是單一 bad state flag，無 trigger structure
+### A2: BAD 條件結構反向分析 ✅ **已實作** (2026-06-17, 整合於 A3)
+**做法：** 解析 bad 節點，剝離 `and(const(1), cond)` 和 `not(not(cond))` 包裝  
+**實作：** `btor2_reader.py:build_bad_condition_text()` 內的 `_peel_const1_and()` 和 `_peel_double_not()`  
+**結果：** 對軟體電路（93.c, fib_23, paper_v3 等）都能正確提取 bad 條件  
+**備注：** `bad' = bad OR trigger` 模式（FSM-style）在我們的電路中未見到；軟體電路的 bad 是純組合邏輯
 
-### A3: BAD 反向可達性分析給 LLM
-**做法：** 計算 BAD 的直接前驅狀態公式（one-step pre-image），加入 LLM prompt  
-**例：** "The circuit reaches bad when: guard_5 ∧ x > n. What invariant blocks this?"  
-**實作：** `build_transition_sketch()` 加 bad pre-image 計算  
-**預期效果：** LLM 可從 BAD 反向推理所需 invariant，比正向 transition 更直接  
-**已規劃：** Direction B1 from previous session
+### A3: BAD 反向可達性分析給 LLM ✅ **已實作** (2026-06-17)
+**做法：** 解析 bad_lineno 的表達式並渲染為 LLM 可讀文字  
+**實作：** `btor2_reader.py:build_bad_condition_text()` — 剝離 and(1,.) 和 not(not(.)) wrapper  
+**結果：** 
+- fib_23: `!((i < n) || (sum > 0))` → LLM 知道需要「i 達到 n 時 sum > 0」
+- 93.c: `((i >= n) && ((n * 3) != (x + y)))` → 直接看到需要 x+y=3*n
 
-### A4: BMC Trace 導引的 LLM
-**做法：** 用 pono BMC 跑 k 步找到最接近 bad 的 trace，展示給 LLM  
-```
-"Here is a 5-step path toward bad:
-  step 0: i=0, x=0, y=0
-  step 1: i=1, x=1, y=0  
-  step 4: i=4, x=4, y=0 (bad guard: x==n? almost!)
-  What invariant would block this path from reaching bad?"
-```
-**實作：** `pono --engine bmc -k N --witness` 解析輸出  
-**適用：** 有有限深度的近 bad trace（軟體迴圈可能 trace 太長）  
-**風險：** 算術迴圈的 bad 需要 N=n 步才能到達，BMC trace 巨大
+### A4: 具體執行 Trace 給 LLM ✅ **已實作** (2026-06-17)
+**做法：** 正向模擬電路 9 步（all inputs=0），展示 table 給 LLM  
+**實作：** `btor2_reader.py:simulate_circuit_trajectory()` + `_eval_node()` BTOR2 evaluator  
+**結果：**
+- fib_23 trace: sum=0,0,1,3,6,10,15,21,28 → 三角數序列一眼看出 `2*sum==i*(i-1)`
+- 93.c trace: x=0,2,4,6,8,10,12,14,16; y=0,1,2,3,4,5,6,7,8 → x+y=3*i 立刻明顯
+- 93.c 測試: LLM 現在連續生成 `x + y == 3 * i`（6/6 次）
+- 77.c (selector 電路): 偵測到 all-same trace → 自動略過 trace section
+**備注：** 不需要 pono BMC 或外部工具；用 Python evaluator 直接模擬
 
 ### A5: 多輪 Chain-of-Thought 推理
 **做法：** 問 LLM 三個問題的 chain：  
