@@ -367,6 +367,15 @@ def ast_to_btor2(ast: dict, builder: Btor2Builder, target_width: Optional[int] =
             btor2_op = _BTOR2_OP.get(form, form)
             return builder.emit(btor2_op, builder.get_sort(1), a0, a1)
 
+    if form == "implies":
+        args = ast.get("args", [])
+        if len(args) == 2:
+            sort1 = builder.get_sort(1)
+            a0 = ast_to_btor2(args[0], builder)
+            a1 = ast_to_btor2(args[1], builder)
+            not_a0 = builder.emit("not", sort1, a0)
+            return builder.emit("or", sort1, not_a0, a1)
+
     raise ValueError(f"Unsupported AST form: {form}")
 
 

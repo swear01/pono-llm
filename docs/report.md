@@ -102,9 +102,27 @@ pono IC3IA 在加強版 BTOR2 上：**一律 < 0.3s**（vs. baseline 78s–∞�
 
 | 電路 | 原因 |
 |------|------|
-| `h_RCU`, `vis_arrays_buf_bug` | 複雜狀態機、heap 操作；LLM 只產生 const-bound candidates（被過濾） |
-| DVE 格式模型（`nextv_*`, `v_*`） | 並行過程代數模型，非 C 迴圈；雖通過名稱過濾但 LLM 無法推理 |
-| 一般硬體電路（Verilog FSM、processor） | 無有意義變數名，不變量是協定性質而非算術 |
+| `h_RCU`, `vis_arrays_buf_bug` | RCU 協定、heap 操作；需要 protocol invariant，非算術迴圈不變量 |
+| `sw_ball2004_2` | 軟體模型檢查電路，location bit 類型；3 個位置條件不變量可驗，但關鍵安全不變量需多步推理，IC3IA-as-oracle 無法完成 |
+| CBMC 格式（loops-crafted, eca-rers）| transition 為 input-driven（next state 是 input），無法產生有用 transition sketch |
+| DVE 格式模型（`nextv_*`, `v_*`） | 並行過程代數模型，非 C 迴圈 |
+| Wolf Verilog 電路（picorv32, zipcpu, dblclockfft） | 純硬體設計，名稱雖短但是協定信號，非迴圈變數 |
+| HLS 電路（hl_arr_access_128_bv） | Vivado HLS 生成，256+ 陣列狀態元素，不變量涉及記憶體內容 |
+
+### 3.4 延伸探索結果（本次調查）
+
+探索範圍：HWMCC 2024/2025 全部非 arithmetic_circuits 目錄、HWMCC 2020 全部 goel 電路、Wolf/Mann 電路。
+
+| 類別 | 數量 | 結論 |
+|------|------|------|
+| CBMC loops-crafted 電路 | 3 | input-driven，不適用 |
+| CBMC eca-rers2012 電路 | 23 | 同上 |
+| sw_ball2004_2 (Ball/SLAM) | 1 | 部分可用；`implies` 形式新增；但關鍵不變量超出 IC3IA oracle 能力 |
+| Verilog 硬體電路（wolf）| 100+ | 名稱短但為硬體信號，LLM 無法推理 |
+| HWMCC 2020 goel/industry | ~40 | 全部為 Verilog FSM，無軟體迴圈 |
+| HWMCC 2024 hku/bv HLS | 2 | 陣列電路，256+ 狀態，不適用 |
+
+**結論：HWMCC 2020/2024/2025 benchmark 集合中，本方法已找到全部可解電路（8 個）。**
 
 ---
 
@@ -116,11 +134,12 @@ pono IC3IA 在加強版 BTOR2 上：**一律 < 0.3s**（vs. baseline 78s–∞�
 3. 變數數量 2–10 個（LLM context 可處理）
 
 **不適用：**
-- 純硬體電路（cache、arbiter、protocol）
-- 複雜記憶體操作（heap allocator）
-- 大型狀態機（>20 個無語意變數名）
+- 純硬體電路（cache、arbiter、protocol、processor）
+- CBMC/ESBMC 生成電路（input-driven transitions，mangled names）
+- 複雜記憶體操作（heap allocator、陣列電路）
+- 需要多步路徑條件不變量的電路（sw_ball2004_2 類型）
 
-**一句話定位：** 這是「HLS/C-to-BTOR2 驗證」的專用加速工具，不是通用硬體驗證解法。
+**一句話定位：** 這是「C-to-BTOR2 驗證」的專用加速工具，針對保留迴圈算術結構的電路。不是通用硬體驗證解法。
 
 ---
 
@@ -128,7 +147,7 @@ pono IC3IA 在加強版 BTOR2 上：**一律 < 0.3s**（vs. baseline 78s–∞�
 
 ```
 llm_worker/
-  invariant_arith.py    ← 完整 pipeline（~700 行）
+  invariant_arith.py    ← 完整 pipeline（~800 行）
     detect_software_origin()
     build_software_prompt()       ← formula-rich prompt
     verify_invariant()            ← pono as oracle
@@ -137,6 +156,7 @@ llm_worker/
     _has_accumulator_pattern()    ← retry trigger
     _is_proof_fast()              ← probe gate
     _build_retry_prompt()         ← triangular-sum hint
+    ast_to_btor2()                ← 支援 implies 形式（新增）
   btor2_reader.py       ← BTOR2 parser + formula decoder
     _decode_expr()                ← BTOR2 DAG → C-like formula
     build_transition_sketch()
@@ -153,9 +173,10 @@ scripts/
 
 | 方向 | 說明 | 難度 |
 |------|------|------|
-| HLS benchmark 擴充 | Vivado/Intel HLS 生的 BTOR2 有 C 變數名，範圍可更廣 | 中 |
-| 硬體協定不變量 | 換策略：LLM 猜「這是 FIFO/Arbiter」再套協定模板 | 高 |
 | 論文撰寫 | 方法、結果、與 baseline/相關工作比較 | 中 |
+| HLS benchmark 自製 | 用 Vivado HLS 從 C 程式生成 BTOR2，擴充 benchmark 集合 | 高（需工具鏈） |
+| CBMC 電路支援 | 從 CBMC 的 BMC encoding 反向解析迴圈結構；不同架構 | 高 |
+| 位置條件不變量（sw_ball2004_2 類型） | 需要鏈式多步驗算策略，超出目前 IC3IA oracle 能力 | 高 |
 
 ---
 

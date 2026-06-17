@@ -22,8 +22,22 @@
 - fib_05: only Class-A benchmark (0 CEGAR rounds with deterministic sym_pair)
 - Exhaustive HWMCC scan: ~900 BV benchmarks, only fib_05 worked reactively
 
+## Benchmark Exploration (2026-06-17) — Ceiling Confirmed
+
+Exhaustive scan of all HWMCC 2020/2024/2025 benchmarks for extension opportunities:
+
+- **CBMC loops-crafted/eca-rers** (26 circuits): input-driven transitions — approach fundamentally doesn't apply
+- **sw_ball2004_2** (Ball/SLAM): Location-bit circuit with computable transitions. 3 location-conditioned invariants (`implies(L2,X<Y)`, `implies(L11,A==Y)`, `implies(L12,A<B)`) verified individually. Key safety invariant `implies(L3,X<Z)` needs multi-step reasoning IC3IA-as-oracle can't provide. **New: `implies` AST form added** to `ast_to_btor2`.
+- **Wolf Verilog** (picorv32, zipcpu, dblclockfft, qspiflash, 100+ circuits): Hardware designs, short signal names but protocol-based invariants, LLM can't reason about them
+- **HLS bv circuits** (hl_arr_access_128_bv): 256+ array state elements, invariant involves memory contents
+- **goel/industry**: All Verilog FSMs, 0 software-origin circuits
+- **HWMCC 2020 goel/opensource additional**: miim, vcegar_itc99_b13, vis_arrays_am2910, vis_arrays_bpbs — all FSM/protocol, non-arithmetic
+
+**Result**: 8 proved benchmarks is the natural ceiling within existing HWMCC sets.
+
 ## Backlog
 
 - **Paper/report**: write up method, results, comparison with baseline for publication
-- **More HLS circuits**: Vivado/Intel HLS output likely has C-style variable names; wider benchmark pool
-- **Stage 2 full trigger logic**: T1/T2/T3 monitors — low priority given pre-processing wins
+- **HLS benchmark via toolchain**: Vivado HLS from C source → BTOR2; would require external toolchain
+- **Location-conditioned invariant chain**: For sw_ball2004_2-type circuits; requires multi-step verification strategy beyond IC3IA oracle
+- **Stage 2 full trigger logic**: Low priority given pre-processing wins

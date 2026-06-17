@@ -154,4 +154,16 @@ build/pono --engine ic3ia -k 500 "$CONSTRAINED"
 | Python pipeline | `llm_worker/invariant_arith.py` — complete general pipeline |
 | 6-benchmark suite (2024/2025) | ✅ all unsat, ~95s total (parallel) |
 | 2 new benchmarks (2020 goel) | ✅ paper_v3 ~15s, vcegar_QF_BV_ar ~30s |
-| Sidecar IPC | ✅ working (stage0 request/response flow) |
+| `implies` AST form | ✅ added to ast_to_btor2 (2026-06-17) |
+
+## 探索邊界（2026-06-17 確認）
+
+| 類別 | 結果 |
+|------|------|
+| CBMC loops-crafted/eca-rers (26 circuits) | ❌ input-driven transitions，不適用 |
+| sw_ball2004_2 (Ball/SLAM) | ⚠️ 3 location invariants sound，但關鍵不變量需多步推理 |
+| Wolf Verilog 電路 (100+) | ❌ 硬體設計，協定不變量，LLM 無法推理 |
+| HWMCC 2020 goel/industry (~40) | ❌ Verilog FSM，無軟體迴圈 |
+| HWMCC 2024 hku/bv HLS | ❌ 256+ 陣列狀態元素 |
+
+**8 個 proved benchmarks 是目前 HWMCC benchmark 集合的自然上限。**
