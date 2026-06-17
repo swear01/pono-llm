@@ -682,3 +682,205 @@ def build_transition_sketch(info: BTOR2Info, refs: List[str]) -> List[str]:
             lines.append(f"{name}' = (complex expression)")
 
     return lines
+
+
+# ---------------------------------------------------------------------------
+# A2/A3: BAD condition rendering
+# ---------------------------------------------------------------------------
+
+def build_bad_condition_text(info: BTOR2Info) -> str:
+    """
+    Render the safety-violation condition (BAD) as a human-readable formula.
+
+    Strips the common 'and(const(1), cond)' wrapper injected by Yosys and
+    simplifies 'not(not(x))' double negations so the resulting text is clean.
+    Returns empty string if bad_lineno is unset or decoding fails.
+    """
+    if info.bad_lineno < 0:
+        return ""
+
+    state_by_ln: Dict[int, StateVar] = {sv.lineno: sv for sv in info.states}
+    input_by_ln: Dict[int, InputVar] = {iv.lineno: iv for iv in info.inputs}
+
+    def _peel_const1_and(ln: int) -> int:
+        """If ln = and(const(1), X) return X, else return ln."""
+        op = info.ops.get(ln)
+        deps = info.deps.get(ln, [])
+        if op in ("and", "bvand") and len(deps) >= 3:
+            data = deps[1:]
+            for i in range(min(2, len(data))):
+                cand = data[i]
+                if cand in info.consts:
+                    raw = info.consts[cand]
+                    try:
+                        v = int(raw, 2) if raw and set(raw) <= {'0', '1'} else int(raw)
+                        if v == 1:
+                            return data[1 - i]
+                    except (ValueError, TypeError):
+                        pass
+        return ln
+
+    def _peel_double_not(ln: int) -> int:
+        """If ln = not(not(X)) return X, else return ln."""
+        def _not_child(n: int) -> Optional[int]:
+            if info.ops.get(n) == "not":
+                deps = info.deps.get(n, [])
+                data = deps[1:] if deps else []
+                return data[0] if data else None
+            return None
+        c1 = _not_child(ln)
+        if c1 is not None:
+            c2 = _not_child(c1)
+            if c2 is not None:
+                return c2
+        return ln
+
+    effective = _peel_double_not(_peel_const1_and(info.bad_lineno))
+    try:
+        formula = _decode_expr(info, effective, input_by_ln, state_by_ln)
+    except Exception:
+        return ""
+    return formula[:300] + ("...(truncated)" if len(formula) > 300 else "")
+
+
+# ---------------------------------------------------------------------------
+# A4: Forward circuit simulation for LLM trace context
+# ---------------------------------------------------------------------------
+
+def _eval_node(
+    info: BTOR2Info,
+    ln: int,
+    state_vals: Dict[str, int],
+    input_vals: Dict[str, int],
+    state_by_ln: Dict[int, StateVar],
+    input_by_ln: Dict[int, InputVar],
+    node_widths: Dict[int, int],
+    cache: Dict[int, int],
+) -> int:
+    """Evaluate BTOR2 node ln with concrete integer state/input values."""
+    if ln in cache:
+        return cache[ln]
+
+    if ln in input_by_ln:
+        val = input_vals.get(input_by_ln[ln].ref, 0)
+        cache[ln] = val
+        return val
+    if ln in state_by_ln:
+        val = state_vals.get(state_by_ln[ln].ref, 0)
+        cache[ln] = val
+        return val
+    if ln in info.consts:
+        raw = info.consts[ln]
+        try:
+            val = int(raw, 2) if raw and set(raw) <= {'0', '1'} else int(raw)
+        except (ValueError, TypeError):
+            val = 0
+        cache[ln] = val
+        return val
+
+    op = info.ops.get(ln)
+    if not op:
+        cache[ln] = 0
+        return 0
+
+    all_deps = info.deps.get(ln, [])
+    data_args = all_deps if op in ("uext", "sext", "slice") else (all_deps[1:] if all_deps else [])
+
+    def a(i: int) -> int:
+        if i >= len(data_args):
+            return 0
+        return _eval_node(info, data_args[i], state_vals, input_vals,
+                          state_by_ln, input_by_ln, node_widths, cache)
+
+    width = node_widths.get(ln, 0)
+    mask = (1 << width) - 1 if width > 0 else 0xFFFFFFFF
+
+    if   op == "ite":                 result = a(1) if a(0) else a(2)
+    elif op == "add":                 result = (a(0) + a(1)) & mask
+    elif op == "sub":                 result = (a(0) - a(1)) & mask
+    elif op == "mul":                 result = (a(0) * a(1)) & mask
+    elif op == "not":                 result = 1 - int(bool(a(0)))
+    elif op in ("and", "bvand"):      result = int(bool(a(0)) and bool(a(1)))
+    elif op in ("or",  "bvor"):       result = int(bool(a(0)) or  bool(a(1)))
+    elif op in ("xor", "bvxor"):      result = int(bool(a(0)) != bool(a(1)))
+    elif op == "ult":                 result = int(a(0) <  a(1))
+    elif op == "ulte":                result = int(a(0) <= a(1))
+    elif op == "ugt":                 result = int(a(0) >  a(1))
+    elif op == "ugte":                result = int(a(0) >= a(1))
+    elif op == "eq":                  result = int(a(0) == a(1))
+    elif op == "neq":                 result = int(a(0) != a(1))
+    elif op in ("uext", "sext"):      result = a(0)
+    elif op == "slice":               result = a(0)
+    elif op == "concat":
+        b_w = node_widths.get(data_args[1], 1) if len(data_args) > 1 else 1
+        result = ((a(0) << b_w) | a(1)) & mask
+    else:                             result = 0
+
+    cache[ln] = result
+    return result
+
+
+def simulate_circuit_trajectory(
+    info: BTOR2Info,
+    sw_vars: List[StateVar],
+    n_steps: int = 8,
+) -> List[Dict[str, int]]:
+    """
+    Forward-simulate the circuit for n_steps clock cycles (all inputs held at 0).
+    Returns list of dicts mapping variable symbol → integer value at each step.
+
+    Inputs are fixed to 0 (no reset, no selector), which simulates the normal
+    execution path. The goal is to show the LLM a concrete arithmetic pattern
+    (e.g., sum = 0,0,1,3,6,10,15,...) so it can identify the invariant.
+    """
+    if not info.states or not sw_vars:
+        return []
+
+    state_by_ln: Dict[int, StateVar] = {sv.lineno: sv for sv in info.states}
+    input_by_ln: Dict[int, InputVar] = {iv.lineno: iv for iv in info.inputs}
+
+    # Width table: state widths known exactly; comparison results are 1-bit; rest unknown
+    node_widths: Dict[int, int] = {}
+    for sv in info.states:
+        node_widths[sv.lineno] = sv.width
+    for iv in info.inputs:
+        node_widths[iv.lineno] = iv.width
+    for ln, op in info.ops.items():
+        if op in ("ult", "ulte", "ugt", "ugte", "slt", "slte", "sgt", "sgte",
+                  "eq", "neq", "not", "and", "or", "bvand", "bvor", "xor", "bvxor"):
+            node_widths[ln] = 1
+
+    # All inputs = 0 (rst=0, clk=0, selector=0)
+    input_vals = {iv.ref: 0 for iv in info.inputs}
+
+    # Initial state from init values (decimal strings or binary strings stored in consts)
+    state_vals: Dict[str, int] = {}
+    for sv in info.states:
+        raw = sv.init_value
+        if raw is not None:
+            try:
+                val = int(raw, 2) if raw and set(raw) <= {'0', '1'} else int(raw)
+            except (ValueError, TypeError):
+                val = 0
+        else:
+            val = 0
+        state_vals[sv.ref] = val
+
+    rows: List[Dict[str, int]] = []
+    for _ in range(n_steps + 1):
+        row = {(sv.symbol or sv.ref): state_vals.get(sv.ref, 0) for sv in sw_vars}
+        rows.append(row)
+
+        # Advance one step: evaluate all next-expressions with current state
+        cache: Dict[int, int] = {}
+        next_vals: Dict[str, int] = {}
+        for sv in info.states:
+            nln = info.next_map.get(sv.ref)
+            next_vals[sv.ref] = (
+                _eval_node(info, nln, state_vals, input_vals,
+                           state_by_ln, input_by_ln, node_widths, cache)
+                if nln is not None else state_vals.get(sv.ref, 0)
+            )
+        state_vals = next_vals
+
+    return rows

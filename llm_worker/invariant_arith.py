@@ -98,8 +98,9 @@ def build_software_prompt(request: dict, info: BTOR2Info) -> str:
     """
     Build a loop-invariant-focused prompt for software-compiled circuits.
     Emphasizes C-level semantics and asks for arithmetic invariants.
+    Includes BAD condition and concrete simulation trace (A3/A4 architecture).
     """
-    from btor2_reader import build_transition_sketch
+    from btor2_reader import build_transition_sketch, build_bad_condition_text, simulate_circuit_trajectory
     benchmark = request.get("benchmark", "unknown")
     property_desc = request.get("property_desc", "")
     if len(property_desc) > 200:
@@ -138,6 +139,34 @@ def build_software_prompt(request: dict, info: BTOR2Info) -> str:
         for line in sw_sketch:
             parts.append(f"  {line}")
         parts.append("")
+
+    # A3: BAD condition — show LLM what it needs to disprove
+    bad_text = build_bad_condition_text(info)
+    if bad_text:
+        parts.append("SAFETY PROPERTY VIOLATED WHEN (the BAD condition):")
+        parts.append(f"  {bad_text}")
+        parts.append("Your invariants must TOGETHER ensure this condition NEVER holds.")
+        parts.append("")
+
+    # A4: Concrete simulation trace — show LLM the arithmetic pattern
+    try:
+        trajectory = simulate_circuit_trajectory(info, sw_vars, n_steps=8)
+    except Exception:
+        trajectory = []
+    if trajectory and len(trajectory) >= 4:
+        # Only show trace if values change across steps (boring if all-zero)
+        all_same = all(row == trajectory[0] for row in trajectory[1:4])
+        if not all_same:
+            col_names = list(trajectory[0].keys())
+            parts.append("CONCRETE EXECUTION TRACE (rst=0, all inputs=0, showing first 9 steps):")
+            header = "  step | " + " | ".join(f"{c:>8}" for c in col_names)
+            parts.append(header)
+            parts.append("  " + "-" * (len(header) - 2))
+            for step, row in enumerate(trajectory):
+                vals = " | ".join(f"{row[c]:>8}" for c in col_names)
+                parts.append(f"  {step:>4} | {vals}")
+            parts.append("Look for arithmetic patterns in the trace above (e.g., triangular sums).")
+            parts.append("")
 
     if property_desc:
         parts.append(f"PROPERTY TO VERIFY: {property_desc}")
