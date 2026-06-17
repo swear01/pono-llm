@@ -1,24 +1,29 @@
 # Roadmap
 
-## Recently Done
+## Done (2026-06-17)
 
-- **General method achieved (2026-06-17)**: All 6 HWMCC software-origin benchmarks proved via BTOR2 constraint injection
-- **Multi-round verification**: round-1 quick scan + round-2 with helper constraints
-- **ule fallback for eq candidates**: when eq(A,B) times out, auto-try ule(A,B)
-- **Deduplication**: sound ASTs deduplicated by canonical JSON key before injection
-- **Formula-rich transition sketch**: `_decode_expr()` renders actual formulas (c' = (i>=n? c : c+i))
-- **Output-label extraction**: unnamed states in fib_30/fib_37 now detected via `output` BTOR2 statements
-- **Sym_pair injection before LLM**: fib_05 eq(x,y) injected deterministically without LLM
-- **LLM stdout fixed**: `[llm]` and `[preprocess_sw]` messages now go to stderr only
-- **Exhaustive HWMCC scan**: ~900 BV benchmarks, 6 software-origin benchmarks found
-- Stage 0 reliability hardening: deterministic sym_pair injection, LLM gated on sym_pairs
-- Q5 diagnosis: secondary hot vars, symmetry detection, fib_05 Class-A result (reactive approach)
+### Pre-processing Pipeline (Q5)
+- **General method achieved**: 8 HWMCC software-origin benchmarks proved UNSAT
+- **BTOR2 constraint injection**: IC3IA on constrained circuit proves in <0.3s (vs 78–∞s baseline)
+- **Sym_pair injection (Phase 1)**: fib_05 eq(x,y) injected deterministically before LLM
+- **Formula-rich transition sketch**: `_decode_expr()` renders `c' = ((i >= n) ? c : (c + i))` — LLM needs actual formulas to infer triangular number invariants
+- **Output-label extraction**: unnamed states in fib_30/fib_37 detected via `output` BTOR2 statements
+- **Multi-round parallel verification**: round-1 (4 workers, 4s) + round-2 with helpers (4 workers, 10s)
+- **ule fallback for eq**: when `eq(A,B)` times out, auto-add `ule(A,B)` to round-2
+- **Retry loop with probe gate**: no arithmetic found + accumulator pattern → retry LLM with triangular hint; 3s probe prevents wasted retry
+- **Deduplication**: sound ASTs deduplicated by canonical JSON key
+- **Anti-division prompt rule**: LLM now outputs `2*sum==i*(i-1)` not `sum==i*(i-1)/2`
+- **Const-bound filter**: rejects `n==40`, `i<=40` (adds IC3IA predicate dimensions, slows proof)
+- **Benchmark scan**: HWMCC 2024/2025 (6 found), HWMCC 2020 (2 new), sv-benchmarks (0)
+- **LLM stdout fix**: all diagnostic prints to stderr so `$(python3 ...)` capture is clean
+
+### Previous (Reactive Sidecar — Dead End)
+- Stage 0/2 reactive sidecar: sym_pair injection + LLM ordering hints
+- fib_05: only Class-A benchmark (0 CEGAR rounds with deterministic sym_pair)
+- Exhaustive HWMCC scan: ~900 BV benchmarks, only fib_05 worked reactively
 
 ## Backlog
 
-- **Reliability improvement**: retry loop if few sound invariants found
-- **Parallel verification**: concurrent `verify_invariant` calls to reduce wall time
-- **Broader benchmark scan**: sv-benchmarks, HWMCC 2020 non-BV, custom circuits
-- **Paper/report**: method, results, comparison with baseline
-- Stage 2 full trigger logic (T1/T2/T3 monitors) — low priority given new pre-processing wins
-- OpenRouter provider policy documentation
+- **Paper/report**: write up method, results, comparison with baseline for publication
+- **More HLS circuits**: Vivado/Intel HLS output likely has C-style variable names; wider benchmark pool
+- **Stage 2 full trigger logic**: T1/T2/T3 monitors — low priority given pre-processing wins
