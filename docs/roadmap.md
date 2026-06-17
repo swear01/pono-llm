@@ -47,13 +47,21 @@ Exhaustive scan of all HWMCC 2020/2024/2025 benchmarks for extension opportuniti
 - Examples: fib_23 shows `!((i < n) || (sum > 0))`, 93.c shows `((i >= n) && (n*3 != x+y))`
 - LLM now knows exactly what condition to disprove
 
-### Simulation Trace in LLM Prompt (A4) — DONE
-- `simulate_circuit_trajectory()` + `_eval_node()`: forward-simulate 9 steps, all inputs=0
-- fib_23 trace reveals sum=0,0,1,3,6,10,15,21,28 (triangular numbers — invariant obvious)
-- 93.c trace reveals x=2i, y=i at each step (x+y=3*i invariant obvious)
-- 93.c now generates correct invariant consistently (6/6 LLM samples agree)
-- 77.c (constant with selector=0): all_same detection skips trace automatically
-- **fib_37 selector fix**: `simulate_circuit_trajectory(input_override={"selector":1})` — detects "stuck-at-0" vars, retries with selector=1; m=0,0,1,2,...8 chasing x reveals `m<=x`; fib_37 now injects 3 constraints and IC3IA proves in <0.3s
+### Simulation Trace in LLM Prompt (A4) — SUPERSEDED by inductive reasoning (2026-06-17)
+- Original implementation: forward-simulate 9 steps, all inputs=0
+- Problem: input-dependent (selector=0 gives boring m=0 trace for fib_37); required ad-hoc hacks
+- **Replaced by**: inductive reasoning guidance in prompt + formula simplification (see below)
+
+### Inductive Reasoning Prompt + Formula Simplification — DONE (2026-06-17)
+- **Formula simplification** in `_decode_expr`: strip rst wrappers, deduplicate redundant ite branches
+  - 93.c `i'`: `((sel&&G)||(¬sel&&G)) ? X : Y` → `(G ? X : Y)` (G factored out)
+  - fib_37 `m'`: nested redundant guards removed → `((x<n) ? (selector ? x : m) : m)` (clean)
+- **No simulation trace** — removed ad-hoc selector=0/1 simulation entirely
+- **Two inductive examples** in prompt:
+  1. Arithmetic sum: `sum' = sum+i` → `2*sum == i*(i-1)` (telescoping)
+  2. Ordering/ITE: `m' = (cond ? x : m)`, `x' = x+1` → `m <= x` (case analysis per branch)
+- **Result**: all 8 LLM-path benchmarks pass without trace; LLM reasons symbolically from formulas
+- **Why better**: works for ANY inputs (not selector-dependent); no benchmark-specific hacks
 
 ## Backlog
 

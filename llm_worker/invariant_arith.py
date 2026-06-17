@@ -148,52 +148,38 @@ def build_software_prompt(request: dict, info: BTOR2Info) -> str:
         parts.append("Your invariants must TOGETHER ensure this condition NEVER holds.")
         parts.append("")
 
-    # A4: Concrete simulation trace — show LLM the arithmetic pattern.
-    # Try selector=0 first; if some sw_vars never change (boring), also try selector=1.
-    def _n_varying(traj: list) -> int:
-        """Count how many sw_var columns show distinct values across steps."""
-        if not traj:
-            return 0
-        return sum(
-            1 for col in (traj[0] or {})
-            if len({row[col] for row in traj if col in row}) > 1
-        )
-
-    def _has_zero_stuck(traj: list) -> bool:
-        """Return True if any column is stuck at 0 for every step."""
-        if not traj:
-            return False
-        return any(
-            all(row.get(col, -1) == 0 for row in traj)
-            for col in (traj[0] or {})
-        )
-
-    try:
-        trajectory = simulate_circuit_trajectory(info, sw_vars, n_steps=8)
-        varying0 = _n_varying(trajectory)
-        # If any var is stuck at 0 (never updated), try selector=1 if circuit has one
-        has_selector = any(iv.symbol == 'selector' for iv in info.inputs)
-        if _has_zero_stuck(trajectory) and has_selector:
-            traj1 = simulate_circuit_trajectory(info, sw_vars, n_steps=8,
-                                                input_override={"selector": 1})
-            if _n_varying(traj1) > varying0:
-                trajectory = traj1
-    except Exception:
-        trajectory = []
-    if trajectory and len(trajectory) >= 4:
-        # Only show trace if values change across steps (boring if all-zero)
-        all_same = all(row == trajectory[0] for row in trajectory[1:4])
-        if not all_same:
-            col_names = list(trajectory[0].keys())
-            parts.append("CONCRETE EXECUTION TRACE (rst=0, all inputs=0, showing first 9 steps):")
-            header = "  step | " + " | ".join(f"{c:>8}" for c in col_names)
-            parts.append(header)
-            parts.append("  " + "-" * (len(header) - 2))
-            for step, row in enumerate(trajectory):
-                vals = " | ".join(f"{row[c]:>8}" for c in col_names)
-                parts.append(f"  {step:>4} | {vals}")
-            parts.append("Look for arithmetic patterns in the trace above (e.g., triangular sums).")
-            parts.append("")
+    # A3/A4 replacement: inductive reasoning guidance derived from the formulas.
+    # Key insight: the transition sketch is already sufficient for symbolic reasoning —
+    # no simulation trace needed. Instead, guide LLM to reason inductively.
+    parts += [
+        "INDUCTIVE REASONING APPROACH:",
+        "Reason symbolically from the TRANSITION formulas above.",
+        "For each candidate invariant I(vars):",
+        "  1. Verify I holds at the initial state",
+        "  2. Assume I(vars) at step t; substitute vars' = transition(vars); show I(vars')",
+        "",
+        "EXAMPLE (illustrative, not this circuit):",
+        "  Transitions: sum' = (i<n)?(sum+i):sum,  i' = (i<n)?(i+1):i",
+        "  Candidate: 2*sum == i*(i-1)",
+        "  Init: 2*0 == 0*(0-1) = 0 ✓",
+        "  Step (i<n): 2*sum' = 2*(sum+i) = i*(i-1)+2i = i*(i+1) = (i+1)*i = i'*(i'-1) ✓",
+        "  Step (i>=n): sum'=sum, i'=i → invariant preserved trivially ✓",
+        "",
+        "EXAMPLE 2 (ordering invariant with ITE/conditional update):",
+        "  Transitions: m' = (x < n) ? (sel ? x : m) : m,   x' = (x < n) ? (x+1) : x",
+        "  Candidate: m <= x",
+        "  Init: 0 <= 0 ✓",
+        "  Step (x < n, sel=1): m' = x, x' = x+1 → m' = x < x+1 = x' → m' <= x' ✓",
+        "  Step (x < n, sel=0): m' = m <= x < x+1 = x' → m' <= x' ✓",
+        "  Step (x >= n):        m' = m, x' = x → m' <= x' trivially ✓",
+        "  → m <= x is preserved in all branches.",
+        "",
+        "HINT: When two branches of a transition have DIFFERENT updates (e.g., selector=0 vs 1),",
+        "look for invariants that hold regardless of branch choice.",
+        "Example: if x' = x+1 or x+2 depending on mode, and y' = y+2 or y+1,",
+        "then x'+y' = x+y+3 in BOTH cases → x+y-3*i is constant.",
+        "",
+    ]
 
     if property_desc:
         parts.append(f"PROPERTY TO VERIFY: {property_desc}")
@@ -213,12 +199,11 @@ def build_software_prompt(request: dict, info: BTOR2Info) -> str:
         "  WRONG: sum == i*(i-1)/2",
         "  RIGHT: mul(const(2), sum) == mul(i, sub(i, const(1)))  [i.e. 2*sum == i*(i-1)]",
         "",
-        "Think about relationships between variables that hold throughout the loop:",
-        "  - Linear combinations (e.g., x + y == 3 * i)",
-        "  - Counter bounds (e.g., i <= n)",
-        "  - Triangular sums: 2*sum == i*(i-1)  NOT sum == i*(i-1)/2",
-        "  - Equality invariants (e.g., x == y when both updated identically)",
-        "  - Phase conditions (e.g., x == 2*i when mode==0)",
+        "Invariant patterns to consider (reason inductively from the transitions above):",
+        "  - Linear combinations preserved across all branches (e.g., x + y == 3 * i)",
+        "  - Counter bounds (e.g., i <= n — check: if i<n then i+1<=n; if i>=n then i stays)",
+        "  - Triangular sums (if sum += i each step, then 2*sum == i*(i-1))",
+        "  - Ordering invariants (e.g., m <= x — check each branch preserves m<=x')",
         "",
         "OUTPUT FORMAT — return a single JSON object:",
         '{',

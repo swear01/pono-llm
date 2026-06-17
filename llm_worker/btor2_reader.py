@@ -605,13 +605,41 @@ def _decode_expr(
 
     result: str
     if op == "ite" and len(data_args) >= 3:
+        cond_ln = data_args[0]
+        then_ln = data_args[1]
+        else_ln = data_args[2]
         cond = child(0)
         then_ = child(1)
         else_ = child(2)
         if cond in ("rst", "reset") and then_ == "0":
+            # Strip Yosys reset wrapper: (rst ? 0 : X) → X
             result = else_
+        elif then_ == else_:
+            # Trivial: condition doesn't matter → just the value
+            result = then_
         else:
-            result = f"({cond} ? {then_} : {else_})"
+            # (A ? X : (B ? X : Y)) → ((A || B) ? X : Y)
+            # Reduces redundant branches where both guards yield the same result.
+            inner_all = info.deps.get(else_ln, [])
+            if (info.ops.get(else_ln) == "ite" and
+                    len(inner_all) >= 4 and
+                    inner_all[2] == then_ln):
+                inner_cond = _decode_expr(info, inner_all[1], input_by_ln, state_by_ln,
+                                          depth + 1, max_depth, _cache)
+                inner_else = _decode_expr(info, inner_all[3], input_by_ln, state_by_ln,
+                                          depth + 1, max_depth, _cache)
+                result = f"(({cond} || {inner_cond}) ? {then_} : {inner_else})"
+            # (A ? X : (B ? Y : X)) → (B ? Y : X)  when A,B complementary (x<n / x>=n)
+            elif (info.ops.get(else_ln) == "ite" and
+                    len(inner_all) >= 4 and
+                    inner_all[3] == then_ln):
+                inner_cond = _decode_expr(info, inner_all[1], input_by_ln, state_by_ln,
+                                          depth + 1, max_depth, _cache)
+                inner_then = _decode_expr(info, inner_all[2], input_by_ln, state_by_ln,
+                                          depth + 1, max_depth, _cache)
+                result = f"({inner_cond} ? {inner_then} : {then_})"
+            else:
+                result = f"({cond} ? {then_} : {else_})"
     elif op == "add" and len(data_args) >= 2:
         result = f"({child(0)} + {child(1)})"
     elif op == "sub" and len(data_args) >= 2:
