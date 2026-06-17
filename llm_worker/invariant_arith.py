@@ -31,10 +31,15 @@ from btor2_reader import BTOR2Info, parse_btor2
 # ---------------------------------------------------------------------------
 
 _C_IDENT = re.compile(r'^[a-z_][a-z0-9_]*$', re.IGNORECASE)
-_BAD_PREFIXES = ('state', 'v1_buf', 'v2_buf', 'reset0', 'valid', 'ap_', 'pc[')
-_BAD_CHARS = ('!', '{', '(', '`', '.')
+_BAD_PREFIXES = (
+    'state', 'v1_buf', 'v2_buf', 'reset0', 'valid', 'ap_', 'pc[',
+    # BEEM protocol models: nextv_ (next-value shadow vars) and v_ (value vars)
+    'nextv_', 'v_',
+)
+_BAD_CHARS = ('!', '{', '(', '`', '.', '[', ']')
 _BAD_PATTERNS = (
     '__',   # Verilog hierarchy flattening: module__submodule
+    '_',    # Protocol model shadow vars: nextv_foo, dve_valid, nexta_bar
 )
 
 
@@ -45,7 +50,10 @@ def detect_software_origin(info: BTOR2Info) -> bool:
     - No HLS-generated prefixes (u1., ap_CS_fsm, etc.)
     - No Verilog hierarchy names (double underscore: module__submodule)
     - Names like i, n, x, y, sum, a, b, counter (short, single-level)
+    - MAJORITY of state variables are clean (>=50%), to reject FSMs that
+      happen to have a few simple-looking variable names among many complex ones
     """
+    total_named = sum(1 for sv in info.states if sv.symbol)
     clean = []
     for sv in info.states:
         name = sv.symbol or ""
@@ -59,7 +67,13 @@ def detect_software_origin(info: BTOR2Info) -> bool:
             continue
         if _C_IDENT.match(name) and len(name) <= 12:
             clean.append(sv)
-    return len(clean) >= 2
+    if len(clean) < 2:
+        return False
+    # Reject circuits where only a small fraction of named states are clean
+    # (e.g., FSMs with a few simple-named vars among many complex ones)
+    if total_named > 4 and len(clean) / total_named < 0.5:
+        return False
+    return True
 
 
 def get_software_vars(info: BTOR2Info):
