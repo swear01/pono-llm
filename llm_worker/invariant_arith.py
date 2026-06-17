@@ -148,9 +148,36 @@ def build_software_prompt(request: dict, info: BTOR2Info) -> str:
         parts.append("Your invariants must TOGETHER ensure this condition NEVER holds.")
         parts.append("")
 
-    # A4: Concrete simulation trace — show LLM the arithmetic pattern
+    # A4: Concrete simulation trace — show LLM the arithmetic pattern.
+    # Try selector=0 first; if some sw_vars never change (boring), also try selector=1.
+    def _n_varying(traj: list) -> int:
+        """Count how many sw_var columns show distinct values across steps."""
+        if not traj:
+            return 0
+        return sum(
+            1 for col in (traj[0] or {})
+            if len({row[col] for row in traj if col in row}) > 1
+        )
+
+    def _has_zero_stuck(traj: list) -> bool:
+        """Return True if any column is stuck at 0 for every step."""
+        if not traj:
+            return False
+        return any(
+            all(row.get(col, -1) == 0 for row in traj)
+            for col in (traj[0] or {})
+        )
+
     try:
         trajectory = simulate_circuit_trajectory(info, sw_vars, n_steps=8)
+        varying0 = _n_varying(trajectory)
+        # If any var is stuck at 0 (never updated), try selector=1 if circuit has one
+        has_selector = any(iv.symbol == 'selector' for iv in info.inputs)
+        if _has_zero_stuck(trajectory) and has_selector:
+            traj1 = simulate_circuit_trajectory(info, sw_vars, n_steps=8,
+                                                input_override={"selector": 1})
+            if _n_varying(traj1) > varying0:
+                trajectory = traj1
     except Exception:
         trajectory = []
     if trajectory and len(trajectory) >= 4:

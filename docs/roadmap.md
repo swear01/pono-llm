@@ -53,6 +53,7 @@ Exhaustive scan of all HWMCC 2020/2024/2025 benchmarks for extension opportuniti
 - 93.c trace reveals x=2i, y=i at each step (x+y=3*i invariant obvious)
 - 93.c now generates correct invariant consistently (6/6 LLM samples agree)
 - 77.c (constant with selector=0): all_same detection skips trace automatically
+- **fib_37 selector fix**: `simulate_circuit_trajectory(input_override={"selector":1})` — detects "stuck-at-0" vars, retries with selector=1; m=0,0,1,2,...8 chasing x reveals `m<=x`; fib_37 now injects 3 constraints and IC3IA proves in <0.3s
 
 ## Backlog
 

@@ -824,14 +824,14 @@ def simulate_circuit_trajectory(
     info: BTOR2Info,
     sw_vars: List[StateVar],
     n_steps: int = 8,
+    input_override: Optional[Dict[str, int]] = None,
 ) -> List[Dict[str, int]]:
     """
-    Forward-simulate the circuit for n_steps clock cycles (all inputs held at 0).
-    Returns list of dicts mapping variable symbol → integer value at each step.
+    Forward-simulate the circuit for n_steps clock cycles.
 
-    Inputs are fixed to 0 (no reset, no selector), which simulates the normal
-    execution path. The goal is to show the LLM a concrete arithmetic pattern
-    (e.g., sum = 0,0,1,3,6,10,15,...) so it can identify the invariant.
+    input_override maps input symbol → value (e.g. {"selector": 1} to activate
+    selector-controlled updates). All other inputs default to 0 (no reset, no clock).
+    The goal is to show LLM a concrete arithmetic pattern so it can identify invariants.
     """
     if not info.states or not sw_vars:
         return []
@@ -850,8 +850,12 @@ def simulate_circuit_trajectory(
                   "eq", "neq", "not", "and", "or", "bvand", "bvor", "xor", "bvxor"):
             node_widths[ln] = 1
 
-    # All inputs = 0 (rst=0, clk=0, selector=0)
-    input_vals = {iv.ref: 0 for iv in info.inputs}
+    # Build input values: default 0, with overrides applied by symbol name
+    override = input_override or {}
+    input_vals = {}
+    for iv in info.inputs:
+        sym = iv.symbol or iv.ref
+        input_vals[iv.ref] = override.get(sym, 0)
 
     # Initial state from init values (decimal strings or binary strings stored in consts)
     state_vals: Dict[str, int] = {}
