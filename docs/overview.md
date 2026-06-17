@@ -19,6 +19,8 @@
 ```
 software-origin BTOR2
     ↓ detect (C-style var names, output labels)
+    ↓ Step 0: Portfolio — try ind/interp in parallel (5s cap)
+    ↓    → proved? return immediately (sw_ball2004_2: 1.2s, vcegar: 1.0s)
     ↓ Phase 1: inject sym_pair equalities (eq(x,y) when structurally identical)
     ↓ Phase 2: LLM generates arithmetic invariants using formula-level transition sketch
     ↓ Phase 3: multi-round IC3IA verification (round-1 fast, round-2 with helpers)
@@ -30,8 +32,9 @@ pono --engine ic3ia → UNSAT in <0.3s
 
 ## Results (2026-06-17)
 
-8 software-origin benchmarks proved (6 from HWMCC 2024/2025, 2 from HWMCC 2020):
+10 software-origin benchmarks covered (portfolio fast-path + LLM + IC3IA):
 
+**LLM + IC3IA path:**
 | Circuit | Pattern | Key invariants |
 |---------|---------|----------------|
 | 93.c | linear counter | x+y==3*i |
@@ -41,13 +44,18 @@ pono --engine ic3ia → UNSAT in <0.3s
 | fib_30 | triangular sum | 2*c<=i*(i-1) |
 | fib_37 | counter bound | x<=n, m<=x |
 | paper_v3 | chasing counter | x<=y, y>=x |
-| vcegar_QF_BV_ar | Fibonacci bound | b<=a |
 
-Preprocessing: 9–47s. IC3IA on constrained BTOR2: 0.02–0.3s (78–∞s baseline).
+**Portfolio fast-path (k-induction):**
+| Circuit | Engine | Time |
+|---------|--------|------|
+| vcegar_QF_BV_ar | ind | 1.0s |
+| sw_ball2004_2 | ind | 1.2s |
+
+Preprocessing: 14–36s (LLM path). Portfolio fast-path: <2s. IC3IA on constrained: 0.02–0.3s.
 
 ## External Resources
 
-- Architecture: [`docs/ARCHITECTURE.md`](ARCHITECTURE.md)
+- Architecture alternatives: [`docs/architecture_plan.md`](architecture_plan.md)
 - Active plan: [`docs/plan.md`](plan.md)
 - Handoff state: [`docs/HANDOFF_CURRENT_STATE.md`](HANDOFF_CURRENT_STATE.md)
 - Upstream Pono: https://github.com/stanford-centaur/pono
