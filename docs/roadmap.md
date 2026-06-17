@@ -53,9 +53,12 @@ Exhaustive scan of all HWMCC 2020/2024/2025 benchmarks for extension opportuniti
 - **Replaced by**: inductive reasoning guidance in prompt + formula simplification (see below)
 
 ### Inductive Reasoning Prompt + Formula Simplification — DONE (2026-06-17)
-- **Formula simplification** in `_decode_expr`: strip rst wrappers, deduplicate redundant ite branches
-  - 93.c `i'`: `((sel&&G)||(¬sel&&G)) ? X : Y` → `(G ? X : Y)` (G factored out)
-  - fib_37 `m'`: nested redundant guards removed → `((x<n) ? (selector ? x : m) : m)` (clean)
+- **Formula simplification** in `_decode_expr` (three passes):
+  - Strip ALL rst conditions (not just `rst ? 0`): `n' = (rst ? 40 : n)` → `n' = n`
+  - `(A ? X : (B ? X : Y))` → `((A||B) ? X : Y)` (deduplicate same-THEN branches)
+  - `or(and(A,G), and(!A,G))` → `G` via `_find_common_guard` helper
+  - `(and(A,G) ? X : (and(!A,G) ? Y : Z))` → `(G ? (A?X:Y) : Z)` (factor common guard from both branches)
+  - Result: 93.c `x'` = `((i<n) ? (selector?(x+1):(x+2)) : x)`, fib_05 `i'` = `((j<300) ? (i+x+1) : i)`
 - **No simulation trace** — removed ad-hoc selector=0/1 simulation entirely
 - **Two inductive examples** in prompt:
   1. Arithmetic sum: `sum' = sum+i` → `2*sum == i*(i-1)` (telescoping)

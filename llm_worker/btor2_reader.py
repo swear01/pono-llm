@@ -603,6 +603,38 @@ def _decode_expr(
         return _decode_expr(info, data_args[i], input_by_ln, state_by_ln,
                             depth + 1, max_depth, _cache)
 
+    def _is_not_of(x: int, y: int) -> bool:
+        """Return True if node x is 'not(y)' (x = not y)."""
+        if info.ops.get(x) != "not":
+            return False
+        x_deps = info.deps.get(x, [])
+        return len(x_deps) >= 2 and x_deps[1] == y
+
+    def _find_common_guard(a_ln: int, b_ln: int):
+        """
+        If a_ln = and(A, G) and b_ln = and(!A, G) (or vice versa),
+        return (A_ln, G_ln) where A_ln is the selector and G_ln is the guard.
+        Otherwise return None.
+        """
+        if info.ops.get(a_ln) not in ("and", "bvand"):
+            return None
+        if info.ops.get(b_ln) not in ("and", "bvand"):
+            return None
+        a_deps = info.deps.get(a_ln, [])
+        b_deps = info.deps.get(b_ln, [])
+        if len(a_deps) < 3 or len(b_deps) < 3:
+            return None
+        # a_deps = [sort, p, q], b_deps = [sort, r, s]
+        a_p, a_q = a_deps[1], a_deps[2]
+        b_p, b_q = b_deps[1], b_deps[2]
+        # Check all four combinations of (a_selector, a_guard) vs (b_selector, b_guard)
+        for (a_sel, a_g) in ((a_p, a_q), (a_q, a_p)):
+            for (b_sel, b_g) in ((b_p, b_q), (b_q, b_p)):
+                if a_g == b_g:
+                    if _is_not_of(b_sel, a_sel) or _is_not_of(a_sel, b_sel):
+                        return (a_sel, a_g)
+        return None
+
     result: str
     if op == "ite" and len(data_args) >= 3:
         cond_ln = data_args[0]
@@ -611,17 +643,37 @@ def _decode_expr(
         cond = child(0)
         then_ = child(1)
         else_ = child(2)
-        if cond in ("rst", "reset") and then_ == "0":
-            # Strip Yosys reset wrapper: (rst ? 0 : X) → X
+        if cond in ("rst", "reset"):
+            # Strip Yosys reset wrapper: (rst ? X : Y) → Y
             result = else_
         elif then_ == else_:
             # Trivial: condition doesn't matter → just the value
             result = then_
         else:
+            inner_all = info.deps.get(else_ln, [])
+            # (and(A,G) ? X : (and(!A,G) ? Y : Z)) → (G ? (A ? X : Y) : Z)
+            # If X == Y, simplifies further to (G ? X : Z).
+            guard_info = None
+            if info.ops.get(else_ln) == "ite" and len(inner_all) >= 4:
+                inner_cond_ln = inner_all[1]
+                guard_info = _find_common_guard(cond_ln, inner_cond_ln)
+            if guard_info is not None:
+                a_sel_ln, g_ln = guard_info
+                g_str = _decode_expr(info, g_ln, input_by_ln, state_by_ln,
+                                     depth + 1, max_depth, _cache)
+                a_str = _decode_expr(info, a_sel_ln, input_by_ln, state_by_ln,
+                                     depth + 1, max_depth, _cache)
+                inner_then = _decode_expr(info, inner_all[2], input_by_ln, state_by_ln,
+                                          depth + 1, max_depth, _cache)
+                inner_else = _decode_expr(info, inner_all[3], input_by_ln, state_by_ln,
+                                          depth + 1, max_depth, _cache)
+                if then_ == inner_then:
+                    result = f"({g_str} ? {then_} : {inner_else})"
+                else:
+                    result = f"({g_str} ? ({a_str} ? {then_} : {inner_then}) : {inner_else})"
             # (A ? X : (B ? X : Y)) → ((A || B) ? X : Y)
             # Reduces redundant branches where both guards yield the same result.
-            inner_all = info.deps.get(else_ln, [])
-            if (info.ops.get(else_ln) == "ite" and
+            elif (info.ops.get(else_ln) == "ite" and
                     len(inner_all) >= 4 and
                     inner_all[2] == then_ln):
                 inner_cond = _decode_expr(info, inner_all[1], input_by_ln, state_by_ln,
@@ -640,6 +692,15 @@ def _decode_expr(
                 result = f"({inner_cond} ? {inner_then} : {then_})"
             else:
                 result = f"({cond} ? {then_} : {else_})"
+    elif op in ("or", "bvor") and len(data_args) >= 2:
+        # or(and(A,G), and(!A,G)) → G
+        g_info = _find_common_guard(data_args[0], data_args[1])
+        if g_info is not None:
+            _, g_ln = g_info
+            result = _decode_expr(info, g_ln, input_by_ln, state_by_ln,
+                                  depth + 1, max_depth, _cache)
+        else:
+            result = f"({child(0)} || {child(1)})"
     elif op == "add" and len(data_args) >= 2:
         result = f"({child(0)} + {child(1)})"
     elif op == "sub" and len(data_args) >= 2:
@@ -652,8 +713,6 @@ def _decode_expr(
         result = f"!{child(0)}"
     elif op in ("and", "bvand") and len(data_args) >= 2:
         result = f"({child(0)} && {child(1)})"
-    elif op in ("or", "bvor") and len(data_args) >= 2:
-        result = f"({child(0)} || {child(1)})"
     elif op == "ult" and len(data_args) >= 2:
         result = f"({child(0)} < {child(1)})"
     elif op == "ulte" and len(data_args) >= 2:
