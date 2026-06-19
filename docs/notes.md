@@ -2,6 +2,57 @@
 
 > Tacit knowledge an agent can't infer from reading code.
 
+## Boolean Pair Hints — Scan Findings (2026-06-18) — ⚠️ NOT sound proofs
+
+> ⚠️ **SOUNDNESS AUDIT (2026-06-19): these are NOT sound proofs.** `scripts/cert_check.py`
+> (z3 certificate checker) re-verifies IC3IA's invariant on the *original* circuit (no hint
+> constraint): **32/32 verifiable instances REJECT** (signature `C1=U C2=S C3=U`; 7 array
+> unverifiable), including all 5 "STRONG NEW". Reason: a hint added as a BTOR2 `constraint`
+> is an *assumption* → IC3IA returns `!BAD` (safe at init, implies ¬BAD, but not inductive
+> on the original transition) = circular reasoning. Re-run `scripts/audit_proof_soundness.py`.
+> **Even hint-as-lemma can NOT fix these** (2026-06-19 BMC check): `X&&Y` is reachable
+> from init in 5/5 categories tested (frogs.5/gcd/sumt3/pals_floodmax/picorv32-pcregs-p0)
+> → `!(X&&Y)` is a FALSE invariant in BTOR2 (bit-level doesn't preserve the RTL/DVE mutex),
+> so any lemma form is dropped by IC3's push / rejected by check_intersects_initial. The
+> signal-name mutex-hint method cannot yield sound proofs at the BTOR2 level. To be sound,
+> work at an abstraction that preserves the mutex (RTL/DVE), or derive hints from the actual
+> BTOR2 transition rather than signal names.
+
+**Pattern**: Circuits where ALL standard engines (ind, interp, ic3ia) timeout, but adding a single boolean pair constraint `!(X && Y)` makes IC3IA report "unsat" in <10s — *under the assumed constraint*. Useful as an **acceleration map**, not as proofs.
+
+**Count: 42 acceleration instances across 39 unique circuits** (after removing 4 confirmed false positives per competition CSV audit 2026-06-19). **0 are sound proofs.**
+- 27 KNOWN UNSAT: competition proved them with other engines (circuit IS safe); hint only speeds pono's constrained "unsat"
+- 5 "STRONG NEW": all competition tools timed out at 3600s — but all REJECT in the soundness audit, so NOT claimable as new proofs
+- 7 UNCERTAIN (array circuits): competition also failed; also unverifiable by cert_check (no array support)
+
+**Six hint pattern categories:**
+
+1. **BEEM one-hot FSM** (`!(state_A && state_B)` — mutually exclusive protocol states): brp2.2, frogs.5, msmie.3, rushhour.4, brp2.3, collision.1. Signal names like `a_idle`, `a_error`, `a_done` carry clear semantic mutex.
+
+2. **Protocol state exclusion** (`!(dve_valid && nexta_s0)`, `!(a_r4 && a_r0)`): pgm_protocol.7 (2 props), pgm_protocol.8. Named transition variables expose next-state exclusion.
+
+3. **RTL formal annotation** — three subtypes:
+   - `!(CHECK && EN)` (same assertion): picorv32-check-p22, ponylink-slaveTXlen-unsat. BAD = `CHECK && EN`, hint is the pair itself.
+   - **Cross-assertion pairs** (`!(EN_line1 && EN_line2)` or `!(EN && CHECK_other)`): picorv32-pcregs-p0/p2 (`!(EN_44$3 && EN_39$1)`), zipcpu-zipmmu-p14 (`!(EN_754$66 && CHECK_677$59)`), zipcpu-zipmmu-p26 (`!(CHECK_759$70 && o_cyc)`).
+   - **f_past_valid pairs**: qspiflash (3 circuits), vgasim_imgfifo (5 circuits), zipversa-p03/p10. f_past_valid is almost always mutex with assertion-check signals at time 0.
+
+4. **Wordlevel HLS handshake** (`!(v1_buf && v2_buf)`, `!(v1_buf && ap_enable...)`): counter, gcd, kalman circuits. Two output-valid buffers can't simultaneously fire; also: output-valid vs pipeline-enable stage flag.
+
+5. **Reset/validity mutex** (`!(reset0 && valid)`): zero_sum_const4/5, standard_copy2_ground-2, ifeqn4f/5, s32if, flag_loopdep, array7_pattern, hard-ll_valuebound20, sumt3. Control signals that are structurally mutex but require arithmetic reasoning to prove invariant globally.
+
+6. **One-hot mode encoding** (`!(valid && modeN)`): pals_lcr-var-start-time.5.1/6.1, pals_opt-floodmax.4. PALS protocol circuits where valid and a specific one-hot mode bit cannot both be set.
+
+**LLM relevance**: ALL six patterns are LLM-natural — signal names (`error`, `idle`, `CHECK`, `EN`, `reset0`, `valid`, `f_past_valid`, `mode`) carry enough semantics for an LLM to suggest `!(A && B)`.
+
+**CRITICAL: SAT-circuit false positive**: Adding `!(X && Y)` to a SAT circuit cuts off the real counterexample and gives spurious UNSAT. `-sat` suffix filter is insufficient — brp2.2.prop1 (2020 SAT, no `-sat` suffix), ifeqn4f (2024-array SAT, no `-sat` suffix) are confirmed false positives. Always cross-check with HWMCC competition CSV before claiming a proof. 4 confirmed false positives removed from final count: brp2.2.prop1, ifeqn4f, pals_lcr-var-start-time.5.1/.6.1.
+
+**Scan methodology** (scripts/sweep2.py, `/tmp/extended_scan.py`):
+- Phase 1 (bob6gka9i): exactly 2 named 1-bit state refs in BAD → test BAD×BAD pair → 18 accelerated (19 found, 1 false positive removed) — NOT sound proofs, see audit above
+- Phase 2 (extended scan): 1-3 BAD refs, test BAD-ref × ALL named 1-bit states → 24 accelerated (27 found, 3 false positives removed) — NOT sound proofs
+- Baseline: ind(6s) + interp(6s) both timeout
+- Verify: ic3ia alone (without hint) also times out
+- False positive guard: skip `-sat` suffix AND cross-check HWMCC competition CSVs for SAT status
+
 ## Gotchas
 
 - **Never restore per-CTI blocking code.** Q2/Q3/Q4 all reached 0% accept rate: per-CTI reactive LLM querying is a dead abstraction. The replacement is BTOR2 constraint pre-processing.
@@ -14,6 +65,7 @@
 - **Quadratic equality `2*x==i*(i-1)` can never be verified standalone** — IC3IA times out. The inequality `2*x<=i*(i-1)` verifies in <0.1s with `i<=n` as helper. The ule fallback is auto-applied.
 - **fib_30/fib_37 state names come from output labels** not state labels — `output 7 c` gives state7 the name 'c'. Now handled by `parse_btor2()`.
 - **BTOR2 deps for uext/sext/slice do NOT include sort**: parser saves only `parts[3]` (the data expr). For all other ops, `deps[0]` is the sort. `_decode_expr()` handles this correctly.
+- **hint-as-constraint is UNSOUND** (2026-06-19): adding `!(X&&Y)` as a BTOR2 `constraint` only proves the property *under that assumption* — circular. Verify any constraint-assisted "proof" with `scripts/cert_check.py` (re-checks IC3IA's `--show-invar` invariant on the original circuit via z3: C1 init, C2 inductive, C3 ⟹¬BAD). pono's own `--check-invar` is NOT enough — it checks against the constrained model. cert_check limits: no array sorts; handles negative-ref (bitwise-not) and input-bearing invariants (next-step inputs → fresh).
 
 ## Decisions
 
