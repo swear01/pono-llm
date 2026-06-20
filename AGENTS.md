@@ -12,6 +12,8 @@ NEVER fabricate code, file paths, function names, or API behavior from memory.
 BEFORE writing or editing, read the existing code first.
 BEFORE answering about code, search with Grep or Glob.
 BEFORE answering about libraries, APIs, or tools, search the web or official docs.
+BEFORE answering about anything time-sensitive (current versions, recent changes,
+live data, pricing, compatibility) — do a web search. Never rely on memory alone.
 If you don't know, use tools — codebase search AND web search. Do NOT guess.
 
 ### Code Quality
@@ -50,12 +52,15 @@ If you are about to add an "option to preserve old behavior," stop: just change 
 
 - Active docs live under `docs/`.
 - Historical docs live under `archive/` (mirrors original path).
-- Every behavior/API/CLI/config change must update the relevant active doc.
+- Every behavior/API/CLI/config change must update the relevant active doc
+  immediately, as part of the same change — never deferred to "later".
 - Obsolete docs must be archived, not left active.
 - Archived docs must not be treated as current truth.
 - Active docs must not link to archived docs as active references.
 
-Docs must be fully updated before every commit. No exceptions.
+Before every commit, scan every doc that references or describes the changed
+code/behavior and confirm it is current — fix or archive stale content. No exceptions.
+Scope the scan to what the change touches; full-tree sweeps only when explicitly requested.
 
 If no docs update is needed, explicitly report:
 
