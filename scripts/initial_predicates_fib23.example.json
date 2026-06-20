@@ -1,0 +1,2 @@
+{"predicate_ast":{"form":"ule","args":[{"form":"ref","ref":"state7"},{"form":"ref","ref":"state10"}]}}
+{"predicate_ast":{"form":"eq","args":[{"form":"mul","args":[{"form":"const","const":"2","width":19},{"form":"ref","ref":"state13"}]},{"form":"mul","args":[{"form":"ref","ref":"state7"},{"form":"sub","args":[{"form":"ref","ref":"state7"},{"form":"const","const":"1","width":19}]}]}]}}

@@ -52,6 +52,7 @@ enum optionIndex
   STATICCOI,
   SHOW_INVAR,
   CHECK_INVAR,
+  INITIAL_PREDICATES,
   CHECK_TRANS_TOTAL,
   RESET,
   RESET_BND,
@@ -247,6 +248,14 @@ const option::Descriptor usage[] = {
     "vcd",
     Arg::NonEmpty,
     "  --vcd <filename> \tName of Value Change Dump (VCD) if witness exists." },
+  { INITIAL_PREDICATES,
+    0,
+    "",
+    "initial-predicates",
+    Arg::NonEmpty,
+    "  --initial-predicates <file> \tInject LLM predicates (one predicate_ast JSON "
+    "per line) into the IC3IA initial abstraction. Sound: only adds abstraction "
+    "predicates (over-approximation), never constrains the model." },
   { SMT_SOLVER,
     0,
     "",
@@ -1013,6 +1022,9 @@ ProverResult PonoOptions::parse_and_set_options(int argc,
         case VCDNAME:
           vcd_name_ = opt.arg;
           witness_ = true;  // implicitly enabling witness
+          break;
+        case INITIAL_PREDICATES:
+          initial_predicates_file_ = opt.arg;
           break;
         case BTOR2_WITNESS_NAME:
           btor2_witness_name_ = opt.arg;

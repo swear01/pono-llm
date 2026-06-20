@@ -37,10 +37,12 @@
 #include "core/refineresult.h"
 #include "core/rts.h"
 #include "core/ts.h"
+#include "engines/ic3_frame_ast.h"
 #include "engines/llm_generalizer.h"
 #include "options/options.h"
 #include "smt-switch/smt.h"
 #include "smt/available_solvers.h"
+#include "utils/exceptions.h"
 #include "utils/logger.h"
 #include "utils/term_analysis.h"
 #include "utils/term_analysis.h"
@@ -192,6 +194,39 @@ void IC3IA::initialize()
   logger.log(1, "Number predicates found in init: {}", num_init_preds);
   logger.log(1, "Number predicates found in prop: {}", num_prop_preds);
   logger.log(1, "Total number of initial predicates: {}", preds.size());
+
+  // SOUND injection point: add LLM-suggested predicates to the initial
+  // abstraction. add_predicate only adds an abstraction predicate
+  // (over-approximation); it never constrains the transition system, so the
+  // UNSAT/SAT verdict stays sound regardless of whether the predicates are true.
+  if (!options_.initial_predicates_file_.empty()) {
+    std::ifstream pf(options_.initial_predicates_file_);
+    if (!pf) {
+      throw PonoException("could not open --initial-predicates file: "
+                          + options_.initial_predicates_file_);
+    }
+    std::string pline;
+    size_t n_llm_injected = 0;
+    while (std::getline(pf, pline)) {
+      if (pline.empty()) continue;
+      IC3FramePredicateNode node;
+      if (!extract_predicate_ast_field(pline, node) || !node.valid) {
+        logger.log(0, "initial-predicates: skipped (parse failed): {}", pline);
+        continue;
+      }
+      Term pred = build_predicate_term(solver_, ts_, node);
+      if (!pred) {
+        logger.log(0, "initial-predicates: skipped (build failed): {}", pline);
+        continue;
+      }
+      if (add_predicate(pred)) {
+        ++n_llm_injected;
+        logger.log(0, "initial-predicates: injected {}", pred);
+      }
+    }
+    logger.log(0, "IC3IA: injected {} initial LLM predicates", n_llm_injected);
+  }
+
   // more predicates will be added during refinement
   // these ones are just initial predicates
 

@@ -273,6 +273,7 @@ class PonoOptions
   JusticeTranslator
       justice_translator_;  ///< liveness to safety translation algorithm
   std::string vcd_name_;
+  std::string initial_predicates_file_;  ///< LLM predicates injected into IC3IA initial abstraction (sound: over-approx)
   std::string btor2_witness_name_;
   std::string reset_name_;
   unsigned long reset_bnd_;
