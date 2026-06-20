@@ -71,17 +71,20 @@ Deduplicate sound_asts (by canonical JSON key)
   → Retry LLM (up to 2x) with triangular-sum hint
   → Verify retry candidates in PARALLEL with sound_asts as helpers
   ↓
-inject_as_constraints(sound_asts, BTOR2) → constrained.btor2
+inject_as_predicates(sound_asts, BTOR2) → predicate-AST JSON (SOUND over-approx)
   ↓
-pono --engine ic3ia constrained.btor2 → UNSAT (< 0.3s typically)
+pono --engine ic3ia --initial-predicates <json> BTOR2 → UNSAT (sound)
 ```
+(Older path used inject_as_constraints → constrained.btor2, but that is unsound
+under-approximation; retired 2026-06-20. See docs/roadmap.md B2.)
 
 **Entry point:** `llm_worker/invariant_arith.py:preprocess_software_benchmark()`  
 **Standalone CLI:** `scripts/preprocess_sw.py`  
 **Usage:**
 ```bash
-CONSTRAINED=$(python3 scripts/preprocess_sw.py circuit.btor2 2>/dev/null)
-build/pono --engine ic3ia -k 500 "$CONSTRAINED"
+BTOR=$(python3 scripts/preprocess_sw.py circuit.btor2 2>/tmp/sw.log)
+PREDS=$(grep PREDICATES= /tmp/sw.log | sed 's/.*PREDICATES=//')
+build/pono --engine ic3ia -k 500 --initial-predicates "$PREDS" "$BTOR"
 ```
 
 ---
@@ -149,7 +152,8 @@ build/pono --engine ic3ia -k 500 "$CONSTRAINED"
 | 軟體 prompt builder | `llm_worker/invariant_arith.py:build_software_prompt()` | ✅ |
 | Retry prompt builder | `llm_worker/invariant_arith.py:_build_retry_prompt()` | ✅ |
 | Invariant 驗算 (parallel) | `llm_worker/invariant_arith.py:verify_invariant()` | ✅ |
-| BTOR2 約束注入 | `llm_worker/invariant_arith.py:inject_as_constraints()` | ✅ |
+| Predicate 注入 (sound, 主路徑) | `llm_worker/invariant_arith.py:inject_as_predicates()` | ✅ |
+| BTOR2 約束注入 (僅 verify-helper) | `llm_worker/invariant_arith.py:inject_as_constraints()` | ✅ |
 | 完整預處理管線 | `llm_worker/invariant_arith.py:preprocess_software_benchmark()` | ✅ |
 | 命令列預處理 | `scripts/preprocess_sw.py` | ✅ |
 | BTOR2 Builder | `llm_worker/invariant_arith.py:Btor2Builder` | ✅ correct sort IDs |

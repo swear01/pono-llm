@@ -14,7 +14,8 @@
   - Retry loop (up to 2 LLM calls) when no arithmetic found and accumulator pattern detected
   - Probe gate: skip retry if current constraints already prove fast (prevents wasted retry on fib_05)
   - Deduplication of sound ASTs before injection
-  - `inject_as_constraints()`: correct BTOR2 with sort-ID tracking (`Btor2Builder`)
+  - `inject_as_predicates()`: write invariants as IC3IA predicate-AST JSON for `--initial-predicates` (sound over-approximation — the main injection path since 2026-06-20)
+  - `inject_as_constraints()`: BTOR2 constraint builder with sort-ID tracking (`Btor2Builder`) — now only an internal verify-helper, no longer the final injection
   - `verify_invariant()`: IC3IA as oracle for soundness checking
 - `llm_worker/btor2_reader.py`:
   - `_decode_expr()`: recursive BTOR2 → human-readable formula decoder
@@ -51,7 +52,9 @@
 | paper_v3  | ~15s      | `x<=y`, `y>=x` |
 | vcegar_QF_BV_ar | ~30s | `b<=a` (Fibonacci bound) |
 
-pono IC3IA on constrained BTOR2: 0.02–0.3s (down from 78–∞s baseline).
+pono IC3IA with predicate injection (`--initial-predicates`): sub-second for linear
+invariants, ~60s for quadratic (bvmul); down from ∞ (baseline timeout), and SOUND
+(over-approximation). The earlier constraint path was 0.02–0.3s but unsound (under-approximation).
 
 **Not helped** (complex state machines / heap ops): vis_arrays_buf_bug, h_RCU — LLM generates only const-bound candidates (auto-filtered).
 

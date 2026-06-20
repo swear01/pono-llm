@@ -3,6 +3,13 @@
 **Date:** 2026-06-17  
 **Project:** pono-llm — LLM-assisted invariant generation for IC3IA model checking
 
+> ⚠️ **Update (2026-06-20) — read first**: this is a 2026-06-17 snapshot. A later
+> soundness audit found that injecting hints as BTOR2 **constraints** is unsound
+> (under-approximation); the main pipeline was switched to SOUND **predicate**
+> injection (`pono --initial-predicates`). The arithmetic results below remain
+> numerically valid (those invariants are true), but the injection mechanism is
+> now predicates, not constraints. See `docs/roadmap.md` (B2) and `docs/notes.md`.
+
 ---
 
 ## 1. 問題背景

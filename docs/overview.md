@@ -2,14 +2,14 @@
 
 ## What This Is
 
-**pono-llm** is a research fork of [Pono](https://github.com/stanford-centaur/pono), an SMT-based hardware model checker from Stanford. The fork adds LLM-guided invariant pre-processing for circuits compiled from C programs: LLM sees circuit semantics (actual transition formulas, variable names) and generates arithmetic loop invariants that are formally verified and injected as BTOR2 `constraint` statements before the model checker runs.
+**pono-llm** is a research fork of [Pono](https://github.com/stanford-centaur/pono), an SMT-based hardware model checker from Stanford. The fork adds LLM-guided invariant pre-processing for circuits compiled from C programs: LLM sees circuit semantics (actual transition formulas, variable names) and generates arithmetic loop invariants that are injected as IC3IA abstraction **predicates** (`--initial-predicates`) before the model checker runs. Predicate injection is a sound over-approximation — it never changes the model, so the UNSAT/SAT verdict holds regardless of whether a hint is true (a false hint is harmless, never a fake UNSAT).
 
 ## Key Concepts / Domain
 
 - **IC3/IC3IA**: Property-directed reachability (PDR) model checking algorithm; IC3IA adds predicate abstraction for bit-vector designs.
 - **BTOR2**: Binary format for hardware transition systems; Pono's primary input.
 - **Software-origin circuit**: A BTOR2 circuit compiled from a C program. Variable names (i, n, x, y, sum) are preserved in state labels. These circuits have loop-like transition structures that LLM can reason about.
-- **BTOR2 constraint injection**: Adding `constraint` statements to BTOR2 before IC3IA runs. The constraints restrict the state space; IC3IA solves in <0.3s on pre-constrained circuits.
+- **Predicate injection (sound)**: Adding LLM invariants as IC3IA initial abstraction predicates via `pono --initial-predicates` — an over-approximation that never changes the model, so the verdict stays sound regardless of hint truth. (Earlier versions injected `constraint` statements = under-approximation = UNSOUND for any hint that isn't a true invariant; that path was retired — see `docs/notes.md` and `scripts/cert_check.py`.)
 - **Pre-processing pipeline** (`llm_worker/invariant_arith.py`): Detects software-origin circuits, injects structural invariants, calls LLM for arithmetic invariants, verifies each candidate with IC3IA as oracle, injects sound ones.
 - **Sidecar**: Python process for mid-run LLM calls during IC3IA execution (Stage 0/2). Less critical now that pre-processing works; handles non-software-origin circuits.
 - **smt-switch**: Solver-agnostic C++ SMT API (Bitwuzla backend used here).
@@ -24,11 +24,14 @@ software-origin BTOR2
     ↓ Phase 1: inject sym_pair equalities (eq(x,y) when structurally identical)
     ↓ Phase 2: LLM generates arithmetic invariants using formula-level transition sketch
     ↓ Phase 3: multi-round IC3IA verification (round-1 fast, round-2 with helpers)
-    ↓ inject sound invariants as BTOR2 constraint statements
-constrained BTOR2
+    ↓ inject invariants as IC3IA predicates (predicate-AST JSON; refs = state<lineno>)
+original BTOR2 + predicate JSON
     ↓
-pono --engine ic3ia → UNSAT in <0.3s
+pono --engine ic3ia --initial-predicates <json> → UNSAT (sound)
 ```
+
+Soundness note: predicate injection is over-approximation (sound for any hint);
+linear invariants prove sub-second, quadratic (bvmul) invariants ~60s.
 
 ## Results (2026-06-17)
 
@@ -51,7 +54,10 @@ pono --engine ic3ia → UNSAT in <0.3s
 | vcegar_QF_BV_ar | ind | 1.0s |
 | sw_ball2004_2 | ind | 1.2s |
 
-Preprocessing: 14–36s (LLM path). Portfolio fast-path: <2s. IC3IA on constrained: 0.02–0.3s.
+Preprocessing: 14–36s (LLM path). Portfolio fast-path: <2s. IC3IA with predicate
+injection: sub-second for linear invariants, ~60s for quadratic (bvmul) ones.
+(The 0.02–0.3s figures above were the older constraint-injection path, which was
+unsound; see `docs/roadmap.md` B2 and `docs/notes.md`.)
 
 ## External Resources
 
