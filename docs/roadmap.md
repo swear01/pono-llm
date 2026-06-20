@@ -273,7 +273,11 @@ invariants (5/20 corpus, sound); mutex hints fail soundly there. See **B2 in Bac
   - Note: predicate refs must be `state<lineno>` (pono `build_predicate_term` looks up ts terms by internal name; symbol names fail)
   - **Results**: arithmetic **5/20** full-corpus SOUND (fib_37/05/93.c/77.c sub-second; fib_30 53s, fib_23 ~60s quadratic bvmul); fib_37 verified by `cert_check` (C1/C2/C3 all UNSAT). Soundness is universal (0 false UNSAT; the 2 `sat` verdicts are real counterexamples). Coverage bounded by invariant complexity + LLM candidate quality.
   - **Signal-name mutex hints still don't work** (BMC: `X&&Y` reachable → `!(X&&Y)` is a FALSE invariant; predicate adds no abstraction dimension) — but now they fail SOUNDLY (timeout/unknown) instead of unsoundly (fake UNSAT).
-- **Open improvements**: (a) complex nonlinear invariants (nla-digbench egcd/lcm/prodbin/sqrt/fermat/geo) mostly timeout — LLM candidate quality + bvmul SMT cost double bottleneck; (b) LLM nondeterminism (fib_23 sometimes times out when candidates vary run-to-run); (c) `scripts/cert_check.py` remains the soundness gate for any *constraint*-based claim; (d) hardware/mutex circuits need an abstraction that preserves the RTL/DVE mutex (BTOR2 bit-level drops it).
+- **Open improvements**:
+  - (a) complex nonlinear invariants (nla-digbench egcd/lcm/prodbin/sqrt/fermat/geo) mostly timeout — confirmed (2026-06-20) the bottleneck is **bvmul SMT cost, not candidate quality**: candidate accumulation (`--rounds=3`) raised candidates to 13–20 but coverage stayed 5/20. Needs cheaper handling of bitvector multiplication, not better hints.
+  - (b) LLM nondeterminism — **partially addressed** by candidate accumulation (`scripts/predicate_workflow.py --rounds=K`, dedups candidates; fib_23 3/5→4/5 unsat). Reliability lever only, not coverage.
+  - (c) `scripts/cert_check.py` remains the soundness gate for any *constraint*-based claim.
+  - (d) hardware/mutex circuits need an abstraction that preserves the RTL/DVE mutex (BTOR2 bit-level drops it).
 - **cert_check array support**: extend `scripts/cert_check.py` btor2→z3 encoder to array sorts so the 7 UNCERTAIN array instances can also be audited.
 - **SyGuS template synthesis** (B4): LLM suggests invariant shape, CVC5 fills coefficients
 - **NLA-DigBench sosylab circuits**: fermat1-ll (A,r,u,v), prodbin, geo2 — all have closed-form arithmetic transitions and are now detected after demangling; need LLM to derive nonlinear invariants
