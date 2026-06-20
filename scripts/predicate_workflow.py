@@ -52,7 +52,7 @@ def run_pono(args, t):
         return 'timeout', t
 
 
-def workflow(path, client, timeout=70):
+def workflow(path, client, timeout=70, effort="none"):
     info = parse_btor2(path)
     if not detect_software_origin(info):
         return {"verdict": "not-software", "n_cand": 0, "time": 0}
@@ -65,7 +65,7 @@ def workflow(path, client, timeout=70):
     prompt = build_software_prompt(req, info)
     try:
         text, _, _ = client.call(prompt, system_prompt=INVARIANT_SYSTEM_PROMPT,
-                                 reasoning_effort="none", max_tokens=2048)
+                                 reasoning_effort=effort, max_tokens=4096)
     except Exception as e:
         return {"verdict": f"llm-fail:{type(e).__name__}", "n_cand": 0, "time": 0}
     cands = parse_invariant_response(text)
@@ -93,26 +93,37 @@ def find_circuit(name):
     return sorted(hits, key=len)[0] if hits else None
 
 
-CIRCUITS = [
-    "fib_23.btor2", "fib_30.btor2", "fib_37.btor2",
-    "fib_05.btor2", "paper_v3.btor2",
-]
+def collect_circuits():
+    pats = ["**/arithmetic_circuits/**/*.btor2",
+            "**/nla-digbench*/**/*.btor2",
+            "**/crafted/paper_v3/*.btor2"]
+    out = []
+    for p in pats:
+        out += glob.glob(os.path.join(ROOT, p), recursive=True)
+    return sorted(set(out))
+
 
 if __name__ == "__main__":
     dry = "--dry" in sys.argv
     if not dry:
         load_env()
     client = None if dry else create_llm_client()
-    print(f"{'Circuit':<18} {'verdict':<10} {'#cand':<6} {'time':<8}")
-    print("-" * 46)
-    for name in CIRCUITS:
-        path = find_circuit(name)
-        if not path:
-            print(f"{name:<18} NOT_FOUND")
-            continue
+    paths = collect_circuits()
+    print(f"{'Circuit':<30} {'verdict':<10} {'#cand':<6} {'time':<8}")
+    print("-" * 58)
+    n_sound = n_total = 0
+    for path in paths:
+        name = os.path.basename(path)
         if dry:
             ok = "sw" if detect_software_origin(parse_btor2(path)) else "non-sw"
-            print(f"{name:<18} {ok}  {os.path.relpath(path, ROOT)[:40]}")
+            print(f"{name:<30} {ok}")
             continue
         r = workflow(path, client)
-        print(f"{name:<18} {r['verdict']:<10} {r['n_cand']:<6} {r['time']:.1f}s", flush=True)
+        if r["verdict"] not in ("not-software", "no-candidates"):
+            n_total += 1
+            if r["verdict"] == "unsat":
+                n_sound += 1
+        print(f"{name:<30} {r['verdict']:<10} {r['n_cand']:<6} {r['time']:.1f}s", flush=True)
+    if not dry:
+        print("-" * 58)
+        print(f"SOUND: {n_sound}/{n_total} software-origin circuits proved")
