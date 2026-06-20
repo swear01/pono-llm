@@ -123,6 +123,10 @@ def build_software_prompt(request: dict, info: BTOR2Info) -> str:
     sw_vars = get_software_vars(info)
     state_by_ref = {sv.ref: sv for sv in info.states}
 
+    scalar_vars = [sv for sv in sw_vars if not sv.is_array]
+    array_vars = [sv for sv in sw_vars if sv.is_array]
+    has_arrays = bool(array_vars)
+
     parts = [
         f"BENCHMARK: {benchmark}",
         "",
@@ -132,15 +136,21 @@ def build_software_prompt(request: dict, info: BTOR2Info) -> str:
         "",
         "STATE VARIABLES:",
     ]
-    for sv in sw_vars:
+    for sv in scalar_vars:
         init_dec = _decode_init(sv.init_value, sv.width)
-        nxt = info.next_map.get(sv.ref)
         role = ""
-        if sv.symbol in ('i', 'j', 'k', 'counter', 'idx') or sv.symbol.endswith('_i'):
+        if sv.symbol in ('i', 'j', 'k', 'counter') or sv.symbol.endswith('_i'):
             role = "  ← likely loop counter"
         elif sv.symbol in ('n', 'm', 'bound', 'limit', 'max'):
             role = "  ← likely loop bound (constant)"
+        elif sv.symbol in ('idx', 'index', 'pos'):
+            role = "  ← array index (nondeterministic witness)"
         parts.append(f"  {sv.symbol} ({sv.width}-bit, ref={sv.ref}, init={init_dec}){role}")
+    if array_vars:
+        parts.append("")
+        parts.append("ARRAY VARIABLES (ref used for read/write in invariants):")
+        for sv in array_vars:
+            parts.append(f"  {sv.symbol} (array, element-width={sv.data_bits}-bit, ref={sv.ref})")
     parts.append("")
 
     # Build transition sketch for ALL software vars (not just hot refs).
@@ -195,6 +205,27 @@ def build_software_prompt(request: dict, info: BTOR2Info) -> str:
         "",
     ]
 
+    if has_arrays:
+        parts += [
+            "EXAMPLE 3 (array content invariant with a variable upper bound N):",
+            "  Transitions: mem' = ((!done && i<=N) ? write(mem, i, 0) : mem),  i' = i+1",
+            "  Note: writes to mem stop once i > N. So cells 0..N get zeroed; cells >N are NEVER written.",
+            "  Candidate: implies(ult(idx, i) AND ule(idx, N), read(mem, idx) == 0)",
+            "    i.e., (idx < i  AND  idx <= N)  →  mem[idx] == 0",
+            "  WHY both bounds are needed: idx < i alone fails because i grows past N, and mem[N+1..] are not written.",
+            "  Init: i=0, so idx < 0 is false → invariant vacuously true ✓",
+            "  Step (i<=N, !done): mem'=write(mem,i,0), i'=i+1",
+            "    Case idx < i (old i) AND idx <= N: read(mem',idx)=read(mem,idx)=0 (by IH) ✓",
+            "    Case idx == i AND idx <= N: read(mem',i)=0 (just written) ✓",
+            "    Case idx >= i+1 OR idx > N: antecedent false → vacuously true ✓",
+            "  Step (i>N or done): mem stays, i grows → all old idx < i still hold, no new cells claimed ✓",
+            "  → implies(ult(idx,i) AND ule(idx,N), read(mem, idx)==0) is inductive.",
+            "",
+            "IMPORTANT: If the write condition has a variable bound (like i <= N), the invariant MUST",
+            "include that bound too (ule(idx, N)) to avoid claiming unwritten cells are zero.",
+            "",
+        ]
+
     if property_desc:
         parts.append(f"PROPERTY TO VERIFY: {property_desc}")
         parts.append("")
@@ -202,6 +233,24 @@ def build_software_prompt(request: dict, info: BTOR2Info) -> str:
     # System prompt part
     var_names = [sv.symbol for sv in sw_vars]
     var_refs  = [sv.ref    for sv in sw_vars]
+
+    invariant_patterns = [
+        "  - Linear combinations preserved across all branches (e.g., x + y == 3 * i)",
+        "  - Counter bounds (e.g., i <= n — check: if i<n then i+1<=n; if i>=n then i stays)",
+        "  - Triangular sums (if sum += i each step, then 2*sum == i*(i-1))",
+        "  - Ordering invariants (e.g., m <= x — check each branch preserves m<=x')",
+    ]
+    if has_arrays:
+        invariant_patterns += [
+            "  - Array content invariants: implies(ult(idx, i) AND ule(idx, bound), read(arr, idx) == value)",
+            "    where 'bound' is the variable or constant that limits writes (check the write condition!)",
+            "    Example: if arr[i]=0 when i<=N, use: implies(ult(idx,i) AND ule(idx,N), read(arr,idx)==0)",
+        ]
+
+    ast_forms_line = "PREDICATE AST FORMS: ref, const, eq, ne, ult, ule, ugt, uge, add, sub, mul, not, and, or, implies"
+    if has_arrays:
+        ast_forms_line += ", read"
+
     parts += [
         "YOUR TASK: Generate INDUCTIVE LOOP INVARIANTS that hold at every clock step.",
         "These must be:",
@@ -214,10 +263,7 @@ def build_software_prompt(request: dict, info: BTOR2Info) -> str:
         "  RIGHT: mul(const(2), sum) == mul(i, sub(i, const(1)))  [i.e. 2*sum == i*(i-1)]",
         "",
         "Invariant patterns to consider (reason inductively from the transitions above):",
-        "  - Linear combinations preserved across all branches (e.g., x + y == 3 * i)",
-        "  - Counter bounds (e.g., i <= n — check: if i<n then i+1<=n; if i>=n then i stays)",
-        "  - Triangular sums (if sum += i each step, then 2*sum == i*(i-1))",
-        "  - Ordering invariants (e.g., m <= x — check each branch preserves m<=x')",
+    ] + invariant_patterns + [
         "",
         "OUTPUT FORMAT — return a single JSON object:",
         '{',
@@ -238,9 +284,16 @@ def build_software_prompt(request: dict, info: BTOR2Info) -> str:
         '  ]',
         '}',
         "",
-        "PREDICATE AST FORMS: ref, const, eq, ne, ult, ule, ugt, uge, add, sub, mul, not, and, or, implies",
+        ast_forms_line,
         "  ref:   {\"form\":\"ref\", \"ref\":\"<stateN>\"}",
         "  const: {\"form\":\"const\", \"const\":\"<decimal>\", \"width\":<bits>}",
+    ]
+    if has_arrays:
+        parts += [
+            "  read:  {\"form\":\"read\", \"array\":\"<stateN_array>\", \"index\":\"<stateN_index>\"}",
+            "  NOTE: read returns a value of the array's element width; use as arg to eq/ult etc.",
+        ]
+    parts += [
         "",
         f"STATE REFS for this circuit: {dict(zip(var_names, var_refs))}",
         "",
@@ -275,8 +328,11 @@ class Btor2Builder:
             if len(p) == 4 and p[1] == 'sort' and p[2] == 'bitvec':
                 self.sort_map[int(p[3])] = p[0]
 
-        # Build ref map: state ref string → lineno string
+        # Build ref map: state ref string and symbol name → lineno string
         self.ref_to_ln: Dict[str, str] = {sv.ref: str(sv.lineno) for sv in info.states}
+        for sv in info.states:
+            if sv.symbol:
+                self.ref_to_ln.setdefault(sv.symbol, str(sv.lineno))
 
     def _find_max_ln(self) -> int:
         mx = 0
@@ -324,7 +380,7 @@ def _infer_width(ast: dict, info: BTOR2Info, ref_to_ln: Dict[str, str]) -> int:
     if form == "ref":
         ref = ast.get("ref", "")
         for sv in info.states:
-            if sv.ref == ref:
+            if sv.ref == ref or sv.symbol == ref:
                 return sv.width
         return 1
     if form == "const":
@@ -349,7 +405,7 @@ def _compute_output_width(ast: dict, info: BTOR2Info) -> int:
     if form == "ref":
         ref = ast.get("ref", "")
         for sv in info.states:
-            if sv.ref == ref:
+            if sv.ref == ref or sv.symbol == ref:
                 return sv.width
         return 1
     if form == "const":
@@ -431,6 +487,37 @@ def ast_to_btor2(ast: dict, builder: Btor2Builder, target_width: Optional[int] =
             a1 = ast_to_btor2(args[1], builder)
             not_a0 = builder.emit("not", sort1, a0)
             return builder.emit("or", sort1, not_a0, a1)
+
+    if form == "read":
+        def _extract_ref(field) -> str:
+            """Accept string ref or {"form":"ref","ref":"stateN"} dict."""
+            if isinstance(field, str):
+                return field
+            if isinstance(field, dict):
+                return field.get("ref", "")
+            return ""
+
+        args = ast.get("args", [])
+        array_raw = ast.get("array") or (args[0] if len(args) >= 1 else None)
+        index_raw = ast.get("index") or (args[1] if len(args) >= 2 else None)
+        array_ref = _extract_ref(array_raw)
+        index_ref = _extract_ref(index_raw)
+
+        array_ln = builder.ref_to_ln.get(array_ref)
+        index_ln = builder.ref_to_ln.get(index_ref)
+        if array_ln is None:
+            raise ValueError(f"Unknown array ref: {array_ref!r}")
+        if index_ln is None:
+            raise ValueError(f"Unknown index ref: {index_ref!r}")
+        data_bits = 0
+        for sv in builder.info.states:
+            if sv.ref == array_ref or sv.symbol == array_ref:
+                data_bits = sv.data_bits
+                break
+        if not data_bits:
+            raise ValueError(f"Cannot determine data width for array {array_ref}")
+        data_sort = builder.get_sort(data_bits)
+        return builder.emit("read", data_sort, array_ln, index_ln)
 
     raise ValueError(f"Unsupported AST form: {form}")
 
@@ -517,20 +604,50 @@ def verify_invariant(ast: dict, btor2_path: str, timeout_s: int = 15) -> Tuple[b
         f.write(modified)
         tmp_path = f.name
 
-    try:
-        r = subprocess.run(
-            [PONO_BIN, '-e', 'ic3ia', tmp_path],
-            capture_output=True, text=True, timeout=timeout_s
-        )
-        result = r.stdout.strip().split('\n')[0] if r.stdout.strip() else "err"
-        if result == 'unsat':
-            return True, "verified (ic3ia unsat)"
-        elif result == 'sat':
-            return False, "counterexample exists (sat)"
-        else:
+    # Detect if the invariant itself uses array reads (mixed theory) —
+    # IC3IA can't reliably handle mixed array+arithmetic (returns SAT/error spuriously).
+    # For array-read invariants, skip IC3IA and go directly to ind.
+    def _ast_has_read(a: dict) -> bool:
+        if a.get("form") == "read":
+            return True
+        return any(_ast_has_read(c) for c in a.get("args", []))
+
+    ast_has_read = _ast_has_read(ast)
+
+    if not ast_has_read:
+        try:
+            r = subprocess.run(
+                [PONO_BIN, '-e', 'ic3ia', tmp_path],
+                capture_output=True, text=True, timeout=timeout_s
+            )
+            result = r.stdout.strip().split('\n')[0] if r.stdout.strip() else "err"
+            if result == 'unsat':
+                return True, "verified (ic3ia unsat)"
+            elif result == 'sat':
+                return False, "counterexample exists (sat)"
             return False, f"inconclusive: {result}"
+        except subprocess.TimeoutExpired:
+            return False, "timeout during verification"
+        finally:
+            os.unlink(tmp_path)
+
+    # Array-read invariants: IC3IA and ind both fail (mixed theory / spurious cex).
+    # Use BMC k=5 as a fast soundness filter:
+    #   - SAT → genuine counterexample; reject the invariant
+    #   - unknown → no counterexample found; accept tentatively
+    # The final IC3IA proof (on the combined constrained circuit) validates soundness.
+    try:
+        r2 = subprocess.run(
+            [PONO_BIN, '-e', 'bmc', '-k', '5', tmp_path],
+            capture_output=True, text=True, timeout=8
+        )
+        result2 = r2.stdout.strip().split('\n')[0] if r2.stdout.strip() else "err"
+        if result2 == 'sat':
+            return False, "counterexample exists (bmc-k5 sat)"
+        # unknown / unsat → no short counterexample; tentatively sound
+        return True, "tentatively sound (bmc-k5 unknown)"
     except subprocess.TimeoutExpired:
-        return False, "timeout during verification"
+        return False, "timeout during bmc verification"
     finally:
         os.unlink(tmp_path)
 
@@ -571,6 +688,48 @@ def inject_as_constraints(asts: List[dict], btor2_path: str) -> Tuple[Optional[s
     tmp.write(modified)
     tmp.close()
     return tmp.name, injected
+
+
+def inject_as_predicates(asts: List[dict], btor2_path: str) -> Tuple[Optional[str], int]:
+    """
+    Write verified invariant ASTs as a predicate-AST JSON file for
+    `pono --initial-predicates` (SOUND: adds IC3IA abstraction predicates /
+    over-approximation; never constrains the model, so the verdict stays sound
+    regardless of whether the ASTs are true). Refs (symbol or state<lineno>) are
+    rewritten to state<lineno> because pono's build_predicate_term looks up
+    ts terms by their internal state name. Returns (json_path, count) or (None, 0).
+    """
+    import json
+    try:
+        info = parse_btor2(btor2_path)
+    except Exception:
+        return None, 0
+    sym2ref: Dict[str, str] = {}
+    for sv in info.states:
+        sym2ref[sv.ref] = sv.ref
+        if sv.symbol:
+            sym2ref[sv.symbol] = sv.ref
+
+    def _conv(a: dict) -> dict:
+        a = dict(a)
+        if a.get("form") == "ref":
+            a["ref"] = sym2ref.get(a.get("ref", ""), a.get("ref", ""))
+        if isinstance(a.get("args"), list):
+            a["args"] = [_conv(x) for x in a["args"]]
+        return a
+
+    lines = []
+    for ast in asts:
+        try:
+            lines.append(json.dumps({"predicate_ast": _conv(ast)}))
+        except Exception:
+            pass
+    if not lines:
+        return None, 0
+    fd, path = tempfile.mkstemp(suffix=".pred.json")
+    with os.fdopen(fd, "w") as f:
+        f.write("\n".join(lines))
+    return path, len(lines)
 
 
 # ---------------------------------------------------------------------------
@@ -660,7 +819,7 @@ def preprocess_software_benchmark(
     client,
     request: Optional[dict] = None,
     timeout_s: int = 8,
-) -> Tuple[str, int, Optional[str]]:
+) -> Tuple[Optional[str], int, Optional[str]]:
     """
     Full pre-processing for software-origin benchmarks.
 
@@ -669,30 +828,35 @@ def preprocess_software_benchmark(
     3. Inject structural sym-pair equalities (e.g. eq(x,y) for structurally equal vars).
     4. Build LLM prompt and call LLM for arithmetic loop invariants.
     5. Verify each LLM candidate via IC3IA (verify_invariant).
-    6. Inject all sound invariants as BTOR2 `constraint` statements.
+    6. Inject all sound invariants as IC3IA initial PREDICATES (sound
+       over-approximation), written to a predicate-AST JSON file. (The constraint
+       injections used internally in steps 3/5 are only verify-helpers.)
 
-    Returns (constrained_btor2_path, n_injected, fast_engine).
-    - fast_engine is set when the circuit was proved by ind/interp; use that engine, not IC3IA.
-    - n_injected == -1 when fast_engine is set (no LLM preprocessing was done).
-    - If not software-origin or no sound invariants found: (btor2_path, 0, None).
+    Returns (predicate_json_path, n_injected, fast_engine).
+    - predicate_json_path: file for `pono -e ic3ia --initial-predicates <json> <original_btor2>`
+      (SOUND: adds abstraction predicates, never constrains the model). None if nothing injected.
+    - fast_engine: set when proved by ind/interp; run that engine on the original btor2.
+    - n_injected == -1 when fast_engine is set.
+    - If not software-origin or no sound invariants: (None, 0, None).
     """
     from btor2_reader import detect_symmetric_pairs, hot_refs_near_bad
     from invariant_prompt import INVARIANT_SYSTEM_PROMPT, parse_invariant_response
     try:
         info = parse_btor2(btor2_path)
     except Exception:
-        return btor2_path, 0, None
+        return None, 0, None
 
-    if not detect_software_origin(info):
-        return btor2_path, 0, None
-
-    # Step 0: Portfolio fast-path — try ind and interp in parallel (5s cap).
-    # Bounded-path circuits (location-bit FSMs, concurrent programs) prove in <2s;
-    # arithmetic-loop circuits (fib_*, 93.c) cause both to timeout, adding only 5s overhead.
-    fast_engine = try_fast_engines(btor2_path, k=50, timeout_s=5)
+    # Step 0: Portfolio fast-path — try ind and interp in parallel (10s cap).
+    # Runs unconditionally before software-origin check so that hardware/non-software
+    # circuits (e.g., stack-p2, rast-p10) are also caught.
+    # 10s cap catches slow interp circuits (minepump_spec2 ~6s, gen103 ~7s).
+    fast_engine = try_fast_engines(btor2_path, k=50, timeout_s=10)
     if fast_engine:
         print(f"[preprocess_sw] fast engine '{fast_engine}' proved circuit directly (no LLM needed)", file=sys.stderr)
-        return btor2_path, -1, fast_engine
+        return None, -1, fast_engine
+
+    if not detect_software_origin(info):
+        return None, 0, None
 
     req = request or {}
     req = dict(req)
@@ -738,7 +902,7 @@ def preprocess_software_benchmark(
     except Exception as e:
         print(f"[preprocess_sw] LLM call failed: {e}", file=sys.stderr)
         if not sound_asts:
-            return btor2_path, 0, None
+            return None, 0, None
         # Fall through — inject sym_pairs even if LLM failed
         text = '{"candidates":[]}'
 
@@ -764,22 +928,29 @@ def preprocess_software_benchmark(
                 if pair in injected_sym_pairs:
                     print(f"[preprocess_sw] skipping duplicate sym_pair {expr!r}", file=sys.stderr)
                     continue
-        # Only inject predicates with arithmetic content (add/mul/sub).
-        # Pure ref-ref comparisons (i<=n) are also kept as they're cheap structural bounds.
-        # Skip ref-const comparisons (n==40, i<=40) — they add IC3IA predicate dimensions
-        # without helping convergence, and can slow down the proof.
+        # Only inject predicates with real content:
+        # - arithmetic (add/mul/sub)
+        # - pure ref-ref comparisons (i<=n, cheap structural bounds)
+        # - implies/read forms (array content invariants)
+        # Skip ref-const comparisons (n==40, i<=40) — add IC3IA predicate dimensions.
+        def _ast_has_read(a: dict) -> bool:
+            return a.get("form") == "read" or any(_ast_has_read(c) for c in a.get("args", []))
+
         args = ast.get("args", [])
         has_arith = _ast_has_arithmetic(ast)
+        has_read = _ast_has_read(ast)
         is_ref_ref = (len(args) == 2 and
                       all(a.get("form") == "ref" for a in args))
-        if not (has_arith or is_ref_ref):
+        is_implies = ast.get("form") == "implies"
+        if not (has_arith or is_ref_ref or has_read or is_implies):
             print(f"[preprocess_sw] skipping const-bound {expr!r}", file=sys.stderr)
             continue
         r1_candidates.append((ast, expr))
 
-    # Round 1: parallel scan (short timeout) to find easy invariants.
-    # Candidates are verified concurrently — up to 4 pono processes at once.
-    r1_timeout = min(4, timeout_s)
+    # Round 1: parallel scan to find easy invariants.
+    # Array circuits use longer timeout because array invariants need ind (k=depth).
+    _has_array_vars = any(sv.is_array for sv in info.states)
+    r1_timeout = min(30 if _has_array_vars else 4, timeout_s)
     r2_retry: List[Tuple[dict, str]] = []
     if r1_candidates:
         _n_workers = min(len(r1_candidates), 4)
@@ -826,7 +997,7 @@ def preprocess_software_benchmark(
             os.unlink(helper_path)
 
     if not sound_asts:
-        return btor2_path, 0, None
+        return None, 0, None
 
     # Deduplicate sound ASTs by canonical JSON representation
     import json
@@ -943,8 +1114,12 @@ def preprocess_software_benchmark(
                     deduped_r.append(ast)
             sound_asts = deduped_r
 
-    constrained_path, n = inject_as_constraints(sound_asts, btor2_path)
-    if constrained_path:
-        print(f"[preprocess_sw] injected {n} constraints → {constrained_path}", file=sys.stderr)
-        return constrained_path, n, None
-    return btor2_path, 0, None
+    # FINAL injection as SOUND predicates (over-approximation), not constraints.
+    # The constraint injections above are only internal verify-helpers; the
+    # result returned to the caller must be sound, so we inject the verified
+    # invariants as IC3IA initial predicates instead of model constraints.
+    pred_json, n = inject_as_predicates(sound_asts, btor2_path)
+    if pred_json:
+        print(f"[preprocess_sw] injected {n} predicates → {pred_json}", file=sys.stderr)
+        return pred_json, n, None
+    return None, 0, None

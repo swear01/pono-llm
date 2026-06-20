@@ -188,8 +188,10 @@ are a **map of where the hint accelerates IC3IA to "unsat"**, not a list of soun
 
 **Concept**: Circuits where ind/interp/ic3ia all timeout, but a single `!(X && Y)`
 constraint makes IC3IA report "unsat" in <10s. That "unsat" holds only *under the assumed
-constraint*. The sound path forward is **hint-as-lemma** (let IC3IA push `!(X&&Y)` as a
-candidate lemma that must pass induction, dropping it if it fails) — see B2 in Backlog.
+constraint* (under-approximation → unsound for these mutex hints, which BMC shows are
+FALSE invariants). The SOUND replacement — inject hints as IC3IA **predicates**
+(over-approximation) instead of constraints — is implemented and works for arithmetic
+invariants (5/20 corpus, sound); mutex hints fail soundly there. See **B2 in Backlog**.
 
 **Two-phase scan (2026-06-18, complete)** — hint acceleration map:
 - **Phase 1 (bob6gka9i)**: exactly-2 named 1-bit BAD-refs → 58 candidates → 18 accelerated (2 false positives: `ponylink-slaveTXlen-sat` [filename], `ifeqn4f` [2024-array SAT])
@@ -264,8 +266,14 @@ candidate lemma that must pass induction, dropping it if it fails) — see B2 in
 - **HLS benchmark via toolchain**: Vivado HLS from C source → BTOR2; would require external toolchain
 - **Location-conditioned invariant chain**: For sw_ball2004_2-type circuits; requires multi-step verification strategy beyond IC3IA oracle
 - **Chain-of-thought prompting** (A5): 3-step CoT prompt: decompose goal → derive conditions → generate invariants
-- **hint-as-lemma (B2) — RULED OUT for signal-name mutex hints** (2026-06-19): investigated as the sound replacement for hint-as-constraint, but BMC shows `X&&Y` is reachable from init in 5/5 categories (frogs.5/gcd/sumt3/pals_floodmax/picorv32-pcregs-p0), i.e. `!(X&&Y)` is a FALSE invariant in BTOR2. A candidate lemma that isn't even true is dropped by IC3's push (and rejected by `check_intersects_initial`), so lemma injection cannot make these sound. pono's `apply_invariant_candidate`→`add_predicate` is predicate-abstraction refinement (not lemma injection) and is useless for boolean mutexes anyway. **The signal-name mutex method is fundamentally unsound at the BTOR2 level** — it relies on RTL/DVE mutex semantics that BTOR2's bit-level unrolling does not preserve.
-- **Sound directions that remain** (open): (a) work at an abstraction that preserves mutex (operate on RTL/DVE before BTOR2 conversion, or add the one-hot constraints the conversion dropped — but those must themselves be proved, not assumed); (b) derive hints from the actual BTOR2 transition relation rather than signal names, so the proposed invariant is at least true; (c) keep `scripts/cert_check.py` as a mandatory soundness gate on any future invariant claim.
+- **Sound predicate injection (B2) — DONE (2026-06-20)**: the SOUND replacement for hint-as-constraint. Inject LLM invariants as IC3IA initial **PREDICATES** (over-approximation, `pono --initial-predicates`), NOT model constraints (under-approximation). `add_predicate` only adds an abstraction dimension and never changes the model → the verdict stays sound regardless of whether the hint is true; a false hint is harmless (just unhelpful), never a fake UNSAT. Implemented end-to-end:
+  - `--initial-predicates <file>` CLI + injection at `IC3IA::initialize()` (engines/ic3ia.cpp, options/options.{h,cpp})
+  - `inject_as_predicates()` + **main-pipeline switch** in `preprocess_software_benchmark` (llm_worker/invariant_arith.py) — final injection is now predicates, not constraints (internal verify-helpers still use constraints); `scripts/preprocess_sw.py` emits `PREDICATES=<json>` + original btor2
+  - `scripts/predicate_workflow.py` driver (no verify step needed — false predicates are harmless)
+  - Note: predicate refs must be `state<lineno>` (pono `build_predicate_term` looks up ts terms by internal name; symbol names fail)
+  - **Results**: arithmetic **5/20** full-corpus SOUND (fib_37/05/93.c/77.c sub-second; fib_30 53s, fib_23 ~60s quadratic bvmul); fib_37 verified by `cert_check` (C1/C2/C3 all UNSAT). Soundness is universal (0 false UNSAT; the 2 `sat` verdicts are real counterexamples). Coverage bounded by invariant complexity + LLM candidate quality.
+  - **Signal-name mutex hints still don't work** (BMC: `X&&Y` reachable → `!(X&&Y)` is a FALSE invariant; predicate adds no abstraction dimension) — but now they fail SOUNDLY (timeout/unknown) instead of unsoundly (fake UNSAT).
+- **Open improvements**: (a) complex nonlinear invariants (nla-digbench egcd/lcm/prodbin/sqrt/fermat/geo) mostly timeout — LLM candidate quality + bvmul SMT cost double bottleneck; (b) LLM nondeterminism (fib_23 sometimes times out when candidates vary run-to-run); (c) `scripts/cert_check.py` remains the soundness gate for any *constraint*-based claim; (d) hardware/mutex circuits need an abstraction that preserves the RTL/DVE mutex (BTOR2 bit-level drops it).
 - **cert_check array support**: extend `scripts/cert_check.py` btor2→z3 encoder to array sorts so the 7 UNCERTAIN array instances can also be audited.
 - **SyGuS template synthesis** (B4): LLM suggests invariant shape, CVC5 fills coefficients
 - **NLA-DigBench sosylab circuits**: fermat1-ll (A,r,u,v), prodbin, geo2 — all have closed-form arithmetic transitions and are now detected after demangling; need LLM to derive nonlinear invariants
