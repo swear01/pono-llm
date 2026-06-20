@@ -37,6 +37,18 @@ def ast_to_state_refs(ast, sym2ref):
     return a
 
 
+def _ast_has_var_mul(a):
+    """True if AST has mul(non-const, non-const) — genuinely quadratic (expensive bvmul).
+    mul(const, var) is a linear coefficient (cheap) and does NOT count."""
+    if isinstance(a, dict):
+        if a.get("form") == "mul":
+            non_const = [x for x in a.get("args", []) if x.get("form") != "const"]
+            if len(non_const) >= 2:
+                return True
+        return any(_ast_has_var_mul(x) for x in a.get("args", []))
+    return False
+
+
 def run_pono(args, t):
     t0 = time.time()
     try:
@@ -52,7 +64,7 @@ def run_pono(args, t):
         return 'timeout', t
 
 
-def workflow(path, client, timeout=70, effort="none", rounds=1, cap=20):
+def workflow(path, client, timeout=70, effort="none", rounds=1, cap=20, mode="full"):
     info = parse_btor2(path)
     if not detect_software_origin(info):
         return {"verdict": "not-software", "n_cand": 0, "time": 0}
@@ -66,7 +78,7 @@ def workflow(path, client, timeout=70, effort="none", rounds=1, cap=20):
     # Accumulate candidates over `rounds` LLM calls, dedup by canonical JSON.
     # Predicate injection is sound, so an extra/false candidate is harmless —
     # keep all of them (up to `cap`) to beat LLM nondeterminism.
-    seen = {}
+    seen = {}  # key → (json_line, is_linear)
     for _ in range(rounds):
         try:
             text, _, _ = client.call(prompt, system_prompt=INVARIANT_SYSTEM_PROMPT,
@@ -81,19 +93,40 @@ def workflow(path, client, timeout=70, effort="none", rounds=1, cap=20):
                 conv = ast_to_state_refs(ast, sym2ref)
                 key = json.dumps(conv, sort_keys=True)
                 if key not in seen:
-                    seen[key] = json.dumps({"predicate_ast": conv})
+                    seen[key] = (json.dumps({"predicate_ast": conv}),
+                                 not _ast_has_var_mul(conv))
             except Exception:
                 pass
-    lines = list(seen.values())[:cap]
-    if not lines:
+    vals = list(seen.values())
+    all_lines = [ln for ln, _ in vals][:cap]
+    linear_lines = [ln for ln, is_lin in vals if is_lin][:cap]
+    if not all_lines:
         return {"verdict": "no-candidates", "n_cand": 0, "time": 0}
-    with tempfile.NamedTemporaryFile('w', suffix='.json', delete=False) as f:
-        f.write("\n".join(lines)); jf = f.name
-    try:
-        v, el = run_pono(['-e', 'ic3ia', '--initial-predicates', jf, path], timeout)
-        return {"verdict": v, "n_cand": len(lines), "time": el}
-    finally:
-        os.unlink(jf)
+
+    def _run(lines, t):
+        with tempfile.NamedTemporaryFile('w', suffix='.json', delete=False) as f:
+            f.write("\n".join(lines)); jf = f.name
+        try:
+            return run_pono(['-e', 'ic3ia', '--initial-predicates', jf, path], t)
+        finally:
+            os.unlink(jf)
+
+    if mode == "linear":
+        if not linear_lines:
+            return {"verdict": "no-candidates", "n_cand": 0, "time": 0}
+        v, el = _run(linear_lines, timeout)
+        return {"verdict": v, "n_cand": len(linear_lines), "time": el}
+    if mode == "two-tier":
+        # tier 1: linear-only (cheap, no var*var bvmul); fall back to full on miss
+        total = 0.0
+        if linear_lines:
+            v, el = _run(linear_lines, min(20, timeout)); total += el
+            if v == "unsat":
+                return {"verdict": v, "n_cand": len(linear_lines), "time": round(total, 1), "tier": 1}
+        v, el = _run(all_lines, timeout); total += el
+        return {"verdict": v, "n_cand": len(all_lines), "time": round(total, 1), "tier": 2}
+    v, el = _run(all_lines, timeout)
+    return {"verdict": v, "n_cand": len(all_lines), "time": el}
 
 
 def find_circuit(name):
@@ -115,6 +148,11 @@ def collect_circuits():
 if __name__ == "__main__":
     dry = "--dry" in sys.argv
     rounds = 1
+    mode = "full"
+    if "--linear" in sys.argv:
+        mode = "linear"
+    if "--two-tier" in sys.argv:
+        mode = "two-tier"
     for a in sys.argv:
         if a.startswith("--rounds="):
             rounds = int(a.split("=", 1)[1])
@@ -131,7 +169,7 @@ if __name__ == "__main__":
             ok = "sw" if detect_software_origin(parse_btor2(path)) else "non-sw"
             print(f"{name:<30} {ok}")
             continue
-        r = workflow(path, client, rounds=rounds)
+        r = workflow(path, client, rounds=rounds, mode=mode)
         if r["verdict"] not in ("not-software", "no-candidates"):
             n_total += 1
             if r["verdict"] == "unsat":
