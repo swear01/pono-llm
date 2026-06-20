@@ -52,7 +52,7 @@ def run_pono(args, t):
         return 'timeout', t
 
 
-def workflow(path, client, timeout=70, effort="none"):
+def workflow(path, client, timeout=70, effort="none", rounds=1, cap=20):
     info = parse_btor2(path)
     if not detect_software_origin(info):
         return {"verdict": "not-software", "n_cand": 0, "time": 0}
@@ -63,19 +63,28 @@ def workflow(path, client, timeout=70, effort="none"):
             sym2ref[sv.symbol] = sv.ref
     req = {"benchmark": os.path.basename(path), "btor2_path": path}
     prompt = build_software_prompt(req, info)
-    try:
-        text, _, _ = client.call(prompt, system_prompt=INVARIANT_SYSTEM_PROMPT,
-                                 reasoning_effort=effort, max_tokens=4096)
-    except Exception as e:
-        return {"verdict": f"llm-fail:{type(e).__name__}", "n_cand": 0, "time": 0}
-    cands = parse_invariant_response(text)
-    asts = [c.get("predicate_ast") for c in cands if c.get("predicate_ast")]
-    lines = []
-    for ast in asts:
+    # Accumulate candidates over `rounds` LLM calls, dedup by canonical JSON.
+    # Predicate injection is sound, so an extra/false candidate is harmless —
+    # keep all of them (up to `cap`) to beat LLM nondeterminism.
+    seen = {}
+    for _ in range(rounds):
         try:
-            lines.append(json.dumps({"predicate_ast": ast_to_state_refs(ast, sym2ref)}))
+            text, _, _ = client.call(prompt, system_prompt=INVARIANT_SYSTEM_PROMPT,
+                                     reasoning_effort=effort, max_tokens=4096)
         except Exception:
-            pass
+            continue
+        for c in parse_invariant_response(text):
+            ast = c.get("predicate_ast")
+            if not ast:
+                continue
+            try:
+                conv = ast_to_state_refs(ast, sym2ref)
+                key = json.dumps(conv, sort_keys=True)
+                if key not in seen:
+                    seen[key] = json.dumps({"predicate_ast": conv})
+            except Exception:
+                pass
+    lines = list(seen.values())[:cap]
     if not lines:
         return {"verdict": "no-candidates", "n_cand": 0, "time": 0}
     with tempfile.NamedTemporaryFile('w', suffix='.json', delete=False) as f:
@@ -105,6 +114,10 @@ def collect_circuits():
 
 if __name__ == "__main__":
     dry = "--dry" in sys.argv
+    rounds = 1
+    for a in sys.argv:
+        if a.startswith("--rounds="):
+            rounds = int(a.split("=", 1)[1])
     if not dry:
         load_env()
     client = None if dry else create_llm_client()
@@ -118,7 +131,7 @@ if __name__ == "__main__":
             ok = "sw" if detect_software_origin(parse_btor2(path)) else "non-sw"
             print(f"{name:<30} {ok}")
             continue
-        r = workflow(path, client)
+        r = workflow(path, client, rounds=rounds)
         if r["verdict"] not in ("not-software", "no-candidates"):
             n_total += 1
             if r["verdict"] == "unsat":
