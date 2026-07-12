@@ -1,0 +1,175 @@
+{
+  "benchmark_root_env": "HWMCC_ROOT",
+  "benchmarks": [
+    {
+      "benchmark_id": "2020/hwmcc20/btor2/bv/2019/goel/crafted/paper_v3/paper_v3.btor2",
+      "metadata_file": "paper_v3-5e5e409d7cad.meta.json",
+      "predicates_file": "paper_v3-5e5e409d7cad.jsonl",
+      "prompt_file": "paper_v3-5e5e409d7cad.prompt.txt",
+      "responses_file": null,
+      "slug": "paper_v3-5e5e409d7cad"
+    },
+    {
+      "benchmark_id": "2024/btor2/2024/hku/arithmetic_circuits/93.c/93.c.btor2",
+      "metadata_file": "93.c-f23b8847fd23.meta.json",
+      "predicates_file": "93.c-f23b8847fd23.jsonl",
+      "prompt_file": "93.c-f23b8847fd23.prompt.txt",
+      "responses_file": null,
+      "slug": "93.c-f23b8847fd23"
+    },
+    {
+      "benchmark_id": "2024/btor2/2024/hku/arithmetic_circuits/fib_30/fib_30.btor2",
+      "metadata_file": "fib_30-c4cc7fbd9a5f.meta.json",
+      "predicates_file": "fib_30-c4cc7fbd9a5f.jsonl",
+      "prompt_file": "fib_30-c4cc7fbd9a5f.prompt.txt",
+      "responses_file": null,
+      "slug": "fib_30-c4cc7fbd9a5f"
+    },
+    {
+      "benchmark_id": "2024/btor2/2024/hku/arithmetic_circuits/fib_37/fib_37.btor2",
+      "metadata_file": "fib_37-d6b7388b9f62.meta.json",
+      "predicates_file": "fib_37-d6b7388b9f62.jsonl",
+      "prompt_file": "fib_37-d6b7388b9f62.prompt.txt",
+      "responses_file": null,
+      "slug": "fib_37-d6b7388b9f62"
+    },
+    {
+      "benchmark_id": "2024/btor2/2024/sosylab/nla-digbench-scaling/dijkstra-u_valuebound1.btor2",
+      "metadata_file": "dijkstra-u_valuebound1-dee213f956b0.meta.json",
+      "predicates_file": "dijkstra-u_valuebound1-dee213f956b0.jsonl",
+      "prompt_file": "dijkstra-u_valuebound1-dee213f956b0.prompt.txt",
+      "responses_file": null,
+      "slug": "dijkstra-u_valuebound1-dee213f956b0"
+    },
+    {
+      "benchmark_id": "2024/btor2/2024/sosylab/nla-digbench-scaling/egcd-ll_unwindbound10.btor2",
+      "metadata_file": "egcd-ll_unwindbound10-8befbcbebbb9.meta.json",
+      "predicates_file": "egcd-ll_unwindbound10-8befbcbebbb9.jsonl",
+      "prompt_file": "egcd-ll_unwindbound10-8befbcbebbb9.prompt.txt",
+      "responses_file": null,
+      "slug": "egcd-ll_unwindbound10-8befbcbebbb9"
+    },
+    {
+      "benchmark_id": "2024/btor2/2024/sosylab/nla-digbench-scaling/egcd3-ll_unwindbound2.btor2",
+      "metadata_file": "egcd3-ll_unwindbound2-8df0b9394725.meta.json",
+      "predicates_file": "egcd3-ll_unwindbound2-8df0b9394725.jsonl",
+      "prompt_file": "egcd3-ll_unwindbound2-8df0b9394725.prompt.txt",
+      "responses_file": null,
+      "slug": "egcd3-ll_unwindbound2-8df0b9394725"
+    },
+    {
+      "benchmark_id": "2024/btor2/2024/sosylab/nla-digbench-scaling/freire1_valuebound1.btor2",
+      "metadata_file": "freire1_valuebound1-48c454a40a1b.meta.json",
+      "predicates_file": "freire1_valuebound1-48c454a40a1b.jsonl",
+      "prompt_file": "freire1_valuebound1-48c454a40a1b.prompt.txt",
+      "responses_file": null,
+      "slug": "freire1_valuebound1-48c454a40a1b"
+    },
+    {
+      "benchmark_id": "2024/btor2/2024/sosylab/nla-digbench-scaling/hard-ll_valuebound20.btor2",
+      "metadata_file": "hard-ll_valuebound20-747ddcb9567d.meta.json",
+      "predicates_file": "hard-ll_valuebound20-747ddcb9567d.jsonl",
+      "prompt_file": "hard-ll_valuebound20-747ddcb9567d.prompt.txt",
+      "responses_file": null,
+      "slug": "hard-ll_valuebound20-747ddcb9567d"
+    },
+    {
+      "benchmark_id": "2024/btor2/2024/sosylab/nla-digbench-scaling/lcm1_unwindbound2.btor2",
+      "metadata_file": "lcm1_unwindbound2-b147f6cde698.meta.json",
+      "predicates_file": "lcm1_unwindbound2-b147f6cde698.jsonl",
+      "prompt_file": "lcm1_unwindbound2-b147f6cde698.prompt.txt",
+      "responses_file": null,
+      "slug": "lcm1_unwindbound2-b147f6cde698"
+    },
+    {
+      "benchmark_id": "2024/btor2/2024/sosylab/nla-digbench-scaling/lcm1_valuebound100.btor2",
+      "metadata_file": "lcm1_valuebound100-f2f4ac7de038.meta.json",
+      "predicates_file": "lcm1_valuebound100-f2f4ac7de038.jsonl",
+      "prompt_file": "lcm1_valuebound100-f2f4ac7de038.prompt.txt",
+      "responses_file": null,
+      "slug": "lcm1_valuebound100-f2f4ac7de038"
+    },
+    {
+      "benchmark_id": "2024/btor2/2024/sosylab/nla-digbench-scaling/lcm2_unwindbound50.btor2",
+      "metadata_file": "lcm2_unwindbound50-77f0c136907a.meta.json",
+      "predicates_file": "lcm2_unwindbound50-77f0c136907a.jsonl",
+      "prompt_file": "lcm2_unwindbound50-77f0c136907a.prompt.txt",
+      "responses_file": null,
+      "slug": "lcm2_unwindbound50-77f0c136907a"
+    },
+    {
+      "benchmark_id": "2025/wordlevel/bv/2024/hkust/arithmetic_circuits/77.c/77.c.btor2",
+      "metadata_file": "77.c-439ad901732e.meta.json",
+      "predicates_file": "77.c-439ad901732e.jsonl",
+      "prompt_file": "77.c-439ad901732e.prompt.txt",
+      "responses_file": null,
+      "slug": "77.c-439ad901732e"
+    },
+    {
+      "benchmark_id": "2025/wordlevel/bv/2024/hkust/arithmetic_circuits/fib_05/fib_05.btor2",
+      "metadata_file": "fib_05-795cdbc45bc7.meta.json",
+      "predicates_file": "fib_05-795cdbc45bc7.jsonl",
+      "prompt_file": "fib_05-795cdbc45bc7.prompt.txt",
+      "responses_file": null,
+      "slug": "fib_05-795cdbc45bc7"
+    },
+    {
+      "benchmark_id": "2025/wordlevel/bv/2024/hkust/arithmetic_circuits/fib_23/fib_23.btor2",
+      "metadata_file": "fib_23-e5be72fc613f.meta.json",
+      "predicates_file": "fib_23-e5be72fc613f.jsonl",
+      "prompt_file": "fib_23-e5be72fc613f.prompt.txt",
+      "responses_file": null,
+      "slug": "fib_23-e5be72fc613f"
+    },
+    {
+      "benchmark_id": "2025/wordlevel/bv/2024/sosylab/nla-digbench-scaling/prodbin-ll_unwindbound10.btor2",
+      "metadata_file": "prodbin-ll_unwindbound10-af1b669300cd.meta.json",
+      "predicates_file": "prodbin-ll_unwindbound10-af1b669300cd.jsonl",
+      "prompt_file": "prodbin-ll_unwindbound10-af1b669300cd.prompt.txt",
+      "responses_file": null,
+      "slug": "prodbin-ll_unwindbound10-af1b669300cd"
+    },
+    {
+      "benchmark_id": "2025/wordlevel/bv/2025/sosylab/safety-func/nla-digbench-scaling/geo1-u_valuebound100.btor2",
+      "metadata_file": "geo1-u_valuebound100-b37cfcbd1128.meta.json",
+      "predicates_file": "geo1-u_valuebound100-b37cfcbd1128.jsonl",
+      "prompt_file": "geo1-u_valuebound100-b37cfcbd1128.prompt.txt",
+      "responses_file": null,
+      "slug": "geo1-u_valuebound100-b37cfcbd1128"
+    },
+    {
+      "benchmark_id": "2025/wordlevel/bv/2025/sosylab/safety-func/nla-digbench-scaling/prodbin-ll_unwindbound50.btor2",
+      "metadata_file": "prodbin-ll_unwindbound50-d67645df85af.meta.json",
+      "predicates_file": "prodbin-ll_unwindbound50-d67645df85af.jsonl",
+      "prompt_file": "prodbin-ll_unwindbound50-d67645df85af.prompt.txt",
+      "responses_file": null,
+      "slug": "prodbin-ll_unwindbound50-d67645df85af"
+    },
+    {
+      "benchmark_id": "2025/wordlevel/bv/2025/sosylab/safety-func/nla-digbench-scaling/sqrt1-ll_valuebound100.btor2",
+      "metadata_file": "sqrt1-ll_valuebound100-f6f189ea85e2.meta.json",
+      "predicates_file": "sqrt1-ll_valuebound100-f6f189ea85e2.jsonl",
+      "prompt_file": "sqrt1-ll_valuebound100-f6f189ea85e2.prompt.txt",
+      "responses_file": null,
+      "slug": "sqrt1-ll_valuebound100-f6f189ea85e2"
+    },
+    {
+      "benchmark_id": "2025/wordlevel/bv/2025/sosylab/safety-func/nla-digbench/fermat1-ll.btor2",
+      "metadata_file": "fermat1-ll-3cbc4b6ff84f.meta.json",
+      "predicates_file": "fermat1-ll-3cbc4b6ff84f.jsonl",
+      "prompt_file": "fermat1-ll-3cbc4b6ff84f.prompt.txt",
+      "responses_file": null,
+      "slug": "fermat1-ll-3cbc4b6ff84f"
+    },
+    {
+      "benchmark_id": "2025/wordlevel/bv/2025/sosylab/safety-rel/nla-digbench-scaling/geo2-ll2_unwindbound1.btor2",
+      "metadata_file": "geo2-ll2_unwindbound1-0a3cd36b6eb8.meta.json",
+      "predicates_file": "geo2-ll2_unwindbound1-0a3cd36b6eb8.jsonl",
+      "prompt_file": "geo2-ll2_unwindbound1-0a3cd36b6eb8.prompt.txt",
+      "responses_file": null,
+      "slug": "geo2-ll2_unwindbound1-0a3cd36b6eb8"
+    }
+  ],
+  "schema": "pono-llm-candidate-capture-v2-migrated",
+  "source": "artifacts/phase1_2_llm_candidates"
+}

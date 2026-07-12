@@ -1,0 +1,10 @@
+{"predicate_ast": {"args": [{"form": "ref", "ref": "state12"}, {"const": "0", "form": "const", "width": 32}], "form": "eq"}}
+{"predicate_ast": {"args": [{"form": "ref", "ref": "state13"}, {"const": "0", "form": "const", "width": 32}], "form": "eq"}}
+{"predicate_ast": {"args": [{"form": "ref", "ref": "state14"}, {"const": "0", "form": "const", "width": 32}], "form": "eq"}}
+{"predicate_ast": {"args": [{"args": [{"args": [{"form": "ref", "ref": "state12"}, {"form": "ref", "ref": "state13"}], "form": "add"}, {"form": "ref", "ref": "state14"}], "form": "add"}, {"const": "0", "form": "const", "width": 32}], "form": "eq"}}
+{"predicate_ast": {"args": [{"form": "ref", "ref": "state12"}, {"form": "ref", "ref": "state13"}], "form": "eq"}}
+{"predicate_ast": {"args": [{"form": "ref", "ref": "state12"}, {"form": "ref", "ref": "state14"}], "form": "eq"}}
+{"predicate_ast": {"args": [{"form": "ref", "ref": "state13"}, {"form": "ref", "ref": "state14"}], "form": "eq"}}
+{"predicate_ast": {"args": [{"args": [{"form": "ref", "ref": "state12"}, {"form": "ref", "ref": "state13"}], "form": "add"}, {"const": "0", "form": "const", "width": 32}], "form": "eq"}}
+{"predicate_ast": {"args": [{"args": [{"args": [{"form": "ref", "ref": "state12"}, {"const": "0", "form": "const", "width": 32}], "form": "eq"}, {"args": [{"form": "ref", "ref": "state13"}, {"const": "0", "form": "const", "width": 32}], "form": "eq"}], "form": "and"}, {"args": [{"form": "ref", "ref": "state14"}, {"const": "0", "form": "const", "width": 32}], "form": "eq"}], "form": "and"}}
+{"predicate_ast": {"args": [{"args": [{"form": "ref", "ref": "state12"}, {"form": "ref", "ref": "state13"}], "form": "eq"}, {"args": [{"form": "ref", "ref": "state13"}, {"form": "ref", "ref": "state14"}], "form": "eq"}], "form": "and"}}

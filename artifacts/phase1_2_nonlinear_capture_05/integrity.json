@@ -1,0 +1,44 @@
+{
+  "benchmarks": [
+    {
+      "benchmark_id": "2024/btor2/2024/hku/arithmetic_circuits/fib_30/fib_30.btor2",
+      "content_sha256": "1bb400e569c8c3147d38245dd81458261c4cc0aac565286e731dabf78fdf31d0",
+      "metadata_file": "fib_30-c4cc7fbd9a5f.meta.json",
+      "metadata_sha256": "7a60f4db049dac61e34063a84fed995a2e3c6c9650e5e8ce7fda05b0b741f372",
+      "predicates_file": "fib_30-c4cc7fbd9a5f.jsonl",
+      "predicates_sha256": "88177f55e411a668a319e51c49308108c920fbe4a407ed44fe3d8f43276ff18f",
+      "prompt_file": "fib_30-c4cc7fbd9a5f.prompt.txt",
+      "prompt_sha256": "97a7eec8c81553e466911477e663913dfac044878a8e4ede89bc76ebb5c8a0ef",
+      "responses_file": "fib_30-c4cc7fbd9a5f.responses.jsonl",
+      "responses_sha256": "01d9ea88d27606c5aae2cf1b7cfb1c758de07b346ca0ccc3e396d33651d239d4"
+    },
+    {
+      "benchmark_id": "2025/wordlevel/bv/2024/hkust/arithmetic_circuits/fib_23/fib_23.btor2",
+      "content_sha256": "a078bbffe6dc000ce0a24a4d11c45efade0c613ca55ca40db83dbb7b013338d6",
+      "metadata_file": "fib_23-e5be72fc613f.meta.json",
+      "metadata_sha256": "d2b22246057e74fa3fd6f91050408ae90fde6793b66cb6771859abef1fd9e781",
+      "predicates_file": "fib_23-e5be72fc613f.jsonl",
+      "predicates_sha256": "aab19551221d4d32f1feb137aa974fd21c25b3b9c18ab5ddec41e40f4c3b5ebc",
+      "prompt_file": "fib_23-e5be72fc613f.prompt.txt",
+      "prompt_sha256": "44aa5598c81f31479e7f09d26a358e46cadcd9093aae0af03a8e3dd02f3e89f0",
+      "responses_file": "fib_23-e5be72fc613f.responses.jsonl",
+      "responses_sha256": "2a959904620a2449ed302bace19412fc2e9fe1227899cac1157feec6d6cd1bc0"
+    }
+  ],
+  "capture_manifest_file": "manifest.json",
+  "capture_manifest_sha256": "34fc5f82796e083130dde3c2977c7bdcb163cdb8ce0139d8220e268a5af8c313",
+  "global_files": [
+    {
+      "path": "provenance.json",
+      "sha256": "6d6397cf1e28fbb3caed82e69a6c00e3ebaf615d435ea7efdcbcd844440a6256"
+    },
+    {
+      "path": "system_prompt.txt",
+      "sha256": "1f94e2c53c9df948da273323ee29c2d7678fa9249adf24a4c46666f0f2266817"
+    }
+  ],
+  "recorded_after_capture": true,
+  "recorded_at": "2026-07-12T08:15:45.212235+00:00",
+  "schema": "pono-llm-capture-integrity-v1",
+  "status": "completed"
+}

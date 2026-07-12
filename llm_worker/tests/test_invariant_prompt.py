@@ -12,6 +12,7 @@ from invariant_prompt import (
     build_stage0_prompt,
     build_stage2_prompt,
     parse_invariant_response,
+    parse_invariant_response_with_diagnostics,
     _validate_predicate_ast,
 )
 
@@ -201,6 +202,30 @@ def test_validate_ast_const_without_const_key():
     assert _validate_predicate_ast({"form": "const", "width": 8}) is False
 
 
+def test_validate_ast_rejects_unsupported_form_recursively():
+    ast = {
+        "form": "eq",
+        "args": [
+            {"form": "ref", "ref": "state6"},
+            {
+                "form": "div",
+                "args": [
+                    {"form": "ref", "ref": "state7"},
+                    {"form": "const", "const": "2", "width": 8},
+                ],
+            },
+        ],
+    }
+    assert _validate_predicate_ast(ast) is False
+
+
+def test_validate_ast_rejects_wrong_arity():
+    assert _validate_predicate_ast({
+        "form": "eq",
+        "args": [{"form": "ref", "ref": "state6"}],
+    }) is False
+
+
 # ---------------------------------------------------------------------------
 # parse_invariant_response
 # ---------------------------------------------------------------------------
@@ -346,3 +371,22 @@ def test_parse_response_multiple_valid_and_invalid():
     candidates = parse_invariant_response(text)
     assert len(candidates) == 1
     assert candidates[0]["id"] == 1
+
+
+def test_parse_response_reports_unsupported_form():
+    text = json.dumps({"candidates": [{
+        "id": 1,
+        "predicate_ast": {
+            "form": "div",
+            "args": [
+                {"form": "ref", "ref": "state1"},
+                {"form": "const", "const": "2", "width": 8},
+            ],
+        },
+    }]})
+    candidates, errors = parse_invariant_response_with_diagnostics(text)
+    assert candidates == []
+    assert errors == [{
+        "index": 0,
+        "error": "predicate_ast uses unsupported form div",
+    }]

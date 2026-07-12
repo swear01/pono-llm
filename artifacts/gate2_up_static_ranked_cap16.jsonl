@@ -1,0 +1,16 @@
+{"predicate_ast": {"form": "ule", "args": [{"form": "ref", "ref": "state16"}, {"form": "ref", "ref": "state17"}]}, "template_family": "ranked_pairwise_order"}
+{"predicate_ast": {"form": "ule", "args": [{"form": "ref", "ref": "state16"}, {"form": "ref", "ref": "state18"}]}, "template_family": "ranked_pairwise_order"}
+{"predicate_ast": {"form": "ule", "args": [{"form": "ref", "ref": "state16"}, {"form": "ref", "ref": "state20"}]}, "template_family": "ranked_pairwise_order"}
+{"predicate_ast": {"form": "ule", "args": [{"form": "ref", "ref": "state17"}, {"form": "ref", "ref": "state16"}]}, "template_family": "ranked_pairwise_order"}
+{"predicate_ast": {"form": "ule", "args": [{"form": "ref", "ref": "state17"}, {"form": "ref", "ref": "state18"}]}, "template_family": "ranked_pairwise_order"}
+{"predicate_ast": {"form": "ule", "args": [{"form": "ref", "ref": "state17"}, {"form": "ref", "ref": "state20"}]}, "template_family": "ranked_pairwise_order"}
+{"predicate_ast": {"form": "ule", "args": [{"form": "ref", "ref": "state18"}, {"form": "ref", "ref": "state16"}]}, "template_family": "ranked_pairwise_order"}
+{"predicate_ast": {"form": "ule", "args": [{"form": "ref", "ref": "state18"}, {"form": "ref", "ref": "state17"}]}, "template_family": "ranked_pairwise_order"}
+{"predicate_ast": {"form": "ule", "args": [{"form": "ref", "ref": "state18"}, {"form": "ref", "ref": "state20"}]}, "template_family": "ranked_pairwise_order"}
+{"predicate_ast": {"form": "ule", "args": [{"form": "ref", "ref": "state20"}, {"form": "ref", "ref": "state16"}]}, "template_family": "ranked_pairwise_order"}
+{"predicate_ast": {"form": "ule", "args": [{"form": "ref", "ref": "state20"}, {"form": "ref", "ref": "state17"}]}, "template_family": "ranked_pairwise_order"}
+{"predicate_ast": {"form": "ule", "args": [{"form": "ref", "ref": "state20"}, {"form": "ref", "ref": "state18"}]}, "template_family": "ranked_pairwise_order"}
+{"predicate_ast": {"form": "eq", "args": [{"form": "add", "args": [{"form": "ref", "ref": "state17"}, {"form": "ref", "ref": "state18"}]}, {"form": "ref", "ref": "state16"}]}, "template_family": "ranked_sum_equality"}
+{"predicate_ast": {"form": "eq", "args": [{"form": "add", "args": [{"form": "ref", "ref": "state16"}, {"form": "ref", "ref": "state18"}]}, {"form": "ref", "ref": "state17"}]}, "template_family": "ranked_sum_equality"}
+{"predicate_ast": {"form": "eq", "args": [{"form": "add", "args": [{"form": "ref", "ref": "state16"}, {"form": "ref", "ref": "state17"}]}, {"form": "ref", "ref": "state18"}]}, "template_family": "ranked_sum_equality"}
+{"predicate_ast": {"form": "eq", "args": [{"form": "add", "args": [{"form": "ref", "ref": "state17"}, {"form": "ref", "ref": "state20"}]}, {"form": "ref", "ref": "state16"}]}, "template_family": "ranked_sum_equality"}

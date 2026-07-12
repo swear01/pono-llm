@@ -1,0 +1,12 @@
+{
+  "benchmarks": [
+    {
+      "benchmark_id": "2024/btor2/2024/sosylab/loop-invgen/up.btor2",
+      "content_sha256": "cdb52c840b94fc6de99a88d2f61db9724c49d507ef8bbac4ab74b6ca3da3dea5"
+    }
+  ],
+  "schema": "pono-llm-gate2-up-manifest-v1",
+  "selected_count": 1,
+  "source_manifest": "gate2_llm_targets.json",
+  "source_manifest_sha256": "f8fd65566bc53dcc82962dc37c366919cc9070fe1363c1b35d83ff7d2d4fa87b"
+}

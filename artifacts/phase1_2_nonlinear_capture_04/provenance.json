@@ -1,0 +1,17 @@
+{
+  "git_head": "f87d12ea58fd2cc30ce4084599f3adfab427d132",
+  "recorded_after_capture": true,
+  "recorded_at": "2026-07-11T11:09:54.107468+00:00",
+  "schema": "pono-llm-capture-provenance-v1",
+  "source_sha256": {
+    "llm_worker/btor2_reader.py": "c79a01200ebde9b4ea6aeefda068e348b8b5b481bc534d6a4c44a7c92452014d",
+    "llm_worker/env_config.py": "001e77f23949be5711c079259c499bd4c7309ebd7650b0d9f90588f98fbded0f",
+    "llm_worker/invariant_arith.py": "edddb235b66049e28c48c3d7c92be7778c76143fb849477cdac45217caa52b89",
+    "llm_worker/invariant_prompt.py": "683568f2fa9f7092de1f3d5a2dde35a5ad657915fea0534485639dc6f5b17322",
+    "llm_worker/llm_client.py": "6e803c3feee5577f29cf8e535b5906b176b4f28deae533688b8b9a70b5b8f303",
+    "llm_worker/openrouter_routing.py": "5fdd6c62d4ae5cd3bc9173f365195e3f911328787e307a956569ad57c27fa7f6",
+    "scripts/capture_candidates.py": "0bebb5d076ed160fca28b3d1d95733c305e9564d7fce7557aae2981e05d577bf"
+  },
+  "system_prompt_file": "system_prompt.txt",
+  "system_prompt_sha256": "1f94e2c53c9df948da273323ee29c2d7678fa9249adf24a4c46666f0f2266817"
+}

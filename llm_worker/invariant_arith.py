@@ -5,12 +5,15 @@ For circuits compiled from C programs (variable names preserved: i, n, x, y),
 LLM can apply loop invariant reasoning to suggest arithmetic predicates like
 x + y == 3 * i that structural analysis cannot find.
 
-Pipeline:
+Current sound pipeline:
   1. detect_software_origin() — check if circuit has C-style variable names
   2. build_software_prompt()  — prompt LLM with C-level semantics
-  3. ast_to_btor2()           — convert predicate AST to BTOR2 constraint nodes
-  4. verify_invariant()       — SMT soundness check via pono (NOT(inv) = unsat?)
-  5. inject_constraints()     — write modified BTOR2 with verified constraints
+  3. inject_as_predicates()   — add untrusted formulas to IC3IA abstraction
+  4. prove the original, unconstrained BTOR2 model
+
+Legacy helpers below can encode a candidate as a temporary BTOR2 constraint for
+candidate verification after a concrete proof check. They are not a final proof
+path and must never turn an unverified LLM formula into a model assumption.
 """
 from __future__ import annotations
 
@@ -99,11 +102,11 @@ def get_software_vars(info: BTOR2Info):
 # ---------------------------------------------------------------------------
 
 def _decode_init(init_val: Optional[str], width: int) -> str:
-    """Convert binary init string to decimal for readability."""
+    """Return the reader's normalized unsigned-decimal initialization."""
     if init_val is None:
         return "?"
     try:
-        return str(int(init_val, 2))
+        return str(int(init_val, 10) % (1 << width))
     except (ValueError, TypeError):
         return init_val or "?"
 
@@ -207,22 +210,9 @@ def build_software_prompt(request: dict, info: BTOR2Info) -> str:
 
     if has_arrays:
         parts += [
-            "EXAMPLE 3 (array content invariant with a variable upper bound N):",
-            "  Transitions: mem' = ((!done && i<=N) ? write(mem, i, 0) : mem),  i' = i+1",
-            "  Note: writes to mem stop once i > N. So cells 0..N get zeroed; cells >N are NEVER written.",
-            "  Candidate: implies(ult(idx, i) AND ule(idx, N), read(mem, idx) == 0)",
-            "    i.e., (idx < i  AND  idx <= N)  →  mem[idx] == 0",
-            "  WHY both bounds are needed: idx < i alone fails because i grows past N, and mem[N+1..] are not written.",
-            "  Init: i=0, so idx < 0 is false → invariant vacuously true ✓",
-            "  Step (i<=N, !done): mem'=write(mem,i,0), i'=i+1",
-            "    Case idx < i (old i) AND idx <= N: read(mem',idx)=read(mem,idx)=0 (by IH) ✓",
-            "    Case idx == i AND idx <= N: read(mem',i)=0 (just written) ✓",
-            "    Case idx >= i+1 OR idx > N: antecedent false → vacuously true ✓",
-            "  Step (i>N or done): mem stays, i grows → all old idx < i still hold, no new cells claimed ✓",
-            "  → implies(ult(idx,i) AND ule(idx,N), read(mem, idx)==0) is inductive.",
-            "",
-            "IMPORTANT: If the write condition has a variable bound (like i <= N), the invariant MUST",
-            "include that bound too (ule(idx, N)) to avoid claiming unwritten cells are zero.",
+            "ARRAY LIMITATION: the current predicate-AST injection and trusted checker do not support",
+            "array read/write terms. Do not propose read/write predicates; restrict candidates to the",
+            "listed scalar state variables. Array metadata above is diagnostic only.",
             "",
         ]
 
@@ -240,16 +230,7 @@ def build_software_prompt(request: dict, info: BTOR2Info) -> str:
         "  - Triangular sums (if sum += i each step, then 2*sum == i*(i-1))",
         "  - Ordering invariants (e.g., m <= x — check each branch preserves m<=x')",
     ]
-    if has_arrays:
-        invariant_patterns += [
-            "  - Array content invariants: implies(ult(idx, i) AND ule(idx, bound), read(arr, idx) == value)",
-            "    where 'bound' is the variable or constant that limits writes (check the write condition!)",
-            "    Example: if arr[i]=0 when i<=N, use: implies(ult(idx,i) AND ule(idx,N), read(arr,idx)==0)",
-        ]
-
     ast_forms_line = "PREDICATE AST FORMS: ref, const, eq, ne, ult, ule, ugt, uge, add, sub, mul, not, and, or, implies"
-    if has_arrays:
-        ast_forms_line += ", read"
 
     parts += [
         "YOUR TASK: Generate INDUCTIVE LOOP INVARIANTS that hold at every clock step.",
@@ -288,11 +269,6 @@ def build_software_prompt(request: dict, info: BTOR2Info) -> str:
         "  ref:   {\"form\":\"ref\", \"ref\":\"<stateN>\"}",
         "  const: {\"form\":\"const\", \"const\":\"<decimal>\", \"width\":<bits>}",
     ]
-    if has_arrays:
-        parts += [
-            "  read:  {\"form\":\"read\", \"array\":\"<stateN_array>\", \"index\":\"<stateN_index>\"}",
-            "  NOTE: read returns a value of the array's element width; use as arg to eq/ult etc.",
-        ]
     parts += [
         "",
         f"STATE REFS for this circuit: {dict(zip(var_names, var_refs))}",
@@ -631,11 +607,9 @@ def verify_invariant(ast: dict, btor2_path: str, timeout_s: int = 15) -> Tuple[b
         finally:
             os.unlink(tmp_path)
 
-    # Array-read invariants: IC3IA and ind both fail (mixed theory / spurious cex).
-    # Use BMC k=5 as a fast soundness filter:
-    #   - SAT → genuine counterexample; reject the invariant
-    #   - unknown → no counterexample found; accept tentatively
-    # The final IC3IA proof (on the combined constrained circuit) validates soundness.
+    # Array-read invariants are unsupported by the current trusted proof path.
+    # BMC can refute a candidate with SAT, but bounded unknown/unsat is not a
+    # proof and must never promote a formula to a helper constraint.
     try:
         r2 = subprocess.run(
             [PONO_BIN, '-e', 'bmc', '-k', '5', tmp_path],
@@ -644,8 +618,7 @@ def verify_invariant(ast: dict, btor2_path: str, timeout_s: int = 15) -> Tuple[b
         result2 = r2.stdout.strip().split('\n')[0] if r2.stdout.strip() else "err"
         if result2 == 'sat':
             return False, "counterexample exists (bmc-k5 sat)"
-        # unknown / unsat → no short counterexample; tentatively sound
-        return True, "tentatively sound (bmc-k5 unknown)"
+        return False, f"unsupported array candidate; bmc-k5 {result2} is not a proof"
     except subprocess.TimeoutExpired:
         return False, "timeout during bmc verification"
     finally:
@@ -692,7 +665,7 @@ def inject_as_constraints(asts: List[dict], btor2_path: str) -> Tuple[Optional[s
 
 def inject_as_predicates(asts: List[dict], btor2_path: str) -> Tuple[Optional[str], int]:
     """
-    Write verified invariant ASTs as a predicate-AST JSON file for
+    Write external candidate ASTs as a predicate-AST JSON file for
     `pono --initial-predicates` (SOUND: adds IC3IA abstraction predicates /
     over-approximation; never constrains the model, so the verdict stays sound
     regardless of whether the ASTs are true). Refs (symbol or state<lineno>) are

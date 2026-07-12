@@ -79,6 +79,7 @@ class IC3IA : public IC3
 
   size_t longest_cex_length_;  ///< keeps track of longest (abstract)
                                ///< counterexample
+  size_t num_refinements_;     ///< successful IC3IA abstraction refinements
 
   // Since MathSAT is the best solver for IC3IA it helps to use
   // its bool_model_generation option which doesn't enable

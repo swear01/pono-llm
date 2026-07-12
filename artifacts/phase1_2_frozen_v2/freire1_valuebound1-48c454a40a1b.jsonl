@@ -1,0 +1,6 @@
+{"predicate_ast": {"form": "eq", "args": [{"form": "ref", "ref": "state120"}, {"form": "const", "const": "0", "width": 32}]}}
+{"predicate_ast": {"form": "eq", "args": [{"form": "ref", "ref": "state120"}, {"form": "const", "const": "1", "width": 32}]}}
+{"predicate_ast": {"form": "ule", "args": [{"form": "ref", "ref": "state120"}, {"form": "const", "const": "1", "width": 32}]}}
+{"predicate_ast": {"form": "or", "args": [{"form": "eq", "args": [{"form": "ref", "ref": "state120"}, {"form": "const", "const": "0", "width": 32}]}, {"form": "eq", "args": [{"form": "ref", "ref": "state120"}, {"form": "const", "const": "1", "width": 32}]}]}}
+{"predicate_ast": {"form": "or", "args": [{"form": "eq", "args": [{"form": "ref", "ref": "state120"}, {"form": "const", "const": "0", "width": 32}]}, {"form": "eq", "args": [{"form": "ref", "ref": "state120"}, {"form": "const", "const": "1", "width": 32}]}, {"form": "eq", "args": [{"form": "ref", "ref": "state120"}, {"form": "const", "const": "4294967295", "width": 32}]}]}}
+{"predicate_ast": {"form": "uge", "args": [{"form": "ref", "ref": "state120"}, {"form": "const", "const": "0", "width": 32}]}}

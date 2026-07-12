@@ -1,0 +1,354 @@
+{
+  "benchmark_manifest": "gate2_manifest.json",
+  "benchmark_manifest_sha256": "d03f744edfeec8a9b17891bf286301a9ca4ee84c5d17e26bb5219a4abde481b3",
+  "benchmarks": [
+    {
+      "benchmark_id": "2024/btor2/2024/hku/arithmetic_circuits/93.c/93.c.btor2",
+      "content_sha256": "47163e14a1fe4780f9383bb98be91fcde5ba0c166eb70f4353c269b129173666",
+      "screen_verdicts": [
+        "unknown"
+      ]
+    },
+    {
+      "benchmark_id": "2024/btor2/2024/hku/arithmetic_circuits/fib_30/fib_30.btor2",
+      "content_sha256": "1bb400e569c8c3147d38245dd81458261c4cc0aac565286e731dabf78fdf31d0",
+      "screen_verdicts": [
+        "unknown"
+      ]
+    },
+    {
+      "benchmark_id": "2024/btor2/2024/hku/arithmetic_circuits/fib_37/fib_37.btor2",
+      "content_sha256": "bc94066b5bdaade1ec8c162f91b9745224020425bf60ae251b0814b99b2d2c89",
+      "screen_verdicts": [
+        "unknown"
+      ]
+    },
+    {
+      "benchmark_id": "2024/btor2/2024/sosylab/bitvector/byte_add_1-1.btor2",
+      "content_sha256": "44c6298003b91d36e85dbb9a649a5b44b28f64c4015d396eaf9ac140ff358794",
+      "screen_verdicts": [
+        "timeout"
+      ]
+    },
+    {
+      "benchmark_id": "2024/btor2/2024/sosylab/loop-invgen/up.btor2",
+      "content_sha256": "cdb52c840b94fc6de99a88d2f61db9724c49d507ef8bbac4ab74b6ca3da3dea5",
+      "screen_verdicts": [
+        "timeout"
+      ]
+    },
+    {
+      "benchmark_id": "2024/btor2/2024/sosylab/loop-simple/deep-nested.btor2",
+      "content_sha256": "c064ba114ce5207b51596dcd04ddbad264482da930aa56428d44d7d72290d03a",
+      "screen_verdicts": [
+        "unknown"
+      ]
+    },
+    {
+      "benchmark_id": "2024/btor2/2024/sosylab/loop-zilu/benchmark04_conjunctive.btor2",
+      "content_sha256": "7a0fea741ef809c72423d7d229f45a7ffee394e71c7d0b81546c36af04046079",
+      "screen_verdicts": [
+        "timeout"
+      ]
+    },
+    {
+      "benchmark_id": "2024/btor2/2024/sosylab/loops-crafted-1/mono-crafted_8.btor2",
+      "content_sha256": "d83418d9b5aa572cf4bebf9357a0aeff049109a79337f23738b4ae5b28bca9b6",
+      "screen_verdicts": [
+        "unknown"
+      ]
+    },
+    {
+      "benchmark_id": "2024/btor2/2024/sosylab/nla-digbench-scaling/dijkstra-u_valuebound1.btor2",
+      "content_sha256": "27ee3e350e8cf4de52b849c26803dc2c9ed17cd613994f432b93fbd50c869f71",
+      "screen_verdicts": [
+        "timeout"
+      ]
+    },
+    {
+      "benchmark_id": "2024/btor2/2024/sosylab/nla-digbench-scaling/egcd-ll_unwindbound10.btor2",
+      "content_sha256": "e4c403715215037126383eb0b64039f5aa8842700bc68690b3966ef529ffa865",
+      "screen_verdicts": [
+        "timeout"
+      ]
+    },
+    {
+      "benchmark_id": "2024/btor2/2024/sosylab/nla-digbench-scaling/hard-ll_valuebound20.btor2",
+      "content_sha256": "6db2488767df2a27d060c36e19917239dd8b673bc15b35e4a28f8ee636a8daeb",
+      "screen_verdicts": [
+        "timeout"
+      ]
+    },
+    {
+      "benchmark_id": "2024/btor2/2024/sosylab/nla-digbench-scaling/lcm1_unwindbound2.btor2",
+      "content_sha256": "927372e149dafc1119ce5ee8aa99eea94acd22912610f86d7c9b3225fbcfe796",
+      "screen_verdicts": [
+        "timeout"
+      ]
+    },
+    {
+      "benchmark_id": "2024/btor2/2024/sosylab/nla-digbench-scaling/lcm1_valuebound100.btor2",
+      "content_sha256": "f5154c1438162009e2930f3ca057ad6cd527933679870654342ca2394c921e29",
+      "screen_verdicts": [
+        "timeout"
+      ]
+    },
+    {
+      "benchmark_id": "2024/btor2/2024/sosylab/nla-digbench-scaling/lcm2_unwindbound50.btor2",
+      "content_sha256": "8775da9895644886e7703addec69591f5afbc4bd520346801e1f4337979dc41c",
+      "screen_verdicts": [
+        "timeout"
+      ]
+    },
+    {
+      "benchmark_id": "2024/btor2/2024/sosylab/seq-mthreaded/pals_lcr-var-start-time.6.1.ufo.UNBOUNDED.pals.btor2",
+      "content_sha256": "c24bf71e8b372dcc606e7ec6e9dadc37fa18bed59b7cd6eb906584d68094d7c9",
+      "screen_verdicts": [
+        "timeout"
+      ]
+    },
+    {
+      "benchmark_id": "2025/wordlevel/bv/2024/hkust/arithmetic_circuits/fib_05/fib_05.btor2",
+      "content_sha256": "723e2cb4d2ef7e62a20a5fe340c2907e6a2988a8d590c744ed5bfcfa0ec36f35",
+      "screen_verdicts": [
+        "timeout"
+      ]
+    },
+    {
+      "benchmark_id": "2025/wordlevel/bv/2024/hkust/arithmetic_circuits/fib_23/fib_23.btor2",
+      "content_sha256": "a078bbffe6dc000ce0a24a4d11c45efade0c613ca55ca40db83dbb7b013338d6",
+      "screen_verdicts": [
+        "unknown"
+      ]
+    },
+    {
+      "benchmark_id": "2025/wordlevel/bv/2024/sosylab/loops-crafted-1/Mono6_1.btor2",
+      "content_sha256": "f3d4dfc24983fd470e33bc1e3f1b88f4925dabfa8494856cbb93f0ce9b75da4c",
+      "screen_verdicts": [
+        "unknown"
+      ]
+    },
+    {
+      "benchmark_id": "2025/wordlevel/bv/2024/sosylab/loops-crafted-1/sumt3.btor2",
+      "content_sha256": "f63bf825b9c27c0cf3799235b26c0d8fe7ca3463c7b37fd4f778371d40b94244",
+      "screen_verdicts": [
+        "timeout"
+      ]
+    },
+    {
+      "benchmark_id": "2025/wordlevel/bv/2024/sosylab/nla-digbench-scaling/prodbin-ll_unwindbound10.btor2",
+      "content_sha256": "90e3250e379178f0ca7135de996be479a57f0196e6742bebff52cd4fc1f68ef1",
+      "screen_verdicts": [
+        "timeout"
+      ]
+    },
+    {
+      "benchmark_id": "2025/wordlevel/bv/2025/sosylab/safety-func/nla-digbench-scaling/prodbin-ll_unwindbound50.btor2",
+      "content_sha256": "6a953053e46094875324775745185282dd4197c06a3a2b7c6c4955c7007719dd",
+      "screen_verdicts": [
+        "timeout"
+      ]
+    },
+    {
+      "benchmark_id": "2025/wordlevel/bv/2025/sosylab/safety-func/nla-digbench-scaling/sqrt1-ll_valuebound100.btor2",
+      "content_sha256": "38f6500c8a2001693d14f0b0b4a5087d35d9ca7835c8943a5ba0fc9d519b9c13",
+      "screen_verdicts": [
+        "timeout"
+      ]
+    },
+    {
+      "benchmark_id": "2025/wordlevel/bv/2025/sosylab/safety-func/nla-digbench/fermat1-ll.btor2",
+      "content_sha256": "15154655f489e367f7ffc595c32b56c63d719457bda2b29f9268545af14d176e",
+      "screen_verdicts": [
+        "timeout"
+      ]
+    },
+    {
+      "benchmark_id": "2025/wordlevel/bv/2025/sosylab/safety-func/seq-mthreaded/pals_opt-floodmax.5_overflow.ufo.UNBOUNDED.pals.btor2",
+      "content_sha256": "8ca187005e0faf5997d21fd273ded09cb6168f3136863332876f0809034cda9b",
+      "screen_verdicts": [
+        "timeout"
+      ]
+    },
+    {
+      "benchmark_id": "2025/wordlevel/bv/2025/sosylab/safety-rel/loops-crafted-1/loopv3.btor2",
+      "content_sha256": "bab1f7016859d6fc591dd431173a5cb45a7509906f25a7950a921dbfc5f858a3",
+      "screen_verdicts": [
+        "unknown"
+      ]
+    },
+    {
+      "benchmark_id": "2025/wordlevel/bv/2025/sosylab/safety-rel/nla-digbench-scaling/geo2-ll2_unwindbound1.btor2",
+      "content_sha256": "a2f87b2fc7fa264546da730d46e70ddacc3e776b55ef5bc35c9bd7895d8ab750",
+      "screen_verdicts": [
+        "timeout"
+      ]
+    },
+    {
+      "benchmark_id": "2025/wordlevel/bv/2025/sosylab/safety-rel/seq-mthreaded/pals_opt-floodmax.4.ufo.UNBOUNDED.pals.btor2",
+      "content_sha256": "22dcafffcc1dc1e273d4fdeee42d6b4702a44185030cb5e6d6810522f986cb17",
+      "screen_verdicts": [
+        "timeout"
+      ]
+    }
+  ],
+  "excluded_by_size": [
+    {
+      "benchmark_id": "2024/btor2/2024/sosylab/combinations/pals_lcr.5.1.ufo.UNBOUNDED.pals+Problem12_label04.btor2",
+      "node_count": 85824
+    },
+    {
+      "benchmark_id": "2024/btor2/2024/sosylab/combinations/pals_lcr.5.ufo.BOUNDED-10.pals+Problem12_label02.btor2",
+      "node_count": 85849
+    },
+    {
+      "benchmark_id": "2024/btor2/2024/sosylab/combinations/pals_lcr.5_overflow.ufo.UNBOUNDED.pals+Problem12_label02.btor2",
+      "node_count": 85814
+    },
+    {
+      "benchmark_id": "2024/btor2/2024/sosylab/combinations/pals_lcr.6.1.ufo.UNBOUNDED.pals+Problem12_label09.btor2",
+      "node_count": 86049
+    },
+    {
+      "benchmark_id": "2024/btor2/2024/sosylab/eca-programs/Problem101_label01.btor2",
+      "node_count": 1333871
+    },
+    {
+      "benchmark_id": "2024/btor2/2024/sosylab/eca-rers2012/Problem03_label51.btor2",
+      "node_count": 16990
+    },
+    {
+      "benchmark_id": "2024/btor2/2024/sosylab/eca-rers2012/Problem04_label27.btor2",
+      "node_count": 89876
+    },
+    {
+      "benchmark_id": "2024/btor2/2024/sosylab/eca-rers2012/Problem06_label40.btor2",
+      "node_count": 141689
+    },
+    {
+      "benchmark_id": "2024/btor2/2024/sosylab/eca-rers2012/Problem06_label53.btor2",
+      "node_count": 141706
+    },
+    {
+      "benchmark_id": "2024/btor2/2024/sosylab/eca-rers2012/Problem07_label01.btor2",
+      "node_count": 1333658
+    },
+    {
+      "benchmark_id": "2024/btor2/2024/sosylab/eca-rers2012/Problem11_label26.btor2",
+      "node_count": 10209
+    },
+    {
+      "benchmark_id": "2024/btor2/2024/sosylab/eca-rers2012/Problem11_label40.btor2",
+      "node_count": 10214
+    },
+    {
+      "benchmark_id": "2024/btor2/2024/sosylab/eca-rers2012/Problem11_label48.btor2",
+      "node_count": 10220
+    },
+    {
+      "benchmark_id": "2024/btor2/2024/sosylab/eca-rers2012/Problem13_label23.btor2",
+      "node_count": 89839
+    },
+    {
+      "benchmark_id": "2024/btor2/2024/sosylab/eca-rers2012/Problem17_label03.btor2",
+      "node_count": 42420
+    },
+    {
+      "benchmark_id": "2024/btor2/2024/sosylab/eca-rers2012/Problem18_label15.btor2",
+      "node_count": 74042
+    },
+    {
+      "benchmark_id": "2024/btor2/2024/sosylab/eca-rers2012/Problem19_label00.btor2",
+      "node_count": 166626
+    },
+    {
+      "benchmark_id": "2024/btor2/2024/sosylab/eca-rers2012/Problem19_label14.btor2",
+      "node_count": 166598
+    },
+    {
+      "benchmark_id": "2024/btor2/2024/sosylab/eca-rers2012/Problem19_label36.btor2",
+      "node_count": 166619
+    },
+    {
+      "benchmark_id": "2024/btor2/2024/sosylab/eca-rers2018/Problem17.btor2",
+      "node_count": 2857067
+    },
+    {
+      "benchmark_id": "2025/wordlevel/bv/2024/sosylab/combinations/pals_lcr.3.ufo.BOUNDED-6.pals+Problem12_label01.btor2",
+      "node_count": 85442
+    },
+    {
+      "benchmark_id": "2025/wordlevel/bv/2024/sosylab/eca-rers2012/Problem03_label05.btor2",
+      "node_count": 16960
+    },
+    {
+      "benchmark_id": "2025/wordlevel/bv/2024/sosylab/eca-rers2012/Problem11_label08.btor2",
+      "node_count": 10185
+    },
+    {
+      "benchmark_id": "2025/wordlevel/bv/2024/sosylab/eca-rers2012/Problem13_label56.btor2",
+      "node_count": 89879
+    },
+    {
+      "benchmark_id": "2025/wordlevel/bv/2024/sosylab/eca-rers2012/Problem13_label59.btor2",
+      "node_count": 89872
+    },
+    {
+      "benchmark_id": "2025/wordlevel/bv/2024/sosylab/eca-rers2012/Problem15_label37.btor2",
+      "node_count": 29522
+    },
+    {
+      "benchmark_id": "2025/wordlevel/bv/2024/sosylab/eca-rers2012/Problem15_label58.btor2",
+      "node_count": 29552
+    },
+    {
+      "benchmark_id": "2025/wordlevel/bv/2024/sosylab/eca-rers2012/Problem17_label44.btor2",
+      "node_count": 42406
+    },
+    {
+      "benchmark_id": "2025/wordlevel/bv/2024/sosylab/eca-rers2012/Problem19_label01.btor2",
+      "node_count": 166649
+    },
+    {
+      "benchmark_id": "2025/wordlevel/bv/2025/sosylab/safety-func/eca-rers2012/Problem15_label35.btor2",
+      "node_count": 29476
+    },
+    {
+      "benchmark_id": "2025/wordlevel/bv/2025/sosylab/safety-rel/combinations/pals_lcr.3.ufo.BOUNDED-6.pals+Problem12_label00.btor2",
+      "node_count": 85197
+    },
+    {
+      "benchmark_id": "2025/wordlevel/bv/2025/sosylab/safety-rel/combinations/pals_lcr.7.1.ufo.BOUNDED-14.pals+Problem12_label01.btor2",
+      "node_count": 85786
+    },
+    {
+      "benchmark_id": "2025/wordlevel/bv/2025/sosylab/safety-rel/eca-rers2012/Problem15_label46.btor2",
+      "node_count": 29493
+    },
+    {
+      "benchmark_id": "2025/wordlevel/bv/2025/sosylab/safety-rel/eca-rers2012/Problem15_label58.btor2",
+      "node_count": 29500
+    },
+    {
+      "benchmark_id": "2025/wordlevel/bv/2025/sosylab/safety-rel/eca-rers2012/Problem17_label22.btor2",
+      "node_count": 42289
+    }
+  ],
+  "excluded_by_size_count": 35,
+  "feature_file": "gate2_features.csv",
+  "feature_sha256": "db18cad98c408311459ed5d37b2af82f4f76030b885172ff27db7534e8b9d88b",
+  "max_nodes": 10000,
+  "schema": "pono-llm-gate2-survivors-v1",
+  "selected_count": 27,
+  "source_benchmark_count": 86,
+  "source_matrix": "gate2_baseline_screen_10s.csv",
+  "source_matrix_contract_sha256": "152add83c968b0e4cefcf5429ad6f138a6a7fb9354280a25614b0f72c335ef98",
+  "source_matrix_sha256": "d801e581fb8c3e6c4b9704106b88400fe43a3fe7a73834bb743e8957dd5cfeb8",
+  "source_row_count": 86,
+  "source_verdict_counts": {
+    "sat": 7,
+    "timeout": 54,
+    "unknown": 8,
+    "unsat": 17
+  }
+}

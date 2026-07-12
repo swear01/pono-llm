@@ -1,0 +1,190 @@
+{
+  "baseline_screen": {
+    "sat_benchmark_ids": [
+      "2024/btor2/2019/goel/opensource/vis_arrays_vsa16a_p6/vis_arrays_vsa16a_p6.btor2",
+      "2024/btor2/2024/sosylab/nla-digbench-scaling/egcd3-ll_unwindbound2.btor2",
+      "2024/btor2/2024/sosylab/seq-mthreaded/pals_lcr-var-start-time.5.1.ufo.UNBOUNDED.pals.btor2",
+      "2024/btor2/2024/sosylab/seq-mthreaded/pals_opt-floodmax.4.3.ufo.UNBOUNDED.pals.btor2",
+      "2025/wordlevel/bv/2024/sosylab/eca-rers2012/Problem02_label43.btor2",
+      "2025/wordlevel/bv/2025/sosylab/safety-func/nla-digbench-scaling/geo1-u_valuebound100.btor2",
+      "2025/wordlevel/bv/2025/sosylab/safety-func/product-lines/minepump_spec4_product33.cil.btor2"
+    ],
+    "total_end_to_end_sec": 1217.6953830000002,
+    "total_generation_sec": 0.0,
+    "total_proof_sec": 1217.6953830000002,
+    "unsat_benchmark_ids": [
+      "2020/hwmcc20/btor2/bv/2019/goel/crafted/paper_v3/paper_v3.btor2",
+      "2020/hwmcc20/btor2/bv/2019/goel/opensource/vcegar_QF_BV_ar/vcegar_QF_BV_ar.btor2",
+      "2020/hwmcc20/btor2/bv/2019/goel/opensource/vcegar_QF_BV_itc99_b13_p10/vcegar_QF_BV_itc99_b13_p10.btor2",
+      "2020/hwmcc20/btor2/bv/2019/goel/opensource/vis_arrays_am2910_p2/vis_arrays_am2910_p2.btor2",
+      "2020/hwmcc20/btor2/bv/2020/mann/simple_alu.btor",
+      "2024/btor2/2019/goel/crafted/sw_ball2004_2/sw_ball2004_2.btor2",
+      "2024/btor2/2024/sosylab/eca-rers2012/Problem02_label10.btor2",
+      "2024/btor2/2024/sosylab/eca-rers2012/Problem10_label07.btor2",
+      "2024/btor2/2024/sosylab/eca-rers2012/Problem10_label08.btor2",
+      "2024/btor2/2024/sosylab/eca-rers2012/Problem16_label07.btor2",
+      "2024/btor2/2024/sosylab/loop-crafted/simple_vardep_1.btor2",
+      "2025/wordlevel/bv/2024/hkust/arithmetic_circuits/77.c/77.c.btor2",
+      "2025/wordlevel/bv/2024/sosylab/eca-rers2012/Problem03_label32.btor2",
+      "2025/wordlevel/bv/2025/sosylab/safety-func/eca-rers2012/Problem10_label21.btor2",
+      "2025/wordlevel/bv/2025/sosylab/safety-func/product-lines/minepump_spec1_product28.cil.btor2",
+      "2025/wordlevel/bv/2025/sosylab/safety-rel/bitvector/jain_4-2.btor2",
+      "2025/wordlevel/bv/2025/sosylab/safety-rel/eca-rers2012/Problem10_label27.btor2"
+    ],
+    "verdict_counts": {
+      "sat": 7,
+      "timeout": 54,
+      "unknown": 8,
+      "unsat": 17
+    }
+  },
+  "claim_boundary": "Gate 2 adds zero LLM-specific coverage. A post-hoc fixed low-complexity relational ranking baseline also removes the apparent predicate-compactness advantage on loop-invgen/up.btor2.",
+  "date": "2026-07-12",
+  "deterministic_certificate_screen": {
+    "sat_benchmark_ids": [],
+    "total_end_to_end_sec": 1519.1215189999998,
+    "total_generation_sec": 0.9241369999999998,
+    "total_proof_sec": 1518.1756770000002,
+    "unsat_benchmark_ids": [
+      "2024/btor2/2024/hku/arithmetic_circuits/93.c/93.c.btor2",
+      "2024/btor2/2024/hku/arithmetic_circuits/fib_30/fib_30.btor2",
+      "2024/btor2/2024/hku/arithmetic_circuits/fib_37/fib_37.btor2",
+      "2025/wordlevel/bv/2024/hkust/arithmetic_circuits/fib_05/fib_05.btor2",
+      "2025/wordlevel/bv/2024/hkust/arithmetic_circuits/fib_23/fib_23.btor2"
+    ],
+    "verdict_counts": {
+      "timeout": 1,
+      "unknown": 21,
+      "unsat": 5
+    }
+  },
+  "feature_census": {
+    "all_files": 1919,
+    "duplicates_removed": 3,
+    "elapsed_sec": 547.1663878150284,
+    "parsed_ok": 1919,
+    "software_nonarray": 89,
+    "software_origin": 194,
+    "unique_eligible": 86
+  },
+  "llm_capture": {
+    "benchmark_count": 11,
+    "call_count": 55,
+    "invalid_candidate_count": 0,
+    "median_benchmark_generation_sec": 38.670985624194145,
+    "total_generation_sec": 467.8502605110407,
+    "total_tokens": 257647
+  },
+  "llm_houdini": {
+    "sat_benchmark_ids": [],
+    "total_end_to_end_sec": 468.57937499999997,
+    "total_generation_sec": 467.85026100000005,
+    "total_proof_sec": 0.721161,
+    "unsat_benchmark_ids": [],
+    "verdict_counts": {
+      "unknown": 11
+    }
+  },
+  "llm_raw_predicate_seed": {
+    "sat_benchmark_ids": [],
+    "total_end_to_end_sec": 901.517394,
+    "total_generation_sec": 467.85026100000005,
+    "total_proof_sec": 433.359234,
+    "unsat_benchmark_ids": [
+      "2024/btor2/2024/sosylab/loop-invgen/up.btor2"
+    ],
+    "verdict_counts": {
+      "timeout": 6,
+      "unknown": 4,
+      "unsat": 1
+    }
+  },
+  "llm_specific_unsat_benchmark_ids": [],
+  "matched_unsat_set_equal": true,
+  "new_llm_target_count": 11,
+  "oversized_excluded_count": 35,
+  "schema": "pono-llm-gate2-summary-v1",
+  "small_survivor_count": 27,
+  "source_sha256": {
+    "gate2_baseline_screen_10s.csv": "d801e581fb8c3e6c4b9704106b88400fe43a3fe7a73834bb743e8957dd5cfeb8",
+    "gate2_baseline_screen_survivors_le10k.json": "4392ff103b6d8d03e26cc8d5d08882c582176628104a855ebfe097b87ed34650",
+    "gate2_features.csv": "db18cad98c408311459ed5d37b2af82f4f76030b885172ff27db7534e8b9d88b",
+    "gate2_features.summary.json": "5de8a530e918fa71c08408b30fa2772e1d788f9b9c1f1e0aa797fc16129e0c90",
+    "gate2_llm_capture_v3/integrity.json": "11d1c65e92b377e8920295629ad5e1c9755e2ea9de29c1af5d5839920b8d6e36",
+    "gate2_llm_capture_v3/manifest.json": "b28df3002b1b2f1c4f2eda41c8ea4dccfc1b1ee884aaee4686d3aeec81c21fb0",
+    "gate2_llm_houdini_70s.csv": "fca9d506ffc360aed59b6f63e38bb73ac88090b09aff68460f5b1dbb69cfc9ed",
+    "gate2_llm_linear_refine_70s.csv": "c433f7e7fe5d25c2ba9f47d3797b9d2b8a53d18c8d643aa6f0a9b532c0237997",
+    "gate2_llm_targets.json": "7e6c56096a1160163c2ef3318bc04b8fa24c89770ed0cef64416a080582c956b",
+    "gate2_manifest.json": "d03f744edfeec8a9b17891bf286301a9ca4ee84c5d17e26bb5219a4abde481b3",
+    "gate2_static_linear_cap200_refine_70s.csv": "05084691f993a508be995fdf19cd8a195f612a2814261a2e2ecd1d8c8bb6f9f6",
+    "gate2_static_quadratic_le10k_70s.csv": "3b0fb960ec04e5d40db77008acd83e07f7d40ac03615bffd3391353a696c1b99",
+    "gate2_static_ranked_cap20_refine_70s.csv": "f7eeb5fc19bb75c72c0e0675f1156a4da6bae77d33967e2ed62612f73e0c9a99",
+    "gate2_up_cert_check.txt": "4c5a65b950504dac30cd545edfdfda5b3a6d5cdc2bb0dcdaf640c9ba8d86c8b5",
+    "gate2_up_llm_vs_ranked_5trials.csv": "0a7218e97e47b93fcaeea06b0e41299c611e2e7e744dc8d6a4f7c234deb49fe9",
+    "gate2_up_manifest.json": "93f4382d915f62dd064ab987887d3b652898ae4b394f84c9caf53376e553ec25",
+    "gate2_up_matched_matrix.csv": "d9fff372d0ebca790c86f4fb70142f27a24cd74d48261173cc5cd20be98b9c22",
+    "gate2_up_static_cap200_cert_check.txt": "82ea170189fce797b77d922cb247981bd7543ff3066078dad75890eb78b950e5",
+    "gate2_up_static_linear_cap192_v2.csv": "436280e5d1c3a0575d470dd95f90303b2538f626eb63ff1e991553034f505d63",
+    "gate2_up_static_ranked_cap15.csv": "59aef90bafcfd052aaeeac2f2347f6a991fa7b116404d74abb087ca7d5a9975f",
+    "gate2_up_static_ranked_cap16.csv": "dd0a87f2fbe387479f43423b565779881fee58c70e96deb574ecd04d3cd55fcd",
+    "gate2_up_static_ranked_cap16.jsonl": "0e3da76e23caf7fc7b0d46b596e08f33c70c04e1f1875c684028d3cef7d19a62",
+    "gate2_up_static_ranked_cap16_cert_check.txt": "3bc16de7d02ec2925d8c410f271ab573e98b806645f77fb1576e0278072af3b9",
+    "phase1_2_corrected_full21_matrix_final.csv": "6468b76f297e132051a942aa926cb53b78ea5cf72188ea26fbb4e4997205e036",
+    "phase1_2_frozen_v2/integrity.json": "3bbb517519cf3630149739361e54ba546bb192c418d8643f59ad22aca4b2ccee",
+    "phase1_2_frozen_v2/manifest.json": "a4cbe7f9c144cc3cd74c832f0a67ca66bb076642a74f4bb0c9617e071168c006"
+  },
+  "static_ranked_predicate_seed_cap20": {
+    "sat_benchmark_ids": [],
+    "total_end_to_end_sec": 377.5824349999999,
+    "total_generation_sec": 0.09113600000000001,
+    "total_proof_sec": 377.49129999999997,
+    "unsat_benchmark_ids": [
+      "2024/btor2/2024/sosylab/loop-invgen/up.btor2"
+    ],
+    "verdict_counts": {
+      "timeout": 5,
+      "unknown": 5,
+      "unsat": 1
+    }
+  },
+  "static_raw_predicate_seed_cap200": {
+    "sat_benchmark_ids": [],
+    "total_end_to_end_sec": 464.79931899999997,
+    "total_generation_sec": 0.11177599999999999,
+    "total_proof_sec": 464.687543,
+    "unsat_benchmark_ids": [
+      "2024/btor2/2024/sosylab/loop-invgen/up.btor2"
+    ],
+    "verdict_counts": {
+      "timeout": 5,
+      "unknown": 5,
+      "unsat": 1
+    }
+  },
+  "up_case": {
+    "baseline_verdict": "unknown",
+    "benchmark_id": "2024/btor2/2024/sosylab/loop-invgen/up.btor2",
+    "largest_recorded_failing_ranked_prefix": 15,
+    "largest_recorded_failing_static_prefix": 192,
+    "llm_candidate_count": 15,
+    "llm_candidate_sha256": "9e1cbfd09e9b1898bc7786784c2eebc7c2035f16b2a020d750b6b4256b47f5c7",
+    "llm_certificate_pass": true,
+    "llm_end_to_end_sec": 42.047821,
+    "llm_median_end_to_end_sec": 42.032941,
+    "llm_median_proof_sec": 8.11525,
+    "llm_proof_sec": 8.115634,
+    "llm_trial_unsat_count": 5,
+    "ranked_cap16_candidate_sha256": "0e3da76e23caf7fc7b0d46b596e08f33c70c04e1f1875c684028d3cef7d19a62",
+    "ranked_cap20_candidate_count": 20,
+    "ranked_cap20_candidate_sha256": "acc0bc1c054cf8948d643333880ecb015708867d96b55b602f40fd4d199a3f9b",
+    "ranked_cap20_median_end_to_end_sec": 2.134528,
+    "ranked_cap20_median_proof_sec": 2.134068,
+    "ranked_certificate_pass": true,
+    "ranked_trial_unsat_count": 5,
+    "smallest_recorded_successful_ranked_prefix": 16,
+    "smallest_recorded_successful_static_prefix": 200,
+    "static_cap200_end_to_end_sec": 18.951732,
+    "static_cap200_proof_sec": 18.947313,
+    "static_certificate_pass": true
+  }
+}

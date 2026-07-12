@@ -1,8 +1,10 @@
+#include "core/fts.h"
 #include "engines/ic3_frame_ast.h"
-
 #include "gtest/gtest.h"
+#include "smt/available_solvers.h"
 
 using namespace pono;
+using namespace smt;
 using namespace std;
 
 namespace pono_tests {
@@ -81,6 +83,53 @@ TEST(IC3FrameAstTest, LegacyBlockDisjunctsMapsToClauses)
   ASSERT_TRUE(res.valid) << res.error_msg;
   ASSERT_EQ(res.block_clauses.size(), 1u);
   EXPECT_EQ(res.block_clauses[0][0].ref, "state1");
+}
+
+TEST(IC3FrameAstTest, PredicateAstKeyOrderIsIrrelevant)
+{
+  string line =
+      R"({"predicate_ast":{"args":[{"form":"ref","ref":"state1"},{"args":[{"const":"0","form":"const","width":8},{"form":"ref","ref":"state2"}],"form":"add"}],"form":"ule"}})";
+  IC3FramePredicateNode node;
+  ASSERT_TRUE(extract_predicate_ast_field(line, node));
+  ASSERT_TRUE(node.valid);
+  EXPECT_EQ(node.form, "ule");
+  ASSERT_EQ(node.args.size(), 2u);
+  EXPECT_EQ(node.args[0].form, "ref");
+  EXPECT_EQ(node.args[1].form, "add");
+}
+
+TEST(IC3FrameAstTest, BuildsNaryArithmetic)
+{
+  SmtSolver solver = create_solver(BZLA);
+  FunctionalTransitionSystem fts(solver);
+  Sort bv8 = solver->make_sort(BV, 8);
+  Term state = fts.make_statevar("state1", bv8);
+  IC3FramePredicateNode node = parse_predicate_ast_from_json(
+      R"({"args":[{"args":[{"form":"ref","ref":"state1"},{"form":"const","const":"1","width":8},{"form":"const","const":"2","width":8}],"form":"add"},{"form":"const","const":"3","width":8}],"form":"eq"})");
+  ASSERT_TRUE(node.valid);
+  Term predicate = build_predicate_term(solver, fts, node);
+  ASSERT_TRUE(predicate);
+  solver->assert_formula(
+      solver->make_term(Equal, state, solver->make_term(0, bv8)));
+  solver->assert_formula(solver->make_term(Not, predicate));
+  EXPECT_TRUE(solver->check_sat().is_unsat());
+}
+
+TEST(IC3FrameAstTest, BuildsUnarySubAsNegation)
+{
+  SmtSolver solver = create_solver(BZLA);
+  FunctionalTransitionSystem fts(solver);
+  Sort bv8 = solver->make_sort(BV, 8);
+  Term state = fts.make_statevar("state1", bv8);
+  IC3FramePredicateNode node = parse_predicate_ast_from_json(
+      R"({"form":"eq","args":[{"form":"sub","args":[{"form":"ref","ref":"state1"}]},{"form":"const","const":"255","width":8}]})");
+  ASSERT_TRUE(node.valid);
+  Term predicate = build_predicate_term(solver, fts, node);
+  ASSERT_TRUE(predicate);
+  solver->assert_formula(
+      solver->make_term(Equal, state, solver->make_term(1, bv8)));
+  solver->assert_formula(solver->make_term(Not, predicate));
+  EXPECT_TRUE(solver->check_sat().is_unsat());
 }
 
 }  // namespace pono_tests

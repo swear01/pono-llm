@@ -1,0 +1,25 @@
+{
+  "benchmark_root_env": "HWMCC_ROOT",
+  "benchmarks": [
+    {
+      "benchmark_id": "2024/btor2/2024/hku/arithmetic_circuits/fib_30/fib_30.btor2",
+      "metadata_file": "fib_30-c4cc7fbd9a5f.meta.json",
+      "predicates_file": "fib_30-c4cc7fbd9a5f.jsonl",
+      "prompt_file": "fib_30-c4cc7fbd9a5f.prompt.txt",
+      "responses_file": "fib_30-c4cc7fbd9a5f.responses.jsonl",
+      "slug": "fib_30-c4cc7fbd9a5f"
+    },
+    {
+      "benchmark_id": "2025/wordlevel/bv/2024/hkust/arithmetic_circuits/fib_23/fib_23.btor2",
+      "metadata_file": "fib_23-e5be72fc613f.meta.json",
+      "predicates_file": "fib_23-e5be72fc613f.jsonl",
+      "prompt_file": "fib_23-e5be72fc613f.prompt.txt",
+      "responses_file": "fib_23-e5be72fc613f.responses.jsonl",
+      "slug": "fib_23-e5be72fc613f"
+    }
+  ],
+  "created_at": "2026-07-11T11:01:46.779890+00:00",
+  "provenance_file": "provenance.json",
+  "schema": "pono-llm-candidate-capture-v2",
+  "system_prompt_file": "system_prompt.txt"
+}

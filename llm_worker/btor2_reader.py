@@ -10,6 +10,7 @@ Parses only what we need for invariant generation:
 """
 from __future__ import annotations
 
+import hashlib
 import re
 from dataclasses import dataclass, field
 from typing import Dict, List, Optional, Set, Tuple
@@ -34,7 +35,9 @@ class StateVar:
     ref: str       # "state{lineno}" — matches pono internal naming
     symbol: Optional[str]  # From BTOR2 state line; None if auto-generated/absent
     width: int
-    init_value: Optional[str] = None  # bitvec literal or None
+    init_value: Optional[str] = None  # normalized unsigned decimal or None
+    is_array: bool = False   # True for array-sorted states
+    data_bits: int = 0       # element bit-width for array states
 
 
 @dataclass
@@ -51,11 +54,38 @@ class BTOR2Info:
     node_sketch: Dict[int, str] = field(default_factory=dict)
     # lineno → BTOR2 op string (for expression-level comparison)
     ops: Dict[int, str] = field(default_factory=dict)
-    # lineno → const value string (for canonical hashing of constants)
+    # lineno → normalized unsigned decimal string
     consts: Dict[int, str] = field(default_factory=dict)
+    text_sha256: str = ""
+    line_count: int = 0
+    node_count: int = 0
+    bad_count: int = 0
+    constraint_count: int = 0
+    array_sort_count: int = 0
 
 
 _YOSYS_AUTO = re.compile(r"\$auto\$|\$techmap|\\|:execute\$|:246:|:245:|:222:|:256:")
+
+# CBMC name mangling patterns:
+#   !{$(in_main#0)<varname>}  →  varname
+#   !{GLOBAL}                 →  GLOBAL
+_CBMC_VAR_PAT = re.compile(r'^!\{\$\([^)]+\)<([^><$#]+)>\}$')
+_CBMC_GLOBAL_PAT = re.compile(r'^!\{(\w+)\}$')
+
+
+def _demangle_cbmc_name(s: str) -> Optional[str]:
+    """Extract C variable name from a CBMC-mangled BTOR2 symbol.
+    Returns None for infrastructure symbols (!pc[N], .next suffixes).
+    """
+    if not s or '.next' in s or s.startswith('!pc['):
+        return None
+    m = _CBMC_VAR_PAT.match(s)
+    if m:
+        return m.group(1)
+    m = _CBMC_GLOBAL_PAT.match(s)
+    if m:
+        return m.group(1)
+    return None
 
 
 def _is_meaningful_symbol(s: Optional[str]) -> bool:
@@ -81,7 +111,8 @@ def _parse_int_lineno(tok: str) -> Optional[int]:
 def parse_btor2(path: str) -> BTOR2Info:
     """Parse a BTOR2 file and return BTOR2Info."""
     info = BTOR2Info(module_name="unknown")
-    sorts: Dict[int, int] = {}   # lineno → bit-width
+    sorts: Dict[int, int] = {}         # lineno → bit-width (bitvec only)
+    array_sorts: Dict[int, int] = {}   # lineno → data bit-width (for array sorts)
     state_linenos: Set[int] = set()
     input_linenos: Set[int] = set()
     # lineno → list[int] direct argument linenos
@@ -90,9 +121,15 @@ def parse_btor2(path: str) -> BTOR2Info:
     init_map: Dict[int, int] = {}
     # state lineno → name extracted from output statements (for unnamed states)
     output_labels: Dict[int, str] = {}
+    # constant lineno → normalized unsigned decimal string
+    lineno_to_const: Dict[int, str] = {}
+    text_hasher = hashlib.sha256()
 
-    with open(path) as f:
-        for raw_line in f:
+    with open(path, "rb") as f:
+        for raw_bytes in f:
+            info.line_count += 1
+            text_hasher.update(raw_bytes)
+            raw_line = raw_bytes.decode("utf-8")
             line = raw_line.strip()
             if not line:
                 continue
@@ -115,6 +152,7 @@ def parse_btor2(path: str) -> BTOR2Info:
             if len(parts) < 2:
                 continue
             op = parts[1]
+            info.node_count += 1
 
             # Sort bitvec
             if op == "sort" and len(parts) >= 4 and parts[2] == "bitvec":
@@ -122,6 +160,40 @@ def parse_btor2(path: str) -> BTOR2Info:
                     sorts[lineno] = int(parts[3])
                 except ValueError:
                     pass
+            # Sort array: N sort array ADDR_SORT DATA_SORT
+            elif op == "sort" and len(parts) >= 5 and parts[2] == "array":
+                try:
+                    data_sort_ln = int(parts[4])
+                    array_sorts[lineno] = sorts.get(data_sort_ln, 0)
+                    info.array_sort_count += 1
+                except ValueError:
+                    pass
+
+            # Constants: normalize during the main pass so large files are not
+            # read a second time merely to resolve state initializations.
+            elif op in ("const", "constd", "consth"):
+                literal = parts[3] if len(parts) > 3 else "0"
+                base = {"const": 2, "constd": 10, "consth": 16}[op]
+                try:
+                    lineno_to_const[lineno] = str(int(literal, base))
+                except ValueError:
+                    continue
+                info.ops[lineno] = op
+                raw_deps[lineno] = []
+            elif op in ("zero", "one", "ones"):
+                if op == "zero":
+                    value = 0
+                elif op == "one":
+                    value = 1
+                else:
+                    try:
+                        width = sorts[int(parts[2])]
+                    except (KeyError, ValueError, IndexError):
+                        continue
+                    value = (1 << width) - 1
+                lineno_to_const[lineno] = str(value)
+                info.ops[lineno] = op
+                raw_deps[lineno] = []
 
             # Input: N input SORT [SYMBOL]
             elif op == "input" and len(parts) >= 3:
@@ -145,14 +217,24 @@ def parse_btor2(path: str) -> BTOR2Info:
                     sort_ln = int(parts[2])
                 except ValueError:
                     continue
-                width = sorts.get(sort_ln, 0)
                 raw_sym = parts[3] if len(parts) > 3 else None
-                symbol = raw_sym if _is_meaningful_symbol(raw_sym) else None
+                if raw_sym and _is_meaningful_symbol(raw_sym):
+                    if raw_sym.startswith('!{') or raw_sym.startswith('!pc['):
+                        symbol = _demangle_cbmc_name(raw_sym)
+                    else:
+                        symbol = raw_sym
+                else:
+                    symbol = None
+                is_array = sort_ln in array_sorts
+                data_bits = array_sorts.get(sort_ln, 0)
+                width = 0 if is_array else sorts.get(sort_ln, 0)
                 info.states.append(StateVar(
                     lineno=lineno,
                     ref=f"state{lineno}",
                     symbol=symbol,
                     width=width,
+                    is_array=is_array,
+                    data_bits=data_bits,
                 ))
                 state_linenos.add(lineno)
                 raw_deps[lineno] = []
@@ -181,8 +263,12 @@ def parse_btor2(path: str) -> BTOR2Info:
                 try:
                     bad_expr_ln = int(parts[2])
                     info.bad_lineno = bad_expr_ln
+                    info.bad_count += 1
                 except ValueError:
                     pass
+
+            elif op == "constraint":
+                info.constraint_count += 1
 
             # Output: N output REF [NAME]
             # When states lack explicit symbols, Yosys may record names via output stmts.
@@ -219,33 +305,9 @@ def parse_btor2(path: str) -> BTOR2Info:
         if sv.symbol is None and sv.lineno in output_labels:
             sv.symbol = output_labels[sv.lineno]
 
-    # Resolve init values for states
-    lineno_to_const: Dict[int, str] = {}
-    with open(path) as f:
-        for raw_line in f:
-            line = raw_line.strip()
-            if not line or line.startswith(";"):
-                continue
-            parts = line.split()
-            if len(parts) < 3:
-                continue
-            try:
-                lineno = int(parts[0])
-            except ValueError:
-                continue
-            if parts[1] == "constd":
-                lineno_to_const[lineno] = parts[3] if len(parts) > 3 else "0"
-            elif parts[1] == "const":
-                # "N const SORT VALUE" — VALUE is a binary string
-                lineno_to_const[lineno] = parts[3] if len(parts) > 3 else "0"
-            elif parts[1] == "zero":
-                lineno_to_const[lineno] = "0"
-            elif parts[1] == "one":
-                lineno_to_const[lineno] = "1"
-            elif parts[1] == "ones":
-                lineno_to_const[lineno] = "all-ones"
-
+    # Resolve init values for states.
     info.consts = lineno_to_const
+    info.text_sha256 = text_hasher.hexdigest()
 
     for sv in info.states:
         val_ln = init_map.get(sv.lineno)
@@ -566,13 +628,12 @@ def _decode_expr(
 
     op = info.ops.get(ln)
 
-    # Const: look up in info.consts (binary string) and convert to decimal
-    if op in ("const", "constd") or (op is None and ln in info.consts):
+    # Constants are normalized to unsigned decimal strings during parsing.
+    if ln in info.consts:
         raw = info.consts.get(ln, "")
         if raw:
             try:
-                val = int(raw, 2) if set(raw) <= {'0', '1'} else int(raw)
-                result = str(val)
+                result = str(int(raw, 10))
             except ValueError:
                 result = raw
         else:
@@ -728,8 +789,6 @@ def _decode_expr(
         result = f"({child(0)} == {child(1)})"
     elif op == "neq" and len(data_args) >= 2:
         result = f"({child(0)} != {child(1)})"
-    elif op in ("const", "constd"):
-        result = info.consts.get(ln, f"const{ln}")
     else:
         shown = [child(i) for i in range(min(len(data_args), 4))]
         result = f"{op}({', '.join(shown)})"
@@ -800,7 +859,7 @@ def build_bad_condition_text(info: BTOR2Info) -> str:
                 if cand in info.consts:
                     raw = info.consts[cand]
                     try:
-                        v = int(raw, 2) if raw and set(raw) <= {'0', '1'} else int(raw)
+                        v = int(raw, 10)
                         if v == 1:
                             return data[1 - i]
                     except (ValueError, TypeError):
@@ -859,7 +918,7 @@ def _eval_node(
     if ln in info.consts:
         raw = info.consts[ln]
         try:
-            val = int(raw, 2) if raw and set(raw) <= {'0', '1'} else int(raw)
+            val = int(raw, 10)
         except (ValueError, TypeError):
             val = 0
         cache[ln] = val
@@ -944,13 +1003,13 @@ def simulate_circuit_trajectory(
         sym = iv.symbol or iv.ref
         input_vals[iv.ref] = override.get(sym, 0)
 
-    # Initial state from init values (decimal strings or binary strings stored in consts)
+    # Initial state from normalized unsigned decimal init values.
     state_vals: Dict[str, int] = {}
     for sv in info.states:
         raw = sv.init_value
         if raw is not None:
             try:
-                val = int(raw, 2) if raw and set(raw) <= {'0', '1'} else int(raw)
+                val = int(raw, 10)
             except (ValueError, TypeError):
                 val = 0
         else:

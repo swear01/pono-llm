@@ -164,6 +164,7 @@ class PonoOptions
         ic3ia_reduce_preds_(default_ic3ia_reduce_preds_),
         ic3ia_track_important_vars_(default_ic3ia_track_important_vars_),
         ic3ia_sim_cex_(default_ic3ia_sim_cex_),
+        ic3ia_max_refinements_(default_ic3ia_max_refinements_),
         ic3sa_func_refine_(default_ic3sa_func_refine_),
         profiling_log_filename_(default_profiling_log_filename_),
         pseudo_init_prop_(default_pseudo_init_prop_),
@@ -273,7 +274,8 @@ class PonoOptions
   JusticeTranslator
       justice_translator_;  ///< liveness to safety translation algorithm
   std::string vcd_name_;
-  std::string initial_predicates_file_;  ///< LLM predicates injected into IC3IA initial abstraction (sound: over-approx)
+  std::string initial_predicates_file_;  ///< external predicates injected into
+                                         ///< IC3IA abstraction (over-approx)
   std::string btor2_witness_name_;
   std::string reset_name_;
   unsigned long reset_bnd_;
@@ -303,6 +305,8 @@ class PonoOptions
   bool ic3ia_track_important_vars_;  ///< prioritize predicates with marked
                                      ///< important variables
   bool ic3ia_sim_cex_;      ///< simulate abstract cex during IC3IA's refinement
+  unsigned long ic3ia_max_refinements_;  ///< maximum successful IC3IA
+                                         ///< refinements (~0UL = unlimited)
   bool ic3sa_func_refine_;  ///< try functional unrolling in refinement
   std::string profiling_log_filename_;
   bool pseudo_init_prop_;  ///< replace init and prop with boolean state vars
@@ -478,6 +482,7 @@ class PonoOptions
   static const bool default_ic3ia_reduce_preds_ = true;
   static const bool default_ic3ia_track_important_vars_ = true;
   static const bool default_ic3ia_sim_cex_ = true;
+  static const unsigned long default_ic3ia_max_refinements_ = ~0UL;
   static const bool default_ic3sa_func_refine_ = true;
   static const std::string default_profiling_log_filename_;
   static const bool default_pseudo_init_prop_ = false;

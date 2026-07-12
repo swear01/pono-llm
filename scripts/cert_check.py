@@ -27,7 +27,7 @@ def parse_btor2(path):
     inits  = {}         # state_lineno -> value_lineno
     nexts  = {}         # state_lineno -> value_lineno
     constraints = []    # [node_lineno]   (原始電路自帶的)
-    bad = None
+    bads = []
     consts = {}         # lineno -> (kind, literal)
     with open(path) as f:
         for line in f:
@@ -55,7 +55,7 @@ def parse_btor2(path):
             elif op == 'next':
                 nexts[int(p[3])] = int(p[4])
             elif op == 'bad':
-                bad = int(p[2])
+                bads.append(int(p[2]))
             elif op == 'constraint':
                 constraints.append(int(p[2]))
             elif op in ('zero', 'one', 'ones'):
@@ -75,7 +75,7 @@ def parse_btor2(path):
                 nodes[nid] = (op, args)
     return dict(sorts=sorts, nodes=nodes, raw=raw, states=states,
                 inits=inits, nexts=nexts, constraints=constraints,
-                bad=bad, consts=consts)
+                bad=(bads[-1] if bads else None), bads=bads, consts=consts)
 
 
 def width_of(M, nid):
@@ -232,8 +232,12 @@ def certify(orig_path, invar_text, timeout_ms=20000):
     cons_terms = [build(M, c, statevars, inputvars, cache) == 1 for c in M['constraints']]
     Cons = z3.And(*cons_terms) if cons_terms else z3.BoolVal(True)
 
-    # BAD
-    BAD = build(M, M['bad'], statevars, inputvars, cache) == 1
+    # BAD: certification is for every property in the file, never only the last.
+    if not M['bads']:
+        raise ValueError("BTOR2 model contains no bad property")
+    bad_terms = [build(M, bad, statevars, inputvars, cache) == 1
+                 for bad in M['bads']]
+    BAD = z3.Or(*bad_terms)
 
     # next-state 表達式
     next_expr = {}

@@ -1,0 +1,65 @@
+{
+  "benchmark_id": "2025/wordlevel/bv/2024/hkust/arithmetic_circuits/fib_05/fib_05.btor2",
+  "cap": 20,
+  "dedup_candidate_count": 20,
+  "effort": "none",
+  "latency_sec": 61.13882327079773,
+  "legacy_metadata_incomplete": true,
+  "linear_candidate_count": 20,
+  "llm_calls": [
+    {
+      "api_latency_ms": 20074.066877365112,
+      "client_stats": {},
+      "response_sha256": null,
+      "round": 0,
+      "tokens": 4156,
+      "wall_latency_sec": 20.074123859405518
+    },
+    {
+      "api_latency_ms": 10820.956468582153,
+      "client_stats": {},
+      "response_sha256": null,
+      "round": 1,
+      "tokens": 3041,
+      "wall_latency_sec": 10.821009874343872
+    },
+    {
+      "api_latency_ms": 10322.303295135498,
+      "client_stats": {},
+      "response_sha256": null,
+      "round": 2,
+      "tokens": 2993,
+      "wall_latency_sec": 10.32236361503601
+    },
+    {
+      "api_latency_ms": 7413.7890338897705,
+      "client_stats": {},
+      "response_sha256": null,
+      "round": 3,
+      "tokens": 2628,
+      "wall_latency_sec": 7.413843631744385
+    },
+    {
+      "api_latency_ms": 12507.426500320435,
+      "client_stats": {},
+      "response_sha256": null,
+      "round": 4,
+      "tokens": 3296,
+      "wall_latency_sec": 12.507482290267944
+    }
+  ],
+  "model": null,
+  "predicates_file": "fib_05-795cdbc45bc7.jsonl",
+  "predicates_sha256": "39b92fbea030fe461b54c80cfc115f33d6f1e16cfb28cf4f2ec287fd16cde19d",
+  "prompt_file": "fib_05-795cdbc45bc7.prompt.txt",
+  "prompt_sha256": "5755b5acc5752ca6fb3a1b5caa0ca21272b568f0aca732c92c5031621eeb76f9",
+  "provider": null,
+  "raw_candidate_count": 40,
+  "responses_file": null,
+  "rounds": 5,
+  "schema": "pono-llm-candidate-meta-v2-migrated",
+  "slug": "fib_05-795cdbc45bc7",
+  "software_origin": true,
+  "temperature": 0.3,
+  "total_tokens": 16114
+}

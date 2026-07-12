@@ -1,0 +1,422 @@
+{
+  "claim_boundary": "No current full21 solve is LLM-specific relative to the tested engine + deterministic affine/quadratic portfolio.",
+  "configs": {
+    "baseline": {
+      "sat_benchmark_ids": [
+        "2024/btor2/2024/sosylab/nla-digbench-scaling/egcd3-ll_unwindbound2.btor2",
+        "2025/wordlevel/bv/2025/sosylab/safety-func/nla-digbench-scaling/geo1-u_valuebound100.btor2"
+      ],
+      "unsat_benchmark_ids": [
+        "2020/hwmcc20/btor2/bv/2019/goel/crafted/paper_v3/paper_v3.btor2",
+        "2024/btor2/2024/sosylab/nla-digbench-scaling/freire1_valuebound1.btor2",
+        "2025/wordlevel/bv/2024/hkust/arithmetic_circuits/77.c/77.c.btor2"
+      ],
+      "verdict_counts": {
+        "sat": 2,
+        "timeout": 11,
+        "unknown": 5,
+        "unsat": 3
+      }
+    },
+    "llm-houdini-cert": {
+      "sat_benchmark_ids": [],
+      "unsat_benchmark_ids": [
+        "2020/hwmcc20/btor2/bv/2019/goel/crafted/paper_v3/paper_v3.btor2",
+        "2024/btor2/2024/hku/arithmetic_circuits/93.c/93.c.btor2",
+        "2024/btor2/2024/hku/arithmetic_circuits/fib_30/fib_30.btor2",
+        "2024/btor2/2024/hku/arithmetic_circuits/fib_37/fib_37.btor2",
+        "2025/wordlevel/bv/2024/hkust/arithmetic_circuits/77.c/77.c.btor2",
+        "2025/wordlevel/bv/2024/hkust/arithmetic_circuits/fib_05/fib_05.btor2",
+        "2025/wordlevel/bv/2024/hkust/arithmetic_circuits/fib_23/fib_23.btor2"
+      ],
+      "verdict_counts": {
+        "unknown": 14,
+        "unsat": 7
+      }
+    },
+    "llm-linear": {
+      "sat_benchmark_ids": [],
+      "unsat_benchmark_ids": [
+        "2020/hwmcc20/btor2/bv/2019/goel/crafted/paper_v3/paper_v3.btor2",
+        "2024/btor2/2024/hku/arithmetic_circuits/93.c/93.c.btor2",
+        "2024/btor2/2024/hku/arithmetic_circuits/fib_37/fib_37.btor2",
+        "2025/wordlevel/bv/2024/hkust/arithmetic_circuits/77.c/77.c.btor2",
+        "2025/wordlevel/bv/2024/hkust/arithmetic_circuits/fib_05/fib_05.btor2"
+      ],
+      "verdict_counts": {
+        "unknown": 16,
+        "unsat": 5
+      }
+    },
+    "llm-two-tier": {
+      "sat_benchmark_ids": [],
+      "unsat_benchmark_ids": [
+        "2020/hwmcc20/btor2/bv/2019/goel/crafted/paper_v3/paper_v3.btor2",
+        "2024/btor2/2024/hku/arithmetic_circuits/93.c/93.c.btor2",
+        "2024/btor2/2024/hku/arithmetic_circuits/fib_30/fib_30.btor2",
+        "2024/btor2/2024/hku/arithmetic_circuits/fib_37/fib_37.btor2",
+        "2025/wordlevel/bv/2024/hkust/arithmetic_circuits/77.c/77.c.btor2",
+        "2025/wordlevel/bv/2024/hkust/arithmetic_circuits/fib_05/fib_05.btor2",
+        "2025/wordlevel/bv/2024/hkust/arithmetic_circuits/fib_23/fib_23.btor2"
+      ],
+      "verdict_counts": {
+        "unknown": 14,
+        "unsat": 7
+      }
+    },
+    "portfolio": {
+      "sat_benchmark_ids": [
+        "2024/btor2/2024/sosylab/nla-digbench-scaling/egcd3-ll_unwindbound2.btor2",
+        "2025/wordlevel/bv/2025/sosylab/safety-func/nla-digbench-scaling/geo1-u_valuebound100.btor2"
+      ],
+      "unsat_benchmark_ids": [
+        "2020/hwmcc20/btor2/bv/2019/goel/crafted/paper_v3/paper_v3.btor2",
+        "2024/btor2/2024/hku/arithmetic_circuits/93.c/93.c.btor2",
+        "2024/btor2/2024/hku/arithmetic_circuits/fib_30/fib_30.btor2",
+        "2024/btor2/2024/hku/arithmetic_circuits/fib_37/fib_37.btor2",
+        "2024/btor2/2024/sosylab/nla-digbench-scaling/freire1_valuebound1.btor2",
+        "2025/wordlevel/bv/2024/hkust/arithmetic_circuits/77.c/77.c.btor2",
+        "2025/wordlevel/bv/2024/hkust/arithmetic_circuits/fib_05/fib_05.btor2",
+        "2025/wordlevel/bv/2024/hkust/arithmetic_circuits/fib_23/fib_23.btor2"
+      ],
+      "verdict_counts": {
+        "sat": 2,
+        "unknown": 11,
+        "unsat": 8
+      }
+    },
+    "static-linear": {
+      "sat_benchmark_ids": [],
+      "unsat_benchmark_ids": [
+        "2020/hwmcc20/btor2/bv/2019/goel/crafted/paper_v3/paper_v3.btor2",
+        "2024/btor2/2024/hku/arithmetic_circuits/fib_37/fib_37.btor2",
+        "2025/wordlevel/bv/2024/hkust/arithmetic_circuits/77.c/77.c.btor2"
+      ],
+      "verdict_counts": {
+        "unknown": 18,
+        "unsat": 3
+      }
+    },
+    "static-oracle": {
+      "sat_benchmark_ids": [],
+      "unsat_benchmark_ids": [
+        "2020/hwmcc20/btor2/bv/2019/goel/crafted/paper_v3/paper_v3.btor2",
+        "2024/btor2/2024/hku/arithmetic_circuits/93.c/93.c.btor2",
+        "2024/btor2/2024/hku/arithmetic_circuits/fib_37/fib_37.btor2",
+        "2025/wordlevel/bv/2024/hkust/arithmetic_circuits/77.c/77.c.btor2",
+        "2025/wordlevel/bv/2024/hkust/arithmetic_circuits/fib_05/fib_05.btor2"
+      ],
+      "verdict_counts": {
+        "unknown": 16,
+        "unsat": 5
+      }
+    },
+    "static-quadratic-oracle": {
+      "sat_benchmark_ids": [],
+      "unsat_benchmark_ids": [
+        "2020/hwmcc20/btor2/bv/2019/goel/crafted/paper_v3/paper_v3.btor2",
+        "2024/btor2/2024/hku/arithmetic_circuits/93.c/93.c.btor2",
+        "2024/btor2/2024/hku/arithmetic_circuits/fib_30/fib_30.btor2",
+        "2024/btor2/2024/hku/arithmetic_circuits/fib_37/fib_37.btor2",
+        "2025/wordlevel/bv/2024/hkust/arithmetic_circuits/77.c/77.c.btor2",
+        "2025/wordlevel/bv/2024/hkust/arithmetic_circuits/fib_05/fib_05.btor2",
+        "2025/wordlevel/bv/2024/hkust/arithmetic_circuits/fib_23/fib_23.btor2"
+      ],
+      "verdict_counts": {
+        "unknown": 14,
+        "unsat": 7
+      }
+    }
+  },
+  "corpus_size": 21,
+  "date": "2026-07-11",
+  "deterministic_portfolio": {
+    "sat_benchmark_ids": [
+      "2024/btor2/2024/sosylab/nla-digbench-scaling/egcd3-ll_unwindbound2.btor2",
+      "2025/wordlevel/bv/2025/sosylab/safety-func/nla-digbench-scaling/geo1-u_valuebound100.btor2"
+    ],
+    "unsat_benchmark_ids": [
+      "2020/hwmcc20/btor2/bv/2019/goel/crafted/paper_v3/paper_v3.btor2",
+      "2024/btor2/2024/hku/arithmetic_circuits/93.c/93.c.btor2",
+      "2024/btor2/2024/hku/arithmetic_circuits/fib_30/fib_30.btor2",
+      "2024/btor2/2024/hku/arithmetic_circuits/fib_37/fib_37.btor2",
+      "2024/btor2/2024/sosylab/nla-digbench-scaling/freire1_valuebound1.btor2",
+      "2025/wordlevel/bv/2024/hkust/arithmetic_circuits/77.c/77.c.btor2",
+      "2025/wordlevel/bv/2024/hkust/arithmetic_circuits/fib_05/fib_05.btor2",
+      "2025/wordlevel/bv/2024/hkust/arithmetic_circuits/fib_23/fib_23.btor2"
+    ]
+  },
+  "llm_specific_unsat_benchmark_ids": [],
+  "matched_set_equal": true,
+  "nonlinear_reliability": {
+    "groups": [
+      {
+        "benchmark_id": "2024/btor2/2024/hku/arithmetic_circuits/fib_30/fib_30.btor2",
+        "candidate_generation_sec": {
+          "max": 212.120012,
+          "median": 125.816125,
+          "min": 104.273008,
+          "p95_nearest_rank": 212.120012
+        },
+        "candidate_hash_count": 5,
+        "candidate_processing_sec": {
+          "max": 0.010173,
+          "median": 0.009361,
+          "min": 0.007898,
+          "p95_nearest_rank": 0.010173
+        },
+        "capture_count": 5,
+        "certificate_time_sec": {
+          "max": 0.072604,
+          "median": 0.063445,
+          "min": 0.042607,
+          "p95_nearest_rank": 0.072604
+        },
+        "circuit": "fib_30.btor2",
+        "config": "llm-houdini-cert",
+        "end_to_end_sec": {
+          "max": 212.194246,
+          "median": 125.868455,
+          "min": 104.35351,
+          "p95_nearest_rank": 212.194246
+        },
+        "llm_total_tokens": {
+          "max": 13794.0,
+          "median": 13206.0,
+          "min": 13106.0
+        },
+        "model_checker_time_sec": {
+          "max": 0.0,
+          "median": 0.0,
+          "min": 0.0,
+          "p95_nearest_rank": 0.0
+        },
+        "offline_time_sec": {
+          "max": 0.080502,
+          "median": 0.073619,
+          "min": 0.052329,
+          "p95_nearest_rank": 0.080502
+        },
+        "proof_time_sec": {
+          "max": 0.072604,
+          "median": 0.063445,
+          "min": 0.042607,
+          "p95_nearest_rank": 0.072604
+        },
+        "runs": 5,
+        "unsat_rate": 1.0,
+        "unsupported_candidate_total": 5,
+        "verdict_counts": {
+          "unsat": 5
+        }
+      },
+      {
+        "benchmark_id": "2024/btor2/2024/hku/arithmetic_circuits/fib_30/fib_30.btor2",
+        "candidate_generation_sec": {
+          "max": 212.120012,
+          "median": 125.816125,
+          "min": 104.273008,
+          "p95_nearest_rank": 212.120012
+        },
+        "candidate_hash_count": 5,
+        "candidate_processing_sec": {
+          "max": 0.006584,
+          "median": 0.00249,
+          "min": 0.002005,
+          "p95_nearest_rank": 0.006584
+        },
+        "capture_count": 5,
+        "certificate_time_sec": {
+          "max": 0.0,
+          "median": 0.0,
+          "min": 0.0,
+          "p95_nearest_rank": 0.0
+        },
+        "circuit": "fib_30.btor2",
+        "config": "llm-two-tier",
+        "end_to_end_sec": {
+          "max": 282.252532,
+          "median": 195.074529,
+          "min": 161.578319,
+          "p95_nearest_rank": 282.252532
+        },
+        "llm_total_tokens": {
+          "max": 13794.0,
+          "median": 13206.0,
+          "min": 13106.0
+        },
+        "model_checker_time_sec": {
+          "max": 70.14651,
+          "median": 69.255914,
+          "min": 45.146245,
+          "p95_nearest_rank": 70.14651
+        },
+        "offline_time_sec": {
+          "max": 70.153094,
+          "median": 69.258404,
+          "min": 45.149007,
+          "p95_nearest_rank": 70.153094
+        },
+        "proof_time_sec": {
+          "max": 70.14651,
+          "median": 69.255914,
+          "min": 45.146245,
+          "p95_nearest_rank": 70.14651
+        },
+        "runs": 5,
+        "unsat_rate": 0.6,
+        "unsupported_candidate_total": 5,
+        "verdict_counts": {
+          "timeout": 2,
+          "unsat": 3
+        }
+      },
+      {
+        "benchmark_id": "2025/wordlevel/bv/2024/hkust/arithmetic_circuits/fib_23/fib_23.btor2",
+        "candidate_generation_sec": {
+          "max": 55.466193,
+          "median": 48.564719,
+          "min": 43.331819,
+          "p95_nearest_rank": 55.466193
+        },
+        "candidate_hash_count": 5,
+        "candidate_processing_sec": {
+          "max": 0.083915,
+          "median": 0.006622,
+          "min": 0.005498,
+          "p95_nearest_rank": 0.083915
+        },
+        "capture_count": 5,
+        "certificate_time_sec": {
+          "max": 0.20381,
+          "median": 0.049887,
+          "min": 0.041737,
+          "p95_nearest_rank": 0.20381
+        },
+        "circuit": "fib_23.btor2",
+        "config": "llm-houdini-cert",
+        "end_to_end_sec": {
+          "max": 55.520746,
+          "median": 48.629807,
+          "min": 43.619544,
+          "p95_nearest_rank": 55.520746
+        },
+        "llm_total_tokens": {
+          "max": 15231.0,
+          "median": 14222.0,
+          "min": 13592.0
+        },
+        "model_checker_time_sec": {
+          "max": 0.0,
+          "median": 0.0,
+          "min": 0.0,
+          "p95_nearest_rank": 0.0
+        },
+        "offline_time_sec": {
+          "max": 0.287725,
+          "median": 0.056509,
+          "min": 0.047236,
+          "p95_nearest_rank": 0.287725
+        },
+        "proof_time_sec": {
+          "max": 0.20381,
+          "median": 0.049887,
+          "min": 0.041737,
+          "p95_nearest_rank": 0.20381
+        },
+        "runs": 5,
+        "unsat_rate": 1.0,
+        "unsupported_candidate_total": 2,
+        "verdict_counts": {
+          "unsat": 5
+        }
+      },
+      {
+        "benchmark_id": "2025/wordlevel/bv/2024/hkust/arithmetic_circuits/fib_23/fib_23.btor2",
+        "candidate_generation_sec": {
+          "max": 55.466193,
+          "median": 48.564719,
+          "min": 43.331819,
+          "p95_nearest_rank": 55.466193
+        },
+        "candidate_hash_count": 5,
+        "candidate_processing_sec": {
+          "max": 0.00317,
+          "median": 0.002282,
+          "min": 0.002226,
+          "p95_nearest_rank": 0.00317
+        },
+        "capture_count": 5,
+        "certificate_time_sec": {
+          "max": 0.0,
+          "median": 0.0,
+          "min": 0.0,
+          "p95_nearest_rank": 0.0
+        },
+        "circuit": "fib_23.btor2",
+        "config": "llm-two-tier",
+        "end_to_end_sec": {
+          "max": 113.498454,
+          "median": 95.779386,
+          "min": 56.783448,
+          "p95_nearest_rank": 113.498454
+        },
+        "llm_total_tokens": {
+          "max": 15231.0,
+          "median": 14222.0,
+          "min": 13592.0
+        },
+        "model_checker_time_sec": {
+          "max": 70.164353,
+          "median": 47.212438,
+          "min": 1.314085,
+          "p95_nearest_rank": 70.164353
+        },
+        "offline_time_sec": {
+          "max": 70.166635,
+          "median": 47.214667,
+          "min": 1.317255,
+          "p95_nearest_rank": 70.166635
+        },
+        "proof_time_sec": {
+          "max": 70.164353,
+          "median": 47.212438,
+          "min": 1.314085,
+          "p95_nearest_rank": 70.164353
+        },
+        "runs": 5,
+        "unsat_rate": 0.8,
+        "unsupported_candidate_total": 2,
+        "verdict_counts": {
+          "timeout": 1,
+          "unsat": 4
+        }
+      }
+    ],
+    "row_count": 20,
+    "schema": "pono-llm-reliability-summary-v1"
+  },
+  "schema": "pono-llm-phase1-2-summary-v1",
+  "source_files": [
+    "artifacts/phase1_2_corrected_full21_matrix_final.csv",
+    "artifacts/phase1_2_corrected_static_full21_v3.csv",
+    "artifacts/phase1_2_llm_houdini_full21.csv",
+    "artifacts/phase1_2_nonlinear_reliability.json",
+    "artifacts/phase1_2_frozen_v2/manifest.json",
+    "artifacts/phase1_2_frozen_v2/integrity.json"
+  ],
+  "timing": {
+    "llm_houdini_cert": {
+      "median_certificate_sec": 0.083128,
+      "median_generation_sec": 44.419225,
+      "total_certificate_sec": 34.320446000000004,
+      "total_end_to_end_sec": 1138.1498489999997,
+      "total_generation_sec": 1103.636388,
+      "total_tokens": 318001
+    },
+    "static_quadratic_oracle": {
+      "median_end_to_end_sec": 33.715979,
+      "total_end_to_end_sec": 804.0324159999999
+    }
+  }
+}

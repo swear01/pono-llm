@@ -134,37 +134,59 @@ pytest ./tests
 
 ## LLM-assisted IC3 integration (pono-llm fork)
 
-This fork adds online LLM-guided frame generalization for IC3/IC3IA.
-
-**Canonical spec:** [`docs/ic3_frame_v1_integration.md`](docs/ic3_frame_v1_integration.md)  
-**Architecture:** [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md)  
-**Doc index:** [`docs/DOC_INDEX.md`](docs/DOC_INDEX.md)
-
-Legacy paths (`cube_subset`, `qf_smt`, `PONO_LLM_ASSERT_LIFTED_LEMMAS`) have been **removed**. See [`docs/ic3_frame_v1_integration.md`](docs/ic3_frame_v1_integration.md).
+This research fork studies sound LLM-generated semantic guidance for IC3IA on
+software-origin BTOR2. LLM formulas are untrusted **abstraction predicates**;
+they are never injected as BTOR2 constraints or assumptions.
 
 ```bash
-export DEEPSEEK_API_KEY=sk-...   # required for sidecar
+build/pono -e ic3ia \
+  --initial-predicates predicates.jsonl \
+  original.btor2
+```
 
+`--initial-predicates` changes the abstraction vocabulary, not the concrete
+transition system. A bad candidate may hurt performance, but cannot fabricate
+an UNSAT result for the original model.
+
+The current reproducible experiment path separates candidate generation from
+formal replay. Capture schema v4 writes `integrity.json`; replay verifies the
+benchmark, manifest, prompt, candidate, metadata, and response hashes before
+running any LLM-backed configuration. Every replay row also binds the selected
+benchmark set, configs, trials, and expected row count; downstream research
+selectors reject partial matrices:
+
+```bash
 pip install -r llm_worker/requirements.txt
 
-# Terminal 1: sidecar
-python3 llm_worker/sidecar.py \
-  --req-path /tmp/pono_llm_requests.jsonl \
-  --resp-path /tmp/pono_llm_responses.jsonl \
-  --log-path /tmp/pono_llm_log.jsonl \
-  --prompt-dir llm_worker/prompts/
+# Generate one immutable candidate capture (.env supplies the provider key).
+python3 scripts/capture_candidates.py \
+  --benchmark-root /path/to/hwmcc_benchmarks \
+  --manifest artifacts/corpus.json \
+  --out artifacts/capture-01 --rounds 5 --cap 20
 
-# Terminal 2: Pono IC3IA
-build/pono -e ic3ia --llm-gen-mode async-cti \
-  --llm-parallel-samples 3 --llm-reasoning-effort none \
-  --llm-req-path /tmp/pono_llm_requests.jsonl \
-  --llm-resp-path /tmp/pono_llm_responses.jsonl \
-  design.btor2
-
-# Tests
-python3 scripts/run_benchmarks.py --phase test
-# Includes make check, tests/python (if ./configure.sh --python), schema + sidecar tests
+# Replay without any API call. Includes deterministic baselines and direct
+# C1/C2/C3 Houdini certification and deterministic falsification baselines.
+python3 scripts/run_matrix.py \
+  --benchmark-root /path/to/hwmcc_benchmarks \
+  --manifest artifacts/capture-01/manifest.json \
+  --pred-dir artifacts/capture-01 \
+  --configs baseline,static-ranked,static-oracle,llm-houdini-cert,llm-two-tier,portfolio \
+  --out artifacts/matrix.csv
 ```
+
+The corrected Phase 1+2 and exhaustive eligible-HWMCC Gate 2 experiments find
+zero solved case unique to the LLM under the tested deterministic baselines.
+Gate 2's remaining `up.btor2` compactness observation is also removed by a
+post-hoc fixed low-complexity `static-ranked` baseline. This is not currently a
+coverage-improvement claim; see the active roadmap before extending the study.
+
+Current status and claim boundaries:
+
+- [`docs/overview.md`](docs/overview.md)
+- [`docs/plan.md`](docs/plan.md)
+- [`docs/roadmap.md`](docs/roadmap.md)
+- [`docs/notes.md`](docs/notes.md)
+- [`docs/DOC_INDEX.md`](docs/DOC_INDEX.md)
 
 ## Documentation
 

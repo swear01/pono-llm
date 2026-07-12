@@ -1,0 +1,264 @@
+{
+  "benchmark_id": "2024/btor2/2024/hku/arithmetic_circuits/fib_30/fib_30.btor2",
+  "cap": 20,
+  "dedup_candidate_count": 12,
+  "effort": "none",
+  "latency_sec": 104.27300778776407,
+  "linear_candidate_count": 8,
+  "llm_calls": [
+    {
+      "api_latency_ms": 73416.72253608704,
+      "client_stats": {
+        "completion_tokens": 1062,
+        "content_chars": 3346,
+        "json_mode": "json_object",
+        "latency_ms": 73416.72253608704,
+        "openrouter_routing": {
+          "allow_fallbacks": true,
+          "ignore": [
+            "deepinfra",
+            "venice",
+            "gmicloud",
+            "digitalocean",
+            "cloudflare",
+            "morph",
+            "akashml",
+            "siliconflow"
+          ],
+          "only": [
+            "novita",
+            "deepseek",
+            "baidu",
+            "parasail",
+            "alibaba",
+            "streamlake",
+            "atlas-cloud"
+          ],
+          "quantizations": [
+            "fp8",
+            "fp16",
+            "bf16",
+            "fp32",
+            "unknown"
+          ],
+          "sort": "throughput"
+        },
+        "prompt_tokens": 1681,
+        "provider": "openrouter",
+        "reasoning_chars": 0,
+        "thinking_mode": "disabled",
+        "total_tokens": 2743
+      },
+      "response_sha256": "34d2f0237f057a08a1f1a94a703b338e4a0df68742043e920e57e22c4946d16b",
+      "round": 0,
+      "tokens": 2743,
+      "wall_latency_sec": 73.41676808521152
+    },
+    {
+      "api_latency_ms": 7033.85853767395,
+      "client_stats": {
+        "completion_tokens": 865,
+        "content_chars": 2606,
+        "json_mode": "json_object",
+        "latency_ms": 7033.85853767395,
+        "openrouter_routing": {
+          "allow_fallbacks": true,
+          "ignore": [
+            "deepinfra",
+            "venice",
+            "gmicloud",
+            "digitalocean",
+            "cloudflare",
+            "morph",
+            "akashml",
+            "siliconflow"
+          ],
+          "only": [
+            "novita",
+            "deepseek",
+            "baidu",
+            "parasail",
+            "alibaba",
+            "streamlake",
+            "atlas-cloud"
+          ],
+          "quantizations": [
+            "fp8",
+            "fp16",
+            "bf16",
+            "fp32",
+            "unknown"
+          ],
+          "sort": "throughput"
+        },
+        "prompt_tokens": 1681,
+        "provider": "openrouter",
+        "reasoning_chars": 0,
+        "thinking_mode": "disabled",
+        "total_tokens": 2546
+      },
+      "response_sha256": "2f3d10185822602faf4ba4120cd1977f7049c6e3ca5cd23f9f324635862d45e4",
+      "round": 1,
+      "tokens": 2546,
+      "wall_latency_sec": 7.033911272883415
+    },
+    {
+      "api_latency_ms": 9573.739767074585,
+      "client_stats": {
+        "completion_tokens": 1188,
+        "content_chars": 3916,
+        "json_mode": "json_object",
+        "latency_ms": 9573.739767074585,
+        "openrouter_routing": {
+          "allow_fallbacks": true,
+          "ignore": [
+            "deepinfra",
+            "venice",
+            "gmicloud",
+            "digitalocean",
+            "cloudflare",
+            "morph",
+            "akashml",
+            "siliconflow"
+          ],
+          "only": [
+            "novita",
+            "deepseek",
+            "baidu",
+            "parasail",
+            "alibaba",
+            "streamlake",
+            "atlas-cloud"
+          ],
+          "quantizations": [
+            "fp8",
+            "fp16",
+            "bf16",
+            "fp32",
+            "unknown"
+          ],
+          "sort": "throughput"
+        },
+        "prompt_tokens": 1681,
+        "provider": "openrouter",
+        "reasoning_chars": 0,
+        "thinking_mode": "disabled",
+        "total_tokens": 2869
+      },
+      "response_sha256": "9a8b0fb864ca477643b88b361c212900df3a713d1f7e6dfc2766d13794d0abb3",
+      "round": 2,
+      "tokens": 2869,
+      "wall_latency_sec": 9.573794685304165
+    },
+    {
+      "api_latency_ms": 6858.602046966553,
+      "client_stats": {
+        "completion_tokens": 800,
+        "content_chars": 2594,
+        "json_mode": "json_object",
+        "latency_ms": 6858.602046966553,
+        "openrouter_routing": {
+          "allow_fallbacks": true,
+          "ignore": [
+            "deepinfra",
+            "venice",
+            "gmicloud",
+            "digitalocean",
+            "cloudflare",
+            "morph",
+            "akashml",
+            "siliconflow"
+          ],
+          "only": [
+            "novita",
+            "deepseek",
+            "baidu",
+            "parasail",
+            "alibaba",
+            "streamlake",
+            "atlas-cloud"
+          ],
+          "quantizations": [
+            "fp8",
+            "fp16",
+            "bf16",
+            "fp32",
+            "unknown"
+          ],
+          "sort": "throughput"
+        },
+        "prompt_tokens": 1681,
+        "provider": "openrouter",
+        "reasoning_chars": 0,
+        "thinking_mode": "disabled",
+        "total_tokens": 2481
+      },
+      "response_sha256": "7d8862ac5f14c2a9da723ae72e72e1fdb40a3b083300c9d39842022fd7caf13e",
+      "round": 3,
+      "tokens": 2481,
+      "wall_latency_sec": 6.8586589731276035
+    },
+    {
+      "api_latency_ms": 7389.819860458374,
+      "client_stats": {
+        "completion_tokens": 857,
+        "content_chars": 2535,
+        "json_mode": "json_object",
+        "latency_ms": 7389.819860458374,
+        "openrouter_routing": {
+          "allow_fallbacks": true,
+          "ignore": [
+            "deepinfra",
+            "venice",
+            "gmicloud",
+            "digitalocean",
+            "cloudflare",
+            "morph",
+            "akashml",
+            "siliconflow"
+          ],
+          "only": [
+            "novita",
+            "deepseek",
+            "baidu",
+            "parasail",
+            "alibaba",
+            "streamlake",
+            "atlas-cloud"
+          ],
+          "quantizations": [
+            "fp8",
+            "fp16",
+            "bf16",
+            "fp32",
+            "unknown"
+          ],
+          "sort": "throughput"
+        },
+        "prompt_tokens": 1681,
+        "provider": "openrouter",
+        "reasoning_chars": 0,
+        "thinking_mode": "disabled",
+        "total_tokens": 2538
+      },
+      "response_sha256": "18b004acf93b26fe9b2ab7e218de192812a1a0ea0f6301a3abae39354e24ea4b",
+      "round": 4,
+      "tokens": 2538,
+      "wall_latency_sec": 7.389874771237373
+    }
+  ],
+  "model": "deepseek/deepseek-v4-flash",
+  "predicates_file": "fib_30-c4cc7fbd9a5f.jsonl",
+  "predicates_sha256": "94fbc2b12f122309dd72e0e6ca646376f3df6b32a32f4ac78c078dae4718d338",
+  "prompt_file": "fib_30-c4cc7fbd9a5f.prompt.txt",
+  "prompt_sha256": "97a7eec8c81553e466911477e663913dfac044878a8e4ede89bc76ebb5c8a0ef",
+  "provider": "openrouter",
+  "raw_candidate_count": 31,
+  "responses_file": "fib_30-c4cc7fbd9a5f.responses.jsonl",
+  "rounds": 5,
+  "schema": "pono-llm-candidate-meta-v2",
+  "slug": "fib_30-c4cc7fbd9a5f",
+  "software_origin": true,
+  "temperature": 0.3,
+  "total_tokens": 13177
+}

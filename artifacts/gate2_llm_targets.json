@@ -1,0 +1,63 @@
+{
+  "benchmarks": [
+    {
+      "benchmark_id": "2024/btor2/2024/sosylab/bitvector/byte_add_1-1.btor2",
+      "content_sha256": "44c6298003b91d36e85dbb9a649a5b44b28f64c4015d396eaf9ac140ff358794"
+    },
+    {
+      "benchmark_id": "2024/btor2/2024/sosylab/loop-invgen/up.btor2",
+      "content_sha256": "cdb52c840b94fc6de99a88d2f61db9724c49d507ef8bbac4ab74b6ca3da3dea5"
+    },
+    {
+      "benchmark_id": "2024/btor2/2024/sosylab/loop-simple/deep-nested.btor2",
+      "content_sha256": "c064ba114ce5207b51596dcd04ddbad264482da930aa56428d44d7d72290d03a"
+    },
+    {
+      "benchmark_id": "2024/btor2/2024/sosylab/loop-zilu/benchmark04_conjunctive.btor2",
+      "content_sha256": "7a0fea741ef809c72423d7d229f45a7ffee394e71c7d0b81546c36af04046079"
+    },
+    {
+      "benchmark_id": "2024/btor2/2024/sosylab/loops-crafted-1/mono-crafted_8.btor2",
+      "content_sha256": "d83418d9b5aa572cf4bebf9357a0aeff049109a79337f23738b4ae5b28bca9b6"
+    },
+    {
+      "benchmark_id": "2024/btor2/2024/sosylab/seq-mthreaded/pals_lcr-var-start-time.6.1.ufo.UNBOUNDED.pals.btor2",
+      "content_sha256": "c24bf71e8b372dcc606e7ec6e9dadc37fa18bed59b7cd6eb906584d68094d7c9"
+    },
+    {
+      "benchmark_id": "2025/wordlevel/bv/2024/sosylab/loops-crafted-1/Mono6_1.btor2",
+      "content_sha256": "f3d4dfc24983fd470e33bc1e3f1b88f4925dabfa8494856cbb93f0ce9b75da4c"
+    },
+    {
+      "benchmark_id": "2025/wordlevel/bv/2024/sosylab/loops-crafted-1/sumt3.btor2",
+      "content_sha256": "f63bf825b9c27c0cf3799235b26c0d8fe7ca3463c7b37fd4f778371d40b94244"
+    },
+    {
+      "benchmark_id": "2025/wordlevel/bv/2025/sosylab/safety-func/seq-mthreaded/pals_opt-floodmax.5_overflow.ufo.UNBOUNDED.pals.btor2",
+      "content_sha256": "8ca187005e0faf5997d21fd273ded09cb6168f3136863332876f0809034cda9b"
+    },
+    {
+      "benchmark_id": "2025/wordlevel/bv/2025/sosylab/safety-rel/loops-crafted-1/loopv3.btor2",
+      "content_sha256": "bab1f7016859d6fc591dd431173a5cb45a7509906f25a7950a921dbfc5f858a3"
+    },
+    {
+      "benchmark_id": "2025/wordlevel/bv/2025/sosylab/safety-rel/seq-mthreaded/pals_opt-floodmax.4.ufo.UNBOUNDED.pals.btor2",
+      "content_sha256": "22dcafffcc1dc1e273d4fdeee42d6b4702a44185030cb5e6d6810522f986cb17"
+    }
+  ],
+  "deterministic_decisive_count": 5,
+  "deterministic_matrix": "gate2_static_quadratic_le10k_70s.csv",
+  "deterministic_matrix_contract_sha256": "42487eabc0f748dfa2dda1af87232dab4d9d17d4d7e5e6e7c8744db0c293ea29",
+  "deterministic_matrix_sha256": "3b0fb960ec04e5d40db77008acd83e07f7d40ac03615bffd3391353a696c1b99",
+  "prior_capture": "phase1_2_frozen_v2",
+  "prior_capture_integrity_sha256": "3bbb517519cf3630149739361e54ba546bb192c418d8643f59ad22aca4b2ccee",
+  "prior_capture_manifest_sha256": "a4cbe7f9c144cc3cd74c832f0a67ca66bb076642a74f4bb0c9617e071168c006",
+  "prior_corpus_overlap_count": 16,
+  "prior_matrix": "phase1_2_corrected_full21_matrix_final.csv",
+  "prior_matrix_sha256": "6468b76f297e132051a942aa926cb53b78ea5cf72188ea26fbb4e4997205e036",
+  "schema": "pono-llm-gate2-llm-targets-v1",
+  "selected_count": 11,
+  "source_survivor_count": 27,
+  "source_survivors": "gate2_baseline_screen_survivors_le10k.json",
+  "source_survivors_sha256": "4392ff103b6d8d03e26cc8d5d08882c582176628104a855ebfe097b87ed34650"
+}

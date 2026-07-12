@@ -1,0 +1,11 @@
+{"predicate_ast": {"args": [{"form": "ref", "ref": "state21"}, {"form": "ref", "ref": "state25"}], "form": "ule"}}
+{"predicate_ast": {"args": [{"form": "ref", "ref": "state22"}, {"form": "ref", "ref": "state25"}], "form": "ule"}}
+{"predicate_ast": {"args": [{"form": "ref", "ref": "state23"}, {"form": "ref", "ref": "state25"}], "form": "ule"}}
+{"predicate_ast": {"args": [{"args": [{"args": [{"form": "ref", "ref": "state21"}, {"form": "ref", "ref": "state22"}], "form": "add"}, {"form": "ref", "ref": "state23"}], "form": "add"}, {"args": [{"const": "3", "form": "const", "width": 32}, {"form": "ref", "ref": "state24"}], "form": "mul"}], "form": "eq"}}
+{"predicate_ast": {"args": [{"form": "ref", "ref": "state24"}, {"form": "ref", "ref": "state25"}], "form": "ule"}}
+{"predicate_ast": {"args": [{"form": "ref", "ref": "state26"}, {"form": "ref", "ref": "state25"}], "form": "eq"}}
+{"predicate_ast": {"args": [{"args": [{"form": "ref", "ref": "state21"}, {"args": [{"form": "ref", "ref": "state22"}, {"args": [{"form": "ref", "ref": "state23"}, {"form": "ref", "ref": "state24"}], "form": "add"}], "form": "add"}], "form": "add"}, {"args": [{"const": "4", "form": "const", "width": 32}, {"form": "ref", "ref": "state25"}], "form": "mul"}], "form": "eq"}}
+{"predicate_ast": {"args": [{"args": [{"args": [{"args": [{"form": "ref", "ref": "state21"}, {"form": "ref", "ref": "state22"}], "form": "add"}, {"form": "ref", "ref": "state23"}], "form": "add"}, {"form": "ref", "ref": "state24"}], "form": "add"}, {"args": [{"const": "4", "form": "const", "width": 32}, {"form": "ref", "ref": "state25"}], "form": "mul"}], "form": "ule"}}
+{"predicate_ast": {"args": [{"form": "ref", "ref": "state21"}, {"const": "0", "form": "const", "width": 32}], "form": "uge"}}
+{"predicate_ast": {"args": [{"form": "ref", "ref": "state22"}, {"const": "0", "form": "const", "width": 32}], "form": "uge"}}
+{"predicate_ast": {"args": [{"args": [{"form": "ref", "ref": "state21"}, {"form": "ref", "ref": "state22"}], "form": "ule"}, {"args": [{"args": [{"form": "ref", "ref": "state22"}, {"form": "ref", "ref": "state23"}], "form": "ule"}, {"args": [{"form": "ref", "ref": "state23"}, {"form": "ref", "ref": "state24"}], "form": "ule"}], "form": "and"}], "form": "and"}}

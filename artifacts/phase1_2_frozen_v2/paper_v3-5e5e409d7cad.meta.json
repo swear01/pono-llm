@@ -1,0 +1,65 @@
+{
+  "benchmark_id": "2020/hwmcc20/btor2/bv/2019/goel/crafted/paper_v3/paper_v3.btor2",
+  "cap": 20,
+  "dedup_candidate_count": 18,
+  "effort": "none",
+  "latency_sec": 129.49718356132507,
+  "legacy_metadata_incomplete": true,
+  "linear_candidate_count": 18,
+  "llm_calls": [
+    {
+      "api_latency_ms": 72847.0573425293,
+      "client_stats": {},
+      "response_sha256": null,
+      "round": 0,
+      "tokens": 2545,
+      "wall_latency_sec": 72.84711956977844
+    },
+    {
+      "api_latency_ms": 12974.58815574646,
+      "client_stats": {},
+      "response_sha256": null,
+      "round": 1,
+      "tokens": 3206,
+      "wall_latency_sec": 12.974642515182495
+    },
+    {
+      "api_latency_ms": 18328.82523536682,
+      "client_stats": {},
+      "response_sha256": null,
+      "round": 2,
+      "tokens": 3842,
+      "wall_latency_sec": 18.328880310058594
+    },
+    {
+      "api_latency_ms": 12321.098327636719,
+      "client_stats": {},
+      "response_sha256": null,
+      "round": 3,
+      "tokens": 3070,
+      "wall_latency_sec": 12.321153402328491
+    },
+    {
+      "api_latency_ms": 13025.33221244812,
+      "client_stats": {},
+      "response_sha256": null,
+      "round": 4,
+      "tokens": 3174,
+      "wall_latency_sec": 13.02538776397705
+    }
+  ],
+  "model": null,
+  "predicates_file": "paper_v3-5e5e409d7cad.jsonl",
+  "predicates_sha256": "4c35591b4567bf9439ad0e4e3eb3382e6a2870b2b60850ffaf852aaa9b74e06b",
+  "prompt_file": "paper_v3-5e5e409d7cad.prompt.txt",
+  "prompt_sha256": "08f1e50eb28975d2d7697215595e63512de3ff0637358269955c37c3b7a8bc58",
+  "provider": null,
+  "raw_candidate_count": 33,
+  "responses_file": null,
+  "rounds": 5,
+  "schema": "pono-llm-candidate-meta-v2-migrated",
+  "slug": "paper_v3-5e5e409d7cad",
+  "software_origin": true,
+  "temperature": 0.3,
+  "total_tokens": 15837
+}

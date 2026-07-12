@@ -1,0 +1,8 @@
+原始電路: /home/swear01/hwmcc_benchmarks/2024/btor2/2024/sosylab/loop-invgen/up.btor2
+INVAR: (let ((_let0 (= state25 #b0))) (let ((_let1 (= #b0 state21))) (let ((_let2 (not (= #b1 sta...
+------------------------------------------------------------
+  C1 Init⟹Inv      ✓ UNSAT(無反例)
+  C2 inductive     ✓ UNSAT(無反例)
+  C3 Inv⟹¬BAD      ✓ UNSAT(無反例)
+------------------------------------------------------------
+結論: ✅ SOUND PROOF — invariant 在原始電路成立

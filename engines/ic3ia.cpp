@@ -74,7 +74,8 @@ IC3IA::IC3IA(const SafetyProperty & p,
                                           options_.smt_interpolator_opts_)),
       to_interpolator_(interpolator_),
       to_solver_(solver_),
-      longest_cex_length_(0)
+      longest_cex_length_(0),
+      num_refinements_(0)
 {
   // since we passed a fresh RelationalTransitionSystem as the main TS
   // need to point orig_ts_ to the right place
@@ -195,10 +196,11 @@ void IC3IA::initialize()
   logger.log(1, "Number predicates found in prop: {}", num_prop_preds);
   logger.log(1, "Total number of initial predicates: {}", preds.size());
 
-  // SOUND injection point: add LLM-suggested predicates to the initial
-  // abstraction. add_predicate only adds an abstraction predicate
-  // (over-approximation); it never constrains the transition system, so the
-  // UNSAT/SAT verdict stays sound regardless of whether the predicates are true.
+  // SOUND injection point: add externally suggested predicates to the initial
+  // abstraction. add_predicate refines the abstract relation while preserving
+  // an over-approximation; it never constrains the concrete transition system,
+  // so the UNSAT/SAT verdict stays sound regardless of whether the predicates
+  // are true.
   if (!options_.initial_predicates_file_.empty()) {
     std::ifstream pf(options_.initial_predicates_file_);
     if (!pf) {
@@ -206,7 +208,7 @@ void IC3IA::initialize()
                           + options_.initial_predicates_file_);
     }
     std::string pline;
-    size_t n_llm_injected = 0;
+    size_t n_external_injected = 0;
     while (std::getline(pf, pline)) {
       if (pline.empty()) continue;
       IC3FramePredicateNode node;
@@ -220,11 +222,13 @@ void IC3IA::initialize()
         continue;
       }
       if (add_predicate(pred)) {
-        ++n_llm_injected;
+        ++n_external_injected;
         logger.log(0, "initial-predicates: injected {}", pred);
       }
     }
-    logger.log(0, "IC3IA: injected {} initial LLM predicates", n_llm_injected);
+    logger.log(0,
+               "IC3IA: injected {} external initial predicates",
+               n_external_injected);
   }
 
   // more predicates will be added during refinement
@@ -308,6 +312,14 @@ RefineResult IC3IA::refine()
   if (cex_.size() == 1) {
     // if there are no transitions, then this is a concrete CEX
     return REFINE_NONE;
+  }
+
+  if (num_refinements_ >= options_.ic3ia_max_refinements_) {
+    logger.log(1,
+               "IC3IA: refinement cap reached ({}/{}), returning unknown",
+               num_refinements_,
+               options_.ic3ia_max_refinements_);
+    return RefineResult::REFINE_FAIL;
   }
 
   size_t cex_length = cex_.size();
@@ -427,6 +439,7 @@ RefineResult IC3IA::refine()
   }
 
   logger.log(1, "{} new predicates added by refinement", fresh_preds.size());
+  ++num_refinements_;
 
   // able to refine the system to rule out this abstract counterexample
   return RefineResult::REFINE_SUCCESS;

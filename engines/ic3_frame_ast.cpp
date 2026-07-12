@@ -64,6 +64,76 @@ static size_t find_matching_bracket(const string & line, size_t open_pos)
   return string::npos;
 }
 
+static size_t find_top_level_field(const string & obj, const string & field)
+{
+  int brace_depth = 0;
+  int bracket_depth = 0;
+  for (size_t i = 0; i < obj.size(); ++i) {
+    if (obj[i] == '{') {
+      ++brace_depth;
+    } else if (obj[i] == '}') {
+      --brace_depth;
+    } else if (obj[i] == '[') {
+      ++bracket_depth;
+    } else if (obj[i] == ']') {
+      --bracket_depth;
+    } else if (obj[i] == '"') {
+      size_t end = i + 1;
+      bool escaped = false;
+      for (; end < obj.size(); ++end) {
+        if (!escaped && obj[end] == '"') break;
+        if (!escaped && obj[end] == '\\') {
+          escaped = true;
+        } else {
+          escaped = false;
+        }
+      }
+      if (end == obj.size()) return string::npos;
+      if (brace_depth == 1 && bracket_depth == 0
+          && obj.substr(i + 1, end - i - 1) == field) {
+        size_t colon = end + 1;
+        while (colon < obj.size() && isspace(obj[colon])) ++colon;
+        if (colon < obj.size() && obj[colon] == ':') return i;
+      }
+      i = end;
+    }
+  }
+  return string::npos;
+}
+
+static string parse_top_level_string_field(const string & obj,
+                                           const string & field)
+{
+  size_t pos = find_top_level_field(obj, field);
+  if (pos == string::npos) return "";
+  pos = obj.find(":", pos);
+  if (pos == string::npos) return "";
+  pos = obj.find("\"", pos);
+  if (pos == string::npos) return "";
+  size_t end = obj.find("\"", pos + 1);
+  if (end == string::npos) return "";
+  return obj.substr(pos + 1, end - pos - 1);
+}
+
+static size_t parse_top_level_size_field(const string & obj,
+                                         const string & field,
+                                         size_t def)
+{
+  size_t pos = find_top_level_field(obj, field);
+  if (pos == string::npos) return def;
+  pos = obj.find(":", pos);
+  if (pos == string::npos) return def;
+  try {
+    return stoul(obj.substr(pos + 1));
+  }
+  catch (const invalid_argument &) {
+    return def;
+  }
+  catch (const out_of_range &) {
+    return def;
+  }
+}
+
 static bool parse_bool_field(const string & obj, const string & field, bool def)
 {
   size_t pos = obj.find("\"" + field + "\"");
@@ -138,7 +208,7 @@ static IC3FramePredicateNode parse_predicate_node(const string & obj);
 static vector<IC3FramePredicateNode> parse_predicate_args(const string & obj)
 {
   vector<IC3FramePredicateNode> args;
-  size_t pos = obj.find("\"args\"");
+  size_t pos = find_top_level_field(obj, "args");
   if (pos == string::npos) return args;
   pos = obj.find("[", pos);
   if (pos == string::npos) return args;
@@ -162,21 +232,21 @@ static vector<IC3FramePredicateNode> parse_predicate_args(const string & obj)
 static IC3FramePredicateNode parse_predicate_node(const string & obj)
 {
   IC3FramePredicateNode node;
-  node.form = parse_string_field(obj, "form");
+  node.form = parse_top_level_string_field(obj, "form");
   if (node.form.empty()) {
-    if (!obj.empty() && obj.find("\"ref\"") != string::npos) {
+    if (find_top_level_field(obj, "ref") != string::npos) {
       node.form = "ref";
-    } else if (!obj.empty() && obj.find("\"const\"") != string::npos) {
+    } else if (find_top_level_field(obj, "const") != string::npos) {
       node.form = "const";
     }
   }
   if (node.form.empty()) return node;
 
-  node.ref = parse_string_field(obj, "ref");
-  node.const_val = parse_string_field(obj, "const");
-  node.width = parse_size_field(obj, "width", 0);
-  node.extract_hi = static_cast<int>(parse_size_field(obj, "hi", 0));
-  node.extract_lo = static_cast<int>(parse_size_field(obj, "lo", 0));
+  node.ref = parse_top_level_string_field(obj, "ref");
+  node.const_val = parse_top_level_string_field(obj, "const");
+  node.width = parse_top_level_size_field(obj, "width", 0);
+  node.extract_hi = static_cast<int>(parse_top_level_size_field(obj, "hi", 0));
+  node.extract_lo = static_cast<int>(parse_top_level_size_field(obj, "lo", 0));
   node.args = parse_predicate_args(obj);
   node.valid = true;
   return node;
@@ -424,13 +494,22 @@ static Term build_node_term(const SmtSolver & solver,
   }
 
   if (node.form == "add" || node.form == "sub" || node.form == "mul") {
-    if (node.args.size() != 2) throw runtime_error("add/sub/mul needs 2 args");
+    if (node.args.empty()) throw runtime_error("add/sub/mul needs args");
     PrimOp op = BVAdd;
     if (node.form == "sub") op = BVSub;
     if (node.form == "mul") op = BVMul;
-    Term lhs = build_node_term(solver, ts, node.args[0]);
-    Term rhs = build_node_term(solver, ts, node.args[1]);
-    return solver->make_term(op, lhs, rhs);
+    Term cur = build_node_term(solver, ts, node.args[0]);
+    if (node.args.size() == 1) {
+      if (node.form == "sub") {
+        return solver->make_term(BVNeg, cur);
+      }
+      return cur;
+    }
+    for (size_t i = 1; i < node.args.size(); ++i) {
+      Term rhs = build_node_term(solver, ts, node.args[i]);
+      cur = solver->make_term(op, cur, rhs);
+    }
+    return cur;
   }
 
   if (node.form == "bvand" || node.form == "bvor" || node.form == "bvxor") {

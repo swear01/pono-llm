@@ -109,6 +109,29 @@ TEST_P(IC3IATest, CounterUnsafe)
   ASSERT_TRUE(ic3ia.witness(cex));
 }
 
+TEST_P(IC3IATest, RefinementCapReturnsUnknown)
+{
+  FunctionalTransitionSystem fts(s);
+  Sort bvsort3 = s->make_sort(BV, 3);
+  Term counter = fts.make_statevar("counter", bvsort3);
+  Term zero = s->make_term(0, bvsort3);
+  Term one = s->make_term(1, bvsort3);
+  Term three = s->make_term(3, bvsort3);
+  Term four = s->make_term(4, bvsort3);
+
+  fts.constrain_init(s->make_term(Equal, counter, zero));
+  fts.assign_next(counter,
+                  s->make_term(Ite,
+                               s->make_term(Equal, counter, three),
+                               zero,
+                               s->make_term(BVAdd, counter, one)));
+
+  SafetyProperty property(s, s->make_term(BVUle, counter, four));
+  opts.ic3ia_max_refinements_ = 0;
+  IC3IA ic3ia(property, fts, s, opts);
+  EXPECT_EQ(ic3ia.prove(), pono::UNKNOWN);
+}
+
 INSTANTIATE_TEST_SUITE_P(
     ParametrizedIC3IATests,
     IC3IATest,

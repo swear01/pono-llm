@@ -72,6 +72,7 @@ enum optionIndex
   NO_IC3IA_REDUCE_PREDS,
   NO_IC3IA_TRACK_IMPORTANT_VARS,
   NO_IC3IA_SIM_CEX,
+  IC3IA_MAX_REFINEMENTS,
   NO_IC3SA_FUNC_REFINE,
   MBIC3_INDGEN_MODE,
   PROFILING_LOG_FILENAME,
@@ -253,8 +254,10 @@ const option::Descriptor usage[] = {
     "",
     "initial-predicates",
     Arg::NonEmpty,
-    "  --initial-predicates <file> \tInject LLM predicates (one predicate_ast JSON "
-    "per line) into the IC3IA initial abstraction. Sound: only adds abstraction "
+    "  --initial-predicates <file> \tInject abstraction predicates (one "
+    "predicate_ast JSON "
+    "per line) into the IC3IA initial abstraction. Sound: only adds "
+    "abstraction "
     "predicates (over-approximation), never constrains the model." },
   { SMT_SOLVER,
     0,
@@ -441,6 +444,14 @@ const option::Descriptor usage[] = {
     Arg::None,
     "  --no-ic3ia-sim-cex \tDo not simulate abstract cex during refinement, "
     "perform BMC instead." },
+  { IC3IA_MAX_REFINEMENTS,
+    0,
+    "",
+    "ic3ia-max-refinements",
+    Arg::Numeric,
+    "  --ic3ia-max-refinements <N> \tStop IC3IA after N successful abstraction "
+    "refinements and return unknown on the next spurious counterexample "
+    "(default: unlimited; 0 disables refinement)." },
   { NO_IC3SA_FUNC_REFINE,
     0,
     "",
@@ -1105,6 +1116,9 @@ ProverResult PonoOptions::parse_and_set_options(int argc,
         case NO_IC3IA_REDUCE_PREDS: ic3ia_reduce_preds_ = false; break;
         case NO_IC3IA_TRACK_IMPORTANT_VARS: ic3ia_track_important_vars_ = false; break;
         case NO_IC3IA_SIM_CEX: ic3ia_sim_cex_ = false; break;
+        case IC3IA_MAX_REFINEMENTS:
+          ic3ia_max_refinements_ = std::stoul(opt.arg);
+          break;
         case NO_IC3SA_FUNC_REFINE: ic3sa_func_refine_ = false; break;
         case PROFILING_LOG_FILENAME:
 #ifndef WITH_PROFILING

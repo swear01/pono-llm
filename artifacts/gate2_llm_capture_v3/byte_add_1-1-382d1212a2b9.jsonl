@@ -1,0 +1,6 @@
+{"predicate_ast": {"args": [{"form": "ref", "ref": "state65"}, {"form": "ref", "ref": "state66"}], "form": "eq"}}
+{"predicate_ast": {"args": [{"args": [{"form": "ref", "ref": "state65"}, {"form": "ref", "ref": "state66"}], "form": "add"}, {"const": "0", "form": "const", "width": 32}], "form": "eq"}}
+{"predicate_ast": {"args": [{"form": "ref", "ref": "state65"}, {"const": "0", "form": "const", "width": 32}], "form": "eq"}}
+{"predicate_ast": {"args": [{"form": "ref", "ref": "state66"}, {"const": "0", "form": "const", "width": 32}], "form": "eq"}}
+{"predicate_ast": {"args": [{"args": [{"form": "ref", "ref": "state65"}, {"const": "0", "form": "const", "width": 32}], "form": "eq"}, {"args": [{"form": "ref", "ref": "state66"}, {"const": "0", "form": "const", "width": 32}], "form": "eq"}], "form": "and"}}
+{"predicate_ast": {"args": [{"form": "ref", "ref": "state65"}, {"args": [{"form": "ref", "ref": "state65"}], "form": "not"}], "form": "eq"}}

@@ -1,0 +1,97 @@
+{
+  "benchmark_root_env": "HWMCC_ROOT",
+  "benchmarks": [
+    {
+      "benchmark_id": "2024/btor2/2024/sosylab/bitvector/byte_add_1-1.btor2",
+      "metadata_file": "byte_add_1-1-382d1212a2b9.meta.json",
+      "predicates_file": "byte_add_1-1-382d1212a2b9.jsonl",
+      "prompt_file": "byte_add_1-1-382d1212a2b9.prompt.txt",
+      "responses_file": "byte_add_1-1-382d1212a2b9.responses.jsonl",
+      "slug": "byte_add_1-1-382d1212a2b9"
+    },
+    {
+      "benchmark_id": "2024/btor2/2024/sosylab/loop-invgen/up.btor2",
+      "metadata_file": "up-8a43dd6ee29a.meta.json",
+      "predicates_file": "up-8a43dd6ee29a.jsonl",
+      "prompt_file": "up-8a43dd6ee29a.prompt.txt",
+      "responses_file": "up-8a43dd6ee29a.responses.jsonl",
+      "slug": "up-8a43dd6ee29a"
+    },
+    {
+      "benchmark_id": "2024/btor2/2024/sosylab/loop-simple/deep-nested.btor2",
+      "metadata_file": "deep-nested-82b135ea2c2b.meta.json",
+      "predicates_file": "deep-nested-82b135ea2c2b.jsonl",
+      "prompt_file": "deep-nested-82b135ea2c2b.prompt.txt",
+      "responses_file": "deep-nested-82b135ea2c2b.responses.jsonl",
+      "slug": "deep-nested-82b135ea2c2b"
+    },
+    {
+      "benchmark_id": "2024/btor2/2024/sosylab/loop-zilu/benchmark04_conjunctive.btor2",
+      "metadata_file": "benchmark04_conjunctive-4d07f38b508b.meta.json",
+      "predicates_file": "benchmark04_conjunctive-4d07f38b508b.jsonl",
+      "prompt_file": "benchmark04_conjunctive-4d07f38b508b.prompt.txt",
+      "responses_file": "benchmark04_conjunctive-4d07f38b508b.responses.jsonl",
+      "slug": "benchmark04_conjunctive-4d07f38b508b"
+    },
+    {
+      "benchmark_id": "2024/btor2/2024/sosylab/loops-crafted-1/mono-crafted_8.btor2",
+      "metadata_file": "mono-crafted_8-31e9e4b524bb.meta.json",
+      "predicates_file": "mono-crafted_8-31e9e4b524bb.jsonl",
+      "prompt_file": "mono-crafted_8-31e9e4b524bb.prompt.txt",
+      "responses_file": "mono-crafted_8-31e9e4b524bb.responses.jsonl",
+      "slug": "mono-crafted_8-31e9e4b524bb"
+    },
+    {
+      "benchmark_id": "2024/btor2/2024/sosylab/seq-mthreaded/pals_lcr-var-start-time.6.1.ufo.UNBOUNDED.pals.btor2",
+      "metadata_file": "pals_lcr-var-start-time.6.1.ufo.UNBOUNDED.pals-15b8a185df96.meta.json",
+      "predicates_file": "pals_lcr-var-start-time.6.1.ufo.UNBOUNDED.pals-15b8a185df96.jsonl",
+      "prompt_file": "pals_lcr-var-start-time.6.1.ufo.UNBOUNDED.pals-15b8a185df96.prompt.txt",
+      "responses_file": "pals_lcr-var-start-time.6.1.ufo.UNBOUNDED.pals-15b8a185df96.responses.jsonl",
+      "slug": "pals_lcr-var-start-time.6.1.ufo.UNBOUNDED.pals-15b8a185df96"
+    },
+    {
+      "benchmark_id": "2025/wordlevel/bv/2024/sosylab/loops-crafted-1/Mono6_1.btor2",
+      "metadata_file": "Mono6_1-ad1fdc4fd462.meta.json",
+      "predicates_file": "Mono6_1-ad1fdc4fd462.jsonl",
+      "prompt_file": "Mono6_1-ad1fdc4fd462.prompt.txt",
+      "responses_file": "Mono6_1-ad1fdc4fd462.responses.jsonl",
+      "slug": "Mono6_1-ad1fdc4fd462"
+    },
+    {
+      "benchmark_id": "2025/wordlevel/bv/2024/sosylab/loops-crafted-1/sumt3.btor2",
+      "metadata_file": "sumt3-ab7c07f293c3.meta.json",
+      "predicates_file": "sumt3-ab7c07f293c3.jsonl",
+      "prompt_file": "sumt3-ab7c07f293c3.prompt.txt",
+      "responses_file": "sumt3-ab7c07f293c3.responses.jsonl",
+      "slug": "sumt3-ab7c07f293c3"
+    },
+    {
+      "benchmark_id": "2025/wordlevel/bv/2025/sosylab/safety-func/seq-mthreaded/pals_opt-floodmax.5_overflow.ufo.UNBOUNDED.pals.btor2",
+      "metadata_file": "pals_opt-floodmax.5_overflow.ufo.UNBOUNDED.pals-575558a6fe56.meta.json",
+      "predicates_file": "pals_opt-floodmax.5_overflow.ufo.UNBOUNDED.pals-575558a6fe56.jsonl",
+      "prompt_file": "pals_opt-floodmax.5_overflow.ufo.UNBOUNDED.pals-575558a6fe56.prompt.txt",
+      "responses_file": "pals_opt-floodmax.5_overflow.ufo.UNBOUNDED.pals-575558a6fe56.responses.jsonl",
+      "slug": "pals_opt-floodmax.5_overflow.ufo.UNBOUNDED.pals-575558a6fe56"
+    },
+    {
+      "benchmark_id": "2025/wordlevel/bv/2025/sosylab/safety-rel/loops-crafted-1/loopv3.btor2",
+      "metadata_file": "loopv3-116587173241.meta.json",
+      "predicates_file": "loopv3-116587173241.jsonl",
+      "prompt_file": "loopv3-116587173241.prompt.txt",
+      "responses_file": "loopv3-116587173241.responses.jsonl",
+      "slug": "loopv3-116587173241"
+    },
+    {
+      "benchmark_id": "2025/wordlevel/bv/2025/sosylab/safety-rel/seq-mthreaded/pals_opt-floodmax.4.ufo.UNBOUNDED.pals.btor2",
+      "metadata_file": "pals_opt-floodmax.4.ufo.UNBOUNDED.pals-1956be53237d.meta.json",
+      "predicates_file": "pals_opt-floodmax.4.ufo.UNBOUNDED.pals-1956be53237d.jsonl",
+      "prompt_file": "pals_opt-floodmax.4.ufo.UNBOUNDED.pals-1956be53237d.prompt.txt",
+      "responses_file": "pals_opt-floodmax.4.ufo.UNBOUNDED.pals-1956be53237d.responses.jsonl",
+      "slug": "pals_opt-floodmax.4.ufo.UNBOUNDED.pals-1956be53237d"
+    }
+  ],
+  "created_at": "2026-07-11T15:07:55.410290+00:00",
+  "provenance_file": "provenance.json",
+  "schema": "pono-llm-candidate-capture-v3",
+  "system_prompt_file": "system_prompt.txt"
+}

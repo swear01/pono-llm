@@ -1,0 +1,147 @@
+BENCHMARK: pals_lcr-var-start-time.6.1.ufo.UNBOUNDED.pals.btor2
+
+THIS CIRCUIT WAS COMPILED FROM A C PROGRAM.
+Variable names are preserved from the original source code.
+Apply loop invariant reasoning exactly as you would for software verification.
+
+STATE VARIABLES:
+  mode3 (1-bit, ref=state161, init=?)
+  mode4 (1-bit, ref=state162, init=?)
+  mode5 (1-bit, ref=state163, init=?)
+  mode6 (1-bit, ref=state164, init=?)
+  nomsg (8-bit, ref=state165, init=?)
+  r1 (8-bit, ref=state178, init=?)
+  send1 (8-bit, ref=state179, init=?)
+  send2 (8-bit, ref=state180, init=?)
+  send3 (8-bit, ref=state181, init=?)
+  send4 (8-bit, ref=state182, init=?)
+  send5 (8-bit, ref=state183, init=?)
+  send6 (8-bit, ref=state184, init=?)
+  st1 (8-bit, ref=state185, init=?)
+  st2 (8-bit, ref=state186, init=?)
+  st3 (8-bit, ref=state187, init=?)
+  st4 (8-bit, ref=state188, init=?)
+  st5 (8-bit, ref=state189, init=?)
+  st6 (8-bit, ref=state190, init=?)
+  alive1 (1-bit, ref=state191, init=?)
+  alive2 (1-bit, ref=state192, init=?)
+  alive3 (1-bit, ref=state193, init=?)
+  alive4 (1-bit, ref=state194, init=?)
+  alive5 (1-bit, ref=state195, init=?)
+  alive6 (1-bit, ref=state196, init=?)
+  id1 (8-bit, ref=state197, init=?)
+  id2 (8-bit, ref=state198, init=?)
+  id3 (8-bit, ref=state199, init=?)
+  id4 (8-bit, ref=state200, init=?)
+  id5 (8-bit, ref=state201, init=?)
+  id6 (8-bit, ref=state202, init=?)
+  mode1 (1-bit, ref=state203, init=?)
+  mode2 (1-bit, ref=state204, init=?)
+
+TRANSITION (per clock step):
+  mode3' = !{mode3}.next
+  mode4' = !{mode4}.next
+  mode5' = !{mode5}.next
+  mode6' = !{mode6}.next
+  nomsg' = !{nomsg}.next
+  r1' = !{r1}.next
+  send1' = !{send1}.next
+  send2' = !{send2}.next
+  send3' = !{send3}.next
+  send4' = !{send4}.next
+  send5' = !{send5}.next
+  send6' = !{send6}.next
+  st1' = !{st1}.next
+  st2' = !{st2}.next
+  st3' = !{st3}.next
+  st4' = !{st4}.next
+  st5' = !{st5}.next
+  st6' = !{st6}.next
+  alive1' = !{alive1}.next
+  alive2' = !{alive2}.next
+  alive3' = !{alive3}.next
+  alive4' = !{alive4}.next
+  alive5' = !{alive5}.next
+  alive6' = !{alive6}.next
+  id1' = !{id1}.next
+  id2' = !{id2}.next
+  id3' = !{id3}.next
+  id4' = !{id4}.next
+  id5' = !{id5}.next
+  id6' = !{id6}.next
+  mode1' = !{mode1}.next
+  mode2' = !{mode2}.next
+
+SAFETY PROPERTY VIOLATED WHEN (the BAD condition):
+  ((!state207 && (state206 && !state205)) && valid)
+Your invariants must TOGETHER ensure this condition NEVER holds.
+
+INDUCTIVE REASONING APPROACH:
+Reason symbolically from the TRANSITION formulas above.
+For each candidate invariant I(vars):
+  1. Verify I holds at the initial state
+  2. Assume I(vars) at step t; substitute vars' = transition(vars); show I(vars')
+
+EXAMPLE (illustrative, not this circuit):
+  Transitions: sum' = (i<n)?(sum+i):sum,  i' = (i<n)?(i+1):i
+  Candidate: 2*sum == i*(i-1)
+  Init: 2*0 == 0*(0-1) = 0 ✓
+  Step (i<n): 2*sum' = 2*(sum+i) = i*(i-1)+2i = i*(i+1) = (i+1)*i = i'*(i'-1) ✓
+  Step (i>=n): sum'=sum, i'=i → invariant preserved trivially ✓
+
+EXAMPLE 2 (ordering invariant with ITE/conditional update):
+  Transitions: m' = (x < n) ? (sel ? x : m) : m,   x' = (x < n) ? (x+1) : x
+  Candidate: m <= x
+  Init: 0 <= 0 ✓
+  Step (x < n, sel=1): m' = x, x' = x+1 → m' = x < x+1 = x' → m' <= x' ✓
+  Step (x < n, sel=0): m' = m <= x < x+1 = x' → m' <= x' ✓
+  Step (x >= n):        m' = m, x' = x → m' <= x' trivially ✓
+  → m <= x is preserved in all branches.
+
+HINT: When two branches of a transition have DIFFERENT updates (e.g., selector=0 vs 1),
+look for invariants that hold regardless of branch choice.
+Example: if x' = x+1 or x+2 depending on mode, and y' = y+2 or y+1,
+then x'+y' = x+y+3 in BOTH cases → x+y-3*i is constant.
+
+YOUR TASK: Generate INDUCTIVE LOOP INVARIANTS that hold at every clock step.
+These must be:
+  1. TRUE at initial state (when all variables have their init values)
+  2. PRESERVED by every transition step
+  3. Expressed over the state variables listed above
+
+CRITICAL RULE: NEVER use division in invariants. Use multiplication equivalents:
+  WRONG: sum == i*(i-1)/2
+  RIGHT: mul(const(2), sum) == mul(i, sub(i, const(1)))  [i.e. 2*sum == i*(i-1)]
+
+Invariant patterns to consider (reason inductively from the transitions above):
+  - Linear combinations preserved across all branches (e.g., x + y == 3 * i)
+  - Counter bounds (e.g., i <= n — check: if i<n then i+1<=n; if i>=n then i stays)
+  - Triangular sums (if sum += i each step, then 2*sum == i*(i-1))
+  - Ordering invariants (e.g., m <= x — check each branch preserves m<=x')
+
+OUTPUT FORMAT — return a single JSON object:
+{
+  "candidates": [
+    {
+      "id": 1,
+      "kind": "Type1_invariant",
+      "verilog_expr": "x + y == 3 * i",
+      "predicate_ast": {
+        "form": "eq",
+        "args": [
+          {"form": "add", "args": [{"form":"ref","ref":"STATE_X"}, {"form":"ref","ref":"STATE_Y"}]},
+          {"form": "mul", "args": [{"form":"const","const":"3","width":W}, {"form":"ref","ref":"STATE_I"}]}
+        ]
+      },
+      "intuition": "each step adds exactly 3 to x+y and 1 to i"
+    }
+  ]
+}
+
+PREDICATE AST FORMS: ref, const, eq, ne, ult, ule, ugt, uge, add, sub, mul, not, and, or, implies
+  ref:   {"form":"ref", "ref":"<stateN>"}
+  const: {"form":"const", "const":"<decimal>", "width":<bits>}
+
+STATE REFS for this circuit: {'mode3': 'state161', 'mode4': 'state162', 'mode5': 'state163', 'mode6': 'state164', 'nomsg': 'state165', 'r1': 'state178', 'send1': 'state179', 'send2': 'state180', 'send3': 'state181', 'send4': 'state182', 'send5': 'state183', 'send6': 'state184', 'st1': 'state185', 'st2': 'state186', 'st3': 'state187', 'st4': 'state188', 'st5': 'state189', 'st6': 'state190', 'alive1': 'state191', 'alive2': 'state192', 'alive3': 'state193', 'alive4': 'state194', 'alive5': 'state195', 'alive6': 'state196', 'id1': 'state197', 'id2': 'state198', 'id3': 'state199', 'id4': 'state200', 'id5': 'state201', 'id6': 'state202', 'mode1': 'state203', 'mode2': 'state204'}
+
+Generate 3-8 invariant candidates, most likely inductive first.

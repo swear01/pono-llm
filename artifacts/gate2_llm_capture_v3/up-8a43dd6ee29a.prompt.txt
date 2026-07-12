@@ -1,0 +1,91 @@
+BENCHMARK: up.btor2
+
+THIS CIRCUIT WAS COMPILED FROM A C PROGRAM.
+Variable names are preserved from the original source code.
+Apply loop invariant reasoning exactly as you would for software verification.
+
+STATE VARIABLES:
+  j (32-bit, ref=state16, init=?)  ← likely loop counter
+  k (32-bit, ref=state17, init=?)  ← likely loop counter
+  n (32-bit, ref=state18, init=?)  ← likely loop bound (constant)
+  i (32-bit, ref=state20, init=?)  ← likely loop counter
+
+TRANSITION (per clock step):
+  j' = !{$(in_main#0)<j>}.next
+  k' = !{$(in_main#0)<k>}.next
+  n' = !{$(in_main#0)<n>}.next
+  i' = !{$(in_main#0)<i>}.next
+
+SAFETY PROPERTY VIOLATED WHEN (the BAD condition):
+  ((!state23 && (state21 && state22)) && valid)
+Your invariants must TOGETHER ensure this condition NEVER holds.
+
+INDUCTIVE REASONING APPROACH:
+Reason symbolically from the TRANSITION formulas above.
+For each candidate invariant I(vars):
+  1. Verify I holds at the initial state
+  2. Assume I(vars) at step t; substitute vars' = transition(vars); show I(vars')
+
+EXAMPLE (illustrative, not this circuit):
+  Transitions: sum' = (i<n)?(sum+i):sum,  i' = (i<n)?(i+1):i
+  Candidate: 2*sum == i*(i-1)
+  Init: 2*0 == 0*(0-1) = 0 ✓
+  Step (i<n): 2*sum' = 2*(sum+i) = i*(i-1)+2i = i*(i+1) = (i+1)*i = i'*(i'-1) ✓
+  Step (i>=n): sum'=sum, i'=i → invariant preserved trivially ✓
+
+EXAMPLE 2 (ordering invariant with ITE/conditional update):
+  Transitions: m' = (x < n) ? (sel ? x : m) : m,   x' = (x < n) ? (x+1) : x
+  Candidate: m <= x
+  Init: 0 <= 0 ✓
+  Step (x < n, sel=1): m' = x, x' = x+1 → m' = x < x+1 = x' → m' <= x' ✓
+  Step (x < n, sel=0): m' = m <= x < x+1 = x' → m' <= x' ✓
+  Step (x >= n):        m' = m, x' = x → m' <= x' trivially ✓
+  → m <= x is preserved in all branches.
+
+HINT: When two branches of a transition have DIFFERENT updates (e.g., selector=0 vs 1),
+look for invariants that hold regardless of branch choice.
+Example: if x' = x+1 or x+2 depending on mode, and y' = y+2 or y+1,
+then x'+y' = x+y+3 in BOTH cases → x+y-3*i is constant.
+
+YOUR TASK: Generate INDUCTIVE LOOP INVARIANTS that hold at every clock step.
+These must be:
+  1. TRUE at initial state (when all variables have their init values)
+  2. PRESERVED by every transition step
+  3. Expressed over the state variables listed above
+
+CRITICAL RULE: NEVER use division in invariants. Use multiplication equivalents:
+  WRONG: sum == i*(i-1)/2
+  RIGHT: mul(const(2), sum) == mul(i, sub(i, const(1)))  [i.e. 2*sum == i*(i-1)]
+
+Invariant patterns to consider (reason inductively from the transitions above):
+  - Linear combinations preserved across all branches (e.g., x + y == 3 * i)
+  - Counter bounds (e.g., i <= n — check: if i<n then i+1<=n; if i>=n then i stays)
+  - Triangular sums (if sum += i each step, then 2*sum == i*(i-1))
+  - Ordering invariants (e.g., m <= x — check each branch preserves m<=x')
+
+OUTPUT FORMAT — return a single JSON object:
+{
+  "candidates": [
+    {
+      "id": 1,
+      "kind": "Type1_invariant",
+      "verilog_expr": "x + y == 3 * i",
+      "predicate_ast": {
+        "form": "eq",
+        "args": [
+          {"form": "add", "args": [{"form":"ref","ref":"STATE_X"}, {"form":"ref","ref":"STATE_Y"}]},
+          {"form": "mul", "args": [{"form":"const","const":"3","width":W}, {"form":"ref","ref":"STATE_I"}]}
+        ]
+      },
+      "intuition": "each step adds exactly 3 to x+y and 1 to i"
+    }
+  ]
+}
+
+PREDICATE AST FORMS: ref, const, eq, ne, ult, ule, ugt, uge, add, sub, mul, not, and, or, implies
+  ref:   {"form":"ref", "ref":"<stateN>"}
+  const: {"form":"const", "const":"<decimal>", "width":<bits>}
+
+STATE REFS for this circuit: {'j': 'state16', 'k': 'state17', 'n': 'state18', 'i': 'state20'}
+
+Generate 3-8 invariant candidates, most likely inductive first.

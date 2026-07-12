@@ -1,0 +1,6 @@
+{"predicate_ast": {"args": [{"form": "ref", "ref": "state12"}, {"form": "ref", "ref": "state11"}], "form": "ule"}}
+{"predicate_ast": {"args": [{"form": "ref", "ref": "state12"}, {"const": "0", "form": "const", "width": 32}], "form": "uge"}}
+{"predicate_ast": {"args": [{"form": "ref", "ref": "state11"}, {"const": "0", "form": "const", "width": 32}], "form": "uge"}}
+{"predicate_ast": {"args": [{"args": [{"form": "ref", "ref": "state12"}, {"const": "0", "form": "const", "width": 32}], "form": "eq"}, {"args": [{"form": "ref", "ref": "state12"}, {"const": "0", "form": "const", "width": 32}], "form": "ugt"}], "form": "or"}}
+{"predicate_ast": {"args": [{"form": "ref", "ref": "state12"}, {"args": [{"form": "ref", "ref": "state11"}, {"const": "1", "form": "const", "width": 32}], "form": "add"}], "form": "ule"}}
+{"predicate_ast": {"args": [{"form": "ref", "ref": "state11"}, {"form": "ref", "ref": "state11"}], "form": "eq"}}

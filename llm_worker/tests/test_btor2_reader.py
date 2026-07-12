@@ -1,4 +1,5 @@
 """Tests for btor2_reader.py — no network, no C++, no file I/O (except fixtures)."""
+import hashlib
 import textwrap
 import tempfile
 import os
@@ -12,6 +13,7 @@ from btor2_reader import (
     hot_refs_near_bad,
     build_hot_variables,
     build_transition_sketch,
+    _demangle_cbmc_name,
     _is_meaningful_symbol,
 )
 
@@ -43,6 +45,13 @@ def test_meaningful_symbol_yosys_noise():
     assert _is_meaningful_symbol("$techmap\\fifo.thing") is False
     assert _is_meaningful_symbol(None) is False
     assert _is_meaningful_symbol("") is False
+
+
+def test_demangle_cbmc_state_names():
+    assert _demangle_cbmc_name("!{$(in_main#0)<counter>}") == "counter"
+    assert _demangle_cbmc_name("!{GLOBAL}") == "GLOBAL"
+    assert _demangle_cbmc_name("!pc[3]") is None
+    assert _demangle_cbmc_name("!{$(in_main#0)<counter>}.next") is None
 
 
 # ---------------------------------------------------------------------------
@@ -128,6 +137,62 @@ def test_bad_lineno(simple_path):
     info = parse_btor2(simple_path)
     # bad 18 → bad_lineno = 18 (the expr line)
     assert info.bad_lineno == 18
+    assert info.bad_count == 1
+    assert info.node_count == 19
+    assert info.line_count == 20
+    assert len(info.text_sha256) == 64
+
+
+def test_text_sha256_hashes_exact_file_bytes(tmp_path):
+    raw = b"1 sort bitvec 1\r\n2 state 1 x\r\n"
+    path = tmp_path / "crlf.btor2"
+    path.write_bytes(raw)
+    info = parse_btor2(str(path))
+    assert info.text_sha256 == hashlib.sha256(raw).hexdigest()
+
+
+def test_parse_array_state_metadata(tmp_path):
+    path = tmp_path / "array.btor2"
+    path.write_text(textwrap.dedent("""\
+    1 sort bitvec 8
+    2 sort bitvec 16
+    3 sort array 1 2
+    4 state 3 memory
+    5 state 2 scalar
+    """))
+    info = parse_btor2(str(path))
+    by_ref = {state.ref: state for state in info.states}
+    assert by_ref["state4"].is_array is True
+    assert by_ref["state4"].width == 0
+    assert by_ref["state4"].data_bits == 16
+    assert by_ref["state5"].is_array is False
+    assert by_ref["state5"].width == 16
+    assert info.array_sort_count == 1
+
+
+def test_init_constants_are_normalized_to_unsigned_decimal(tmp_path):
+    path = tmp_path / "constants.btor2"
+    path.write_text(textwrap.dedent("""\
+    1 sort bitvec 8
+    2 const 1 00000010
+    3 constd 1 10
+    4 consth 1 10
+    5 ones 1
+    6 state 1 binary_two
+    7 state 1 decimal_ten
+    8 state 1 hex_sixteen
+    9 state 1 all_ones
+    10 init 1 6 2
+    11 init 1 7 3
+    12 init 1 8 4
+    13 init 1 9 5
+    """))
+    info = parse_btor2(str(path))
+    by_ref = {state.ref: state for state in info.states}
+    assert by_ref["state6"].init_value == "2"
+    assert by_ref["state7"].init_value == "10"
+    assert by_ref["state8"].init_value == "16"
+    assert by_ref["state9"].init_value == "255"
 
 
 # ---------------------------------------------------------------------------

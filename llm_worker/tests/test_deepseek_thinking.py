@@ -6,7 +6,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from deepseek_client import DeepSeekClient
+from llm_client import DeepSeekClient
 
 
 def test_none_disables_thinking():

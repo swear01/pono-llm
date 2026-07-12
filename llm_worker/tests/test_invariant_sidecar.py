@@ -50,6 +50,10 @@ STAGE0_REQUEST = {
         {"ref": "state6", "width": 8, "init": "0", "verilog": "wr_ptr"},
         {"ref": "state7", "width": 8, "init": "0", "verilog": "rd_ptr"},
     ],
+    "symmetric_pairs": [
+        {"refA": "state6", "refB": "state7",
+         "nameA": "wr_ptr", "nameB": "rd_ptr"},
+    ],
 }
 
 STAGE2_REQUEST = {
@@ -60,6 +64,10 @@ STAGE2_REQUEST = {
                     "total_cti_count": 50, "frame_clause_count": 30},
     "hot_variables": [
         {"ref": "state6", "width": 8, "init": "0"},
+    ],
+    "symmetric_pairs": [
+        {"refA": "state6", "refB": "state7",
+         "nameA": "wr_ptr", "nameB": "rd_ptr"},
     ],
     "cti_cluster": [{"state6": 5, "state7": 3}],
     "frame_clause_clusters": [],
@@ -86,8 +94,11 @@ def test_stage0_request_id_preserved():
 def test_stage0_candidates_parsed():
     client = make_mock_client(GOOD_RESPONSE)
     result = handle_stage0_request(client, STAGE0_REQUEST)
-    assert len(result["candidates"]) == 1
-    assert result["candidates"][0]["kind"] == "Type1_invariant"
+    assert len(result["candidates"]) == 2
+    assert any(
+        candidate["predicate_ast"]["form"] == "uge"
+        for candidate in result["candidates"]
+    )
 
 
 def test_stage0_token_count_attached():
@@ -187,11 +198,25 @@ def test_stage2_multiple_candidates():
         "candidates": [
             {
                 "id": 1, "kind": "Type1_invariant", "verilog_expr": "a",
-                "predicate_ast": {"form": "ref", "ref": "state6"}, "intuition": "x",
+                "predicate_ast": {
+                    "form": "uge",
+                    "args": [
+                        {"form": "ref", "ref": "state6"},
+                        {"form": "ref", "ref": "state7"},
+                    ],
+                },
+                "intuition": "x",
             },
             {
                 "id": 2, "kind": "Type2_lift", "verilog_expr": "b",
-                "predicate_ast": {"form": "ref", "ref": "state7"}, "intuition": "y",
+                "predicate_ast": {
+                    "form": "ule",
+                    "args": [
+                        {"form": "ref", "ref": "state6"},
+                        {"form": "ref", "ref": "state7"},
+                    ],
+                },
+                "intuition": "y",
             },
         ]
     }
@@ -219,10 +244,12 @@ MINI_BTOR2 = """\
 9 init 2 6 7
 10 add 2 5 7
 11 next 2 5 10
-12 sub 2 5 6
-13 eq 1 12 7
-14 not 1 13
-15 bad 14
+12 add 2 6 7
+13 next 2 6 12
+14 sub 2 5 6
+15 eq 1 14 7
+16 not 1 15
+17 bad 16
 """
 
 

@@ -1,0 +1,173 @@
+BENCHMARK: pals_opt-floodmax.4.ufo.UNBOUNDED.pals.btor2
+
+THIS CIRCUIT WAS COMPILED FROM A C PROGRAM.
+Variable names are preserved from the original source code.
+Apply loop invariant reasoning exactly as you would for software verification.
+
+STATE VARIABLES:
+  ep12 (1-bit, ref=state148, init=?)
+  ep13 (1-bit, ref=state149, init=?)
+  ep14 (1-bit, ref=state150, init=?)
+  ep21 (1-bit, ref=state151, init=?)
+  ep23 (1-bit, ref=state152, init=?)
+  ep24 (1-bit, ref=state153, init=?)
+  ep31 (1-bit, ref=state154, init=?)
+  ep32 (1-bit, ref=state155, init=?)
+  ep34 (1-bit, ref=state156, init=?)
+  ep41 (1-bit, ref=state157, init=?)
+  ep42 (1-bit, ref=state158, init=?)
+  ep43 (1-bit, ref=state159, init=?)
+  id1 (8-bit, ref=state160, init=?)
+  id2 (8-bit, ref=state161, init=?)
+  id3 (8-bit, ref=state162, init=?)
+  id4 (8-bit, ref=state163, init=?)
+  m1 (8-bit, ref=state164, init=?)
+  m2 (8-bit, ref=state165, init=?)
+  m3 (8-bit, ref=state166, init=?)
+  m4 (8-bit, ref=state167, init=?)
+  max1 (8-bit, ref=state168, init=?)
+  max2 (8-bit, ref=state169, init=?)
+  max3 (8-bit, ref=state170, init=?)
+  max4 (8-bit, ref=state171, init=?)
+  mode1 (1-bit, ref=state172, init=?)
+  mode2 (1-bit, ref=state173, init=?)
+  mode3 (1-bit, ref=state174, init=?)
+  mode4 (1-bit, ref=state175, init=?)
+  newmax1 (1-bit, ref=state176, init=?)
+  newmax2 (1-bit, ref=state177, init=?)
+  newmax3 (1-bit, ref=state178, init=?)
+  newmax4 (1-bit, ref=state179, init=?)
+  nl1 (8-bit, ref=state180, init=?)
+  nl2 (8-bit, ref=state181, init=?)
+  nl3 (8-bit, ref=state182, init=?)
+  nl4 (8-bit, ref=state183, init=?)
+  nomsg (8-bit, ref=state184, init=?)
+  r1 (8-bit, ref=state209, init=?)
+  r2 (8-bit, ref=state210, init=?)
+  r3 (8-bit, ref=state211, init=?)
+  r4 (8-bit, ref=state212, init=?)
+  st1 (8-bit, ref=state213, init=?)
+  st2 (8-bit, ref=state214, init=?)
+  st3 (8-bit, ref=state215, init=?)
+  st4 (8-bit, ref=state216, init=?)
+
+TRANSITION (per clock step):
+  ep12' = !{ep12}.next
+  ep13' = !{ep13}.next
+  ep14' = !{ep14}.next
+  ep21' = !{ep21}.next
+  ep23' = !{ep23}.next
+  ep24' = !{ep24}.next
+  ep31' = !{ep31}.next
+  ep32' = !{ep32}.next
+  ep34' = !{ep34}.next
+  ep41' = !{ep41}.next
+  ep42' = !{ep42}.next
+  ep43' = !{ep43}.next
+  id1' = !{id1}.next
+  id2' = !{id2}.next
+  id3' = !{id3}.next
+  id4' = !{id4}.next
+  m1' = !{m1}.next
+  m2' = !{m2}.next
+  m3' = !{m3}.next
+  m4' = !{m4}.next
+  max1' = !{max1}.next
+  max2' = !{max2}.next
+  max3' = !{max3}.next
+  max4' = !{max4}.next
+  mode1' = !{mode1}.next
+  mode2' = !{mode2}.next
+  mode3' = !{mode3}.next
+  mode4' = !{mode4}.next
+  newmax1' = !{newmax1}.next
+  newmax2' = !{newmax2}.next
+  newmax3' = !{newmax3}.next
+  newmax4' = !{newmax4}.next
+  nl1' = !{nl1}.next
+  nl2' = !{nl2}.next
+  nl3' = !{nl3}.next
+  nl4' = !{nl4}.next
+  nomsg' = !{nomsg}.next
+  r1' = !{r1}.next
+  r2' = !{r2}.next
+  r3' = !{r3}.next
+  r4' = !{r4}.next
+  st1' = !{st1}.next
+  st2' = !{st2}.next
+  st3' = !{st3}.next
+  st4' = !{st4}.next
+
+SAFETY PROPERTY VIOLATED WHEN (the BAD condition):
+  ((!state219 && (state218 && !state217)) && valid)
+Your invariants must TOGETHER ensure this condition NEVER holds.
+
+INDUCTIVE REASONING APPROACH:
+Reason symbolically from the TRANSITION formulas above.
+For each candidate invariant I(vars):
+  1. Verify I holds at the initial state
+  2. Assume I(vars) at step t; substitute vars' = transition(vars); show I(vars')
+
+EXAMPLE (illustrative, not this circuit):
+  Transitions: sum' = (i<n)?(sum+i):sum,  i' = (i<n)?(i+1):i
+  Candidate: 2*sum == i*(i-1)
+  Init: 2*0 == 0*(0-1) = 0 ✓
+  Step (i<n): 2*sum' = 2*(sum+i) = i*(i-1)+2i = i*(i+1) = (i+1)*i = i'*(i'-1) ✓
+  Step (i>=n): sum'=sum, i'=i → invariant preserved trivially ✓
+
+EXAMPLE 2 (ordering invariant with ITE/conditional update):
+  Transitions: m' = (x < n) ? (sel ? x : m) : m,   x' = (x < n) ? (x+1) : x
+  Candidate: m <= x
+  Init: 0 <= 0 ✓
+  Step (x < n, sel=1): m' = x, x' = x+1 → m' = x < x+1 = x' → m' <= x' ✓
+  Step (x < n, sel=0): m' = m <= x < x+1 = x' → m' <= x' ✓
+  Step (x >= n):        m' = m, x' = x → m' <= x' trivially ✓
+  → m <= x is preserved in all branches.
+
+HINT: When two branches of a transition have DIFFERENT updates (e.g., selector=0 vs 1),
+look for invariants that hold regardless of branch choice.
+Example: if x' = x+1 or x+2 depending on mode, and y' = y+2 or y+1,
+then x'+y' = x+y+3 in BOTH cases → x+y-3*i is constant.
+
+YOUR TASK: Generate INDUCTIVE LOOP INVARIANTS that hold at every clock step.
+These must be:
+  1. TRUE at initial state (when all variables have their init values)
+  2. PRESERVED by every transition step
+  3. Expressed over the state variables listed above
+
+CRITICAL RULE: NEVER use division in invariants. Use multiplication equivalents:
+  WRONG: sum == i*(i-1)/2
+  RIGHT: mul(const(2), sum) == mul(i, sub(i, const(1)))  [i.e. 2*sum == i*(i-1)]
+
+Invariant patterns to consider (reason inductively from the transitions above):
+  - Linear combinations preserved across all branches (e.g., x + y == 3 * i)
+  - Counter bounds (e.g., i <= n — check: if i<n then i+1<=n; if i>=n then i stays)
+  - Triangular sums (if sum += i each step, then 2*sum == i*(i-1))
+  - Ordering invariants (e.g., m <= x — check each branch preserves m<=x')
+
+OUTPUT FORMAT — return a single JSON object:
+{
+  "candidates": [
+    {
+      "id": 1,
+      "kind": "Type1_invariant",
+      "verilog_expr": "x + y == 3 * i",
+      "predicate_ast": {
+        "form": "eq",
+        "args": [
+          {"form": "add", "args": [{"form":"ref","ref":"STATE_X"}, {"form":"ref","ref":"STATE_Y"}]},
+          {"form": "mul", "args": [{"form":"const","const":"3","width":W}, {"form":"ref","ref":"STATE_I"}]}
+        ]
+      },
+      "intuition": "each step adds exactly 3 to x+y and 1 to i"
+    }
+  ]
+}
+
+PREDICATE AST FORMS: ref, const, eq, ne, ult, ule, ugt, uge, add, sub, mul, not, and, or, implies
+  ref:   {"form":"ref", "ref":"<stateN>"}
+  const: {"form":"const", "const":"<decimal>", "width":<bits>}
+
+STATE REFS for this circuit: {'ep12': 'state148', 'ep13': 'state149', 'ep14': 'state150', 'ep21': 'state151', 'ep23': 'state152', 'ep24': 'state153', 'ep31': 'state154', 'ep32': 'state155', 'ep34': 'state156', 'ep41': 'state157', 'ep42': 'state158', 'ep43': 'state159', 'id1': 'state160', 'id2': 'state161', 'id3': 'state162', 'id4': 'state163', 'm1': 'state164', 'm2': 'state165', 'm3': 'state166', 'm4': 'state167', 'max1': 'state168', 'max2': 'state169', 'max3': 'state170', 'max4': 'state171', 'mode1': 'state172', 'mode2': 'state173', 'mode3': 'state174', 'mode4': 'state175', 'newmax1': 'state176', 'newmax2': 'state177', 'newmax3': 'state178', 'newmax4': 'state179', 'nl1': 'state180', 'nl2': 'state181', 'nl3': 'state182', 'nl4': 'state183', 'nomsg': 'state184', 'r1': 'state209', 'r2': 'state210', 'r3': 'state211', 'r4': 'state212', 'st1': 'state213', 'st2': 'state214', 'st3': 'state215', 'st4': 'state216'}
+
+Generate 3-8 invariant candidates, most likely inductive first.

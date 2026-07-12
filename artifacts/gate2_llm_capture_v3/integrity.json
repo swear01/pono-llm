@@ -1,0 +1,152 @@
+{
+  "benchmarks": [
+    {
+      "benchmark_id": "2024/btor2/2024/sosylab/bitvector/byte_add_1-1.btor2",
+      "content_sha256": "44c6298003b91d36e85dbb9a649a5b44b28f64c4015d396eaf9ac140ff358794",
+      "metadata_file": "byte_add_1-1-382d1212a2b9.meta.json",
+      "metadata_sha256": "e5c19c8e344c11d84e115442e1e9c40820adfee8b0453ecc765f290e8fd6e83e",
+      "predicates_file": "byte_add_1-1-382d1212a2b9.jsonl",
+      "predicates_sha256": "a26292b2f3355533a6ed36e4fb03bda1dd2c3d398c5cb255aaf970e8f12f8cf9",
+      "prompt_file": "byte_add_1-1-382d1212a2b9.prompt.txt",
+      "prompt_sha256": "86dfa8ebc8330a3b427c5f42f13ac9315e43c26d110a5722738c399fd4b97c0f",
+      "responses_file": "byte_add_1-1-382d1212a2b9.responses.jsonl",
+      "responses_sha256": "ad31b48e54c8d458efaa419baf671c40dfbc0a359ac9002674d2d4a2a61896b0"
+    },
+    {
+      "benchmark_id": "2024/btor2/2024/sosylab/loop-invgen/up.btor2",
+      "content_sha256": "cdb52c840b94fc6de99a88d2f61db9724c49d507ef8bbac4ab74b6ca3da3dea5",
+      "metadata_file": "up-8a43dd6ee29a.meta.json",
+      "metadata_sha256": "7d07103ce148feb40d4485539e621416861f77acde8e71f49314576d90013d7c",
+      "predicates_file": "up-8a43dd6ee29a.jsonl",
+      "predicates_sha256": "9e1cbfd09e9b1898bc7786784c2eebc7c2035f16b2a020d750b6b4256b47f5c7",
+      "prompt_file": "up-8a43dd6ee29a.prompt.txt",
+      "prompt_sha256": "e0bd3dec247604e2fd72d56d4b39ead1a353e32dd91e7fa48f956b40f1d84f04",
+      "responses_file": "up-8a43dd6ee29a.responses.jsonl",
+      "responses_sha256": "ce92115e1e37e63587483525fd9e50793427465304e7b53a6c4667dfb36bb8b4"
+    },
+    {
+      "benchmark_id": "2024/btor2/2024/sosylab/loop-simple/deep-nested.btor2",
+      "content_sha256": "c064ba114ce5207b51596dcd04ddbad264482da930aa56428d44d7d72290d03a",
+      "metadata_file": "deep-nested-82b135ea2c2b.meta.json",
+      "metadata_sha256": "b0df1339a9e898444da8ca7d3aec5577493289c77df4cae45e7d2f4fbb9aa589",
+      "predicates_file": "deep-nested-82b135ea2c2b.jsonl",
+      "predicates_sha256": "059976d59b7861e077dda1a20bdf72c8e7ad58da1fa8749bbf39adae1f8b5f39",
+      "prompt_file": "deep-nested-82b135ea2c2b.prompt.txt",
+      "prompt_sha256": "665e8a95ae1bb0276075cdc35d2e3843b67a770976f7c0bb489b1d15b0ce8ece",
+      "responses_file": "deep-nested-82b135ea2c2b.responses.jsonl",
+      "responses_sha256": "3bef09b1f9418bfb11cff3edaa0c3cd028186f394f3cf1906c8913797dd02463"
+    },
+    {
+      "benchmark_id": "2024/btor2/2024/sosylab/loop-zilu/benchmark04_conjunctive.btor2",
+      "content_sha256": "7a0fea741ef809c72423d7d229f45a7ffee394e71c7d0b81546c36af04046079",
+      "metadata_file": "benchmark04_conjunctive-4d07f38b508b.meta.json",
+      "metadata_sha256": "1c935d03ee75adb8b083b469694857ae8b89e1162d9b1f6bcccda38d32ad64b9",
+      "predicates_file": "benchmark04_conjunctive-4d07f38b508b.jsonl",
+      "predicates_sha256": "bcc355fdb19abde525d1fb7350c43683b74be319af4a67c6ec7a2c9534aa9554",
+      "prompt_file": "benchmark04_conjunctive-4d07f38b508b.prompt.txt",
+      "prompt_sha256": "1879c79f41993082fbe2dcfd8cf7b3c7d4e165bbd786bb1ffaabae8e5e68e4e8",
+      "responses_file": "benchmark04_conjunctive-4d07f38b508b.responses.jsonl",
+      "responses_sha256": "ff5176e34c62aa39f6a77806b1c3755fc7cac9b899aa59faacb3a5e9f15f924e"
+    },
+    {
+      "benchmark_id": "2024/btor2/2024/sosylab/loops-crafted-1/mono-crafted_8.btor2",
+      "content_sha256": "d83418d9b5aa572cf4bebf9357a0aeff049109a79337f23738b4ae5b28bca9b6",
+      "metadata_file": "mono-crafted_8-31e9e4b524bb.meta.json",
+      "metadata_sha256": "8d44d8b14b57afdd79cee9b05d15f5fa54ebfe632b313a3b2c7f717280b92675",
+      "predicates_file": "mono-crafted_8-31e9e4b524bb.jsonl",
+      "predicates_sha256": "5db57a7d4dbd7fd7876e0e24014bb908a1a20e1c3673e7e81186c874d1408b5d",
+      "prompt_file": "mono-crafted_8-31e9e4b524bb.prompt.txt",
+      "prompt_sha256": "b48f403711c43f4d3a945bdebb9eeaebf2e12921dd561f7b344ceeec0d716aff",
+      "responses_file": "mono-crafted_8-31e9e4b524bb.responses.jsonl",
+      "responses_sha256": "aae1749641d3c6b8b8381c0575d691267634a54eeb7fa02420e40f52b39b5b4e"
+    },
+    {
+      "benchmark_id": "2024/btor2/2024/sosylab/seq-mthreaded/pals_lcr-var-start-time.6.1.ufo.UNBOUNDED.pals.btor2",
+      "content_sha256": "c24bf71e8b372dcc606e7ec6e9dadc37fa18bed59b7cd6eb906584d68094d7c9",
+      "metadata_file": "pals_lcr-var-start-time.6.1.ufo.UNBOUNDED.pals-15b8a185df96.meta.json",
+      "metadata_sha256": "66cc2f5c31ddb8fbce13a2d566147ebbd7e2bab6ccfbe4b8fd603d03695e0f94",
+      "predicates_file": "pals_lcr-var-start-time.6.1.ufo.UNBOUNDED.pals-15b8a185df96.jsonl",
+      "predicates_sha256": "3bf129fdceb00ff1f5e75b2c6f2637fe294beed75c9baf991a03c2e9c68ff2e3",
+      "prompt_file": "pals_lcr-var-start-time.6.1.ufo.UNBOUNDED.pals-15b8a185df96.prompt.txt",
+      "prompt_sha256": "19b59bde79634b66b86fc1136eec9260b2d31229016b82057a33eaf039a8ebf7",
+      "responses_file": "pals_lcr-var-start-time.6.1.ufo.UNBOUNDED.pals-15b8a185df96.responses.jsonl",
+      "responses_sha256": "d1d3d5e47cef8f33da1b4a0b336151b0269630a3e0a7cc5f08202fe52b7e1593"
+    },
+    {
+      "benchmark_id": "2025/wordlevel/bv/2024/sosylab/loops-crafted-1/Mono6_1.btor2",
+      "content_sha256": "f3d4dfc24983fd470e33bc1e3f1b88f4925dabfa8494856cbb93f0ce9b75da4c",
+      "metadata_file": "Mono6_1-ad1fdc4fd462.meta.json",
+      "metadata_sha256": "6188fda5bde1c58eaf69d59fc128a484f3323999634828821c409557058bf98a",
+      "predicates_file": "Mono6_1-ad1fdc4fd462.jsonl",
+      "predicates_sha256": "d39a8ee27756f6ba1ba3175990a01a893e39719d01a2abc8ff7b388b9aa76738",
+      "prompt_file": "Mono6_1-ad1fdc4fd462.prompt.txt",
+      "prompt_sha256": "30dfc6a61d6d8b34fc46d405ed86ce7ccd71074bd47701cfaa3dd58154b9c1c7",
+      "responses_file": "Mono6_1-ad1fdc4fd462.responses.jsonl",
+      "responses_sha256": "3c3cccfe42b34e2e602a5924af980f6332bd1563efc2298b9ec1edc11e1228f5"
+    },
+    {
+      "benchmark_id": "2025/wordlevel/bv/2024/sosylab/loops-crafted-1/sumt3.btor2",
+      "content_sha256": "f63bf825b9c27c0cf3799235b26c0d8fe7ca3463c7b37fd4f778371d40b94244",
+      "metadata_file": "sumt3-ab7c07f293c3.meta.json",
+      "metadata_sha256": "d37353c91aa7069c517645197a2aee472cc918548039793ee5e711c1a678cc97",
+      "predicates_file": "sumt3-ab7c07f293c3.jsonl",
+      "predicates_sha256": "c0f0cab7bcb1006d794f6acd76d53a3d7f0719c8ded571abac4369b0e3d21809",
+      "prompt_file": "sumt3-ab7c07f293c3.prompt.txt",
+      "prompt_sha256": "edd76d0c5ee81d59a33971b3f731d8538b1187a38d9726e168ee4c2ba26bf84c",
+      "responses_file": "sumt3-ab7c07f293c3.responses.jsonl",
+      "responses_sha256": "779b0b23875b664548fef80313b1d9bf60fe7635ef7a685d58e52a5844532a73"
+    },
+    {
+      "benchmark_id": "2025/wordlevel/bv/2025/sosylab/safety-func/seq-mthreaded/pals_opt-floodmax.5_overflow.ufo.UNBOUNDED.pals.btor2",
+      "content_sha256": "8ca187005e0faf5997d21fd273ded09cb6168f3136863332876f0809034cda9b",
+      "metadata_file": "pals_opt-floodmax.5_overflow.ufo.UNBOUNDED.pals-575558a6fe56.meta.json",
+      "metadata_sha256": "c7269af8b8ff7eae4b8f32126a73f6a005e1f0b3c93b1e741030657494a01e38",
+      "predicates_file": "pals_opt-floodmax.5_overflow.ufo.UNBOUNDED.pals-575558a6fe56.jsonl",
+      "predicates_sha256": "a6205353e140eda0d902ac70cb9c9dae7ec7210b3a28efff0fb674e63cda6162",
+      "prompt_file": "pals_opt-floodmax.5_overflow.ufo.UNBOUNDED.pals-575558a6fe56.prompt.txt",
+      "prompt_sha256": "02d37699d4d5c2084446df0130009ea6266708606db8978fd044817ef73bfbd5",
+      "responses_file": "pals_opt-floodmax.5_overflow.ufo.UNBOUNDED.pals-575558a6fe56.responses.jsonl",
+      "responses_sha256": "e7a11ed8dcf870487bfb880819de2590cdc20257709301ecbb165a21be95648c"
+    },
+    {
+      "benchmark_id": "2025/wordlevel/bv/2025/sosylab/safety-rel/loops-crafted-1/loopv3.btor2",
+      "content_sha256": "bab1f7016859d6fc591dd431173a5cb45a7509906f25a7950a921dbfc5f858a3",
+      "metadata_file": "loopv3-116587173241.meta.json",
+      "metadata_sha256": "9d779a78a7e0b123cc4ed6eefcd2127682379c56b0f543bccea6bea1b63aa779",
+      "predicates_file": "loopv3-116587173241.jsonl",
+      "predicates_sha256": "28937de04019dd20e7ecc9161481332f11ce583bf65c6f9531b3327258b8e5ea",
+      "prompt_file": "loopv3-116587173241.prompt.txt",
+      "prompt_sha256": "9821b8a8b161203bf0a24e47f527ffe2c8e31b97a4471cfd33d5036de97f9275",
+      "responses_file": "loopv3-116587173241.responses.jsonl",
+      "responses_sha256": "ea672eb51b5b7cb1c1c86e653f1862bb52d11be72d80adbb85773e1ed624a591"
+    },
+    {
+      "benchmark_id": "2025/wordlevel/bv/2025/sosylab/safety-rel/seq-mthreaded/pals_opt-floodmax.4.ufo.UNBOUNDED.pals.btor2",
+      "content_sha256": "22dcafffcc1dc1e273d4fdeee42d6b4702a44185030cb5e6d6810522f986cb17",
+      "metadata_file": "pals_opt-floodmax.4.ufo.UNBOUNDED.pals-1956be53237d.meta.json",
+      "metadata_sha256": "61e0d87f16357346c515e9726025fb232999d5d2a75d1a9bbf74ef79e925020f",
+      "predicates_file": "pals_opt-floodmax.4.ufo.UNBOUNDED.pals-1956be53237d.jsonl",
+      "predicates_sha256": "1ffe3a80f9227fdd251884067a91d7b28433e3148806eb3d83473c05aedff995",
+      "prompt_file": "pals_opt-floodmax.4.ufo.UNBOUNDED.pals-1956be53237d.prompt.txt",
+      "prompt_sha256": "0f13549604dfba0216c5c80cf21b9c5169e72048ec32c9ea346d42eda039b67f",
+      "responses_file": "pals_opt-floodmax.4.ufo.UNBOUNDED.pals-1956be53237d.responses.jsonl",
+      "responses_sha256": "292db8e600dab56134fb81b0ba28ff65e017c8101a2f18bb2a3386a520f1e77f"
+    }
+  ],
+  "capture_manifest_file": "manifest.json",
+  "capture_manifest_sha256": "b28df3002b1b2f1c4f2eda41c8ea4dccfc1b1ee884aaee4686d3aeec81c21fb0",
+  "global_files": [
+    {
+      "path": "provenance.json",
+      "sha256": "e71c06ff146db2451e73bfb5047c324127515216d6414d9322e182750d169e7e"
+    },
+    {
+      "path": "system_prompt.txt",
+      "sha256": "47152156430a5f149377befc9bb421e744059b45de5cd6e8b462507bddc5d9ff"
+    }
+  ],
+  "recorded_after_capture": true,
+  "recorded_at": "2026-07-11T17:51:47.093065+00:00",
+  "schema": "pono-llm-capture-integrity-v1",
+  "status": "completed"
+}
