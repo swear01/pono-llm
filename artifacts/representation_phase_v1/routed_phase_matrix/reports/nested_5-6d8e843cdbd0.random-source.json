@@ -1,0 +1,955 @@
+{
+  "arm": "source",
+  "benchmark": "/tmp/svcomp25-sparse/translated/safety-func/loop-simple/nested_5.btor2",
+  "benchmark_id": "loop-simple/nested_5.btor2",
+  "benchmark_sha256": "c4ce35cac2ae918082fab514f4ef1b626e9128be4e75072869e28c44ef885b11",
+  "candidate_generation_sec": 0.007002003490924835,
+  "candidate_sha256": "c98f44151017066aa5762b1e482f73d5ebfef8d673e18fae0e46d8e58967ac33",
+  "certificate": {
+    "checks": [
+      {
+        "name": "C1 Init=>H",
+        "result": "unsat"
+      },
+      {
+        "name": "C2 inductive",
+        "result": "unsat"
+      },
+      {
+        "name": "C3 H=>notBAD",
+        "result": "sat"
+      }
+    ],
+    "init_queries": 2,
+    "ok": false,
+    "removed_initial_indices": [
+      128,
+      146,
+      155,
+      173,
+      182,
+      200,
+      209,
+      227,
+      272,
+      290,
+      299,
+      317,
+      326,
+      344,
+      353,
+      371
+    ],
+    "removed_step_indices": [
+      8,
+      44,
+      62,
+      71,
+      80,
+      134,
+      152,
+      161,
+      170,
+      188,
+      206,
+      215,
+      224,
+      242,
+      278,
+      296,
+      305,
+      314,
+      332,
+      350,
+      359,
+      368,
+      386,
+      395,
+      404,
+      1,
+      37,
+      55,
+      64,
+      73,
+      91,
+      127,
+      145,
+      154,
+      163,
+      181,
+      199,
+      208,
+      217,
+      244,
+      262,
+      271,
+      289,
+      298,
+      316,
+      325,
+      343,
+      352,
+      370,
+      388,
+      397,
+      5,
+      14,
+      32,
+      41,
+      59,
+      68,
+      86,
+      95,
+      104,
+      122,
+      131,
+      149,
+      158,
+      176,
+      185,
+      203,
+      212,
+      230,
+      239,
+      275,
+      293,
+      302,
+      320,
+      329,
+      347,
+      356,
+      374,
+      383,
+      392,
+      401,
+      132,
+      150,
+      159,
+      177,
+      186,
+      204,
+      213,
+      231,
+      276,
+      294,
+      303,
+      321,
+      330,
+      348,
+      357,
+      375,
+      130,
+      148,
+      157,
+      175,
+      184,
+      202,
+      211,
+      229,
+      274,
+      292,
+      301,
+      319,
+      328,
+      346,
+      355,
+      373,
+      6,
+      96,
+      105,
+      123,
+      384,
+      393,
+      402,
+      4,
+      94,
+      103,
+      121,
+      382,
+      391,
+      400,
+      15,
+      33,
+      42,
+      60,
+      69,
+      87,
+      240,
+      248,
+      266,
+      24,
+      51,
+      78,
+      249,
+      267,
+      40,
+      49,
+      67,
+      85,
+      112,
+      139,
+      193,
+      238,
+      247,
+      265,
+      23,
+      77,
+      13,
+      31,
+      10,
+      28,
+      82,
+      100,
+      118,
+      172,
+      226,
+      235,
+      379,
+      58,
+      50,
+      46,
+      17,
+      35,
+      53,
+      98,
+      107,
+      125,
+      179,
+      233,
+      251,
+      269,
+      323,
+      377,
+      0,
+      9,
+      27,
+      36,
+      45,
+      63,
+      72,
+      90,
+      99,
+      117,
+      126,
+      144,
+      153,
+      171,
+      180,
+      198,
+      207,
+      225,
+      234,
+      243,
+      261,
+      270,
+      288,
+      297,
+      315,
+      324,
+      342,
+      351,
+      369,
+      378,
+      387,
+      396,
+      3,
+      12,
+      30,
+      66,
+      75,
+      93,
+      102,
+      120,
+      129,
+      147,
+      156,
+      174,
+      183,
+      201,
+      210,
+      228,
+      246,
+      264,
+      273,
+      291,
+      300,
+      318,
+      327,
+      345,
+      354,
+      372,
+      381,
+      390,
+      399,
+      39,
+      48,
+      237,
+      257,
+      284,
+      338,
+      89,
+      57,
+      165,
+      219,
+      309,
+      363,
+      19,
+      361,
+      26,
+      81,
+      18,
+      54,
+      22,
+      76,
+      166,
+      216,
+      221,
+      21,
+      84,
+      220,
+      222,
+      162,
+      258,
+      285,
+      339,
+      256,
+      283,
+      337,
+      114,
+      141,
+      168,
+      195,
+      360,
+      306,
+      194,
+      113,
+      140,
+      167,
+      109,
+      136,
+      190,
+      116,
+      143,
+      197,
+      108,
+      135,
+      189,
+      111,
+      138,
+      192,
+      311,
+      312,
+      365,
+      366,
+      253,
+      280,
+      307,
+      334,
+      260,
+      287,
+      341,
+      364,
+      252,
+      279,
+      333,
+      255,
+      282,
+      336,
+      310
+    ],
+    "selected_indices": [
+      2,
+      7,
+      11,
+      16,
+      20,
+      25,
+      29,
+      34,
+      38,
+      43,
+      47,
+      52,
+      56,
+      61,
+      65,
+      70,
+      74,
+      79,
+      83,
+      88,
+      92,
+      97,
+      101,
+      106,
+      110,
+      115,
+      119,
+      124,
+      133,
+      137,
+      142,
+      151,
+      160,
+      164,
+      169,
+      178,
+      187,
+      191,
+      196,
+      205,
+      214,
+      218,
+      223,
+      232,
+      236,
+      241,
+      245,
+      250,
+      254,
+      259,
+      263,
+      268,
+      277,
+      281,
+      286,
+      295,
+      304,
+      308,
+      313,
+      322,
+      331,
+      335,
+      340,
+      349,
+      358,
+      362,
+      367,
+      376,
+      380,
+      385,
+      389,
+      394,
+      398,
+      403
+    ],
+    "step_queries": 65,
+    "unsupported_candidates": []
+  },
+  "certificate_time_sec": 9.229103710502386,
+  "config": "random-source",
+  "end_to_end_sec": 19.560940269380808,
+  "end_to_end_with_generation_sec": 19.560940269380808,
+  "engine": "phase-grammar-ic3ia",
+  "error": "",
+  "exit": null,
+  "expected_verdict": "safe",
+  "generation_time_sec": 0.0,
+  "matrix_schema": "pono-llm-routed-phase-matrix-v1",
+  "model_checker_time_sec": 10.324834555387497,
+  "offline_time_sec": 19.560940269380808,
+  "phase_count": 9,
+  "phase_mode": "all",
+  "phases": [
+    {
+      "equality_node": 15,
+      "guard_ast": {
+        "args": [
+          {
+            "form": "ref",
+            "ref": "state14"
+          },
+          {
+            "const": "1",
+            "form": "const",
+            "width": 9
+          }
+        ],
+        "form": "eq"
+      },
+      "is_bad": true,
+      "is_initial": false,
+      "pc_ref": "state14",
+      "phase_id": "pc_state14_w9_v1",
+      "value": 1,
+      "width": 9
+    },
+    {
+      "equality_node": 16,
+      "guard_ast": {
+        "args": [
+          {
+            "form": "ref",
+            "ref": "state14"
+          },
+          {
+            "const": "2",
+            "form": "const",
+            "width": 9
+          }
+        ],
+        "form": "eq"
+      },
+      "is_bad": false,
+      "is_initial": false,
+      "pc_ref": "state14",
+      "phase_id": "pc_state14_w9_v2",
+      "value": 2,
+      "width": 9
+    },
+    {
+      "equality_node": 17,
+      "guard_ast": {
+        "args": [
+          {
+            "form": "ref",
+            "ref": "state14"
+          },
+          {
+            "const": "4",
+            "form": "const",
+            "width": 9
+          }
+        ],
+        "form": "eq"
+      },
+      "is_bad": false,
+      "is_initial": true,
+      "pc_ref": "state14",
+      "phase_id": "pc_state14_w9_v4",
+      "value": 4,
+      "width": 9
+    },
+    {
+      "equality_node": 18,
+      "guard_ast": {
+        "args": [
+          {
+            "form": "ref",
+            "ref": "state14"
+          },
+          {
+            "const": "8",
+            "form": "const",
+            "width": 9
+          }
+        ],
+        "form": "eq"
+      },
+      "is_bad": false,
+      "is_initial": false,
+      "pc_ref": "state14",
+      "phase_id": "pc_state14_w9_v8",
+      "value": 8,
+      "width": 9
+    },
+    {
+      "equality_node": 19,
+      "guard_ast": {
+        "args": [
+          {
+            "form": "ref",
+            "ref": "state14"
+          },
+          {
+            "const": "16",
+            "form": "const",
+            "width": 9
+          }
+        ],
+        "form": "eq"
+      },
+      "is_bad": false,
+      "is_initial": false,
+      "pc_ref": "state14",
+      "phase_id": "pc_state14_w9_v16",
+      "value": 16,
+      "width": 9
+    },
+    {
+      "equality_node": 20,
+      "guard_ast": {
+        "args": [
+          {
+            "form": "ref",
+            "ref": "state14"
+          },
+          {
+            "const": "32",
+            "form": "const",
+            "width": 9
+          }
+        ],
+        "form": "eq"
+      },
+      "is_bad": false,
+      "is_initial": false,
+      "pc_ref": "state14",
+      "phase_id": "pc_state14_w9_v32",
+      "value": 32,
+      "width": 9
+    },
+    {
+      "equality_node": 21,
+      "guard_ast": {
+        "args": [
+          {
+            "form": "ref",
+            "ref": "state14"
+          },
+          {
+            "const": "64",
+            "form": "const",
+            "width": 9
+          }
+        ],
+        "form": "eq"
+      },
+      "is_bad": false,
+      "is_initial": false,
+      "pc_ref": "state14",
+      "phase_id": "pc_state14_w9_v64",
+      "value": 64,
+      "width": 9
+    },
+    {
+      "equality_node": 22,
+      "guard_ast": {
+        "args": [
+          {
+            "form": "ref",
+            "ref": "state14"
+          },
+          {
+            "const": "128",
+            "form": "const",
+            "width": 9
+          }
+        ],
+        "form": "eq"
+      },
+      "is_bad": false,
+      "is_initial": false,
+      "pc_ref": "state14",
+      "phase_id": "pc_state14_w9_v128",
+      "value": 128,
+      "width": 9
+    },
+    {
+      "equality_node": 23,
+      "guard_ast": {
+        "args": [
+          {
+            "form": "ref",
+            "ref": "state14"
+          },
+          {
+            "const": "256",
+            "form": "const",
+            "width": 9
+          }
+        ],
+        "form": "eq"
+      },
+      "is_bad": false,
+      "is_initial": false,
+      "pc_ref": "state14",
+      "phase_id": "pc_state14_w9_v256",
+      "value": 256,
+      "width": 9
+    }
+  ],
+  "pilot_sha256": "723eb64225d2c39fb4fba8477759307d184f6b40293ac4407dd3518aa1d34d0c",
+  "pool_candidate_count": 405,
+  "proof_time_sec": 19.553938265889883,
+  "route_count": 9,
+  "route_diagnostics": {
+    "seed": "pono-llm-budget-matched-random-route-v1",
+    "selected_global_candidates": 45,
+    "selected_route_ids": [
+      "c6f150c429b05ec6b26812924f99793e9fefb2a25dc15bfc0d6e031cedfeb881",
+      "33be1a949802ae1ee39b2e14f56c3a1eb7d1a0e150349b5ee9a8544a6483b4ee",
+      "9a99a3cb0f21bddca0d7e10fb131e2d8d226fa919adf8a7ee3aa91e90c0a84b2",
+      "aa00d099d417408c25590d9fac827ea77187fa2d1b588e1467c6dd9bd4463336",
+      "d43fe83b8e1a2e1d79c8fac8417821c3a8baff3e73792515b4af3318e5afa3c2",
+      "b4a9038ed3e66aeaf03c737fb603707fe2c1520248160abea7a6817a951647e2",
+      "b16274a01832f3d0d5801b6be1377abb05f16068db97deff66588b0b4ea186c2",
+      "323e717b7c86b04e21aa6cad88ae949a534906310190492857bf4c2a17870be2",
+      "2077ff4ec58ffcb5a2c3809d5e50eb9e81df84c849f98ea1aad9a61f21f5e990"
+    ],
+    "target_candidates": 45
+  },
+  "route_error": "",
+  "route_sha256": "d3b647b9853ba641be4f05421d05a4eba7a275a1e13daa6aec76c073d32e2b4d",
+  "route_valid": true,
+  "router": "random",
+  "routes": [
+    {
+      "family": "sum_equality",
+      "relations": [
+        "eq"
+      ],
+      "requested_variables": [
+        "state30",
+        "state32",
+        "state34"
+      ],
+      "route_id": "c6f150c429b05ec6b26812924f99793e9fefb2a25dc15bfc0d6e031cedfeb881",
+      "signedness": "unsigned",
+      "variables": [
+        "state30",
+        "state32",
+        "state34"
+      ],
+      "width": 32
+    },
+    {
+      "coefficient_bound": 2,
+      "family": "affine",
+      "relations": [
+        "eq",
+        "le",
+        "ge"
+      ],
+      "requested_variables": [
+        "state32",
+        "state33"
+      ],
+      "route_id": "33be1a949802ae1ee39b2e14f56c3a1eb7d1a0e150349b5ee9a8544a6483b4ee",
+      "signedness": "unsigned",
+      "variables": [
+        "state32",
+        "state33"
+      ],
+      "width": 32
+    },
+    {
+      "family": "sum_equality",
+      "relations": [
+        "eq"
+      ],
+      "requested_variables": [
+        "state31",
+        "state30",
+        "state32"
+      ],
+      "route_id": "9a99a3cb0f21bddca0d7e10fb131e2d8d226fa919adf8a7ee3aa91e90c0a84b2",
+      "signedness": "unsigned",
+      "variables": [
+        "state31",
+        "state30",
+        "state32"
+      ],
+      "width": 32
+    },
+    {
+      "family": "pairwise_offset",
+      "offsets": [
+        0,
+        1,
+        -1,
+        2,
+        -2
+      ],
+      "relations": [
+        "eq",
+        "le",
+        "ge"
+      ],
+      "requested_variables": [
+        "state32",
+        "state34"
+      ],
+      "route_id": "aa00d099d417408c25590d9fac827ea77187fa2d1b588e1467c6dd9bd4463336",
+      "signedness": "unsigned",
+      "variables": [
+        "state32",
+        "state34"
+      ],
+      "width": 32
+    },
+    {
+      "family": "sum_equality",
+      "relations": [
+        "eq"
+      ],
+      "requested_variables": [
+        "state33",
+        "state31",
+        "state32"
+      ],
+      "route_id": "d43fe83b8e1a2e1d79c8fac8417821c3a8baff3e73792515b4af3318e5afa3c2",
+      "signedness": "unsigned",
+      "variables": [
+        "state33",
+        "state31",
+        "state32"
+      ],
+      "width": 32
+    },
+    {
+      "family": "pairwise_offset",
+      "offsets": [
+        0,
+        1,
+        -1,
+        2,
+        -2
+      ],
+      "relations": [
+        "eq",
+        "le",
+        "ge"
+      ],
+      "requested_variables": [
+        "state31",
+        "state32"
+      ],
+      "route_id": "b4a9038ed3e66aeaf03c737fb603707fe2c1520248160abea7a6817a951647e2",
+      "signedness": "unsigned",
+      "variables": [
+        "state31",
+        "state32"
+      ],
+      "width": 32
+    },
+    {
+      "family": "sum_equality",
+      "relations": [
+        "eq"
+      ],
+      "requested_variables": [
+        "state32",
+        "state31",
+        "state34"
+      ],
+      "route_id": "b16274a01832f3d0d5801b6be1377abb05f16068db97deff66588b0b4ea186c2",
+      "signedness": "unsigned",
+      "variables": [
+        "state32",
+        "state31",
+        "state34"
+      ],
+      "width": 32
+    },
+    {
+      "family": "sum_equality",
+      "relations": [
+        "eq"
+      ],
+      "requested_variables": [
+        "state32",
+        "state33",
+        "state34"
+      ],
+      "route_id": "323e717b7c86b04e21aa6cad88ae949a534906310190492857bf4c2a17870be2",
+      "signedness": "unsigned",
+      "variables": [
+        "state32",
+        "state33",
+        "state34"
+      ],
+      "width": 32
+    },
+    {
+      "family": "sum_equality",
+      "relations": [
+        "eq"
+      ],
+      "requested_variables": [
+        "state31",
+        "state32",
+        "state34"
+      ],
+      "route_id": "2077ff4ec58ffcb5a2c3809d5e50eb9e81df84c849f98ea1aad9a61f21f5e990",
+      "signedness": "unsigned",
+      "variables": [
+        "state31",
+        "state32",
+        "state34"
+      ],
+      "width": 32
+    }
+  ],
+  "schema": "pono-llm-phase-grammar-run-v1",
+  "selected_candidate_count": 74,
+  "selected_indices": [
+    2,
+    7,
+    11,
+    16,
+    20,
+    25,
+    29,
+    34,
+    38,
+    43,
+    47,
+    52,
+    56,
+    61,
+    65,
+    70,
+    74,
+    79,
+    83,
+    88,
+    92,
+    97,
+    101,
+    106,
+    110,
+    115,
+    119,
+    124,
+    133,
+    137,
+    142,
+    151,
+    160,
+    164,
+    169,
+    178,
+    187,
+    191,
+    196,
+    205,
+    214,
+    218,
+    223,
+    232,
+    236,
+    241,
+    245,
+    250,
+    254,
+    259,
+    263,
+    268,
+    277,
+    281,
+    286,
+    295,
+    304,
+    308,
+    313,
+    322,
+    331,
+    335,
+    340,
+    349,
+    358,
+    362,
+    367,
+    376,
+    380,
+    385,
+    389,
+    394,
+    398,
+    403
+  ],
+  "selection_role": "safe-baseline-hard",
+  "source_family_id": "348dcd12f337ed254c2896d444c3d3122d552a933adff74da2b68d49eb4d2d92",
+  "verdict": "timeout"
+}

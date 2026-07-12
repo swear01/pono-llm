@@ -1,0 +1,4446 @@
+{
+  "actual_counts": {
+    "safe-baseline-control": 4,
+    "safe-baseline-hard": 12,
+    "unsafe-soundness-control": 4
+  },
+  "available_counts": {
+    "safe-baseline-control": 32,
+    "safe-baseline-hard": 112,
+    "unsafe-soundness-control": 10
+  },
+  "baseline_screen_sha256": "db39765c5ebd22a11850278b68cf6c2972f867683c0ce4cacf1d0975e5b3c1de",
+  "benchmarks": [
+    {
+      "baseline_engine": "ind",
+      "baseline_proof_time_sec": "0.760198",
+      "baseline_verdict": "unsat",
+      "benchmark_id": "loop-crafted/simple_vardep_1.btor2",
+      "category": "loop-crafted",
+      "content_sha256": "3150ef2f78a175ae28043995f25c3925e942962edbc67d3e82abe3b359dcf831",
+      "expected_verdict": "safe",
+      "path": "translated/safety-func/loop-crafted/simple_vardep_1.btor2",
+      "phases": [
+        {
+          "equality_node": 11,
+          "guard_ast": {
+            "args": [
+              {
+                "form": "ref",
+                "ref": "state10"
+              },
+              {
+                "const": "1",
+                "form": "const",
+                "width": 5
+              }
+            ],
+            "form": "eq"
+          },
+          "is_bad": false,
+          "is_initial": false,
+          "pc_ref": "state10",
+          "phase_id": "pc_state10_w5_v1",
+          "value": 1,
+          "width": 5
+        },
+        {
+          "equality_node": 12,
+          "guard_ast": {
+            "args": [
+              {
+                "form": "ref",
+                "ref": "state10"
+              },
+              {
+                "const": "2",
+                "form": "const",
+                "width": 5
+              }
+            ],
+            "form": "eq"
+          },
+          "is_bad": false,
+          "is_initial": false,
+          "pc_ref": "state10",
+          "phase_id": "pc_state10_w5_v2",
+          "value": 2,
+          "width": 5
+        },
+        {
+          "equality_node": 13,
+          "guard_ast": {
+            "args": [
+              {
+                "form": "ref",
+                "ref": "state10"
+              },
+              {
+                "const": "4",
+                "form": "const",
+                "width": 5
+              }
+            ],
+            "form": "eq"
+          },
+          "is_bad": false,
+          "is_initial": false,
+          "pc_ref": "state10",
+          "phase_id": "pc_state10_w5_v4",
+          "value": 4,
+          "width": 5
+        },
+        {
+          "equality_node": 14,
+          "guard_ast": {
+            "args": [
+              {
+                "form": "ref",
+                "ref": "state10"
+              },
+              {
+                "const": "8",
+                "form": "const",
+                "width": 5
+              }
+            ],
+            "form": "eq"
+          },
+          "is_bad": true,
+          "is_initial": false,
+          "pc_ref": "state10",
+          "phase_id": "pc_state10_w5_v8",
+          "value": 8,
+          "width": 5
+        },
+        {
+          "equality_node": 15,
+          "guard_ast": {
+            "args": [
+              {
+                "form": "ref",
+                "ref": "state10"
+              },
+              {
+                "const": "16",
+                "form": "const",
+                "width": 5
+              }
+            ],
+            "form": "eq"
+          },
+          "is_bad": false,
+          "is_initial": true,
+          "pc_ref": "state10",
+          "phase_id": "pc_state10_w5_v16",
+          "value": 16,
+          "width": 5
+        }
+      ],
+      "selection_role": "safe-baseline-control",
+      "source_family_id": "8985f07c344b3a56534b126a46c6ed75559902a8cb2dd0cba9021d276ab0b277",
+      "source_family_key": "loop-crafted/simple_vardep_1",
+      "source_path": "c/loop-crafted/simple_vardep_1.c",
+      "source_sha256": "199c7a46b756091bf3eb8b2dd1ac46d4cc123e50a50bc65aad9ff531c4b58043",
+      "source_state_mapping": [
+        {
+          "init": "0",
+          "source_name": "i",
+          "state_ref": "state25",
+          "width": 32
+        },
+        {
+          "init": "0",
+          "source_name": "j",
+          "state_ref": "state26",
+          "width": 32
+        },
+        {
+          "init": "0",
+          "source_name": "k",
+          "state_ref": "state27",
+          "width": 32
+        }
+      ],
+      "source_yaml_path": "c/loop-crafted/simple_vardep_1.yml",
+      "source_yaml_sha256": "ec3ad9fc5d3fd186b997cc110d98ceee72dbfd6c4281830aa23c35054d7901ea"
+    },
+    {
+      "baseline_engine": "interp",
+      "baseline_proof_time_sec": "0.744389",
+      "baseline_verdict": "unsat",
+      "benchmark_id": "loop-invariants/eq1.btor2",
+      "category": "loop-invariants",
+      "content_sha256": "cb1ee0cb290f3b407f412cad8495f70614967ce23f3fdb0495a7964a7d891297",
+      "expected_verdict": "safe",
+      "path": "translated/safety-func/loop-invariants/eq1.btor2",
+      "phases": [
+        {
+          "equality_node": 11,
+          "guard_ast": {
+            "args": [
+              {
+                "form": "ref",
+                "ref": "state10"
+              },
+              {
+                "const": "1",
+                "form": "const",
+                "width": 5
+              }
+            ],
+            "form": "eq"
+          },
+          "is_bad": false,
+          "is_initial": true,
+          "pc_ref": "state10",
+          "phase_id": "pc_state10_w5_v1",
+          "value": 1,
+          "width": 5
+        },
+        {
+          "equality_node": 12,
+          "guard_ast": {
+            "args": [
+              {
+                "form": "ref",
+                "ref": "state10"
+              },
+              {
+                "const": "2",
+                "form": "const",
+                "width": 5
+              }
+            ],
+            "form": "eq"
+          },
+          "is_bad": false,
+          "is_initial": false,
+          "pc_ref": "state10",
+          "phase_id": "pc_state10_w5_v2",
+          "value": 2,
+          "width": 5
+        },
+        {
+          "equality_node": 13,
+          "guard_ast": {
+            "args": [
+              {
+                "form": "ref",
+                "ref": "state10"
+              },
+              {
+                "const": "4",
+                "form": "const",
+                "width": 5
+              }
+            ],
+            "form": "eq"
+          },
+          "is_bad": false,
+          "is_initial": false,
+          "pc_ref": "state10",
+          "phase_id": "pc_state10_w5_v4",
+          "value": 4,
+          "width": 5
+        },
+        {
+          "equality_node": 14,
+          "guard_ast": {
+            "args": [
+              {
+                "form": "ref",
+                "ref": "state10"
+              },
+              {
+                "const": "8",
+                "form": "const",
+                "width": 5
+              }
+            ],
+            "form": "eq"
+          },
+          "is_bad": true,
+          "is_initial": false,
+          "pc_ref": "state10",
+          "phase_id": "pc_state10_w5_v8",
+          "value": 8,
+          "width": 5
+        },
+        {
+          "equality_node": 15,
+          "guard_ast": {
+            "args": [
+              {
+                "form": "ref",
+                "ref": "state10"
+              },
+              {
+                "const": "16",
+                "form": "const",
+                "width": 5
+              }
+            ],
+            "form": "eq"
+          },
+          "is_bad": false,
+          "is_initial": false,
+          "pc_ref": "state10",
+          "phase_id": "pc_state10_w5_v16",
+          "value": 16,
+          "width": 5
+        }
+      ],
+      "selection_role": "safe-baseline-control",
+      "source_family_id": "25968452e79f255f77f7ddf56686e96de1f39b0fe2c3e9fe8a7d7769999fc63d",
+      "source_family_key": "loop-invariants/eq1",
+      "source_path": "c/loop-invariants/eq1.c",
+      "source_sha256": "ae5f1fff3bb2ff86380b316485dce79621d8b0e49d86d465419850c3d4f0724a",
+      "source_state_mapping": [
+        {
+          "init": "0",
+          "source_name": "w",
+          "state_ref": "state22",
+          "width": 32
+        },
+        {
+          "init": "0",
+          "source_name": "x",
+          "state_ref": "state23",
+          "width": 32
+        },
+        {
+          "init": "0",
+          "source_name": "y",
+          "state_ref": "state24",
+          "width": 32
+        },
+        {
+          "init": "0",
+          "source_name": "z",
+          "state_ref": "state25",
+          "width": 32
+        }
+      ],
+      "source_yaml_path": "c/loop-invariants/eq1.yml",
+      "source_yaml_sha256": "dc91704fff34738f556be8785198edab5858bce41b001005002df176fa8ae38d"
+    },
+    {
+      "baseline_engine": "ind",
+      "baseline_proof_time_sec": "0.183337",
+      "baseline_verdict": "unsat",
+      "benchmark_id": "loop-invgen/large_const.btor2",
+      "category": "loop-invgen",
+      "content_sha256": "05fe412e48b075bcd4cdd210c6baf79f1c33f49f3dccbbf31ff1a6837696f285",
+      "expected_verdict": "safe",
+      "path": "translated/safety-func/loop-invgen/large_const.btor2",
+      "phases": [
+        {
+          "equality_node": 12,
+          "guard_ast": {
+            "args": [
+              {
+                "form": "ref",
+                "ref": "state11"
+              },
+              {
+                "const": "1",
+                "form": "const",
+                "width": 6
+              }
+            ],
+            "form": "eq"
+          },
+          "is_bad": true,
+          "is_initial": false,
+          "pc_ref": "state11",
+          "phase_id": "pc_state11_w6_v1",
+          "value": 1,
+          "width": 6
+        },
+        {
+          "equality_node": 13,
+          "guard_ast": {
+            "args": [
+              {
+                "form": "ref",
+                "ref": "state11"
+              },
+              {
+                "const": "2",
+                "form": "const",
+                "width": 6
+              }
+            ],
+            "form": "eq"
+          },
+          "is_bad": false,
+          "is_initial": false,
+          "pc_ref": "state11",
+          "phase_id": "pc_state11_w6_v2",
+          "value": 2,
+          "width": 6
+        },
+        {
+          "equality_node": 14,
+          "guard_ast": {
+            "args": [
+              {
+                "form": "ref",
+                "ref": "state11"
+              },
+              {
+                "const": "4",
+                "form": "const",
+                "width": 6
+              }
+            ],
+            "form": "eq"
+          },
+          "is_bad": false,
+          "is_initial": true,
+          "pc_ref": "state11",
+          "phase_id": "pc_state11_w6_v4",
+          "value": 4,
+          "width": 6
+        },
+        {
+          "equality_node": 15,
+          "guard_ast": {
+            "args": [
+              {
+                "form": "ref",
+                "ref": "state11"
+              },
+              {
+                "const": "8",
+                "form": "const",
+                "width": 6
+              }
+            ],
+            "form": "eq"
+          },
+          "is_bad": false,
+          "is_initial": false,
+          "pc_ref": "state11",
+          "phase_id": "pc_state11_w6_v8",
+          "value": 8,
+          "width": 6
+        },
+        {
+          "equality_node": 16,
+          "guard_ast": {
+            "args": [
+              {
+                "form": "ref",
+                "ref": "state11"
+              },
+              {
+                "const": "16",
+                "form": "const",
+                "width": 6
+              }
+            ],
+            "form": "eq"
+          },
+          "is_bad": false,
+          "is_initial": false,
+          "pc_ref": "state11",
+          "phase_id": "pc_state11_w6_v16",
+          "value": 16,
+          "width": 6
+        },
+        {
+          "equality_node": 17,
+          "guard_ast": {
+            "args": [
+              {
+                "form": "ref",
+                "ref": "state11"
+              },
+              {
+                "const": "32",
+                "form": "const",
+                "width": 6
+              }
+            ],
+            "form": "eq"
+          },
+          "is_bad": false,
+          "is_initial": false,
+          "pc_ref": "state11",
+          "phase_id": "pc_state11_w6_v32",
+          "value": 32,
+          "width": 6
+        }
+      ],
+      "selection_role": "safe-baseline-control",
+      "source_family_id": "e5fce9620a92b3264ac061ff282608f1ae2ec756d27dfb9473ffb217ff0e20b5",
+      "source_family_key": "loop-invgen/large_const",
+      "source_path": "c/loop-invgen/large_const.i",
+      "source_sha256": "142d17131671d2eab991ea08656e3b8bfe555dee984fe7672c9a027e971df0f8",
+      "source_state_mapping": [
+        {
+          "init": "0",
+          "source_name": "c1",
+          "state_ref": "state30",
+          "width": 32
+        },
+        {
+          "init": "0",
+          "source_name": "c2",
+          "state_ref": "state31",
+          "width": 32
+        },
+        {
+          "init": "0",
+          "source_name": "c3",
+          "state_ref": "state32",
+          "width": 32
+        },
+        {
+          "init": "0",
+          "source_name": "i",
+          "state_ref": "state33",
+          "width": 32
+        },
+        {
+          "init": "0",
+          "source_name": "j",
+          "state_ref": "state34",
+          "width": 32
+        },
+        {
+          "init": "0",
+          "source_name": "k",
+          "state_ref": "state35",
+          "width": 32
+        },
+        {
+          "init": "0",
+          "source_name": "n",
+          "state_ref": "state36",
+          "width": 32
+        }
+      ],
+      "source_yaml_path": "c/loop-invgen/large_const.yml",
+      "source_yaml_sha256": "691d47534f461ab874ae6404f0a067212d09e57d588841ff7ac47e7f10cbded8"
+    },
+    {
+      "baseline_engine": "ind",
+      "baseline_proof_time_sec": "0.062598",
+      "baseline_verdict": "unsat",
+      "benchmark_id": "loop-lit/cggmp2005b.btor2",
+      "category": "loop-lit",
+      "content_sha256": "3d96ce42eec87679ee0e7a37251eace15b910774c5551f9cbe6ac27333a743a8",
+      "expected_verdict": "safe",
+      "path": "translated/safety-func/loop-lit/cggmp2005b.btor2",
+      "phases": [
+        {
+          "equality_node": 13,
+          "guard_ast": {
+            "args": [
+              {
+                "form": "ref",
+                "ref": "state12"
+              },
+              {
+                "const": "1",
+                "form": "const",
+                "width": 7
+              }
+            ],
+            "form": "eq"
+          },
+          "is_bad": true,
+          "is_initial": false,
+          "pc_ref": "state12",
+          "phase_id": "pc_state12_w7_v1",
+          "value": 1,
+          "width": 7
+        },
+        {
+          "equality_node": 14,
+          "guard_ast": {
+            "args": [
+              {
+                "form": "ref",
+                "ref": "state12"
+              },
+              {
+                "const": "2",
+                "form": "const",
+                "width": 7
+              }
+            ],
+            "form": "eq"
+          },
+          "is_bad": false,
+          "is_initial": false,
+          "pc_ref": "state12",
+          "phase_id": "pc_state12_w7_v2",
+          "value": 2,
+          "width": 7
+        },
+        {
+          "equality_node": 15,
+          "guard_ast": {
+            "args": [
+              {
+                "form": "ref",
+                "ref": "state12"
+              },
+              {
+                "const": "4",
+                "form": "const",
+                "width": 7
+              }
+            ],
+            "form": "eq"
+          },
+          "is_bad": false,
+          "is_initial": true,
+          "pc_ref": "state12",
+          "phase_id": "pc_state12_w7_v4",
+          "value": 4,
+          "width": 7
+        },
+        {
+          "equality_node": 16,
+          "guard_ast": {
+            "args": [
+              {
+                "form": "ref",
+                "ref": "state12"
+              },
+              {
+                "const": "8",
+                "form": "const",
+                "width": 7
+              }
+            ],
+            "form": "eq"
+          },
+          "is_bad": false,
+          "is_initial": false,
+          "pc_ref": "state12",
+          "phase_id": "pc_state12_w7_v8",
+          "value": 8,
+          "width": 7
+        },
+        {
+          "equality_node": 17,
+          "guard_ast": {
+            "args": [
+              {
+                "form": "ref",
+                "ref": "state12"
+              },
+              {
+                "const": "16",
+                "form": "const",
+                "width": 7
+              }
+            ],
+            "form": "eq"
+          },
+          "is_bad": false,
+          "is_initial": false,
+          "pc_ref": "state12",
+          "phase_id": "pc_state12_w7_v16",
+          "value": 16,
+          "width": 7
+        },
+        {
+          "equality_node": 18,
+          "guard_ast": {
+            "args": [
+              {
+                "form": "ref",
+                "ref": "state12"
+              },
+              {
+                "const": "32",
+                "form": "const",
+                "width": 7
+              }
+            ],
+            "form": "eq"
+          },
+          "is_bad": false,
+          "is_initial": false,
+          "pc_ref": "state12",
+          "phase_id": "pc_state12_w7_v32",
+          "value": 32,
+          "width": 7
+        },
+        {
+          "equality_node": 19,
+          "guard_ast": {
+            "args": [
+              {
+                "form": "ref",
+                "ref": "state12"
+              },
+              {
+                "const": "64",
+                "form": "const",
+                "width": 7
+              }
+            ],
+            "form": "eq"
+          },
+          "is_bad": false,
+          "is_initial": false,
+          "pc_ref": "state12",
+          "phase_id": "pc_state12_w7_v64",
+          "value": 64,
+          "width": 7
+        }
+      ],
+      "selection_role": "safe-baseline-control",
+      "source_family_id": "1041257ee565fc306f7aa52359d391f90360af38959a03b968225ad0c6d969a3",
+      "source_family_key": "loop-lit/cggmp2005b",
+      "source_path": "c/loop-lit/cggmp2005b.i",
+      "source_sha256": "5a85ef4e6caed20a9aa6e00fcf3a476ebe3f071202fc083a4545018fb19b4c9c",
+      "source_state_mapping": [
+        {
+          "init": "0",
+          "source_name": "i",
+          "state_ref": "state31",
+          "width": 32
+        },
+        {
+          "init": "0",
+          "source_name": "j",
+          "state_ref": "state32",
+          "width": 32
+        },
+        {
+          "init": "0",
+          "source_name": "k",
+          "state_ref": "state33",
+          "width": 32
+        }
+      ],
+      "source_yaml_path": "c/loop-lit/cggmp2005b.yml",
+      "source_yaml_sha256": "80d663a0095172b066f275441ad9db4b4298687fada2240c3452079c6b66469b"
+    },
+    {
+      "baseline_engine": "ic3ia",
+      "baseline_proof_time_sec": "20.080927",
+      "baseline_verdict": "timeout",
+      "benchmark_id": "loop-invariants/linear-inequality-inv-a.btor2",
+      "category": "loop-invariants",
+      "content_sha256": "7f4a50ea019dab779692e9efb0cc24f7defdb886e224a7c58193a012a852dc16",
+      "expected_verdict": "safe",
+      "path": "translated/safety-func/loop-invariants/linear-inequality-inv-a.btor2",
+      "phases": [
+        {
+          "equality_node": 13,
+          "guard_ast": {
+            "args": [
+              {
+                "form": "ref",
+                "ref": "state12"
+              },
+              {
+                "const": "1",
+                "form": "const",
+                "width": 6
+              }
+            ],
+            "form": "eq"
+          },
+          "is_bad": false,
+          "is_initial": false,
+          "pc_ref": "state12",
+          "phase_id": "pc_state12_w6_v1",
+          "value": 1,
+          "width": 6
+        },
+        {
+          "equality_node": 14,
+          "guard_ast": {
+            "args": [
+              {
+                "form": "ref",
+                "ref": "state12"
+              },
+              {
+                "const": "2",
+                "form": "const",
+                "width": 6
+              }
+            ],
+            "form": "eq"
+          },
+          "is_bad": false,
+          "is_initial": false,
+          "pc_ref": "state12",
+          "phase_id": "pc_state12_w6_v2",
+          "value": 2,
+          "width": 6
+        },
+        {
+          "equality_node": 15,
+          "guard_ast": {
+            "args": [
+              {
+                "form": "ref",
+                "ref": "state12"
+              },
+              {
+                "const": "4",
+                "form": "const",
+                "width": 6
+              }
+            ],
+            "form": "eq"
+          },
+          "is_bad": false,
+          "is_initial": true,
+          "pc_ref": "state12",
+          "phase_id": "pc_state12_w6_v4",
+          "value": 4,
+          "width": 6
+        },
+        {
+          "equality_node": 16,
+          "guard_ast": {
+            "args": [
+              {
+                "form": "ref",
+                "ref": "state12"
+              },
+              {
+                "const": "8",
+                "form": "const",
+                "width": 6
+              }
+            ],
+            "form": "eq"
+          },
+          "is_bad": false,
+          "is_initial": false,
+          "pc_ref": "state12",
+          "phase_id": "pc_state12_w6_v8",
+          "value": 8,
+          "width": 6
+        },
+        {
+          "equality_node": 17,
+          "guard_ast": {
+            "args": [
+              {
+                "form": "ref",
+                "ref": "state12"
+              },
+              {
+                "const": "16",
+                "form": "const",
+                "width": 6
+              }
+            ],
+            "form": "eq"
+          },
+          "is_bad": false,
+          "is_initial": false,
+          "pc_ref": "state12",
+          "phase_id": "pc_state12_w6_v16",
+          "value": 16,
+          "width": 6
+        },
+        {
+          "equality_node": 18,
+          "guard_ast": {
+            "args": [
+              {
+                "form": "ref",
+                "ref": "state12"
+              },
+              {
+                "const": "32",
+                "form": "const",
+                "width": 6
+              }
+            ],
+            "form": "eq"
+          },
+          "is_bad": false,
+          "is_initial": false,
+          "pc_ref": "state12",
+          "phase_id": "pc_state12_w6_v32",
+          "value": 32,
+          "width": 6
+        }
+      ],
+      "selection_role": "safe-baseline-hard",
+      "source_family_id": "eeb7732635d3ae625ec7cbcbb76224da18092fae5c89bf7ab8d68b51e54f4815",
+      "source_family_key": "loop-invariants/linear-inequality-inv-a",
+      "source_path": "c/loop-invariants/linear-inequality-inv-a.c",
+      "source_sha256": "d2b9c65bc0d5e6814219e058019ca5895f861b5993bd9ff39cc6b3d5fb3e6a41",
+      "source_state_mapping": [
+        {
+          "init": "0",
+          "source_name": "i",
+          "state_ref": "state26",
+          "width": 32
+        },
+        {
+          "init": "0",
+          "source_name": "n",
+          "state_ref": "state27",
+          "width": 8
+        },
+        {
+          "init": "0",
+          "source_name": "s",
+          "state_ref": "state28",
+          "width": 32
+        },
+        {
+          "init": "0",
+          "source_name": "v",
+          "state_ref": "state29",
+          "width": 8
+        }
+      ],
+      "source_yaml_path": "c/loop-invariants/linear-inequality-inv-a.yml",
+      "source_yaml_sha256": "6ab638039f015c2ad11f8bee264ce3db9b22839004baff0a9b821f113e4c6806"
+    },
+    {
+      "baseline_engine": "ic3ia",
+      "baseline_proof_time_sec": "20.086438",
+      "baseline_verdict": "timeout",
+      "benchmark_id": "loop-invariants/linear-inequality-inv-c.btor2",
+      "category": "loop-invariants",
+      "content_sha256": "e9f24ede41024d1e2d7e10a837fd1e4588f183ac5ea6367112225749069a1876",
+      "expected_verdict": "safe",
+      "path": "translated/safety-func/loop-invariants/linear-inequality-inv-c.btor2",
+      "phases": [
+        {
+          "equality_node": 14,
+          "guard_ast": {
+            "args": [
+              {
+                "form": "ref",
+                "ref": "state13"
+              },
+              {
+                "const": "1",
+                "form": "const",
+                "width": 6
+              }
+            ],
+            "form": "eq"
+          },
+          "is_bad": false,
+          "is_initial": false,
+          "pc_ref": "state13",
+          "phase_id": "pc_state13_w6_v1",
+          "value": 1,
+          "width": 6
+        },
+        {
+          "equality_node": 15,
+          "guard_ast": {
+            "args": [
+              {
+                "form": "ref",
+                "ref": "state13"
+              },
+              {
+                "const": "2",
+                "form": "const",
+                "width": 6
+              }
+            ],
+            "form": "eq"
+          },
+          "is_bad": false,
+          "is_initial": false,
+          "pc_ref": "state13",
+          "phase_id": "pc_state13_w6_v2",
+          "value": 2,
+          "width": 6
+        },
+        {
+          "equality_node": 16,
+          "guard_ast": {
+            "args": [
+              {
+                "form": "ref",
+                "ref": "state13"
+              },
+              {
+                "const": "4",
+                "form": "const",
+                "width": 6
+              }
+            ],
+            "form": "eq"
+          },
+          "is_bad": false,
+          "is_initial": true,
+          "pc_ref": "state13",
+          "phase_id": "pc_state13_w6_v4",
+          "value": 4,
+          "width": 6
+        },
+        {
+          "equality_node": 17,
+          "guard_ast": {
+            "args": [
+              {
+                "form": "ref",
+                "ref": "state13"
+              },
+              {
+                "const": "8",
+                "form": "const",
+                "width": 6
+              }
+            ],
+            "form": "eq"
+          },
+          "is_bad": false,
+          "is_initial": false,
+          "pc_ref": "state13",
+          "phase_id": "pc_state13_w6_v8",
+          "value": 8,
+          "width": 6
+        },
+        {
+          "equality_node": 18,
+          "guard_ast": {
+            "args": [
+              {
+                "form": "ref",
+                "ref": "state13"
+              },
+              {
+                "const": "16",
+                "form": "const",
+                "width": 6
+              }
+            ],
+            "form": "eq"
+          },
+          "is_bad": false,
+          "is_initial": false,
+          "pc_ref": "state13",
+          "phase_id": "pc_state13_w6_v16",
+          "value": 16,
+          "width": 6
+        },
+        {
+          "equality_node": 19,
+          "guard_ast": {
+            "args": [
+              {
+                "form": "ref",
+                "ref": "state13"
+              },
+              {
+                "const": "32",
+                "form": "const",
+                "width": 6
+              }
+            ],
+            "form": "eq"
+          },
+          "is_bad": false,
+          "is_initial": false,
+          "pc_ref": "state13",
+          "phase_id": "pc_state13_w6_v32",
+          "value": 32,
+          "width": 6
+        }
+      ],
+      "selection_role": "safe-baseline-hard",
+      "source_family_id": "dc97bca5346ebea9d4e8c92b83e2ca9cd8148855ad4c6ca4860ef9c37fdb5a67",
+      "source_family_key": "loop-invariants/linear-inequality-inv-c",
+      "source_path": "c/loop-invariants/linear-inequality-inv-c.c",
+      "source_sha256": "98c9a7161a25877cb0d3946df13d012bfde80051390422e2e164abf2e04cd600",
+      "source_state_mapping": [
+        {
+          "init": "0",
+          "source_name": "i",
+          "state_ref": "state27",
+          "width": 32
+        },
+        {
+          "init": "0",
+          "source_name": "n",
+          "state_ref": "state28",
+          "width": 16
+        },
+        {
+          "init": "0",
+          "source_name": "s",
+          "state_ref": "state29",
+          "width": 32
+        },
+        {
+          "init": "0",
+          "source_name": "v",
+          "state_ref": "state30",
+          "width": 16
+        }
+      ],
+      "source_yaml_path": "c/loop-invariants/linear-inequality-inv-c.yml",
+      "source_yaml_sha256": "6f9b59097e38990ed1da824e80f4a78800a7c552445f7ec02f9f3b0f5f1bbdb8"
+    },
+    {
+      "baseline_engine": "ic3ia",
+      "baseline_proof_time_sec": "20.138099",
+      "baseline_verdict": "timeout",
+      "benchmark_id": "loop-invgen/SpamAssassin-loop.btor2",
+      "category": "loop-invgen",
+      "content_sha256": "8766f2f99e909941ced206fdb9a1dab7205d1110e0a0c2ee85db86100df3236b",
+      "expected_verdict": "safe",
+      "path": "translated/safety-func/loop-invgen/SpamAssassin-loop.btor2",
+      "phases": [
+        {
+          "equality_node": 27,
+          "guard_ast": {
+            "args": [
+              {
+                "form": "ref",
+                "ref": "state26"
+              },
+              {
+                "const": "1",
+                "form": "const",
+                "width": 21
+              }
+            ],
+            "form": "eq"
+          },
+          "is_bad": false,
+          "is_initial": false,
+          "pc_ref": "state26",
+          "phase_id": "pc_state26_w21_v1",
+          "value": 1,
+          "width": 21
+        },
+        {
+          "equality_node": 28,
+          "guard_ast": {
+            "args": [
+              {
+                "form": "ref",
+                "ref": "state26"
+              },
+              {
+                "const": "2",
+                "form": "const",
+                "width": 21
+              }
+            ],
+            "form": "eq"
+          },
+          "is_bad": false,
+          "is_initial": false,
+          "pc_ref": "state26",
+          "phase_id": "pc_state26_w21_v2",
+          "value": 2,
+          "width": 21
+        },
+        {
+          "equality_node": 29,
+          "guard_ast": {
+            "args": [
+              {
+                "form": "ref",
+                "ref": "state26"
+              },
+              {
+                "const": "4",
+                "form": "const",
+                "width": 21
+              }
+            ],
+            "form": "eq"
+          },
+          "is_bad": false,
+          "is_initial": false,
+          "pc_ref": "state26",
+          "phase_id": "pc_state26_w21_v4",
+          "value": 4,
+          "width": 21
+        },
+        {
+          "equality_node": 30,
+          "guard_ast": {
+            "args": [
+              {
+                "form": "ref",
+                "ref": "state26"
+              },
+              {
+                "const": "8",
+                "form": "const",
+                "width": 21
+              }
+            ],
+            "form": "eq"
+          },
+          "is_bad": false,
+          "is_initial": true,
+          "pc_ref": "state26",
+          "phase_id": "pc_state26_w21_v8",
+          "value": 8,
+          "width": 21
+        },
+        {
+          "equality_node": 31,
+          "guard_ast": {
+            "args": [
+              {
+                "form": "ref",
+                "ref": "state26"
+              },
+              {
+                "const": "16",
+                "form": "const",
+                "width": 21
+              }
+            ],
+            "form": "eq"
+          },
+          "is_bad": false,
+          "is_initial": false,
+          "pc_ref": "state26",
+          "phase_id": "pc_state26_w21_v16",
+          "value": 16,
+          "width": 21
+        },
+        {
+          "equality_node": 32,
+          "guard_ast": {
+            "args": [
+              {
+                "form": "ref",
+                "ref": "state26"
+              },
+              {
+                "const": "32",
+                "form": "const",
+                "width": 21
+              }
+            ],
+            "form": "eq"
+          },
+          "is_bad": false,
+          "is_initial": false,
+          "pc_ref": "state26",
+          "phase_id": "pc_state26_w21_v32",
+          "value": 32,
+          "width": 21
+        },
+        {
+          "equality_node": 33,
+          "guard_ast": {
+            "args": [
+              {
+                "form": "ref",
+                "ref": "state26"
+              },
+              {
+                "const": "64",
+                "form": "const",
+                "width": 21
+              }
+            ],
+            "form": "eq"
+          },
+          "is_bad": false,
+          "is_initial": false,
+          "pc_ref": "state26",
+          "phase_id": "pc_state26_w21_v64",
+          "value": 64,
+          "width": 21
+        },
+        {
+          "equality_node": 34,
+          "guard_ast": {
+            "args": [
+              {
+                "form": "ref",
+                "ref": "state26"
+              },
+              {
+                "const": "128",
+                "form": "const",
+                "width": 21
+              }
+            ],
+            "form": "eq"
+          },
+          "is_bad": false,
+          "is_initial": false,
+          "pc_ref": "state26",
+          "phase_id": "pc_state26_w21_v128",
+          "value": 128,
+          "width": 21
+        },
+        {
+          "equality_node": 35,
+          "guard_ast": {
+            "args": [
+              {
+                "form": "ref",
+                "ref": "state26"
+              },
+              {
+                "const": "256",
+                "form": "const",
+                "width": 21
+              }
+            ],
+            "form": "eq"
+          },
+          "is_bad": false,
+          "is_initial": false,
+          "pc_ref": "state26",
+          "phase_id": "pc_state26_w21_v256",
+          "value": 256,
+          "width": 21
+        },
+        {
+          "equality_node": 36,
+          "guard_ast": {
+            "args": [
+              {
+                "form": "ref",
+                "ref": "state26"
+              },
+              {
+                "const": "512",
+                "form": "const",
+                "width": 21
+              }
+            ],
+            "form": "eq"
+          },
+          "is_bad": false,
+          "is_initial": false,
+          "pc_ref": "state26",
+          "phase_id": "pc_state26_w21_v512",
+          "value": 512,
+          "width": 21
+        },
+        {
+          "equality_node": 37,
+          "guard_ast": {
+            "args": [
+              {
+                "form": "ref",
+                "ref": "state26"
+              },
+              {
+                "const": "1024",
+                "form": "const",
+                "width": 21
+              }
+            ],
+            "form": "eq"
+          },
+          "is_bad": false,
+          "is_initial": false,
+          "pc_ref": "state26",
+          "phase_id": "pc_state26_w21_v1024",
+          "value": 1024,
+          "width": 21
+        },
+        {
+          "equality_node": 38,
+          "guard_ast": {
+            "args": [
+              {
+                "form": "ref",
+                "ref": "state26"
+              },
+              {
+                "const": "2048",
+                "form": "const",
+                "width": 21
+              }
+            ],
+            "form": "eq"
+          },
+          "is_bad": false,
+          "is_initial": false,
+          "pc_ref": "state26",
+          "phase_id": "pc_state26_w21_v2048",
+          "value": 2048,
+          "width": 21
+        },
+        {
+          "equality_node": 39,
+          "guard_ast": {
+            "args": [
+              {
+                "form": "ref",
+                "ref": "state26"
+              },
+              {
+                "const": "4096",
+                "form": "const",
+                "width": 21
+              }
+            ],
+            "form": "eq"
+          },
+          "is_bad": false,
+          "is_initial": false,
+          "pc_ref": "state26",
+          "phase_id": "pc_state26_w21_v4096",
+          "value": 4096,
+          "width": 21
+        },
+        {
+          "equality_node": 40,
+          "guard_ast": {
+            "args": [
+              {
+                "form": "ref",
+                "ref": "state26"
+              },
+              {
+                "const": "8192",
+                "form": "const",
+                "width": 21
+              }
+            ],
+            "form": "eq"
+          },
+          "is_bad": false,
+          "is_initial": false,
+          "pc_ref": "state26",
+          "phase_id": "pc_state26_w21_v8192",
+          "value": 8192,
+          "width": 21
+        },
+        {
+          "equality_node": 41,
+          "guard_ast": {
+            "args": [
+              {
+                "form": "ref",
+                "ref": "state26"
+              },
+              {
+                "const": "16384",
+                "form": "const",
+                "width": 21
+              }
+            ],
+            "form": "eq"
+          },
+          "is_bad": false,
+          "is_initial": false,
+          "pc_ref": "state26",
+          "phase_id": "pc_state26_w21_v16384",
+          "value": 16384,
+          "width": 21
+        },
+        {
+          "equality_node": 42,
+          "guard_ast": {
+            "args": [
+              {
+                "form": "ref",
+                "ref": "state26"
+              },
+              {
+                "const": "32768",
+                "form": "const",
+                "width": 21
+              }
+            ],
+            "form": "eq"
+          },
+          "is_bad": false,
+          "is_initial": false,
+          "pc_ref": "state26",
+          "phase_id": "pc_state26_w21_v32768",
+          "value": 32768,
+          "width": 21
+        },
+        {
+          "equality_node": 43,
+          "guard_ast": {
+            "args": [
+              {
+                "form": "ref",
+                "ref": "state26"
+              },
+              {
+                "const": "65536",
+                "form": "const",
+                "width": 21
+              }
+            ],
+            "form": "eq"
+          },
+          "is_bad": false,
+          "is_initial": false,
+          "pc_ref": "state26",
+          "phase_id": "pc_state26_w21_v65536",
+          "value": 65536,
+          "width": 21
+        },
+        {
+          "equality_node": 44,
+          "guard_ast": {
+            "args": [
+              {
+                "form": "ref",
+                "ref": "state26"
+              },
+              {
+                "const": "131072",
+                "form": "const",
+                "width": 21
+              }
+            ],
+            "form": "eq"
+          },
+          "is_bad": false,
+          "is_initial": false,
+          "pc_ref": "state26",
+          "phase_id": "pc_state26_w21_v131072",
+          "value": 131072,
+          "width": 21
+        },
+        {
+          "equality_node": 45,
+          "guard_ast": {
+            "args": [
+              {
+                "form": "ref",
+                "ref": "state26"
+              },
+              {
+                "const": "262144",
+                "form": "const",
+                "width": 21
+              }
+            ],
+            "form": "eq"
+          },
+          "is_bad": false,
+          "is_initial": false,
+          "pc_ref": "state26",
+          "phase_id": "pc_state26_w21_v262144",
+          "value": 262144,
+          "width": 21
+        },
+        {
+          "equality_node": 46,
+          "guard_ast": {
+            "args": [
+              {
+                "form": "ref",
+                "ref": "state26"
+              },
+              {
+                "const": "524288",
+                "form": "const",
+                "width": 21
+              }
+            ],
+            "form": "eq"
+          },
+          "is_bad": false,
+          "is_initial": false,
+          "pc_ref": "state26",
+          "phase_id": "pc_state26_w21_v524288",
+          "value": 524288,
+          "width": 21
+        },
+        {
+          "equality_node": 47,
+          "guard_ast": {
+            "args": [
+              {
+                "form": "ref",
+                "ref": "state26"
+              },
+              {
+                "const": "1048576",
+                "form": "const",
+                "width": 21
+              }
+            ],
+            "form": "eq"
+          },
+          "is_bad": false,
+          "is_initial": false,
+          "pc_ref": "state26",
+          "phase_id": "pc_state26_w21_v1048576",
+          "value": 1048576,
+          "width": 21
+        }
+      ],
+      "selection_role": "safe-baseline-hard",
+      "source_family_id": "68d0cd7105ca5c9fa73e412cfaf7aa09b6f04a9b26a9696fb8132e09b90da9ba",
+      "source_family_key": "loop-invgen/SpamAssassin-loop",
+      "source_path": "c/loop-invgen/SpamAssassin-loop.i",
+      "source_sha256": "0ad27fb086e75bf8f5b08286d8e766d07abfe44ff39234568924cf55ade7a6d5",
+      "source_state_mapping": [
+        {
+          "init": "0",
+          "source_name": "bufsize",
+          "state_ref": "state59",
+          "width": 32
+        },
+        {
+          "init": "0",
+          "source_name": "i",
+          "state_ref": "state60",
+          "width": 32
+        },
+        {
+          "init": "0",
+          "source_name": "j",
+          "state_ref": "state61",
+          "width": 32
+        },
+        {
+          "init": "0",
+          "source_name": "len",
+          "state_ref": "state57",
+          "width": 32
+        },
+        {
+          "init": "0",
+          "source_name": "limit",
+          "state_ref": "state58",
+          "width": 32
+        }
+      ],
+      "source_yaml_path": "c/loop-invgen/SpamAssassin-loop.yml",
+      "source_yaml_sha256": "4dbf1a91f9a797e4b546426a51078e73b7934ec0cd94a9482755e3c02560dd67"
+    },
+    {
+      "baseline_engine": "ic3ia",
+      "baseline_proof_time_sec": "20.109820",
+      "baseline_verdict": "timeout",
+      "benchmark_id": "loop-invgen/heapsort.btor2",
+      "category": "loop-invgen",
+      "content_sha256": "f7fb24aa2f34d8713d3565db2bac6fa89ad16599a9ee04a53519277a86350df3",
+      "expected_verdict": "safe",
+      "path": "translated/safety-func/loop-invgen/heapsort.btor2",
+      "phases": [
+        {
+          "equality_node": 25,
+          "guard_ast": {
+            "args": [
+              {
+                "form": "ref",
+                "ref": "state24"
+              },
+              {
+                "const": "1",
+                "form": "const",
+                "width": 19
+              }
+            ],
+            "form": "eq"
+          },
+          "is_bad": false,
+          "is_initial": false,
+          "pc_ref": "state24",
+          "phase_id": "pc_state24_w19_v1",
+          "value": 1,
+          "width": 19
+        },
+        {
+          "equality_node": 26,
+          "guard_ast": {
+            "args": [
+              {
+                "form": "ref",
+                "ref": "state24"
+              },
+              {
+                "const": "2",
+                "form": "const",
+                "width": 19
+              }
+            ],
+            "form": "eq"
+          },
+          "is_bad": false,
+          "is_initial": false,
+          "pc_ref": "state24",
+          "phase_id": "pc_state24_w19_v2",
+          "value": 2,
+          "width": 19
+        },
+        {
+          "equality_node": 27,
+          "guard_ast": {
+            "args": [
+              {
+                "form": "ref",
+                "ref": "state24"
+              },
+              {
+                "const": "4",
+                "form": "const",
+                "width": 19
+              }
+            ],
+            "form": "eq"
+          },
+          "is_bad": false,
+          "is_initial": false,
+          "pc_ref": "state24",
+          "phase_id": "pc_state24_w19_v4",
+          "value": 4,
+          "width": 19
+        },
+        {
+          "equality_node": 28,
+          "guard_ast": {
+            "args": [
+              {
+                "form": "ref",
+                "ref": "state24"
+              },
+              {
+                "const": "8",
+                "form": "const",
+                "width": 19
+              }
+            ],
+            "form": "eq"
+          },
+          "is_bad": false,
+          "is_initial": true,
+          "pc_ref": "state24",
+          "phase_id": "pc_state24_w19_v8",
+          "value": 8,
+          "width": 19
+        },
+        {
+          "equality_node": 29,
+          "guard_ast": {
+            "args": [
+              {
+                "form": "ref",
+                "ref": "state24"
+              },
+              {
+                "const": "16",
+                "form": "const",
+                "width": 19
+              }
+            ],
+            "form": "eq"
+          },
+          "is_bad": false,
+          "is_initial": false,
+          "pc_ref": "state24",
+          "phase_id": "pc_state24_w19_v16",
+          "value": 16,
+          "width": 19
+        },
+        {
+          "equality_node": 30,
+          "guard_ast": {
+            "args": [
+              {
+                "form": "ref",
+                "ref": "state24"
+              },
+              {
+                "const": "32",
+                "form": "const",
+                "width": 19
+              }
+            ],
+            "form": "eq"
+          },
+          "is_bad": false,
+          "is_initial": false,
+          "pc_ref": "state24",
+          "phase_id": "pc_state24_w19_v32",
+          "value": 32,
+          "width": 19
+        },
+        {
+          "equality_node": 31,
+          "guard_ast": {
+            "args": [
+              {
+                "form": "ref",
+                "ref": "state24"
+              },
+              {
+                "const": "64",
+                "form": "const",
+                "width": 19
+              }
+            ],
+            "form": "eq"
+          },
+          "is_bad": false,
+          "is_initial": false,
+          "pc_ref": "state24",
+          "phase_id": "pc_state24_w19_v64",
+          "value": 64,
+          "width": 19
+        },
+        {
+          "equality_node": 32,
+          "guard_ast": {
+            "args": [
+              {
+                "form": "ref",
+                "ref": "state24"
+              },
+              {
+                "const": "128",
+                "form": "const",
+                "width": 19
+              }
+            ],
+            "form": "eq"
+          },
+          "is_bad": false,
+          "is_initial": false,
+          "pc_ref": "state24",
+          "phase_id": "pc_state24_w19_v128",
+          "value": 128,
+          "width": 19
+        },
+        {
+          "equality_node": 33,
+          "guard_ast": {
+            "args": [
+              {
+                "form": "ref",
+                "ref": "state24"
+              },
+              {
+                "const": "256",
+                "form": "const",
+                "width": 19
+              }
+            ],
+            "form": "eq"
+          },
+          "is_bad": false,
+          "is_initial": false,
+          "pc_ref": "state24",
+          "phase_id": "pc_state24_w19_v256",
+          "value": 256,
+          "width": 19
+        },
+        {
+          "equality_node": 34,
+          "guard_ast": {
+            "args": [
+              {
+                "form": "ref",
+                "ref": "state24"
+              },
+              {
+                "const": "512",
+                "form": "const",
+                "width": 19
+              }
+            ],
+            "form": "eq"
+          },
+          "is_bad": false,
+          "is_initial": false,
+          "pc_ref": "state24",
+          "phase_id": "pc_state24_w19_v512",
+          "value": 512,
+          "width": 19
+        },
+        {
+          "equality_node": 35,
+          "guard_ast": {
+            "args": [
+              {
+                "form": "ref",
+                "ref": "state24"
+              },
+              {
+                "const": "1024",
+                "form": "const",
+                "width": 19
+              }
+            ],
+            "form": "eq"
+          },
+          "is_bad": false,
+          "is_initial": false,
+          "pc_ref": "state24",
+          "phase_id": "pc_state24_w19_v1024",
+          "value": 1024,
+          "width": 19
+        },
+        {
+          "equality_node": 36,
+          "guard_ast": {
+            "args": [
+              {
+                "form": "ref",
+                "ref": "state24"
+              },
+              {
+                "const": "2048",
+                "form": "const",
+                "width": 19
+              }
+            ],
+            "form": "eq"
+          },
+          "is_bad": false,
+          "is_initial": false,
+          "pc_ref": "state24",
+          "phase_id": "pc_state24_w19_v2048",
+          "value": 2048,
+          "width": 19
+        },
+        {
+          "equality_node": 37,
+          "guard_ast": {
+            "args": [
+              {
+                "form": "ref",
+                "ref": "state24"
+              },
+              {
+                "const": "4096",
+                "form": "const",
+                "width": 19
+              }
+            ],
+            "form": "eq"
+          },
+          "is_bad": false,
+          "is_initial": false,
+          "pc_ref": "state24",
+          "phase_id": "pc_state24_w19_v4096",
+          "value": 4096,
+          "width": 19
+        },
+        {
+          "equality_node": 38,
+          "guard_ast": {
+            "args": [
+              {
+                "form": "ref",
+                "ref": "state24"
+              },
+              {
+                "const": "8192",
+                "form": "const",
+                "width": 19
+              }
+            ],
+            "form": "eq"
+          },
+          "is_bad": false,
+          "is_initial": false,
+          "pc_ref": "state24",
+          "phase_id": "pc_state24_w19_v8192",
+          "value": 8192,
+          "width": 19
+        },
+        {
+          "equality_node": 39,
+          "guard_ast": {
+            "args": [
+              {
+                "form": "ref",
+                "ref": "state24"
+              },
+              {
+                "const": "16384",
+                "form": "const",
+                "width": 19
+              }
+            ],
+            "form": "eq"
+          },
+          "is_bad": false,
+          "is_initial": false,
+          "pc_ref": "state24",
+          "phase_id": "pc_state24_w19_v16384",
+          "value": 16384,
+          "width": 19
+        },
+        {
+          "equality_node": 40,
+          "guard_ast": {
+            "args": [
+              {
+                "form": "ref",
+                "ref": "state24"
+              },
+              {
+                "const": "32768",
+                "form": "const",
+                "width": 19
+              }
+            ],
+            "form": "eq"
+          },
+          "is_bad": false,
+          "is_initial": false,
+          "pc_ref": "state24",
+          "phase_id": "pc_state24_w19_v32768",
+          "value": 32768,
+          "width": 19
+        },
+        {
+          "equality_node": 41,
+          "guard_ast": {
+            "args": [
+              {
+                "form": "ref",
+                "ref": "state24"
+              },
+              {
+                "const": "65536",
+                "form": "const",
+                "width": 19
+              }
+            ],
+            "form": "eq"
+          },
+          "is_bad": false,
+          "is_initial": false,
+          "pc_ref": "state24",
+          "phase_id": "pc_state24_w19_v65536",
+          "value": 65536,
+          "width": 19
+        },
+        {
+          "equality_node": 42,
+          "guard_ast": {
+            "args": [
+              {
+                "form": "ref",
+                "ref": "state24"
+              },
+              {
+                "const": "131072",
+                "form": "const",
+                "width": 19
+              }
+            ],
+            "form": "eq"
+          },
+          "is_bad": false,
+          "is_initial": false,
+          "pc_ref": "state24",
+          "phase_id": "pc_state24_w19_v131072",
+          "value": 131072,
+          "width": 19
+        },
+        {
+          "equality_node": 43,
+          "guard_ast": {
+            "args": [
+              {
+                "form": "ref",
+                "ref": "state24"
+              },
+              {
+                "const": "262144",
+                "form": "const",
+                "width": 19
+              }
+            ],
+            "form": "eq"
+          },
+          "is_bad": false,
+          "is_initial": false,
+          "pc_ref": "state24",
+          "phase_id": "pc_state24_w19_v262144",
+          "value": 262144,
+          "width": 19
+        }
+      ],
+      "selection_role": "safe-baseline-hard",
+      "source_family_id": "a9ddc1895f3a2766e8e86b924ecab86dd64e4eb86a07ad3ff7ccc92aec803dfd",
+      "source_family_key": "loop-invgen/heapsort",
+      "source_path": "c/loop-invgen/heapsort.i",
+      "source_sha256": "8e7c8e5dc2a9e8f11b25d1bb9948f05f37b9553e3dc9f8bd8213088dea43cb37",
+      "source_state_mapping": [
+        {
+          "init": "0",
+          "source_name": "i",
+          "state_ref": "state52",
+          "width": 32
+        },
+        {
+          "init": "0",
+          "source_name": "j",
+          "state_ref": "state53",
+          "width": 32
+        },
+        {
+          "init": "0",
+          "source_name": "l",
+          "state_ref": "state54",
+          "width": 32
+        },
+        {
+          "init": "0",
+          "source_name": "n",
+          "state_ref": "state55",
+          "width": 32
+        },
+        {
+          "init": "0",
+          "source_name": "r",
+          "state_ref": "state56",
+          "width": 32
+        }
+      ],
+      "source_yaml_path": "c/loop-invgen/heapsort.yml",
+      "source_yaml_sha256": "042927d6008350d59e1c9690c9b56a8eb90b658a2b2ff42d78d12a1f740fb533"
+    },
+    {
+      "baseline_engine": "ic3ia",
+      "baseline_proof_time_sec": "20.094735",
+      "baseline_verdict": "timeout",
+      "benchmark_id": "loop-lit/gj2007b.btor2",
+      "category": "loop-lit",
+      "content_sha256": "fc08e6eb13be10ad1e5bce28b33cd91902045c026dbe81f6393c1e76a879978c",
+      "expected_verdict": "safe",
+      "path": "translated/safety-func/loop-lit/gj2007b.btor2",
+      "phases": [
+        {
+          "equality_node": 11,
+          "guard_ast": {
+            "args": [
+              {
+                "form": "ref",
+                "ref": "state10"
+              },
+              {
+                "const": "1",
+                "form": "const",
+                "width": 5
+              }
+            ],
+            "form": "eq"
+          },
+          "is_bad": false,
+          "is_initial": false,
+          "pc_ref": "state10",
+          "phase_id": "pc_state10_w5_v1",
+          "value": 1,
+          "width": 5
+        },
+        {
+          "equality_node": 12,
+          "guard_ast": {
+            "args": [
+              {
+                "form": "ref",
+                "ref": "state10"
+              },
+              {
+                "const": "2",
+                "form": "const",
+                "width": 5
+              }
+            ],
+            "form": "eq"
+          },
+          "is_bad": false,
+          "is_initial": false,
+          "pc_ref": "state10",
+          "phase_id": "pc_state10_w5_v2",
+          "value": 2,
+          "width": 5
+        },
+        {
+          "equality_node": 13,
+          "guard_ast": {
+            "args": [
+              {
+                "form": "ref",
+                "ref": "state10"
+              },
+              {
+                "const": "4",
+                "form": "const",
+                "width": 5
+              }
+            ],
+            "form": "eq"
+          },
+          "is_bad": false,
+          "is_initial": true,
+          "pc_ref": "state10",
+          "phase_id": "pc_state10_w5_v4",
+          "value": 4,
+          "width": 5
+        },
+        {
+          "equality_node": 14,
+          "guard_ast": {
+            "args": [
+              {
+                "form": "ref",
+                "ref": "state10"
+              },
+              {
+                "const": "8",
+                "form": "const",
+                "width": 5
+              }
+            ],
+            "form": "eq"
+          },
+          "is_bad": false,
+          "is_initial": false,
+          "pc_ref": "state10",
+          "phase_id": "pc_state10_w5_v8",
+          "value": 8,
+          "width": 5
+        },
+        {
+          "equality_node": 15,
+          "guard_ast": {
+            "args": [
+              {
+                "form": "ref",
+                "ref": "state10"
+              },
+              {
+                "const": "16",
+                "form": "const",
+                "width": 5
+              }
+            ],
+            "form": "eq"
+          },
+          "is_bad": false,
+          "is_initial": false,
+          "pc_ref": "state10",
+          "phase_id": "pc_state10_w5_v16",
+          "value": 16,
+          "width": 5
+        }
+      ],
+      "selection_role": "safe-baseline-hard",
+      "source_family_id": "10ecc8f124fe27235e8a482b96c33b6e4d36ee4c6a008626524a42cd3a1c73fa",
+      "source_family_key": "loop-lit/gj2007b",
+      "source_path": "c/loop-lit/gj2007b.i",
+      "source_sha256": "a5dbdf40c5c8abdf745ea2973f48a7f1bd1d56b53cd410b7a2d364d83fc651a9",
+      "source_state_mapping": [
+        {
+          "init": "0",
+          "source_name": "m",
+          "state_ref": "state22",
+          "width": 32
+        },
+        {
+          "init": "0",
+          "source_name": "n",
+          "state_ref": "state23",
+          "width": 32
+        },
+        {
+          "init": "0",
+          "source_name": "x",
+          "state_ref": "state24",
+          "width": 32
+        }
+      ],
+      "source_yaml_path": "c/loop-lit/gj2007b.yml",
+      "source_yaml_sha256": "e202580ae54e6f364df45a34fae1c86e5f9e35f937a05625dc8dd72ee8fe806d"
+    },
+    {
+      "baseline_engine": "ic3ia",
+      "baseline_proof_time_sec": "20.070885",
+      "baseline_verdict": "timeout",
+      "benchmark_id": "loop-lit/hhk2008.btor2",
+      "category": "loop-lit",
+      "content_sha256": "34e4943a3fcb6f5422966b9d638da22c4bfae4658a90d8cedfb52e53958e0a1a",
+      "expected_verdict": "safe",
+      "path": "translated/safety-func/loop-lit/hhk2008.btor2",
+      "phases": [
+        {
+          "equality_node": 11,
+          "guard_ast": {
+            "args": [
+              {
+                "form": "ref",
+                "ref": "state10"
+              },
+              {
+                "const": "1",
+                "form": "const",
+                "width": 5
+              }
+            ],
+            "form": "eq"
+          },
+          "is_bad": false,
+          "is_initial": true,
+          "pc_ref": "state10",
+          "phase_id": "pc_state10_w5_v1",
+          "value": 1,
+          "width": 5
+        },
+        {
+          "equality_node": 12,
+          "guard_ast": {
+            "args": [
+              {
+                "form": "ref",
+                "ref": "state10"
+              },
+              {
+                "const": "2",
+                "form": "const",
+                "width": 5
+              }
+            ],
+            "form": "eq"
+          },
+          "is_bad": true,
+          "is_initial": false,
+          "pc_ref": "state10",
+          "phase_id": "pc_state10_w5_v2",
+          "value": 2,
+          "width": 5
+        },
+        {
+          "equality_node": 13,
+          "guard_ast": {
+            "args": [
+              {
+                "form": "ref",
+                "ref": "state10"
+              },
+              {
+                "const": "4",
+                "form": "const",
+                "width": 5
+              }
+            ],
+            "form": "eq"
+          },
+          "is_bad": false,
+          "is_initial": false,
+          "pc_ref": "state10",
+          "phase_id": "pc_state10_w5_v4",
+          "value": 4,
+          "width": 5
+        },
+        {
+          "equality_node": 14,
+          "guard_ast": {
+            "args": [
+              {
+                "form": "ref",
+                "ref": "state10"
+              },
+              {
+                "const": "8",
+                "form": "const",
+                "width": 5
+              }
+            ],
+            "form": "eq"
+          },
+          "is_bad": false,
+          "is_initial": false,
+          "pc_ref": "state10",
+          "phase_id": "pc_state10_w5_v8",
+          "value": 8,
+          "width": 5
+        },
+        {
+          "equality_node": 15,
+          "guard_ast": {
+            "args": [
+              {
+                "form": "ref",
+                "ref": "state10"
+              },
+              {
+                "const": "16",
+                "form": "const",
+                "width": 5
+              }
+            ],
+            "form": "eq"
+          },
+          "is_bad": false,
+          "is_initial": false,
+          "pc_ref": "state10",
+          "phase_id": "pc_state10_w5_v16",
+          "value": 16,
+          "width": 5
+        }
+      ],
+      "selection_role": "safe-baseline-hard",
+      "source_family_id": "0c95403bb44cb0ea36c25cdc127898e79935815c3c45d3b02160c653981812e2",
+      "source_family_key": "loop-lit/hhk2008",
+      "source_path": "c/loop-lit/hhk2008.i",
+      "source_sha256": "71a7284f447428ecffa93ec68ad1c6e5855fc63e0841f7f396bb4f1c281c6b13",
+      "source_state_mapping": [
+        {
+          "init": "0",
+          "source_name": "a",
+          "state_ref": "state27",
+          "width": 32
+        },
+        {
+          "init": "0",
+          "source_name": "b",
+          "state_ref": "state24",
+          "width": 32
+        },
+        {
+          "init": "0",
+          "source_name": "cnt",
+          "state_ref": "state25",
+          "width": 32
+        },
+        {
+          "init": "0",
+          "source_name": "res",
+          "state_ref": "state26",
+          "width": 32
+        }
+      ],
+      "source_yaml_path": "c/loop-lit/hhk2008.yml",
+      "source_yaml_sha256": "5e8b9f42f67200497d64869674ed5712114f8c35c8814773944538910c5c0705"
+    },
+    {
+      "baseline_engine": "ic3ia",
+      "baseline_proof_time_sec": "12.580857",
+      "baseline_verdict": "unknown",
+      "benchmark_id": "loop-new/count_by_nondet.btor2",
+      "category": "loop-new",
+      "content_sha256": "5ccf184ba14a1f0befce843f36915c82833b3a8b52fbcb4647a1d96afe3b5a50",
+      "expected_verdict": "safe",
+      "path": "translated/safety-func/loop-new/count_by_nondet.btor2",
+      "phases": [
+        {
+          "equality_node": 11,
+          "guard_ast": {
+            "args": [
+              {
+                "form": "ref",
+                "ref": "state10"
+              },
+              {
+                "const": "1",
+                "form": "const",
+                "width": 5
+              }
+            ],
+            "form": "eq"
+          },
+          "is_bad": true,
+          "is_initial": false,
+          "pc_ref": "state10",
+          "phase_id": "pc_state10_w5_v1",
+          "value": 1,
+          "width": 5
+        },
+        {
+          "equality_node": 12,
+          "guard_ast": {
+            "args": [
+              {
+                "form": "ref",
+                "ref": "state10"
+              },
+              {
+                "const": "2",
+                "form": "const",
+                "width": 5
+              }
+            ],
+            "form": "eq"
+          },
+          "is_bad": false,
+          "is_initial": false,
+          "pc_ref": "state10",
+          "phase_id": "pc_state10_w5_v2",
+          "value": 2,
+          "width": 5
+        },
+        {
+          "equality_node": 13,
+          "guard_ast": {
+            "args": [
+              {
+                "form": "ref",
+                "ref": "state10"
+              },
+              {
+                "const": "4",
+                "form": "const",
+                "width": 5
+              }
+            ],
+            "form": "eq"
+          },
+          "is_bad": false,
+          "is_initial": true,
+          "pc_ref": "state10",
+          "phase_id": "pc_state10_w5_v4",
+          "value": 4,
+          "width": 5
+        },
+        {
+          "equality_node": 14,
+          "guard_ast": {
+            "args": [
+              {
+                "form": "ref",
+                "ref": "state10"
+              },
+              {
+                "const": "8",
+                "form": "const",
+                "width": 5
+              }
+            ],
+            "form": "eq"
+          },
+          "is_bad": false,
+          "is_initial": false,
+          "pc_ref": "state10",
+          "phase_id": "pc_state10_w5_v8",
+          "value": 8,
+          "width": 5
+        },
+        {
+          "equality_node": 15,
+          "guard_ast": {
+            "args": [
+              {
+                "form": "ref",
+                "ref": "state10"
+              },
+              {
+                "const": "16",
+                "form": "const",
+                "width": 5
+              }
+            ],
+            "form": "eq"
+          },
+          "is_bad": false,
+          "is_initial": false,
+          "pc_ref": "state10",
+          "phase_id": "pc_state10_w5_v16",
+          "value": 16,
+          "width": 5
+        }
+      ],
+      "selection_role": "safe-baseline-hard",
+      "source_family_id": "187627b620b9091b4a27dba65b9a632624823c1b7551271fd61af769b1ef0483",
+      "source_family_key": "loop-new/count_by_nondet",
+      "source_path": "c/loop-new/count_by_nondet.i",
+      "source_sha256": "3467a31f3cd19e731a18eaf7789079f202f3b29e437ef24ddd0458f09610424d",
+      "source_state_mapping": [
+        {
+          "init": "0",
+          "source_name": "i",
+          "state_ref": "state22",
+          "width": 32
+        },
+        {
+          "init": "0",
+          "source_name": "k",
+          "state_ref": "state23",
+          "width": 32
+        }
+      ],
+      "source_yaml_path": "c/loop-new/count_by_nondet.yml",
+      "source_yaml_sha256": "008278f0c7cb8933c1c57f05a3ca7d5014113cc22204a84818ff0e0168a52517"
+    },
+    {
+      "baseline_engine": "ic3ia",
+      "baseline_proof_time_sec": "20.126859",
+      "baseline_verdict": "timeout",
+      "benchmark_id": "loop-simple/nested_5.btor2",
+      "category": "loop-simple",
+      "content_sha256": "c4ce35cac2ae918082fab514f4ef1b626e9128be4e75072869e28c44ef885b11",
+      "expected_verdict": "safe",
+      "path": "translated/safety-func/loop-simple/nested_5.btor2",
+      "phases": [
+        {
+          "equality_node": 15,
+          "guard_ast": {
+            "args": [
+              {
+                "form": "ref",
+                "ref": "state14"
+              },
+              {
+                "const": "1",
+                "form": "const",
+                "width": 9
+              }
+            ],
+            "form": "eq"
+          },
+          "is_bad": true,
+          "is_initial": false,
+          "pc_ref": "state14",
+          "phase_id": "pc_state14_w9_v1",
+          "value": 1,
+          "width": 9
+        },
+        {
+          "equality_node": 16,
+          "guard_ast": {
+            "args": [
+              {
+                "form": "ref",
+                "ref": "state14"
+              },
+              {
+                "const": "2",
+                "form": "const",
+                "width": 9
+              }
+            ],
+            "form": "eq"
+          },
+          "is_bad": false,
+          "is_initial": false,
+          "pc_ref": "state14",
+          "phase_id": "pc_state14_w9_v2",
+          "value": 2,
+          "width": 9
+        },
+        {
+          "equality_node": 17,
+          "guard_ast": {
+            "args": [
+              {
+                "form": "ref",
+                "ref": "state14"
+              },
+              {
+                "const": "4",
+                "form": "const",
+                "width": 9
+              }
+            ],
+            "form": "eq"
+          },
+          "is_bad": false,
+          "is_initial": true,
+          "pc_ref": "state14",
+          "phase_id": "pc_state14_w9_v4",
+          "value": 4,
+          "width": 9
+        },
+        {
+          "equality_node": 18,
+          "guard_ast": {
+            "args": [
+              {
+                "form": "ref",
+                "ref": "state14"
+              },
+              {
+                "const": "8",
+                "form": "const",
+                "width": 9
+              }
+            ],
+            "form": "eq"
+          },
+          "is_bad": false,
+          "is_initial": false,
+          "pc_ref": "state14",
+          "phase_id": "pc_state14_w9_v8",
+          "value": 8,
+          "width": 9
+        },
+        {
+          "equality_node": 19,
+          "guard_ast": {
+            "args": [
+              {
+                "form": "ref",
+                "ref": "state14"
+              },
+              {
+                "const": "16",
+                "form": "const",
+                "width": 9
+              }
+            ],
+            "form": "eq"
+          },
+          "is_bad": false,
+          "is_initial": false,
+          "pc_ref": "state14",
+          "phase_id": "pc_state14_w9_v16",
+          "value": 16,
+          "width": 9
+        },
+        {
+          "equality_node": 20,
+          "guard_ast": {
+            "args": [
+              {
+                "form": "ref",
+                "ref": "state14"
+              },
+              {
+                "const": "32",
+                "form": "const",
+                "width": 9
+              }
+            ],
+            "form": "eq"
+          },
+          "is_bad": false,
+          "is_initial": false,
+          "pc_ref": "state14",
+          "phase_id": "pc_state14_w9_v32",
+          "value": 32,
+          "width": 9
+        },
+        {
+          "equality_node": 21,
+          "guard_ast": {
+            "args": [
+              {
+                "form": "ref",
+                "ref": "state14"
+              },
+              {
+                "const": "64",
+                "form": "const",
+                "width": 9
+              }
+            ],
+            "form": "eq"
+          },
+          "is_bad": false,
+          "is_initial": false,
+          "pc_ref": "state14",
+          "phase_id": "pc_state14_w9_v64",
+          "value": 64,
+          "width": 9
+        },
+        {
+          "equality_node": 22,
+          "guard_ast": {
+            "args": [
+              {
+                "form": "ref",
+                "ref": "state14"
+              },
+              {
+                "const": "128",
+                "form": "const",
+                "width": 9
+              }
+            ],
+            "form": "eq"
+          },
+          "is_bad": false,
+          "is_initial": false,
+          "pc_ref": "state14",
+          "phase_id": "pc_state14_w9_v128",
+          "value": 128,
+          "width": 9
+        },
+        {
+          "equality_node": 23,
+          "guard_ast": {
+            "args": [
+              {
+                "form": "ref",
+                "ref": "state14"
+              },
+              {
+                "const": "256",
+                "form": "const",
+                "width": 9
+              }
+            ],
+            "form": "eq"
+          },
+          "is_bad": false,
+          "is_initial": false,
+          "pc_ref": "state14",
+          "phase_id": "pc_state14_w9_v256",
+          "value": 256,
+          "width": 9
+        }
+      ],
+      "selection_role": "safe-baseline-hard",
+      "source_family_id": "348dcd12f337ed254c2896d444c3d3122d552a933adff74da2b68d49eb4d2d92",
+      "source_family_key": "loop-simple/nested_5",
+      "source_path": "c/loop-simple/nested_5.c",
+      "source_sha256": "3d0f32d2f39934bb8fd732fa206acfa5d2fb4cacaee37919c0e4326d55891c86",
+      "source_state_mapping": [
+        {
+          "init": "0",
+          "source_name": "a",
+          "state_ref": "state30",
+          "width": 32
+        },
+        {
+          "init": "0",
+          "source_name": "b",
+          "state_ref": "state31",
+          "width": 32
+        },
+        {
+          "init": "0",
+          "source_name": "c",
+          "state_ref": "state32",
+          "width": 32
+        },
+        {
+          "init": "0",
+          "source_name": "d",
+          "state_ref": "state33",
+          "width": 32
+        },
+        {
+          "init": "0",
+          "source_name": "e",
+          "state_ref": "state34",
+          "width": 32
+        }
+      ],
+      "source_yaml_path": "c/loop-simple/nested_5.yml",
+      "source_yaml_sha256": "ce8aacde9c421a0eaeb20be45691d812f43aec63fd315e9d4cf31008e018a069"
+    },
+    {
+      "baseline_engine": "ic3ia",
+      "baseline_proof_time_sec": "20.335335",
+      "baseline_verdict": "timeout",
+      "benchmark_id": "loop-zilu/benchmark05_conjunctive.btor2",
+      "category": "loop-zilu",
+      "content_sha256": "cda483f8d8d680feb68cd20df1e25b3db9abc0c88f5ed8b9ce8c0944869603d0",
+      "expected_verdict": "safe",
+      "path": "translated/safety-func/loop-zilu/benchmark05_conjunctive.btor2",
+      "phases": [
+        {
+          "equality_node": 11,
+          "guard_ast": {
+            "args": [
+              {
+                "form": "ref",
+                "ref": "state10"
+              },
+              {
+                "const": "1",
+                "form": "const",
+                "width": 5
+              }
+            ],
+            "form": "eq"
+          },
+          "is_bad": true,
+          "is_initial": false,
+          "pc_ref": "state10",
+          "phase_id": "pc_state10_w5_v1",
+          "value": 1,
+          "width": 5
+        },
+        {
+          "equality_node": 12,
+          "guard_ast": {
+            "args": [
+              {
+                "form": "ref",
+                "ref": "state10"
+              },
+              {
+                "const": "2",
+                "form": "const",
+                "width": 5
+              }
+            ],
+            "form": "eq"
+          },
+          "is_bad": false,
+          "is_initial": false,
+          "pc_ref": "state10",
+          "phase_id": "pc_state10_w5_v2",
+          "value": 2,
+          "width": 5
+        },
+        {
+          "equality_node": 13,
+          "guard_ast": {
+            "args": [
+              {
+                "form": "ref",
+                "ref": "state10"
+              },
+              {
+                "const": "4",
+                "form": "const",
+                "width": 5
+              }
+            ],
+            "form": "eq"
+          },
+          "is_bad": false,
+          "is_initial": false,
+          "pc_ref": "state10",
+          "phase_id": "pc_state10_w5_v4",
+          "value": 4,
+          "width": 5
+        },
+        {
+          "equality_node": 14,
+          "guard_ast": {
+            "args": [
+              {
+                "form": "ref",
+                "ref": "state10"
+              },
+              {
+                "const": "8",
+                "form": "const",
+                "width": 5
+              }
+            ],
+            "form": "eq"
+          },
+          "is_bad": false,
+          "is_initial": false,
+          "pc_ref": "state10",
+          "phase_id": "pc_state10_w5_v8",
+          "value": 8,
+          "width": 5
+        },
+        {
+          "equality_node": 15,
+          "guard_ast": {
+            "args": [
+              {
+                "form": "ref",
+                "ref": "state10"
+              },
+              {
+                "const": "16",
+                "form": "const",
+                "width": 5
+              }
+            ],
+            "form": "eq"
+          },
+          "is_bad": false,
+          "is_initial": true,
+          "pc_ref": "state10",
+          "phase_id": "pc_state10_w5_v16",
+          "value": 16,
+          "width": 5
+        }
+      ],
+      "selection_role": "safe-baseline-hard",
+      "source_family_id": "8ddf6b6355c50edeb4690d5041155805747b85c70a1a46526cb9005044aea173",
+      "source_family_key": "loop-zilu/benchmark05_conjunctive",
+      "source_path": "c/loop-zilu/benchmark05_conjunctive.i",
+      "source_sha256": "ecbe73983438c23c42e2ed0d81896f3aad03ba3c52d7d8ba5ad74018d0035eda",
+      "source_state_mapping": [
+        {
+          "init": "0",
+          "source_name": "n",
+          "state_ref": "state22",
+          "width": 32
+        },
+        {
+          "init": "0",
+          "source_name": "x",
+          "state_ref": "state23",
+          "width": 32
+        },
+        {
+          "init": "0",
+          "source_name": "y",
+          "state_ref": "state24",
+          "width": 32
+        }
+      ],
+      "source_yaml_path": "c/loop-zilu/benchmark05_conjunctive.yml",
+      "source_yaml_sha256": "692b78642dea6cfd62f44d90afa870cf15f61cf69c59d2bb662ebcc6ae1ebd1f"
+    },
+    {
+      "baseline_engine": "ic3ia",
+      "baseline_proof_time_sec": "20.083959",
+      "baseline_verdict": "timeout",
+      "benchmark_id": "loops-crafted-1/sumt2.btor2",
+      "category": "loops-crafted-1",
+      "content_sha256": "30a1eb21e2fcf3da3819b76120d5af9d280ea9b0a42712f684a98a4ed76b3d4b",
+      "expected_verdict": "safe",
+      "path": "translated/safety-func/loops-crafted-1/sumt2.btor2",
+      "phases": [
+        {
+          "equality_node": 11,
+          "guard_ast": {
+            "args": [
+              {
+                "form": "ref",
+                "ref": "state10"
+              },
+              {
+                "const": "1",
+                "form": "const",
+                "width": 5
+              }
+            ],
+            "form": "eq"
+          },
+          "is_bad": false,
+          "is_initial": false,
+          "pc_ref": "state10",
+          "phase_id": "pc_state10_w5_v1",
+          "value": 1,
+          "width": 5
+        },
+        {
+          "equality_node": 12,
+          "guard_ast": {
+            "args": [
+              {
+                "form": "ref",
+                "ref": "state10"
+              },
+              {
+                "const": "2",
+                "form": "const",
+                "width": 5
+              }
+            ],
+            "form": "eq"
+          },
+          "is_bad": false,
+          "is_initial": true,
+          "pc_ref": "state10",
+          "phase_id": "pc_state10_w5_v2",
+          "value": 2,
+          "width": 5
+        },
+        {
+          "equality_node": 13,
+          "guard_ast": {
+            "args": [
+              {
+                "form": "ref",
+                "ref": "state10"
+              },
+              {
+                "const": "4",
+                "form": "const",
+                "width": 5
+              }
+            ],
+            "form": "eq"
+          },
+          "is_bad": true,
+          "is_initial": false,
+          "pc_ref": "state10",
+          "phase_id": "pc_state10_w5_v4",
+          "value": 4,
+          "width": 5
+        },
+        {
+          "equality_node": 14,
+          "guard_ast": {
+            "args": [
+              {
+                "form": "ref",
+                "ref": "state10"
+              },
+              {
+                "const": "8",
+                "form": "const",
+                "width": 5
+              }
+            ],
+            "form": "eq"
+          },
+          "is_bad": false,
+          "is_initial": false,
+          "pc_ref": "state10",
+          "phase_id": "pc_state10_w5_v8",
+          "value": 8,
+          "width": 5
+        },
+        {
+          "equality_node": 15,
+          "guard_ast": {
+            "args": [
+              {
+                "form": "ref",
+                "ref": "state10"
+              },
+              {
+                "const": "16",
+                "form": "const",
+                "width": 5
+              }
+            ],
+            "form": "eq"
+          },
+          "is_bad": false,
+          "is_initial": false,
+          "pc_ref": "state10",
+          "phase_id": "pc_state10_w5_v16",
+          "value": 16,
+          "width": 5
+        }
+      ],
+      "selection_role": "safe-baseline-hard",
+      "source_family_id": "d37acc8ca50404fa2bccd717d0e0f255c62e4111fcc35da452b7b138cfeb3f72",
+      "source_family_key": "loops-crafted-1/sumt2",
+      "source_path": "c/loops-crafted-1/sumt2.c",
+      "source_sha256": "1b0e7d857a64a21fc5f03950cacb4a35900c867819a68273aa97f44e84e99e64",
+      "source_state_mapping": [
+        {
+          "init": "0",
+          "source_name": "SIZE",
+          "state_ref": "state27",
+          "width": 32
+        },
+        {
+          "init": "0",
+          "source_name": "i",
+          "state_ref": "state23",
+          "width": 32
+        },
+        {
+          "init": "0",
+          "source_name": "j",
+          "state_ref": "state24",
+          "width": 32
+        },
+        {
+          "init": "0",
+          "source_name": "l",
+          "state_ref": "state25",
+          "width": 32
+        },
+        {
+          "init": "0",
+          "source_name": "n",
+          "state_ref": "state26",
+          "width": 32
+        }
+      ],
+      "source_yaml_path": "c/loops-crafted-1/sumt2.yml",
+      "source_yaml_sha256": "cdd894e7533b59a9ff5e4d0be220d7ecff1cda5628b7cb211b4575b07b791cee"
+    },
+    {
+      "baseline_engine": "ic3ia",
+      "baseline_proof_time_sec": "20.222652",
+      "baseline_verdict": "timeout",
+      "benchmark_id": "loops/count_up_down-1.btor2",
+      "category": "loops",
+      "content_sha256": "ffd2ca2e4bf9f5c2d0948aefeb6d18ff3ad11c442acd91e54dec6cc1dbb35e25",
+      "expected_verdict": "safe",
+      "path": "translated/safety-func/loops/count_up_down-1.btor2",
+      "phases": [
+        {
+          "equality_node": 11,
+          "guard_ast": {
+            "args": [
+              {
+                "form": "ref",
+                "ref": "state10"
+              },
+              {
+                "const": "1",
+                "form": "const",
+                "width": 5
+              }
+            ],
+            "form": "eq"
+          },
+          "is_bad": false,
+          "is_initial": false,
+          "pc_ref": "state10",
+          "phase_id": "pc_state10_w5_v1",
+          "value": 1,
+          "width": 5
+        },
+        {
+          "equality_node": 12,
+          "guard_ast": {
+            "args": [
+              {
+                "form": "ref",
+                "ref": "state10"
+              },
+              {
+                "const": "2",
+                "form": "const",
+                "width": 5
+              }
+            ],
+            "form": "eq"
+          },
+          "is_bad": false,
+          "is_initial": false,
+          "pc_ref": "state10",
+          "phase_id": "pc_state10_w5_v2",
+          "value": 2,
+          "width": 5
+        },
+        {
+          "equality_node": 13,
+          "guard_ast": {
+            "args": [
+              {
+                "form": "ref",
+                "ref": "state10"
+              },
+              {
+                "const": "4",
+                "form": "const",
+                "width": 5
+              }
+            ],
+            "form": "eq"
+          },
+          "is_bad": true,
+          "is_initial": false,
+          "pc_ref": "state10",
+          "phase_id": "pc_state10_w5_v4",
+          "value": 4,
+          "width": 5
+        },
+        {
+          "equality_node": 14,
+          "guard_ast": {
+            "args": [
+              {
+                "form": "ref",
+                "ref": "state10"
+              },
+              {
+                "const": "8",
+                "form": "const",
+                "width": 5
+              }
+            ],
+            "form": "eq"
+          },
+          "is_bad": false,
+          "is_initial": false,
+          "pc_ref": "state10",
+          "phase_id": "pc_state10_w5_v8",
+          "value": 8,
+          "width": 5
+        },
+        {
+          "equality_node": 15,
+          "guard_ast": {
+            "args": [
+              {
+                "form": "ref",
+                "ref": "state10"
+              },
+              {
+                "const": "16",
+                "form": "const",
+                "width": 5
+              }
+            ],
+            "form": "eq"
+          },
+          "is_bad": false,
+          "is_initial": true,
+          "pc_ref": "state10",
+          "phase_id": "pc_state10_w5_v16",
+          "value": 16,
+          "width": 5
+        }
+      ],
+      "selection_role": "safe-baseline-hard",
+      "source_family_id": "4b81287e660ca8c3ad7ed61e0556cea4f5f5ad41b16a474c5b325850c8269d86",
+      "source_family_key": "loops/count_up_down-1",
+      "source_path": "c/loops/count_up_down-1.c",
+      "source_sha256": "5879e48447fc7f125bd26345b332bcb57cae00365c3de30b5785162154970826",
+      "source_state_mapping": [
+        {
+          "init": "0",
+          "source_name": "n",
+          "state_ref": "state23",
+          "width": 32
+        },
+        {
+          "init": "0",
+          "source_name": "x",
+          "state_ref": "state24",
+          "width": 32
+        },
+        {
+          "init": "0",
+          "source_name": "y",
+          "state_ref": "state25",
+          "width": 32
+        }
+      ],
+      "source_yaml_path": "c/loops/count_up_down-1.yml",
+      "source_yaml_sha256": "300a13afc377aa91f572d3ab062770072ca029d204321b984a1eecdabbc5fe79"
+    },
+    {
+      "baseline_engine": "ic3ia",
+      "baseline_proof_time_sec": "20.208149",
+      "baseline_verdict": "timeout",
+      "benchmark_id": "nla-digbench/egcd3-ll.btor2",
+      "category": "nla-digbench",
+      "content_sha256": "ab95af590341bbc5985f8b139fac708e4abf9e4330e4027156b9d4e44d6675a4",
+      "expected_verdict": "safe",
+      "path": "translated/safety-func/nla-digbench/egcd3-ll.btor2",
+      "phases": [
+        {
+          "equality_node": 18,
+          "guard_ast": {
+            "args": [
+              {
+                "form": "ref",
+                "ref": "state17"
+              },
+              {
+                "const": "1",
+                "form": "const",
+                "width": 11
+              }
+            ],
+            "form": "eq"
+          },
+          "is_bad": false,
+          "is_initial": false,
+          "pc_ref": "state17",
+          "phase_id": "pc_state17_w11_v1",
+          "value": 1,
+          "width": 11
+        },
+        {
+          "equality_node": 19,
+          "guard_ast": {
+            "args": [
+              {
+                "form": "ref",
+                "ref": "state17"
+              },
+              {
+                "const": "2",
+                "form": "const",
+                "width": 11
+              }
+            ],
+            "form": "eq"
+          },
+          "is_bad": false,
+          "is_initial": true,
+          "pc_ref": "state17",
+          "phase_id": "pc_state17_w11_v2",
+          "value": 2,
+          "width": 11
+        },
+        {
+          "equality_node": 20,
+          "guard_ast": {
+            "args": [
+              {
+                "form": "ref",
+                "ref": "state17"
+              },
+              {
+                "const": "4",
+                "form": "const",
+                "width": 11
+              }
+            ],
+            "form": "eq"
+          },
+          "is_bad": false,
+          "is_initial": false,
+          "pc_ref": "state17",
+          "phase_id": "pc_state17_w11_v4",
+          "value": 4,
+          "width": 11
+        },
+        {
+          "equality_node": 21,
+          "guard_ast": {
+            "args": [
+              {
+                "form": "ref",
+                "ref": "state17"
+              },
+              {
+                "const": "8",
+                "form": "const",
+                "width": 11
+              }
+            ],
+            "form": "eq"
+          },
+          "is_bad": false,
+          "is_initial": false,
+          "pc_ref": "state17",
+          "phase_id": "pc_state17_w11_v8",
+          "value": 8,
+          "width": 11
+        },
+        {
+          "equality_node": 22,
+          "guard_ast": {
+            "args": [
+              {
+                "form": "ref",
+                "ref": "state17"
+              },
+              {
+                "const": "16",
+                "form": "const",
+                "width": 11
+              }
+            ],
+            "form": "eq"
+          },
+          "is_bad": false,
+          "is_initial": false,
+          "pc_ref": "state17",
+          "phase_id": "pc_state17_w11_v16",
+          "value": 16,
+          "width": 11
+        },
+        {
+          "equality_node": 23,
+          "guard_ast": {
+            "args": [
+              {
+                "form": "ref",
+                "ref": "state17"
+              },
+              {
+                "const": "32",
+                "form": "const",
+                "width": 11
+              }
+            ],
+            "form": "eq"
+          },
+          "is_bad": false,
+          "is_initial": false,
+          "pc_ref": "state17",
+          "phase_id": "pc_state17_w11_v32",
+          "value": 32,
+          "width": 11
+        },
+        {
+          "equality_node": 24,
+          "guard_ast": {
+            "args": [
+              {
+                "form": "ref",
+                "ref": "state17"
+              },
+              {
+                "const": "64",
+                "form": "const",
+                "width": 11
+              }
+            ],
+            "form": "eq"
+          },
+          "is_bad": false,
+          "is_initial": false,
+          "pc_ref": "state17",
+          "phase_id": "pc_state17_w11_v64",
+          "value": 64,
+          "width": 11
+        },
+        {
+          "equality_node": 25,
+          "guard_ast": {
+            "args": [
+              {
+                "form": "ref",
+                "ref": "state17"
+              },
+              {
+                "const": "128",
+                "form": "const",
+                "width": 11
+              }
+            ],
+            "form": "eq"
+          },
+          "is_bad": false,
+          "is_initial": false,
+          "pc_ref": "state17",
+          "phase_id": "pc_state17_w11_v128",
+          "value": 128,
+          "width": 11
+        },
+        {
+          "equality_node": 26,
+          "guard_ast": {
+            "args": [
+              {
+                "form": "ref",
+                "ref": "state17"
+              },
+              {
+                "const": "256",
+                "form": "const",
+                "width": 11
+              }
+            ],
+            "form": "eq"
+          },
+          "is_bad": false,
+          "is_initial": false,
+          "pc_ref": "state17",
+          "phase_id": "pc_state17_w11_v256",
+          "value": 256,
+          "width": 11
+        },
+        {
+          "equality_node": 27,
+          "guard_ast": {
+            "args": [
+              {
+                "form": "ref",
+                "ref": "state17"
+              },
+              {
+                "const": "512",
+                "form": "const",
+                "width": 11
+              }
+            ],
+            "form": "eq"
+          },
+          "is_bad": false,
+          "is_initial": false,
+          "pc_ref": "state17",
+          "phase_id": "pc_state17_w11_v512",
+          "value": 512,
+          "width": 11
+        },
+        {
+          "equality_node": 28,
+          "guard_ast": {
+            "args": [
+              {
+                "form": "ref",
+                "ref": "state17"
+              },
+              {
+                "const": "1024",
+                "form": "const",
+                "width": 11
+              }
+            ],
+            "form": "eq"
+          },
+          "is_bad": false,
+          "is_initial": false,
+          "pc_ref": "state17",
+          "phase_id": "pc_state17_w11_v1024",
+          "value": 1024,
+          "width": 11
+        }
+      ],
+      "selection_role": "safe-baseline-hard",
+      "source_family_id": "a40529a439578e1198455e5c5437d504f7a9abab2945aad1927cb716cf1970b6",
+      "source_family_key": "nla-digbench/egcd3",
+      "source_path": "c/nla-digbench/egcd3-ll.c",
+      "source_sha256": "4ef08007570a64191e0df13d14d3e8d62a8022f43f46779ea6f6701a621376be",
+      "source_state_mapping": [
+        {
+          "init": "0",
+          "source_name": "a",
+          "state_ref": "state36",
+          "width": 64
+        },
+        {
+          "init": "0",
+          "source_name": "b",
+          "state_ref": "state37",
+          "width": 64
+        },
+        {
+          "init": "0",
+          "source_name": "c",
+          "state_ref": "state38",
+          "width": 64
+        },
+        {
+          "init": "0",
+          "source_name": "d",
+          "state_ref": "state39",
+          "width": 64
+        },
+        {
+          "init": "0",
+          "source_name": "k",
+          "state_ref": "state40",
+          "width": 64
+        },
+        {
+          "init": "0",
+          "source_name": "p",
+          "state_ref": "state41",
+          "width": 64
+        },
+        {
+          "init": "0",
+          "source_name": "q",
+          "state_ref": "state42",
+          "width": 64
+        },
+        {
+          "init": "0",
+          "source_name": "r",
+          "state_ref": "state43",
+          "width": 64
+        },
+        {
+          "init": "0",
+          "source_name": "s",
+          "state_ref": "state44",
+          "width": 64
+        },
+        {
+          "init": "0",
+          "source_name": "v",
+          "state_ref": "state45",
+          "width": 64
+        },
+        {
+          "init": "0",
+          "source_name": "x",
+          "state_ref": "state46",
+          "width": 32
+        },
+        {
+          "init": "0",
+          "source_name": "y",
+          "state_ref": "state47",
+          "width": 32
+        }
+      ],
+      "source_yaml_path": "c/nla-digbench/egcd3-ll.yml",
+      "source_yaml_sha256": "f3409ab86e2c83a67a8032818476056b5b7459f70b87a7ab614410e4eddc7c55"
+    },
+    {
+      "baseline_engine": "ind",
+      "baseline_proof_time_sec": "0.454866",
+      "baseline_verdict": "sat",
+      "benchmark_id": "loop-invariants/linear-inequality-inv-b.btor2",
+      "category": "loop-invariants",
+      "content_sha256": "25e9281249a4d8672c62e280c95e1bf5825f9d806caeb7722f5ca3934598544e",
+      "expected_verdict": "unsafe",
+      "path": "translated/safety-func/loop-invariants/linear-inequality-inv-b.btor2",
+      "phases": [
+        {
+          "equality_node": 13,
+          "guard_ast": {
+            "args": [
+              {
+                "form": "ref",
+                "ref": "state12"
+              },
+              {
+                "const": "1",
+                "form": "const",
+                "width": 6
+              }
+            ],
+            "form": "eq"
+          },
+          "is_bad": false,
+          "is_initial": false,
+          "pc_ref": "state12",
+          "phase_id": "pc_state12_w6_v1",
+          "value": 1,
+          "width": 6
+        },
+        {
+          "equality_node": 14,
+          "guard_ast": {
+            "args": [
+              {
+                "form": "ref",
+                "ref": "state12"
+              },
+              {
+                "const": "2",
+                "form": "const",
+                "width": 6
+              }
+            ],
+            "form": "eq"
+          },
+          "is_bad": false,
+          "is_initial": false,
+          "pc_ref": "state12",
+          "phase_id": "pc_state12_w6_v2",
+          "value": 2,
+          "width": 6
+        },
+        {
+          "equality_node": 15,
+          "guard_ast": {
+            "args": [
+              {
+                "form": "ref",
+                "ref": "state12"
+              },
+              {
+                "const": "4",
+                "form": "const",
+                "width": 6
+              }
+            ],
+            "form": "eq"
+          },
+          "is_bad": false,
+          "is_initial": true,
+          "pc_ref": "state12",
+          "phase_id": "pc_state12_w6_v4",
+          "value": 4,
+          "width": 6
+        },
+        {
+          "equality_node": 16,
+          "guard_ast": {
+            "args": [
+              {
+                "form": "ref",
+                "ref": "state12"
+              },
+              {
+                "const": "8",
+                "form": "const",
+                "width": 6
+              }
+            ],
+            "form": "eq"
+          },
+          "is_bad": false,
+          "is_initial": false,
+          "pc_ref": "state12",
+          "phase_id": "pc_state12_w6_v8",
+          "value": 8,
+          "width": 6
+        },
+        {
+          "equality_node": 17,
+          "guard_ast": {
+            "args": [
+              {
+                "form": "ref",
+                "ref": "state12"
+              },
+              {
+                "const": "16",
+                "form": "const",
+                "width": 6
+              }
+            ],
+            "form": "eq"
+          },
+          "is_bad": false,
+          "is_initial": false,
+          "pc_ref": "state12",
+          "phase_id": "pc_state12_w6_v16",
+          "value": 16,
+          "width": 6
+        },
+        {
+          "equality_node": 18,
+          "guard_ast": {
+            "args": [
+              {
+                "form": "ref",
+                "ref": "state12"
+              },
+              {
+                "const": "32",
+                "form": "const",
+                "width": 6
+              }
+            ],
+            "form": "eq"
+          },
+          "is_bad": false,
+          "is_initial": false,
+          "pc_ref": "state12",
+          "phase_id": "pc_state12_w6_v32",
+          "value": 32,
+          "width": 6
+        }
+      ],
+      "selection_role": "unsafe-soundness-control",
+      "source_family_id": "0f55e4302edb0a37ff86342391f10b4bccef988db9bdfaf948e856d980098b5e",
+      "source_family_key": "loop-invariants/linear-inequality-inv-b",
+      "source_path": "c/loop-invariants/linear-inequality-inv-b.c",
+      "source_sha256": "563b7b68cc9c71f6c32d6693c1b275445975396b9300286e8e67b320f2f5679b",
+      "source_state_mapping": [
+        {
+          "init": "0",
+          "source_name": "i",
+          "state_ref": "state26",
+          "width": 32
+        },
+        {
+          "init": "0",
+          "source_name": "n",
+          "state_ref": "state27",
+          "width": 8
+        },
+        {
+          "init": "0",
+          "source_name": "s",
+          "state_ref": "state28",
+          "width": 8
+        },
+        {
+          "init": "0",
+          "source_name": "v",
+          "state_ref": "state29",
+          "width": 8
+        }
+      ],
+      "source_yaml_path": "c/loop-invariants/linear-inequality-inv-b.yml",
+      "source_yaml_sha256": "7d5d30dbd031667c05a316dd04f1a782f1412aa78c6a068646dbc93705079744"
+    },
+    {
+      "baseline_engine": "ind",
+      "baseline_proof_time_sec": "0.071994",
+      "baseline_verdict": "sat",
+      "benchmark_id": "loop-invgen/id_trans.btor2",
+      "category": "loop-invgen",
+      "content_sha256": "fdc57df44a2884ecdbcc8a341de2a349398ebb4cd44326fc6b6ee4e62e99af1f",
+      "expected_verdict": "unsafe",
+      "path": "translated/safety-func/loop-invgen/id_trans.btor2",
+      "phases": [
+        {
+          "equality_node": 14,
+          "guard_ast": {
+            "args": [
+              {
+                "form": "ref",
+                "ref": "state13"
+              },
+              {
+                "const": "1",
+                "form": "const",
+                "width": 8
+              }
+            ],
+            "form": "eq"
+          },
+          "is_bad": false,
+          "is_initial": false,
+          "pc_ref": "state13",
+          "phase_id": "pc_state13_w8_v1",
+          "value": 1,
+          "width": 8
+        },
+        {
+          "equality_node": 15,
+          "guard_ast": {
+            "args": [
+              {
+                "form": "ref",
+                "ref": "state13"
+              },
+              {
+                "const": "2",
+                "form": "const",
+                "width": 8
+              }
+            ],
+            "form": "eq"
+          },
+          "is_bad": false,
+          "is_initial": false,
+          "pc_ref": "state13",
+          "phase_id": "pc_state13_w8_v2",
+          "value": 2,
+          "width": 8
+        },
+        {
+          "equality_node": 16,
+          "guard_ast": {
+            "args": [
+              {
+                "form": "ref",
+                "ref": "state13"
+              },
+              {
+                "const": "4",
+                "form": "const",
+                "width": 8
+              }
+            ],
+            "form": "eq"
+          },
+          "is_bad": false,
+          "is_initial": false,
+          "pc_ref": "state13",
+          "phase_id": "pc_state13_w8_v4",
+          "value": 4,
+          "width": 8
+        },
+        {
+          "equality_node": 17,
+          "guard_ast": {
+            "args": [
+              {
+                "form": "ref",
+                "ref": "state13"
+              },
+              {
+                "const": "8",
+                "form": "const",
+                "width": 8
+              }
+            ],
+            "form": "eq"
+          },
+          "is_bad": false,
+          "is_initial": false,
+          "pc_ref": "state13",
+          "phase_id": "pc_state13_w8_v8",
+          "value": 8,
+          "width": 8
+        },
+        {
+          "equality_node": 18,
+          "guard_ast": {
+            "args": [
+              {
+                "form": "ref",
+                "ref": "state13"
+              },
+              {
+                "const": "16",
+                "form": "const",
+                "width": 8
+              }
+            ],
+            "form": "eq"
+          },
+          "is_bad": false,
+          "is_initial": true,
+          "pc_ref": "state13",
+          "phase_id": "pc_state13_w8_v16",
+          "value": 16,
+          "width": 8
+        },
+        {
+          "equality_node": 19,
+          "guard_ast": {
+            "args": [
+              {
+                "form": "ref",
+                "ref": "state13"
+              },
+              {
+                "const": "32",
+                "form": "const",
+                "width": 8
+              }
+            ],
+            "form": "eq"
+          },
+          "is_bad": false,
+          "is_initial": false,
+          "pc_ref": "state13",
+          "phase_id": "pc_state13_w8_v32",
+          "value": 32,
+          "width": 8
+        },
+        {
+          "equality_node": 20,
+          "guard_ast": {
+            "args": [
+              {
+                "form": "ref",
+                "ref": "state13"
+              },
+              {
+                "const": "64",
+                "form": "const",
+                "width": 8
+              }
+            ],
+            "form": "eq"
+          },
+          "is_bad": false,
+          "is_initial": false,
+          "pc_ref": "state13",
+          "phase_id": "pc_state13_w8_v64",
+          "value": 64,
+          "width": 8
+        },
+        {
+          "equality_node": 21,
+          "guard_ast": {
+            "args": [
+              {
+                "form": "ref",
+                "ref": "state13"
+              },
+              {
+                "const": "128",
+                "form": "const",
+                "width": 8
+              }
+            ],
+            "form": "eq"
+          },
+          "is_bad": false,
+          "is_initial": false,
+          "pc_ref": "state13",
+          "phase_id": "pc_state13_w8_v128",
+          "value": 128,
+          "width": 8
+        }
+      ],
+      "selection_role": "unsafe-soundness-control",
+      "source_family_id": "57db45734209707f4e901d2380266222d2fcca8a26597b1f268f6a9ae1519c5b",
+      "source_family_key": "loop-invgen/id_trans",
+      "source_path": "c/loop-invgen/id_trans.i",
+      "source_sha256": "6aaead44d7f76ddac498383f5d9663622bc4506781697c14d3a4988231066e32",
+      "source_state_mapping": [
+        {
+          "init": "0",
+          "source_name": "idBitLength",
+          "state_ref": "state31",
+          "width": 32
+        },
+        {
+          "init": "0",
+          "source_name": "j",
+          "state_ref": "state32",
+          "width": 32
+        },
+        {
+          "init": "0",
+          "source_name": "nlen",
+          "state_ref": "state34",
+          "width": 32
+        }
+      ],
+      "source_yaml_path": "c/loop-invgen/id_trans.yml",
+      "source_yaml_sha256": "ff1bfc0bcdd5fc6cdbcacae90a0eed74400438ec595aad3b136f1953f833bf7b"
+    },
+    {
+      "baseline_engine": "ind",
+      "baseline_proof_time_sec": "0.409961",
+      "baseline_verdict": "sat",
+      "benchmark_id": "loops-crafted-1/nested3-2_abstracted.btor2",
+      "category": "loops-crafted-1",
+      "content_sha256": "28fa096eb1709c2a6215f7028153410bf5caeb7c9375da0aabe3a784b4ed7fcd",
+      "expected_verdict": "unsafe",
+      "path": "translated/safety-func/loops-crafted-1/nested3-2_abstracted.btor2",
+      "phases": [
+        {
+          "equality_node": 14,
+          "guard_ast": {
+            "args": [
+              {
+                "form": "ref",
+                "ref": "state13"
+              },
+              {
+                "const": "1",
+                "form": "const",
+                "width": 8
+              }
+            ],
+            "form": "eq"
+          },
+          "is_bad": false,
+          "is_initial": false,
+          "pc_ref": "state13",
+          "phase_id": "pc_state13_w8_v1",
+          "value": 1,
+          "width": 8
+        },
+        {
+          "equality_node": 15,
+          "guard_ast": {
+            "args": [
+              {
+                "form": "ref",
+                "ref": "state13"
+              },
+              {
+                "const": "2",
+                "form": "const",
+                "width": 8
+              }
+            ],
+            "form": "eq"
+          },
+          "is_bad": false,
+          "is_initial": false,
+          "pc_ref": "state13",
+          "phase_id": "pc_state13_w8_v2",
+          "value": 2,
+          "width": 8
+        },
+        {
+          "equality_node": 16,
+          "guard_ast": {
+            "args": [
+              {
+                "form": "ref",
+                "ref": "state13"
+              },
+              {
+                "const": "4",
+                "form": "const",
+                "width": 8
+              }
+            ],
+            "form": "eq"
+          },
+          "is_bad": false,
+          "is_initial": true,
+          "pc_ref": "state13",
+          "phase_id": "pc_state13_w8_v4",
+          "value": 4,
+          "width": 8
+        },
+        {
+          "equality_node": 17,
+          "guard_ast": {
+            "args": [
+              {
+                "form": "ref",
+                "ref": "state13"
+              },
+              {
+                "const": "8",
+                "form": "const",
+                "width": 8
+              }
+            ],
+            "form": "eq"
+          },
+          "is_bad": false,
+          "is_initial": false,
+          "pc_ref": "state13",
+          "phase_id": "pc_state13_w8_v8",
+          "value": 8,
+          "width": 8
+        },
+        {
+          "equality_node": 18,
+          "guard_ast": {
+            "args": [
+              {
+                "form": "ref",
+                "ref": "state13"
+              },
+              {
+                "const": "16",
+                "form": "const",
+                "width": 8
+              }
+            ],
+            "form": "eq"
+          },
+          "is_bad": false,
+          "is_initial": false,
+          "pc_ref": "state13",
+          "phase_id": "pc_state13_w8_v16",
+          "value": 16,
+          "width": 8
+        },
+        {
+          "equality_node": 19,
+          "guard_ast": {
+            "args": [
+              {
+                "form": "ref",
+                "ref": "state13"
+              },
+              {
+                "const": "32",
+                "form": "const",
+                "width": 8
+              }
+            ],
+            "form": "eq"
+          },
+          "is_bad": false,
+          "is_initial": false,
+          "pc_ref": "state13",
+          "phase_id": "pc_state13_w8_v32",
+          "value": 32,
+          "width": 8
+        },
+        {
+          "equality_node": 20,
+          "guard_ast": {
+            "args": [
+              {
+                "form": "ref",
+                "ref": "state13"
+              },
+              {
+                "const": "64",
+                "form": "const",
+                "width": 8
+              }
+            ],
+            "form": "eq"
+          },
+          "is_bad": false,
+          "is_initial": false,
+          "pc_ref": "state13",
+          "phase_id": "pc_state13_w8_v64",
+          "value": 64,
+          "width": 8
+        },
+        {
+          "equality_node": 21,
+          "guard_ast": {
+            "args": [
+              {
+                "form": "ref",
+                "ref": "state13"
+              },
+              {
+                "const": "128",
+                "form": "const",
+                "width": 8
+              }
+            ],
+            "form": "eq"
+          },
+          "is_bad": false,
+          "is_initial": false,
+          "pc_ref": "state13",
+          "phase_id": "pc_state13_w8_v128",
+          "value": 128,
+          "width": 8
+        }
+      ],
+      "selection_role": "unsafe-soundness-control",
+      "source_family_id": "c09cb7c581286218f6d3a556de44c3c501e0f45f8e4d681dcc16faa2c3d7bb95",
+      "source_family_key": "loops-crafted-1/nested3-2",
+      "source_path": "c/loops-crafted-1/nested3-2_abstracted.c",
+      "source_sha256": "d76e796105c1d35b11eef95fec820f9bea85a1e845abd1567e15743f74522bc9",
+      "source_state_mapping": [
+        {
+          "init": "0",
+          "source_name": "x",
+          "state_ref": "state29",
+          "width": 32
+        },
+        {
+          "init": "0",
+          "source_name": "y",
+          "state_ref": "state30",
+          "width": 32
+        }
+      ],
+      "source_yaml_path": "c/loops-crafted-1/nested3-2_abstracted.yml",
+      "source_yaml_sha256": "ab3c5c6c9c7a4c7b47e5e3640e13db37be2b1b2f3831ec09c8985d87dfd052df"
+    },
+    {
+      "baseline_engine": "ind",
+      "baseline_proof_time_sec": "0.557035",
+      "baseline_verdict": "sat",
+      "benchmark_id": "loops/sum04-1.btor2",
+      "category": "loops",
+      "content_sha256": "a639d02fe419a440cfb716f5a0cdd5348193144d7117cd83acd5830807c7aa31",
+      "expected_verdict": "unsafe",
+      "path": "translated/safety-func/loops/sum04-1.btor2",
+      "phases": [
+        {
+          "equality_node": 11,
+          "guard_ast": {
+            "args": [
+              {
+                "form": "ref",
+                "ref": "state10"
+              },
+              {
+                "const": "1",
+                "form": "const",
+                "width": 5
+              }
+            ],
+            "form": "eq"
+          },
+          "is_bad": false,
+          "is_initial": false,
+          "pc_ref": "state10",
+          "phase_id": "pc_state10_w5_v1",
+          "value": 1,
+          "width": 5
+        },
+        {
+          "equality_node": 12,
+          "guard_ast": {
+            "args": [
+              {
+                "form": "ref",
+                "ref": "state10"
+              },
+              {
+                "const": "2",
+                "form": "const",
+                "width": 5
+              }
+            ],
+            "form": "eq"
+          },
+          "is_bad": false,
+          "is_initial": false,
+          "pc_ref": "state10",
+          "phase_id": "pc_state10_w5_v2",
+          "value": 2,
+          "width": 5
+        },
+        {
+          "equality_node": 13,
+          "guard_ast": {
+            "args": [
+              {
+                "form": "ref",
+                "ref": "state10"
+              },
+              {
+                "const": "4",
+                "form": "const",
+                "width": 5
+              }
+            ],
+            "form": "eq"
+          },
+          "is_bad": true,
+          "is_initial": false,
+          "pc_ref": "state10",
+          "phase_id": "pc_state10_w5_v4",
+          "value": 4,
+          "width": 5
+        },
+        {
+          "equality_node": 14,
+          "guard_ast": {
+            "args": [
+              {
+                "form": "ref",
+                "ref": "state10"
+              },
+              {
+                "const": "8",
+                "form": "const",
+                "width": 5
+              }
+            ],
+            "form": "eq"
+          },
+          "is_bad": false,
+          "is_initial": true,
+          "pc_ref": "state10",
+          "phase_id": "pc_state10_w5_v8",
+          "value": 8,
+          "width": 5
+        },
+        {
+          "equality_node": 15,
+          "guard_ast": {
+            "args": [
+              {
+                "form": "ref",
+                "ref": "state10"
+              },
+              {
+                "const": "16",
+                "form": "const",
+                "width": 5
+              }
+            ],
+            "form": "eq"
+          },
+          "is_bad": false,
+          "is_initial": false,
+          "pc_ref": "state10",
+          "phase_id": "pc_state10_w5_v16",
+          "value": 16,
+          "width": 5
+        }
+      ],
+      "selection_role": "unsafe-soundness-control",
+      "source_family_id": "d38cd40ac0fe4efe013008e5b86e7584cade32d9260a4f76243ae529936dacae",
+      "source_family_key": "loops/sum04-1",
+      "source_path": "c/loops/sum04-1.i",
+      "source_sha256": "363837b614bad810335bbe0c369ca77c24cc87938da6245b414371c201391312",
+      "source_state_mapping": [
+        {
+          "init": "0",
+          "source_name": "i",
+          "state_ref": "state26",
+          "width": 32
+        },
+        {
+          "init": "0",
+          "source_name": "sn",
+          "state_ref": "state27",
+          "width": 32
+        }
+      ],
+      "source_yaml_path": "c/loops/sum04-1.yml",
+      "source_yaml_sha256": "3b603a5ae01e2b4ac2c557d71e4a851ec2b27b57c8c915a4b0d8bea207f3a8c4"
+    }
+  ],
+  "pilot_sha256": "723eb64225d2c39fb4fba8477759307d184f6b40293ac4407dd3518aa1d34d0c",
+  "population_sha256": "6d1c0ac18a2f6f3db650ed80ec2ec5265fd81928c6dbed2a1deb88b4940ed9fc",
+  "schema": "pono-llm-paired-pilot-v1",
+  "screen_exclusion_counts": {
+    "unsafe:timeout": 3,
+    "unsafe:unknown": 7
+  },
+  "selected_content_count": 20,
+  "selected_count": 20,
+  "selected_family_count": 20,
+  "selection_before_llm": true,
+  "selection_seed": "pono-llm-representation-phase-gate-v1",
+  "target_counts": {
+    "safe-baseline-control": 4,
+    "safe-baseline-hard": 12,
+    "unsafe-soundness-control": 4
+  }
+}

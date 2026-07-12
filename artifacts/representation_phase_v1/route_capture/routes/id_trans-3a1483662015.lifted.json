@@ -1,0 +1,122 @@
+{
+  "routes": [
+    {
+      "family": "pairwise_offset",
+      "offsets": [
+        0,
+        1
+      ],
+      "relations": [
+        "le"
+      ],
+      "requested_variables": [
+        "j",
+        "nlen"
+      ],
+      "route_id": "bffb2b5e8d90eb43f2e3ffc4b6d003181571e2408bf6ce6acc96693b5517cb1b",
+      "signedness": "signed",
+      "variables": [
+        "state32",
+        "state34"
+      ],
+      "width": 32
+    },
+    {
+      "family": "pairwise_offset",
+      "offsets": [
+        0,
+        1
+      ],
+      "relations": [
+        "le"
+      ],
+      "requested_variables": [
+        "j",
+        "idBitLength"
+      ],
+      "route_id": "ff91ef219a8587296b373037e7b607dc9be64fdd009b55a2931ec033db40062f",
+      "signedness": "signed",
+      "variables": [
+        "state32",
+        "state31"
+      ],
+      "width": 32
+    },
+    {
+      "family": "pairwise_offset",
+      "offsets": [
+        0,
+        1
+      ],
+      "relations": [
+        "le"
+      ],
+      "requested_variables": [
+        "idBitLength",
+        "nlen"
+      ],
+      "route_id": "768074a7b839076ed743c3555b40c437f3d4d5af1f2db1455dbebceafa6834f6",
+      "signedness": "signed",
+      "variables": [
+        "state31",
+        "state34"
+      ],
+      "width": 32
+    },
+    {
+      "constants": [
+        0
+      ],
+      "family": "unary",
+      "relations": [
+        "ge"
+      ],
+      "requested_variables": [
+        "j"
+      ],
+      "route_id": "552d18d95bed26189ceeee8db6e9e331fff7f3c82eb33fff2b6ec626012d4913",
+      "signedness": "signed",
+      "variables": [
+        "state32"
+      ],
+      "width": 32
+    },
+    {
+      "constants": [
+        0
+      ],
+      "family": "unary",
+      "relations": [
+        "ge"
+      ],
+      "requested_variables": [
+        "nlen"
+      ],
+      "route_id": "d222ceb411b81b688c4ff46f52f426d12b2e0efa069590a100be1cc8d67cf9e6",
+      "signedness": "signed",
+      "variables": [
+        "state34"
+      ],
+      "width": 32
+    },
+    {
+      "constants": [
+        0
+      ],
+      "family": "unary",
+      "relations": [
+        "ge"
+      ],
+      "requested_variables": [
+        "idBitLength"
+      ],
+      "route_id": "f0ab5d68a028866104faf254d5768628cd9a80b17f28c35947a492b4be8f7b05",
+      "signedness": "signed",
+      "variables": [
+        "state31"
+      ],
+      "width": 32
+    }
+  ],
+  "schema": "pono-llm-grammar-route-v1"
+}

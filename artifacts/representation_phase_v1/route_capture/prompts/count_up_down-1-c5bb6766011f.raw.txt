@@ -1,0 +1,165 @@
+REPRESENTATION: RAW BTOR2 PROPERTY/TRANSITION CONE
+ROOT_EXPRESSION_NODES: -14,11,12,13,14,15,49,58,67,86
+NODE_BUDGET: 1200
+SELECTED_LINES: 76
+TRUNCATED_FRONTIER_COUNT: 0
+
+1 sort bitvec 1
+2 sort bitvec 32
+3 sort bitvec 5
+5 const 3 00001
+6 const 3 00010
+7 const 3 00100
+8 const 3 01000
+9 const 3 10000
+10 state 3 !pc
+11 eq 1 10 5
+12 eq 1 10 6
+13 eq 1 10 7
+14 eq 1 10 8
+15 eq 1 10 9
+17 const 1 1
+18 const 2 00000000000000000000000000000001
+19 const 2 11111111111111111111111111111111
+20 const 2 00000000000000000000000000000000
+23 state 2 !{$(in_main#0)<n>}
+24 state 2 !{$(in_main#0)<x>}
+25 state 2 !{$(in_main#0)<y>}
+26 input 2 !{$(in_main#0)<$(in___VERIFIER_nondet_uint#0)<h#<__VERIFIER_nondet_uint.return>>>}
+29 add 2 18 25
+30 add 2 19 24
+31 eq 1 24 20
+32 eq 1 23 25
+33 and 1 17 31
+34 ite 2 32 18 20
+35 not 1 31
+36 eq 1 34 20
+37 and 1 17 35
+38 and 1 33 36
+39 not 1 36
+40 and 1 33 39
+42 and 1 15 17
+43 ite 2 42 20 25
+44 and 1 11 38
+45 ite 2 44 25 43
+46 and 1 11 37
+47 ite 2 46 29 45
+48 and 1 11 40
+49 ite 2 48 25 47
+50 next 2 25 49
+51 and 1 15 17
+52 ite 2 51 26 24
+53 and 1 11 38
+54 ite 2 53 24 52
+55 and 1 11 37
+56 ite 2 55 30 54
+57 and 1 11 40
+58 ite 2 57 24 56
+59 next 2 24 58
+60 and 1 15 17
+61 ite 2 60 26 23
+62 and 1 11 38
+63 ite 2 62 23 61
+64 and 1 11 37
+65 ite 2 64 23 63
+66 and 1 11 40
+67 ite 2 66 23 65
+68 next 2 23 67
+79 and 1 15 17
+80 ite 3 79 5 8
+81 and 1 11 38
+82 ite 3 81 7 80
+83 and 1 11 37
+84 ite 3 83 5 82
+85 and 1 11 40
+86 ite 3 85 6 84
+87 next 3 10 86
+89 init 3 10 9
+92 init 2 23 20
+93 init 2 24 20
+94 init 2 25 20
+96 constraint -14
+98 bad 13
+
+--- COMMON FORMAL ROUTE CONTRACT ---
+TASK: Choose a small invariant-synthesis grammar. Do not output an invariant,
+proof, coefficient value, or assertion. The formal backend expands every route,
+runs Houdini, and checks the original BTOR2. Your output is untrusted routing
+advice only.
+
+MACHINE SEMANTICS:
+- All state arithmetic is fixed-width bit-vector arithmetic modulo 2^width.
+- Comparisons must state signed or unsigned semantics.
+- A route may use only variables from the catalog below.
+- Phase guards are applied by the formal experiment, not selected by you.
+
+VARIABLE_CATALOG_JSON:
+[
+  {
+    "init": "0",
+    "name": "n",
+    "ref": "state23",
+    "width": 32
+  },
+  {
+    "init": "0",
+    "name": "x",
+    "ref": "state24",
+    "width": 32
+  },
+  {
+    "init": "0",
+    "name": "y",
+    "ref": "state25",
+    "width": 32
+  }
+]
+
+PHASE_CATALOG_JSON:
+[
+  {
+    "guard": "state10 == 1",
+    "phase_id": "pc_state10_w5_v1",
+    "width": 5
+  },
+  {
+    "guard": "state10 == 2",
+    "phase_id": "pc_state10_w5_v2",
+    "width": 5
+  },
+  {
+    "guard": "state10 == 4",
+    "phase_id": "pc_state10_w5_v4",
+    "width": 5
+  },
+  {
+    "guard": "state10 == 8",
+    "phase_id": "pc_state10_w5_v8",
+    "width": 5
+  },
+  {
+    "guard": "state10 == 16",
+    "phase_id": "pc_state10_w5_v16",
+    "width": 5
+  }
+]
+
+OUTPUT CONTRACT:
+- Output exactly one JSON object and no Markdown.
+- Top-level fields: "schema" and "routes" only.
+- schema must be "pono-llm-grammar-route-v1".
+- routes must contain 1 to 8 route objects.
+- Every route has exactly variables, family, relations, signedness, plus only
+  the family field listed below.
+- family="unary": one variable; optional constants integer list [-16,16].
+- family="pairwise_offset": two same-width variables; optional offsets integer
+  list [-16,16].
+- family="affine": two or three same-width variables; optional
+  coefficient_bound integer [1,8].
+- family="sum_equality": three same-width variables ordered as result, addend1,
+  addend2; no family-specific field.
+- family="quadratic_recurrence": two same-width variables ordered as accumulator,
+  counter; optional scales [1,8] and counter_shifts [-4,4].
+- relations is a non-empty subset of ["eq","le","ge"].
+- signedness is exactly "signed" or "unsigned".
+- No explanation and no extra fields.

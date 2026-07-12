@@ -1,0 +1,134 @@
+{
+  "routes": [
+    {
+      "family": "pairwise_offset",
+      "offsets": [
+        -16,
+        16
+      ],
+      "relations": [
+        "eq",
+        "le",
+        "ge"
+      ],
+      "requested_variables": [
+        "i",
+        "j"
+      ],
+      "route_id": "bfb2094991446758385fc4e2a0c40faf6489da18833eb2ececa490109d8fbe11",
+      "signedness": "unsigned",
+      "variables": [
+        "state23",
+        "state24"
+      ],
+      "width": 32
+    },
+    {
+      "family": "pairwise_offset",
+      "offsets": [
+        -16,
+        16
+      ],
+      "relations": [
+        "le",
+        "ge"
+      ],
+      "requested_variables": [
+        "l",
+        "n"
+      ],
+      "route_id": "dfc11a629f38b49c8b62163adfdf231ca85b6b05450e8e132f43377415a89ac0",
+      "signedness": "unsigned",
+      "variables": [
+        "state25",
+        "state26"
+      ],
+      "width": 32
+    },
+    {
+      "family": "sum_equality",
+      "relations": [
+        "eq"
+      ],
+      "requested_variables": [
+        "i",
+        "l",
+        "n"
+      ],
+      "route_id": "a5f5d9e8730eba103f0c10652b7b109846f67836495321daa6ef23c6bfd704f3",
+      "signedness": "unsigned",
+      "variables": [
+        "state23",
+        "state25",
+        "state26"
+      ],
+      "width": 32
+    },
+    {
+      "family": "sum_equality",
+      "relations": [
+        "eq"
+      ],
+      "requested_variables": [
+        "j",
+        "l",
+        "n"
+      ],
+      "route_id": "a28c3ff674a50bfc09e2811a1b8ce408c293d5a8741803eb6c2933494d7005d6",
+      "signedness": "unsigned",
+      "variables": [
+        "state24",
+        "state25",
+        "state26"
+      ],
+      "width": 32
+    },
+    {
+      "counter_shifts": [
+        -4,
+        4
+      ],
+      "family": "quadratic_recurrence",
+      "relations": [
+        "eq",
+        "le",
+        "ge"
+      ],
+      "requested_variables": [
+        "i",
+        "j"
+      ],
+      "route_id": "13b1eeca19373070b54377b9157a847a24241f8d8ff9078dc5bd74ce99becf39",
+      "scales": [
+        1,
+        8
+      ],
+      "signedness": "unsigned",
+      "variables": [
+        "state23",
+        "state24"
+      ],
+      "width": 32
+    },
+    {
+      "coefficient_bound": 8,
+      "family": "affine",
+      "relations": [
+        "le",
+        "ge"
+      ],
+      "requested_variables": [
+        "l",
+        "n"
+      ],
+      "route_id": "1c90fab9ad3dfee88c6acee993b1ae63b15bc76d370a4bb6dc435b2fd0d55dad",
+      "signedness": "unsigned",
+      "variables": [
+        "state25",
+        "state26"
+      ],
+      "width": 32
+    }
+  ],
+  "schema": "pono-llm-grammar-route-v1"
+}

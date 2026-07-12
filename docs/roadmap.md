@@ -1,154 +1,165 @@
 # Roadmap
 
 **Updated:** 2026-07-12
-
 **Branch:** `soundness-audit`
 
 ## Current Decision
 
-The project has a sound integration architecture, but it does not yet have a
-defensible LLM-specific coverage claim. LLM formulas remain untrusted IC3IA
-abstraction predicates; final proofs target the original BTOR2 model.
+The project has completed four empirical gates:
 
-The corrected deterministic baselines changed the Phase 2 conclusion:
+1. constraint-injection soundness audit;
+2. matched affine/quadratic formula baselines;
+3. broad HWMCC residual scan and compactness falsification;
+4. paired source/lifted/raw phase-local grammar-routing study.
 
-- the old `static-linear` run was invalid as an affine comparison because its
-  cap was exhausted by unary predicates before pairwise/affine templates;
-- balanced static predicates now solve `fib_37` directly;
-- the deterministic static oracle (balanced templates + sound Houdini +
-  affine projection predicates) solves `93.c`, `fib_37`, and `fib_05`;
-- therefore these three cases are no longer evidence of LLM-specific value.
-- five independent nonlinear captures certify `fib_23`/`fib_30` 10/10 through
-  direct Houdini, but a generic deterministic quadratic oracle also certifies
-  both in 2.50s/4.21s end-to-end;
-- no current full21 solve remains unique to the LLM after matched affine and
-  quadratic templates.
+The trust boundary is sound. The current LLM-specific research claim is still
+negative: no solved task or routed solved-set advantage survives the matched
+deterministic baselines. The project is not ready for a coverage-improvement
+paper, and it must not enter paper mode merely because another gate completed.
 
-The gates below are complete and do not support a coverage-improvement paper.
-Do not start open-ended BVMul work or paper writing merely to preserve the old
-claim; the next research gate changes the representation.
+## Gate 0 — Soundness Repair (Complete)
 
-## Gate 1 — Corrected Phase 1+2 Validation (Complete)
+- Constraint/assumption injection is retired as a proof method.
+- 32/32 independently checkable old proofs fail C1/C2/C3.
+- 30/32 tested mutex hints are reachable false invariants.
+- LLM/static formulas are now untrusted IC3IA abstraction predicates.
+- Direct certificates and Pono verdicts target the original BTOR2.
 
-1. **Completed:** corrected 21-circuit frozen replay with:
-   - engine baseline;
-   - balanced `static-linear`;
-   - `static-oracle`;
-   - frozen LLM linear/two-tier;
-   - baseline+LLM portfolio.
-   Pre-quadratic result: static-oracle and LLM-linear solve the same five
-   circuits; nonlinear `fib_23`/`fib_30` were the only two-tier additions.
-2. **Completed:** five independent captures for nonlinear `fib_23` and
-   `fib_30`. Direct Houdini is 10/10; two-tier predicate replay is 3/5 and 4/5.
-3. **Completed:** report separate:
-   - proof time;
-   - candidate generation time;
-   - candidate processing/certification time;
-   - offline time;
-   - end-to-end time;
-   - tokens and candidate hashes.
-4. **Completed:** `static-quadratic-oracle` certifies both cases, removing the
-   remaining LLM-specific signal.
-5. **Completed:** refreshed full21 static replay. Static quadratic solves the
-   exact seven LLM-two-tier cases; engine + deterministic and engine + LLM
-   portfolios both cover eight UNSAT plus two SAT. Generic quadratic misses are
-   expensive, so Gate 2 must add structural targeting before a 300--500 scan.
+**Decision:** architecture retained; old apparent wins rejected.
 
-**Decision:** Gate 1 currently leaves zero LLM-specific wins. Direct certificate
-time and Pono model-checker time remain separate mechanism measurements.
+## Gate 1 — Matched Formula Baselines (Complete)
 
-## Gate 2 — Measure the Dataset Ceiling
+- Balanced affine templates remove the former `93.c`, `fib_37`, and `fib_05`
+  LLM-only interpretation.
+- Five independent LLM captures certify `fib_23` and `fib_30` 10/10.
+- A deterministic quadratic oracle certifies the same two tasks.
+- Engine+deterministic and engine+LLM portfolios both cover eight UNSAT and two
+  SAT cases in corrected full21.
 
-Gate 1 leaves no current LLM-specific signal. The next empirical gate is:
+**Decision:** matched affine/quadratic LLM-specific solve count is zero.
 
-1. extract structural features for a stratified target of up to 500 circuits;
-   deduplicate exact file content and report the actual eligible population
-   rather than padding the sample when fewer models preserve usable software
-   names;
-2. run engine and deterministic/static baselines first;
-3. call the LLM only on baseline-hard, software-origin targets;
-4. report natural and synthetic benchmarks separately.
+## Gate 2 — Dataset Ceiling (Complete)
 
-Stop HWMCC mining if fewer than five natural baseline-hard targets remain after
-the deterministic affine/quadratic oracle.
+- 1,919-file HWMCC census;
+- 86 content-unique, non-array, preserved-software-name tasks;
+- 11 new baseline/deterministic-hard targets after screening;
+- LLM solves only `up.btor2`;
+- corrected static cap-200 and post-hoc ranked cap-16/20 solve the same task;
+- ranked deterministic replay is faster and equally reliable.
 
-The completed feature census found 1,919 parsable files but only 89 non-array
-models accepted by the current preserved-software-name heuristic; exact content
-deduplication leaves 86. Gate 2 therefore evaluates all 86 rather than claiming
-a 300--500 sample that the current method cannot actually consume.
+**Decision:** stop broad HWMCC mining and prompt tuning.
 
-The first deterministic screen decides 24/86 (17 UNSAT, 7 SAT) under a
-10s+10s engine budget. Of the 27 non-decisive models at or below 10,000 nodes,
-the 70s affine/quadratic oracle solves only the five already-known full21 cases
-and no new model. After excluding all 16 full21 overlaps, Gate 2 has 11 new
-small deterministic-hard targets for frozen LLM capture.
+## Gate 3 — Paired Representation and Phase-Local Grammar (Complete)
 
-The frozen capture yields one LLM-seeded proof (`loop-invgen/up.btor2`) but no
-surviving LLM-specific coverage. The first deterministic run had omitted named
-counter `i` because hot control bits consumed `max_vars`. With clean software
-variables prioritized, static raw-predicate seeding at cap 200 also proves `up`;
-both returned invariants pass independent C1/C2/C3. LLM cap 20 is more compact
-than the broad cap-200 enumeration, but that observation does not survive a
-post-hoc fixed relational ranker. Directed same-width named-variable orders
-followed by `x+y==z` equalities prove `up` with prefix 16 and are 5/5 at cap 20;
-median proof time is 2.134s versus 8.115s for LLM-15. Over all 11 targets,
-ranked cap 20 reaches the same one-model solved set in 377.58s aggregate,
-compared with 464.80s for cap-200 static and 901.52s for LLM.
+Pinned official inputs:
 
-**Gate 2 decision:** stop broad HWMCC mining for a coverage claim. The positive
-coverage and compactness signals are both falsified under the tested baselines.
-Because the final ranker is post-hoc, it is not a new prospective generalization
-claim. Any substantive continuation should pivot to the paired
-source/lifted/raw representation study rather than tune against these targets.
+- SV-COMP 2025 translation `d983801...`;
+- SV-Benchmarks source `1e5856d...`;
+- CPV `2b20529...`.
 
-## Gate 3 — Bounded Nonlinear Investigation
+Population and pilot:
 
-Only if a future natural case survives the corrected affine/quadratic static
-portfolio:
+- 267 translated safety-func tasks;
+- 164 eligible paired scalar tasks;
+- 20 independent pilot tasks selected before LLM results.
 
-1. evaluate existing Pono options:
-   - `--ceg-bv-arith`;
-   - `--ceg-bv-arith-as-free-symbol`;
-   - `--ceg-bv-arith-min-bw`;
-2. instrument which BVMul applications are abstracted and concretized;
-3. stop if there is no new proof and no meaningful runtime improvement.
+Implemented:
 
-New predicate-aware staged BVMul abstraction remains a separate, bounded spike,
-not the default continuation of this project.
+- strict grammar-route schema;
+- bounded signed/unsigned deterministic grammar;
+- conservative functional-PC phase extraction;
+- source/lifted/raw matched prompts;
+- exhaustive, structural, random, and frozen LLM routing;
+- direct and returned-invariant C1/C2/C3 audits.
 
-## Gate 4 — Research Pivot
+Results:
 
-Corrected deterministic baselines remove all current LLM-only wins and the
-remaining compactness observation. The next large project should therefore be
-a paired representation study:
+- 36/60 LLM routes valid; 24/60 rejected explicitly;
+- source/lifted/raw solve 1/1/2 baseline-hard tasks;
+- deterministic structural-all solves the union of three;
+- structural-global solves two; phase conditioning adds one;
+- no source-unique or LLM-over-structural task;
+- 0 false safe; all 12 routed UNSAT rows independently certified.
 
-1. original C source;
-2. lifted BTOR2 recurrence summary;
-3. raw BTOR2 transition sketch;
-4. all final certificates checked on the same original BTOR2 model.
+| Gate hypothesis | Result |
+|---|---|
+| H1: >=3 phase-only families | **fail: 1** |
+| H2: source representation advantage | **fail: 0 source-unique** |
+| H3: LLM routing advantage | **fail: 0 over structural** |
+| H4: soundness | **pass** |
 
-This tests representation loss directly without claiming that an LLM is needed
-where deterministic templates suffice.
+**Decision:** close the representation/phase/grammar-routing gate. Do not scale
+the source corpus, phase extractor, route repair, or paid captures from this
+evidence.
 
-## Implemented and Retained
+## Gate 4 — Choose a New Independent Hypothesis (Pending User Decision)
 
-- sound `--initial-predicates` injection in IC3IA;
-- independent C1/C2/C3 certificate checking;
-- boolean-pair hint reachability audit;
-- `--rounds` accumulation and linear/two-tier routing;
-- `--ic3ia-max-refinements` sound fail-fast behavior;
-- stable benchmark IDs and immutable candidate capture metadata;
-- balanced deterministic template generation;
-- sound Houdini subset extraction over all BAD properties;
-- fair replay timing with exact verdict/error separation.
+No implementation starts until one direction has a preregistered population,
+matched deterministic baseline, metric, and kill criterion.
 
-## Explicit Non-Goals
+### Candidate A — Certified transport/metamorphic robustness
 
-- restoring BTOR2 constraint/assume injection as a proof method;
-- treating BMC or SMT `unknown` as evidence;
+Question: can a certified invariant be transported across semantics-preserving
+program/circuit transforms more efficiently and robustly than regenerated?
+
+Required controls:
+
+- exact transition-system isomorphism or independently validated translation;
+- variable renaming, phase splitting, compiler optimization, and invertible
+  affine modular state transforms reported separately from natural tasks;
+- all transported formulas rechecked on the transformed original BTOR2;
+- deterministic symbolic mapping baseline before LLM mapping.
+
+Go only if transport adds robust success over regeneration on at least three
+transformation families. Otherwise stop.
+
+### Candidate B — Proof-carrying algebraic certificates
+
+Question: can semantic proposals include a modular polynomial derivation that a
+small trusted kernel verifies without generic BVMul proof search?
+
+Required controls:
+
+- exact `Z/(2^w)Z` semantics and width/extension handling;
+- at least three recurrence families, not only triangular sums;
+- deterministic normalizer baseline;
+- malformed derivations rejected, never repaired silently.
+
+Go only if held-out natural recurrences benefit. Otherwise keep as a case study.
+
+### Candidate C — Independently selected local-certificate corpus
+
+Question: is the one observed phase-only task representative in a population
+selected by control-flow structure rather than current proof outcomes?
+
+This is allowed only with a new frozen population and deterministic local
+template oracle. It must not reuse the current three successes as the selection
+criterion. Go only if at least three independent natural phase-only families
+survive.
+
+## Bounded Nonlinear Work
+
+Predicate-aware BVMul CEGAR remains dormant. Start it only when a new natural
+case:
+
+1. survives affine/quadratic deterministic generation;
+2. has a correct candidate independently certified or localized to BVMul cost;
+3. cannot be solved by direct modular normalization;
+4. supplies a fixed five-day kill criterion.
+
+The existing `fib_23`/`fib_30` cases do not satisfy this trigger because direct
+deterministic certificates already solve them.
+
+## Permanent Non-Goals
+
+- BTOR2 hint constraints as proof assumptions;
+- BMC/SMT UNKNOWN treated as evidence;
 - generic BTOR2 decompilation;
-- open-ended nonlinear SMT solver development;
-- claiming publication readiness from the current 21-circuit corpus.
+- open-ended prompt/model/round tuning;
+- best-run-only reporting;
+- arrays as a main synthesis direction;
+- generic nonlinear SMT solver development;
+- publication claims based on the current small solved sets.
 
-Historical roadmaps and constraint-era plans live under `archive/docs/` and are
-not active project truth.
+Canonical Gate 3 evidence:
+[`artifacts/representation_phase_v1/`](../artifacts/representation_phase_v1/).

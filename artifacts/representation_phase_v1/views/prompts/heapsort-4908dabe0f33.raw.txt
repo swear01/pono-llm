@@ -1,0 +1,686 @@
+REPRESENTATION: RAW BTOR2 PROPERTY/TRANSITION CONE
+ROOT_EXPRESSION_NODES: -33,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,294,335,376,458,499,541,567
+NODE_BUDGET: 1200
+SELECTED_LINES: 515
+TRUNCATED_FRONTIER_COUNT: 0
+
+1 sort bitvec 1
+2 sort bitvec 19
+3 sort bitvec 32
+5 const 2 0000000000000000001
+6 const 2 0000000000000000010
+7 const 2 0000000000000000100
+8 const 2 0000000000000001000
+9 const 2 0000000000000010000
+10 const 2 0000000000000100000
+11 const 2 0000000000001000000
+12 const 2 0000000000010000000
+13 const 2 0000000000100000000
+14 const 2 0000000001000000000
+15 const 2 0000000010000000000
+16 const 2 0000000100000000000
+17 const 2 0000001000000000000
+18 const 2 0000010000000000000
+19 const 2 0000100000000000000
+20 const 2 0001000000000000000
+21 const 2 0010000000000000000
+22 const 2 0100000000000000000
+23 const 2 1000000000000000000
+24 state 2 !pc
+25 eq 1 24 5
+26 eq 1 24 6
+27 eq 1 24 7
+28 eq 1 24 8
+29 eq 1 24 9
+30 eq 1 24 10
+31 eq 1 24 11
+32 eq 1 24 12
+33 eq 1 24 13
+34 eq 1 24 14
+35 eq 1 24 15
+36 eq 1 24 16
+37 eq 1 24 17
+38 eq 1 24 18
+39 eq 1 24 19
+40 eq 1 24 20
+41 eq 1 24 21
+42 eq 1 24 22
+43 eq 1 24 23
+45 const 1 1
+46 const 3 00000000000000000000000000000001
+47 const 3 00000000000000000000000000000000
+48 const 3 00000000000011110100001001000000
+49 const 3 11111111111111111111111111111111
+50 const 3 00000000000000000000000000000010
+52 state 3 !{$(in_main#0)<i>}
+53 state 3 !{$(in_main#0)<j>}
+54 state 3 !{$(in_main#0)<l>}
+55 state 3 !{$(in_main#0)<n>}
+56 state 3 !{$(in_main#0)<r>}
+58 input 3 !{$(in_main#0)<$(in___VERIFIER_nondet_int#0)<h#<__VERIFIER_nondet_int.return>>>}
+59 input 3 !{$(in_main#0)<$(in___VERIFIER_nondet_int#5)<h#<__VERIFIER_nondet_int.return>>>}
+60 input 3 !{$(in_main#0)<$(in___VERIFIER_nondet_int#8)<h#<__VERIFIER_nondet_int.return>>>}
+61 input 3 %{$(in_main#0)<i>}#1
+62 input 3 %{$(in_main#0)<j>}#1
+63 input 3 %{$(in_main#0)<l>}#1
+64 input 3 %{$(in_main#0)<r>}#1
+65 input 3 %{$(in_main#0)<j>}#2
+66 input 3 %{$(in_main#0)<$temp.1>}#4
+67 input 3 %{$(in_main#0)<r>}#2
+68 input 3 %{$(in_main#0)<l>}#2
+70 slt 1 55 65
+71 slt 1 65 46
+72 slt 1 53 56
+73 eq 1 53 65
+74 slt 1 53 46
+75 slt 1 55 53
+76 add 3 46 53
+77 eq 1 59 47
+78 slt 1 56 53
+79 slt 1 55 52
+80 slt 1 52 46
+81 eq 1 60 47
+82 sll 3 54 46
+83 slt 1 46 56
+84 slt 1 48 58
+85 slt 1 58 46
+86 slt 1 46 54
+87 slt 1 55 54
+88 slt 1 54 46
+89 eq 1 54 66
+90 eq 1 56 67
+91 add 3 49 54
+92 slt 1 55 56
+93 slt 1 56 46
+94 eq 1 56 66
+95 add 3 49 56
+96 eq 1 54 68
+97 sdiv 3 58 50
+98 add 3 49 58
+99 sll 3 65 46
+100 not 1 70
+101 not 1 71
+102 not 1 72
+103 not 1 74
+104 not 1 75
+105 slt 1 76 46
+106 slt 1 55 76
+107 ite 3 77 53 76
+108 not 1 78
+109 not 1 79
+110 not 1 80
+111 not 1 83
+112 and 1 45 83
+113 not 1 84
+114 not 1 85
+115 not 1 81
+116 and 1 78 73
+117 not 1 87
+118 not 1 88
+119 eq 1 91 68
+120 not 1 86
+121 not 1 92
+122 not 1 93
+123 eq 1 95 67
+124 add 3 46 97
+125 and 1 45 86
+126 ite 3 100 46 47
+127 ite 3 101 46 47
+128 and 1 102 73
+129 ite 3 103 46 47
+130 ite 3 104 46 47
+131 not 1 105
+132 not 1 106
+133 eq 1 107 65
+134 ite 3 109 46 47
+135 ite 3 110 46 47
+136 and 1 45 111
+137 and 1 45 113
+138 ite 3 117 46 47
+139 ite 3 118 46 47
+140 ite 3 121 46 47
+141 ite 3 122 46 47
+142 slt 1 46 124
+143 and 1 114 113
+144 and 1 45 120
+145 eq 1 126 47
+146 eq 1 127 47
+147 eq 1 129 47
+148 eq 1 130 47
+149 ite 3 131 46 47
+150 ite 3 132 46 47
+151 eq 1 134 47
+152 eq 1 135 47
+153 and 1 137 114
+154 eq 1 138 47
+155 eq 1 139 47
+156 eq 1 140 47
+157 eq 1 141 47
+158 ite 3 142 58 98
+159 ite 3 142 97 124
+160 not 1 143
+161 not 1 145
+162 not 1 146
+163 not 1 147
+164 not 1 148
+165 eq 1 149 47
+166 eq 1 150 47
+167 not 1 151
+168 not 1 152
+169 and 1 45 145
+170 not 1 154
+171 not 1 155
+172 not 1 156
+173 not 1 157
+174 and 1 45 160
+175 and 1 45 146
+176 and 1 125 155
+177 and 1 45 147
+178 and 1 45 161
+179 not 1 165
+180 not 1 166
+181 and 1 169 161
+182 and 1 161 115
+183 and 1 170 171
+184 and 1 172 173
+185 and 1 169 162
+186 and 1 45 163
+187 and 1 125 171
+188 and 1 177 72
+189 and 1 178 162
+190 and 1 179 180
+191 and 1 181 162
+192 and 1 162 182
+193 and 1 86 183
+194 and 1 120 184
+195 and 1 186 72
+196 and 1 188 108
+197 and 1 178 146
+198 and 1 164 190
+199 and 1 193 89
+200 and 1 194 94
+201 and 1 195 108
+202 and 1 197 162
+203 and 1 163 198
+204 and 1 199 90
+205 and 1 200 123
+206 and 1 201 166
+207 and 1 201 165
+208 and 1 201 148
+209 and 1 72 203
+210 and 1 204 119
+211 and 1 205 96
+212 and 1 206 179
+213 and 1 207 164
+214 and 1 209 133
+215 or 1 210 211
+216 and 1 212 164
+217 or 1 128 214
+218 and 1 189 217
+219 and 1 191 217
+220 and 1 217 192
+221 and 1 185 217
+222 and 1 175 217
+223 and 1 202 217
+224 and 1 218 108
+225 and 1 219 108
+226 and 1 108 220
+227 and 1 221 108
+228 and 1 222 108
+229 and 1 223 108
+230 and 1 224 167
+231 and 1 225 167
+232 and 1 224 151
+233 or 1 226 116
+234 and 1 224 152
+235 and 1 229 167
+236 and 1 230 168
+237 and 1 231 168
+238 and 1 232 168
+239 and 1 45 233
+240 and 1 234 81
+241 and 1 144 233
+242 and 1 187 233
+243 and 1 176 233
+244 and 1 235 168
+245 and 1 236 81
+246 and 1 237 81
+247 and 1 238 81
+248 and 1 239 215
+249 and 1 241 173
+250 and 1 241 157
+251 and 1 242 154
+252 and 1 244 81
+253 and 1 249 156
+255 and 1 30 112
+256 ite 3 255 82 53
+257 and 1 29 213
+258 ite 3 257 53 256
+259 and 1 29 248
+260 ite 3 259 65 258
+261 and 1 29 196
+262 ite 3 261 53 260
+263 and 1 29 247
+264 ite 3 263 65 262
+265 and 1 29 245
+266 ite 3 265 99 264
+267 and 1 29 253
+268 ite 3 267 65 266
+269 and 1 29 251
+270 ite 3 269 65 268
+271 and 1 29 227
+272 ite 3 271 65 270
+273 and 1 29 240
+274 ite 3 273 65 272
+275 and 1 29 243
+276 ite 3 275 65 274
+277 and 1 29 208
+278 ite 3 277 53 276
+279 and 1 29 250
+280 ite 3 279 65 278
+281 and 1 29 216
+282 ite 3 281 53 280
+283 and 1 28 153
+284 ite 3 283 62 282
+285 and 1 28 174
+286 ite 3 285 62 284
+287 and 1 29 228
+288 ite 3 287 65 286
+289 and 1 30 136
+290 ite 3 289 53 288
+291 and 1 29 246
+292 ite 3 291 65 290
+293 and 1 29 252
+294 ite 3 293 65 292
+295 next 3 53 294
+296 and 1 30 112
+297 ite 3 296 55 55
+298 and 1 29 213
+299 ite 3 298 55 297
+300 and 1 29 248
+301 ite 3 300 55 299
+302 and 1 29 196
+303 ite 3 302 55 301
+304 and 1 29 247
+305 ite 3 304 55 303
+306 and 1 29 245
+307 ite 3 306 55 305
+308 and 1 29 253
+309 ite 3 308 55 307
+310 and 1 29 251
+311 ite 3 310 55 309
+312 and 1 29 227
+313 ite 3 312 55 311
+314 and 1 29 240
+315 ite 3 314 55 313
+316 and 1 29 243
+317 ite 3 316 55 315
+318 and 1 29 208
+319 ite 3 318 55 317
+320 and 1 29 250
+321 ite 3 320 55 319
+322 and 1 29 216
+323 ite 3 322 55 321
+324 and 1 28 153
+325 ite 3 324 58 323
+326 and 1 28 174
+327 ite 3 326 58 325
+328 and 1 29 228
+329 ite 3 328 55 327
+330 and 1 30 136
+331 ite 3 330 55 329
+332 and 1 29 246
+333 ite 3 332 55 331
+334 and 1 29 252
+335 ite 3 334 55 333
+336 next 3 55 335
+337 and 1 30 112
+338 ite 3 337 54 52
+339 and 1 29 213
+340 ite 3 339 52 338
+341 and 1 29 248
+342 ite 3 341 52 340
+343 and 1 29 196
+344 ite 3 343 52 342
+345 and 1 29 247
+346 ite 3 345 52 344
+347 and 1 29 245
+348 ite 3 347 65 346
+349 and 1 29 253
+350 ite 3 349 52 348
+351 and 1 29 251
+352 ite 3 351 52 350
+353 and 1 29 227
+354 ite 3 353 52 352
+355 and 1 29 240
+356 ite 3 355 52 354
+357 and 1 29 243
+358 ite 3 357 52 356
+359 and 1 29 208
+360 ite 3 359 52 358
+361 and 1 29 250
+362 ite 3 361 52 360
+363 and 1 29 216
+364 ite 3 363 52 362
+365 and 1 28 153
+366 ite 3 365 61 364
+367 and 1 28 174
+368 ite 3 367 61 366
+369 and 1 29 228
+370 ite 3 369 52 368
+371 and 1 30 136
+372 ite 3 371 52 370
+373 and 1 29 246
+374 ite 3 373 52 372
+375 and 1 29 252
+376 ite 3 375 52 374
+377 next 3 52 376
+419 and 1 30 112
+420 ite 3 419 54 54
+421 and 1 29 213
+422 ite 3 421 54 420
+423 and 1 29 248
+424 ite 3 423 68 422
+425 and 1 29 196
+426 ite 3 425 54 424
+427 and 1 29 247
+428 ite 3 427 54 426
+429 and 1 29 245
+430 ite 3 429 54 428
+431 and 1 29 253
+432 ite 3 431 54 430
+433 and 1 29 251
+434 ite 3 433 54 432
+435 and 1 29 227
+436 ite 3 435 54 434
+437 and 1 29 240
+438 ite 3 437 54 436
+439 and 1 29 243
+440 ite 3 439 54 438
+441 and 1 29 208
+442 ite 3 441 54 440
+443 and 1 29 250
+444 ite 3 443 54 442
+445 and 1 29 216
+446 ite 3 445 54 444
+447 and 1 28 153
+448 ite 3 447 159 446
+449 and 1 28 174
+450 ite 3 449 63 448
+451 and 1 29 228
+452 ite 3 451 54 450
+453 and 1 30 136
+454 ite 3 453 54 452
+455 and 1 29 246
+456 ite 3 455 54 454
+457 and 1 29 252
+458 ite 3 457 54 456
+459 next 3 54 458
+460 and 1 30 112
+461 ite 3 460 56 56
+462 and 1 29 213
+463 ite 3 462 56 461
+464 and 1 29 248
+465 ite 3 464 67 463
+466 and 1 29 196
+467 ite 3 466 56 465
+468 and 1 29 247
+469 ite 3 468 56 467
+470 and 1 29 245
+471 ite 3 470 56 469
+472 and 1 29 253
+473 ite 3 472 56 471
+474 and 1 29 251
+475 ite 3 474 56 473
+476 and 1 29 227
+477 ite 3 476 56 475
+478 and 1 29 240
+479 ite 3 478 56 477
+480 and 1 29 243
+481 ite 3 480 56 479
+482 and 1 29 208
+483 ite 3 482 56 481
+484 and 1 29 250
+485 ite 3 484 56 483
+486 and 1 29 216
+487 ite 3 486 56 485
+488 and 1 28 153
+489 ite 3 488 158 487
+490 and 1 28 174
+491 ite 3 490 64 489
+492 and 1 29 228
+493 ite 3 492 56 491
+494 and 1 30 136
+495 ite 3 494 56 493
+496 and 1 29 246
+497 ite 3 496 56 495
+498 and 1 29 252
+499 ite 3 498 56 497
+500 next 3 56 499
+502 and 1 30 112
+503 ite 2 502 9 13
+504 and 1 29 213
+505 ite 2 504 18 503
+506 and 1 29 248
+507 ite 2 506 10 505
+508 and 1 29 196
+509 ite 2 508 20 507
+510 and 1 29 247
+511 ite 2 510 5 509
+512 and 1 29 245
+513 ite 2 512 9 511
+514 and 1 29 253
+515 ite 2 514 6 513
+516 and 1 29 251
+517 ite 2 516 15 515
+518 and 1 29 227
+519 ite 2 518 12 517
+520 and 1 29 240
+521 ite 2 520 7 519
+522 and 1 29 243
+523 ite 2 522 17 521
+524 and 1 29 208
+525 ite 2 524 19 523
+526 and 1 29 250
+527 ite 2 526 11 525
+528 and 1 29 216
+529 ite 2 528 16 527
+530 and 1 28 153
+531 ite 2 530 10 529
+532 and 1 28 174
+533 ite 2 532 23 531
+534 and 1 29 228
+535 ite 2 534 14 533
+536 and 1 30 136
+537 ite 2 536 23 535
+538 and 1 29 246
+539 ite 2 538 21 537
+540 and 1 29 252
+541 ite 2 540 22 539
+542 next 2 24 541
+544 init 2 24 8
+546 init 3 52 47
+547 init 3 53 47
+548 init 3 54 47
+549 init 3 55 47
+550 init 3 56 47
+553 constraint -33
+555 or 1 31 38
+556 or 1 555 41
+557 or 1 556 32
+558 or 1 557 25
+559 or 1 558 34
+560 or 1 559 35
+561 or 1 560 39
+562 or 1 561 36
+563 or 1 562 26
+564 or 1 563 42
+565 or 1 564 27
+566 or 1 565 37
+567 or 1 566 40
+568 bad 567
+
+--- COMMON FORMAL ROUTE CONTRACT ---
+TASK: Choose a small invariant-synthesis grammar. Do not output an invariant,
+proof, coefficient value, or assertion. The formal backend expands every route,
+runs Houdini, and checks the original BTOR2. Your output is untrusted routing
+advice only.
+
+MACHINE SEMANTICS:
+- All state arithmetic is fixed-width bit-vector arithmetic modulo 2^width.
+- Comparisons must state signed or unsigned semantics.
+- A route may use only variables from the catalog below.
+- Phase guards are applied by the formal experiment, not selected by you.
+
+VARIABLE_CATALOG_JSON:
+[
+  {
+    "init": "0",
+    "name": "i",
+    "ref": "state52",
+    "width": 32
+  },
+  {
+    "init": "0",
+    "name": "j",
+    "ref": "state53",
+    "width": 32
+  },
+  {
+    "init": "0",
+    "name": "l",
+    "ref": "state54",
+    "width": 32
+  },
+  {
+    "init": "0",
+    "name": "n",
+    "ref": "state55",
+    "width": 32
+  },
+  {
+    "init": "0",
+    "name": "r",
+    "ref": "state56",
+    "width": 32
+  }
+]
+
+PHASE_CATALOG_JSON:
+[
+  {
+    "guard": "state24 == 1",
+    "phase_id": "pc_state24_w19_v1",
+    "width": 19
+  },
+  {
+    "guard": "state24 == 2",
+    "phase_id": "pc_state24_w19_v2",
+    "width": 19
+  },
+  {
+    "guard": "state24 == 4",
+    "phase_id": "pc_state24_w19_v4",
+    "width": 19
+  },
+  {
+    "guard": "state24 == 8",
+    "phase_id": "pc_state24_w19_v8",
+    "width": 19
+  },
+  {
+    "guard": "state24 == 16",
+    "phase_id": "pc_state24_w19_v16",
+    "width": 19
+  },
+  {
+    "guard": "state24 == 32",
+    "phase_id": "pc_state24_w19_v32",
+    "width": 19
+  },
+  {
+    "guard": "state24 == 64",
+    "phase_id": "pc_state24_w19_v64",
+    "width": 19
+  },
+  {
+    "guard": "state24 == 128",
+    "phase_id": "pc_state24_w19_v128",
+    "width": 19
+  },
+  {
+    "guard": "state24 == 256",
+    "phase_id": "pc_state24_w19_v256",
+    "width": 19
+  },
+  {
+    "guard": "state24 == 512",
+    "phase_id": "pc_state24_w19_v512",
+    "width": 19
+  },
+  {
+    "guard": "state24 == 1024",
+    "phase_id": "pc_state24_w19_v1024",
+    "width": 19
+  },
+  {
+    "guard": "state24 == 2048",
+    "phase_id": "pc_state24_w19_v2048",
+    "width": 19
+  },
+  {
+    "guard": "state24 == 4096",
+    "phase_id": "pc_state24_w19_v4096",
+    "width": 19
+  },
+  {
+    "guard": "state24 == 8192",
+    "phase_id": "pc_state24_w19_v8192",
+    "width": 19
+  },
+  {
+    "guard": "state24 == 16384",
+    "phase_id": "pc_state24_w19_v16384",
+    "width": 19
+  },
+  {
+    "guard": "state24 == 32768",
+    "phase_id": "pc_state24_w19_v32768",
+    "width": 19
+  },
+  {
+    "guard": "state24 == 65536",
+    "phase_id": "pc_state24_w19_v65536",
+    "width": 19
+  },
+  {
+    "guard": "state24 == 131072",
+    "phase_id": "pc_state24_w19_v131072",
+    "width": 19
+  },
+  {
+    "guard": "state24 == 262144",
+    "phase_id": "pc_state24_w19_v262144",
+    "width": 19
+  }
+]
+
+OUTPUT CONTRACT:
+- Output exactly one JSON object and no Markdown.
+- Top-level fields: "schema" and "routes" only.
+- schema must be "pono-llm-grammar-route-v1".
+- routes must contain 1 to 8 route objects.
+- Every route has exactly variables, family, relations, signedness, plus only
+  the family field listed below.
+- family="unary": one variable; optional constants integer list [-16,16].
+- family="pairwise_offset": two same-width variables; optional offsets integer
+  list [-16,16].
+- family="affine": two or three same-width variables; optional
+  coefficient_bound integer [1,8].
+- family="sum_equality": three same-width variables ordered as result, addend1,
+  addend2; no family-specific field.
+- family="quadratic_recurrence": two same-width variables ordered as accumulator,
+  counter; optional scales [1,8] and counter_shifts [-4,4].
+- relations is a non-empty subset of ["eq","le","ge"].
+- signedness is exactly "signed" or "unsigned".
+- No explanation and no extra fields.

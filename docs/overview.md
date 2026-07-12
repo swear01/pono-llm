@@ -41,88 +41,67 @@ UNSAT/SAT/UNKNOWN for the original unconstrained circuit
 
 `predicate_workflow.py` currently supports `full`, `linear`, and `two-tier` modes.  `two-tier` tries linear predicates first and only falls back to full candidates on miss.  `--rounds=K` accumulates candidates across K LLM calls to improve reliability.
 
+The completed representation gate used a separate frozen route flow:
+
+```text
+source C / target-derived lifted recurrence / raw BTOR2 cone
+    -> strict grammar-route JSON
+    -> deterministic predicate expansion
+    -> global or all-PC-phase candidates
+    -> direct C1/C2/C3, then sound IC3IA replay on original BTOR2
+```
+
+That flow remains available as research infrastructure, but its H1/H2/H3
+scaling gates failed and it is not the active production pipeline.
+
 ## Current Results (as of 2026-07-12)
 
-Soundness is fixed; coverage/research value is not yet settled.
+Soundness is fixed; every tested LLM-specific utility claim has failed a
+matched deterministic baseline so far.
 
-- Old boolean-pair mutex hints injected as constraints: **not sound proofs**.  Audit: 32/32 checkable instances rejected; 30/32 tested mutex hints are reachable false invariants at BTOR2 level.
-- Sound predicate injection works for arithmetic predicates and fails soundly on bad hints.
-- `--two-tier --rounds=5` makes the five known linear-solvable circuits stable: `paper_v3`, `93.c`, `fib_37`, `77.c`, `fib_05` → 15/15 UNSAT across three trials.
-- The first static comparison was biased by candidate ordering: its cap was exhausted by unary predicates before affine templates. After balancing the generator, `static-linear` solves `fib_37`; the stronger deterministic static oracle solves `93.c`, `fib_37`, and `fib_05`.
-- Therefore the three former linear-tier “LLM-only” wins are predicate-seeding wins, not evidence that an LLM is necessary.
-- Corrected full21 frozen replay (`static-oracle` total budget 70s): baseline 3 UNSAT + 2 SAT; static-linear 3 UNSAT; static-oracle 5 UNSAT; LLM-linear 5 UNSAT with the **same solved set** as static-oracle; LLM two-tier 7 UNSAT; portfolio 8 UNSAT + 2 SAT.
-- Five independent round-5 captures for nonlinear `fib_23` and `fib_30` produce
-  ten distinct candidate hashes. Direct sound Houdini certification succeeds
-  10/10; median certificate time is 0.050s (`fib_23`) and 0.063s (`fib_30`).
-  Predicate replay is less reliable/slower: 4/5 and 3/5 respectively under the
-  recorded two-tier budgets.
-- A matched deterministic `static-quadratic-oracle` then certifies both cases
-  without an LLM: `fib_30` in 2.50s end-to-end and `fib_23` in 4.21s. It uses
-  exact initialization constants plus the generic template
-  `k*accumulator {==,<=,>=} counter*(counter±1)`.
-- Refreshed clean-software-first full21: static-linear solves 3, affine static-oracle 5, and
-  static-quadratic-oracle 7--exactly the LLM two-tier solved set. The engine +
-  deterministic portfolio reaches the same eight UNSAT and two SAT cases as
-  engine + LLM. The quadratic oracle is expensive on misses (median 33.72s), so
-  this is a uniqueness falsification result, not yet a scalable replacement.
-- Therefore **no LLM-specific solved case currently survives the deterministic
-  affine/quadratic portfolio**. The direct-certificate result validates a sound,
-  reliable mechanism, but not unique LLM value on this corpus.
-- Direct LLM Houdini over all 21 cases solves exactly those seven with only
-  34.32s total certificate time, but candidate generation costs 1103.64s and
-  318,001 tokens (1138.15s end-to-end). The deterministic quadratic oracle takes
-  804.03s total and no API calls. LLM targeting helps offline checker effort,
-  not full-pipeline coverage or total cost here.
-- Expanding to 20 additional non-array software/sosylab circuits found 4 more LLM solves, but all 4 were also solved by baseline ind/interp → 0 new LLM-only.
-- Main ceiling: genuine nonlinear `var*var` / `bvmul` invariants, input-driven transitions, arrays, and representation loss.
+- Old constraint-injected mutex proofs are invalid: 32/32 checkable proofs fail
+  independent C1/C2/C3, and 30/32 tested hints are reachable false invariants.
+- Corrected full21 deterministic affine/quadratic templates solve exactly the
+  seven LLM-two-tier cases. Engine+deterministic and engine+LLM portfolios both
+  reach eight UNSAT and two SAT. Current matched LLM-specific solve count: zero.
+- Gate 2's only new LLM-seeded proof (`up.btor2`) is reproduced by cap-200
+  static seeding and a smaller/faster fixed relational ranker. Current matched
+  LLM-specific compactness/ranking count: zero.
+- The completed official paired representation gate contains 267 SV-COMP 2025
+  translated tasks, 164 eligible source/BTOR pairs, and a pre-LLM frozen
+  20-family pilot.
+- A single source/lifted/raw capture uses 60 OpenRouter calls, 142,814 tokens,
+  and 229.16s. Strict route checking accepts 36 and rejects 24; malformed routes
+  are evidence, not repaired inputs.
+- On 12 safe baseline-hard tasks, LLM source/lifted/raw routing solves 1/1/2.
+  A no-LLM structural router solves their three-task union. Source has zero
+  unique task; no LLM arm adds over structural routing.
+- Structural all-phase routing adds only `count_up_down-1` over matched
+  structural-global routing. The preregistered phase-local threshold is three,
+  so H1 fails 1/3.
+- No unsafe control becomes UNSAT. All 12 routed UNSAT rows independently pass
+  original-model C1/C2/C3: four direct candidate certificates and eight
+  certificates for Pono-returned invariants.
+
+The project therefore has a reusable sound experimental kernel and a sequence
+of strong negative results, but not yet a positive algorithmic contribution of
+the scale needed for a coverage paper.
 
 ## Current Research Plan
 
-The project is **not ready** to be positioned as a strong
-coverage-improvement paper. Corrected Phase 1 + Phase 2 infrastructure, Gate 2,
-the full21 replay, and the independent nonlinear captures are complete:
+The representation/phase/grammar gate is closed. Do not scale its corpus,
+repair its LLM routes, tune prompts on its three successes, or build a general
+recurrence lifter after H1/H2/H3 failed their frozen thresholds.
 
-1. **Phase 1:** sound fail-fast, immutable portable captures, exact portfolio
-   timing, frozen replay hashes, and separate
-   generation/processing/proof/end-to-end timing. New capture schema v4 binds
-   benchmark/manifest/prompt/predicate/metadata/response bytes in
-   `integrity.json`; replay rejects incomplete or mismatched bundles. Historical
-   v2/v3 sidecars are explicitly marked as post-capture integrity records.
-   Replay matrices also bind the exact benchmark/config/trial Cartesian
-   contract, and Gate selectors reject partial coverage or stale feature/model
-   hashes.
-2. **Phase 2:** balanced deterministic templates plus a static oracle using sound Houdini and affine projection predicates.
-3. The three former linear LLM-only wins disappear under the corrected deterministic baseline.
-4. The nonlinear candidates are independently reproducible, but the matched
-   quadratic baseline removes their uniqueness. Do not start BVMul CEGAR from
-   these two cases.
-5. Gate 2 uses explicit structural features and content deduplication; the
-   selected count is capped by the actual non-array, software-name-preserving
-   HWMCC population rather than forced to reach a nominal sample size.
-   The census parsed 1,919/1,919 files, found 89 eligible scalar models, and
-   retained 86 unique contents after removing three repeated yearly instances.
-6. A 10s `ind`/`interp` + 10s IC3IA screen decides 24/86. On the 27 unresolved
-   models of at most 10,000 nodes, the 70s deterministic quadratic oracle adds
-   only the five already-known full21 solves and zero new ones. Excluding all
-   prior full21 models leaves 11 new deterministic-hard targets for LLM capture.
-7. Frozen LLM capture on those 11 uses 55 calls, 257,647 tokens, and 467.85s.
-   Direct candidate certification solves none. Raw LLM predicate seeding solves
-   only `loop-invgen/up.btor2`; after correcting static variable ordering, raw
-   deterministic cap-200 seeding solves the same case. Both Pono invariants pass
-   C1/C2/C3 on the original model. Thus Gate 2 adds **zero LLM-specific wins**.
-8. A post-hoc fixed relational ranker then emits pairwise unsigned orders among
-   clean named variables before three-variable sum equalities. At cap 20 it
-   solves exactly the same one target as LLM and cap-200 static seeding, but in
-   377.58s aggregate versus 901.52s and 464.80s. On `up`, LLM-15 and ranked-20
-   are both 5/5; median proof time is 8.115s versus 2.134s. Ranked cap 15 fails,
-   cap 16 succeeds, and the cap-16 returned invariant passes independent
-   C1/C2/C3. The former compactness/search-efficiency signal therefore does not
-   survive this post-hoc falsification baseline.
-9. Broad HWMCC mining and further prompt tuning stop here. The next substantive
-   study should compare source C, a bounded lifted recurrence summary, and the
-   raw BTOR2 view while checking every final result on the same original BTOR2.
+No new implementation direction is active until the user chooses a separately
+preregistered hypothesis. The strongest remaining candidates are certified
+invariant transport/metamorphic robustness, proof-carrying modular algebraic
+certificates, or a new independently selected natural local-certificate corpus.
+Generic BVMul CEGAR, broad HWMCC mining, source decompilation, and paper mode
+remain stopped.
 
-See [`docs/plan.md`](plan.md) for the active implementation plan and [`docs/roadmap.md`](roadmap.md) for the broader roadmap.
+See [`docs/plan.md`](plan.md) for exact results/reproduction and
+[`docs/roadmap.md`](roadmap.md) for the next decision gate.
 
 ## External Resources
 

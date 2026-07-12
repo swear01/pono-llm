@@ -1,0 +1,53 @@
+{
+  "schema": "pono-llm-grammar-route-v1",
+  "routes": [
+    {
+      "variables": ["i", "j", "l"],
+      "family": "sum_equality",
+      "relations": ["eq"],
+      "signedness": "unsigned"
+    },
+    {
+      "variables": ["i", "l"],
+      "family": "pairwise_offset",
+      "relations": ["le", "ge"],
+      "signedness": "unsigned",
+      "offsets": [-16, 16]
+    },
+    {
+      "variables": ["j", "l"],
+      "family": "pairwise_offset",
+      "relations": ["le", "ge"],
+      "signedness": "unsigned",
+      "offsets": [-16, 16]
+    },
+    {
+      "variables": ["i", "j"],
+      "family": "pairwise_offset",
+      "relations": ["le", "ge"],
+      "signedness": "unsigned",
+      "offsets": [-16, 16]
+    },
+    {
+      "variables": ["l"],
+      "family": "unary",
+      "relations": ["le", "ge"],
+      "signedness": "unsigned",
+      "constants": [-16, 16]
+    },
+    {
+      "variables": ["i", "l"],
+      "family": "affine",
+      "relations": ["le", "ge"],
+      "signedness": "unsigned",
+      "coefficient_bound": 8
+    },
+    {
+      "variables": ["j", "l"],
+      "family": "affine",
+      "relations": ["le", "ge"],
+      "signedness": "unsigned",
+      "coefficient_bound": 8
+    }
+  ]
+}

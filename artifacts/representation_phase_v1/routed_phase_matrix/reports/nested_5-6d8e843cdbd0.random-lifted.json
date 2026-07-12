@@ -1,0 +1,497 @@
+{
+  "arm": "lifted",
+  "benchmark": "/tmp/svcomp25-sparse/translated/safety-func/loop-simple/nested_5.btor2",
+  "benchmark_id": "loop-simple/nested_5.btor2",
+  "benchmark_sha256": "c4ce35cac2ae918082fab514f4ef1b626e9128be4e75072869e28c44ef885b11",
+  "candidate_generation_sec": 0.00263938307762146,
+  "candidate_sha256": "c08e8580da72d2dad795643521f00c267b7c006cd23b0cde76b868a407224837",
+  "certificate": {
+    "checks": [
+      {
+        "name": "C1 Init=>H",
+        "result": "unsat"
+      },
+      {
+        "name": "C2 inductive",
+        "result": "unsat"
+      },
+      {
+        "name": "C3 H=>notBAD",
+        "result": "sat"
+      }
+    ],
+    "init_queries": 1,
+    "ok": false,
+    "removed_initial_indices": [],
+    "removed_step_indices": [
+      17,
+      26,
+      35,
+      53,
+      62,
+      1,
+      10,
+      19,
+      28,
+      46,
+      55,
+      5,
+      14,
+      23,
+      32,
+      41,
+      50,
+      59,
+      9,
+      18,
+      27,
+      45,
+      54,
+      12,
+      21,
+      30,
+      48,
+      57,
+      37,
+      13,
+      22,
+      31,
+      49,
+      58,
+      6,
+      15,
+      24,
+      33,
+      42,
+      51,
+      60,
+      8,
+      44,
+      4,
+      40,
+      0,
+      3,
+      39,
+      36
+    ],
+    "selected_indices": [
+      2,
+      7,
+      11,
+      16,
+      20,
+      25,
+      29,
+      34,
+      38,
+      43,
+      47,
+      52,
+      56,
+      61
+    ],
+    "step_queries": 14,
+    "unsupported_candidates": []
+  },
+  "certificate_time_sec": 0.6984887272119522,
+  "config": "random-lifted",
+  "end_to_end_sec": 8.834455166012049,
+  "end_to_end_with_generation_sec": 8.834455166012049,
+  "engine": "phase-grammar-ic3ia",
+  "error": "",
+  "exit": 255,
+  "expected_verdict": "safe",
+  "generation_time_sec": 0.0,
+  "matrix_schema": "pono-llm-routed-phase-matrix-v1",
+  "model_checker_time_sec": 8.133327055722475,
+  "offline_time_sec": 8.834455166012049,
+  "phase_count": 9,
+  "phase_mode": "all",
+  "phases": [
+    {
+      "equality_node": 15,
+      "guard_ast": {
+        "args": [
+          {
+            "form": "ref",
+            "ref": "state14"
+          },
+          {
+            "const": "1",
+            "form": "const",
+            "width": 9
+          }
+        ],
+        "form": "eq"
+      },
+      "is_bad": true,
+      "is_initial": false,
+      "pc_ref": "state14",
+      "phase_id": "pc_state14_w9_v1",
+      "value": 1,
+      "width": 9
+    },
+    {
+      "equality_node": 16,
+      "guard_ast": {
+        "args": [
+          {
+            "form": "ref",
+            "ref": "state14"
+          },
+          {
+            "const": "2",
+            "form": "const",
+            "width": 9
+          }
+        ],
+        "form": "eq"
+      },
+      "is_bad": false,
+      "is_initial": false,
+      "pc_ref": "state14",
+      "phase_id": "pc_state14_w9_v2",
+      "value": 2,
+      "width": 9
+    },
+    {
+      "equality_node": 17,
+      "guard_ast": {
+        "args": [
+          {
+            "form": "ref",
+            "ref": "state14"
+          },
+          {
+            "const": "4",
+            "form": "const",
+            "width": 9
+          }
+        ],
+        "form": "eq"
+      },
+      "is_bad": false,
+      "is_initial": true,
+      "pc_ref": "state14",
+      "phase_id": "pc_state14_w9_v4",
+      "value": 4,
+      "width": 9
+    },
+    {
+      "equality_node": 18,
+      "guard_ast": {
+        "args": [
+          {
+            "form": "ref",
+            "ref": "state14"
+          },
+          {
+            "const": "8",
+            "form": "const",
+            "width": 9
+          }
+        ],
+        "form": "eq"
+      },
+      "is_bad": false,
+      "is_initial": false,
+      "pc_ref": "state14",
+      "phase_id": "pc_state14_w9_v8",
+      "value": 8,
+      "width": 9
+    },
+    {
+      "equality_node": 19,
+      "guard_ast": {
+        "args": [
+          {
+            "form": "ref",
+            "ref": "state14"
+          },
+          {
+            "const": "16",
+            "form": "const",
+            "width": 9
+          }
+        ],
+        "form": "eq"
+      },
+      "is_bad": false,
+      "is_initial": false,
+      "pc_ref": "state14",
+      "phase_id": "pc_state14_w9_v16",
+      "value": 16,
+      "width": 9
+    },
+    {
+      "equality_node": 20,
+      "guard_ast": {
+        "args": [
+          {
+            "form": "ref",
+            "ref": "state14"
+          },
+          {
+            "const": "32",
+            "form": "const",
+            "width": 9
+          }
+        ],
+        "form": "eq"
+      },
+      "is_bad": false,
+      "is_initial": false,
+      "pc_ref": "state14",
+      "phase_id": "pc_state14_w9_v32",
+      "value": 32,
+      "width": 9
+    },
+    {
+      "equality_node": 21,
+      "guard_ast": {
+        "args": [
+          {
+            "form": "ref",
+            "ref": "state14"
+          },
+          {
+            "const": "64",
+            "form": "const",
+            "width": 9
+          }
+        ],
+        "form": "eq"
+      },
+      "is_bad": false,
+      "is_initial": false,
+      "pc_ref": "state14",
+      "phase_id": "pc_state14_w9_v64",
+      "value": 64,
+      "width": 9
+    },
+    {
+      "equality_node": 22,
+      "guard_ast": {
+        "args": [
+          {
+            "form": "ref",
+            "ref": "state14"
+          },
+          {
+            "const": "128",
+            "form": "const",
+            "width": 9
+          }
+        ],
+        "form": "eq"
+      },
+      "is_bad": false,
+      "is_initial": false,
+      "pc_ref": "state14",
+      "phase_id": "pc_state14_w9_v128",
+      "value": 128,
+      "width": 9
+    },
+    {
+      "equality_node": 23,
+      "guard_ast": {
+        "args": [
+          {
+            "form": "ref",
+            "ref": "state14"
+          },
+          {
+            "const": "256",
+            "form": "const",
+            "width": 9
+          }
+        ],
+        "form": "eq"
+      },
+      "is_bad": false,
+      "is_initial": false,
+      "pc_ref": "state14",
+      "phase_id": "pc_state14_w9_v256",
+      "value": 256,
+      "width": 9
+    }
+  ],
+  "pilot_sha256": "723eb64225d2c39fb4fba8477759307d184f6b40293ac4407dd3518aa1d34d0c",
+  "pool_candidate_count": 63,
+  "proof_time_sec": 8.831815782934427,
+  "route_count": 7,
+  "route_diagnostics": {
+    "seed": "pono-llm-budget-matched-random-route-v1",
+    "selected_global_candidates": 7,
+    "selected_route_ids": [
+      "c0c991ce2114abc35ec5336a232874db93de2f6d3a72a2e94d079a47d33bfb18",
+      "b16274a01832f3d0d5801b6be1377abb05f16068db97deff66588b0b4ea186c2",
+      "2077ff4ec58ffcb5a2c3809d5e50eb9e81df84c849f98ea1aad9a61f21f5e990",
+      "06aac127115fb85fddd55d6b7a025e5d1b6d1ec907a22da49e462b30fbe504b9",
+      "93449fc0446154855701d1251ab103343ada98810fb61fa1a027d39d36fc8a85",
+      "3227d6c3b1552ed2e19d3b321fc5b4686b3de03c60defc24022e71c7777c9d08",
+      "973593b7f136748f304eba2661cbdec33c6e4a6016bdd3d1c9302b5baedb75cd"
+    ],
+    "target_candidates": 7
+  },
+  "route_error": "",
+  "route_sha256": "e8529f1ced4b750fc67cd7a30f4bf29d97b93c3f7e7e0feb5b524dc2494c393e",
+  "route_valid": true,
+  "router": "random",
+  "routes": [
+    {
+      "family": "sum_equality",
+      "relations": [
+        "eq"
+      ],
+      "requested_variables": [
+        "state31",
+        "state30",
+        "state33"
+      ],
+      "route_id": "c0c991ce2114abc35ec5336a232874db93de2f6d3a72a2e94d079a47d33bfb18",
+      "signedness": "unsigned",
+      "variables": [
+        "state31",
+        "state30",
+        "state33"
+      ],
+      "width": 32
+    },
+    {
+      "family": "sum_equality",
+      "relations": [
+        "eq"
+      ],
+      "requested_variables": [
+        "state32",
+        "state31",
+        "state34"
+      ],
+      "route_id": "b16274a01832f3d0d5801b6be1377abb05f16068db97deff66588b0b4ea186c2",
+      "signedness": "unsigned",
+      "variables": [
+        "state32",
+        "state31",
+        "state34"
+      ],
+      "width": 32
+    },
+    {
+      "family": "sum_equality",
+      "relations": [
+        "eq"
+      ],
+      "requested_variables": [
+        "state31",
+        "state32",
+        "state34"
+      ],
+      "route_id": "2077ff4ec58ffcb5a2c3809d5e50eb9e81df84c849f98ea1aad9a61f21f5e990",
+      "signedness": "unsigned",
+      "variables": [
+        "state31",
+        "state32",
+        "state34"
+      ],
+      "width": 32
+    },
+    {
+      "family": "sum_equality",
+      "relations": [
+        "eq"
+      ],
+      "requested_variables": [
+        "state34",
+        "state32",
+        "state33"
+      ],
+      "route_id": "06aac127115fb85fddd55d6b7a025e5d1b6d1ec907a22da49e462b30fbe504b9",
+      "signedness": "unsigned",
+      "variables": [
+        "state34",
+        "state32",
+        "state33"
+      ],
+      "width": 32
+    },
+    {
+      "family": "sum_equality",
+      "relations": [
+        "eq"
+      ],
+      "requested_variables": [
+        "state32",
+        "state30",
+        "state33"
+      ],
+      "route_id": "93449fc0446154855701d1251ab103343ada98810fb61fa1a027d39d36fc8a85",
+      "signedness": "unsigned",
+      "variables": [
+        "state32",
+        "state30",
+        "state33"
+      ],
+      "width": 32
+    },
+    {
+      "family": "sum_equality",
+      "relations": [
+        "eq"
+      ],
+      "requested_variables": [
+        "state34",
+        "state31",
+        "state33"
+      ],
+      "route_id": "3227d6c3b1552ed2e19d3b321fc5b4686b3de03c60defc24022e71c7777c9d08",
+      "signedness": "unsigned",
+      "variables": [
+        "state34",
+        "state31",
+        "state33"
+      ],
+      "width": 32
+    },
+    {
+      "family": "sum_equality",
+      "relations": [
+        "eq"
+      ],
+      "requested_variables": [
+        "state34",
+        "state31",
+        "state32"
+      ],
+      "route_id": "973593b7f136748f304eba2661cbdec33c6e4a6016bdd3d1c9302b5baedb75cd",
+      "signedness": "unsigned",
+      "variables": [
+        "state34",
+        "state31",
+        "state32"
+      ],
+      "width": 32
+    }
+  ],
+  "schema": "pono-llm-phase-grammar-run-v1",
+  "selected_candidate_count": 14,
+  "selected_indices": [
+    2,
+    7,
+    11,
+    16,
+    20,
+    25,
+    29,
+    34,
+    38,
+    43,
+    47,
+    52,
+    56,
+    61
+  ],
+  "selection_role": "safe-baseline-hard",
+  "source_family_id": "348dcd12f337ed254c2896d444c3d3122d552a933adff74da2b68d49eb4d2d92",
+  "verdict": "unknown"
+}

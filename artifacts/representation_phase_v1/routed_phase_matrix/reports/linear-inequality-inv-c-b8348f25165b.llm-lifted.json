@@ -1,0 +1,32 @@
+{
+  "arm": "lifted",
+  "benchmark_id": "loop-invariants/linear-inequality-inv-c.btor2",
+  "benchmark_sha256": "e9f24ede41024d1e2d7e10a837fd1e4588f183ac5ea6367112225749069a1876",
+  "candidate_sha256": "",
+  "certificate": {
+    "checks": [],
+    "ok": false
+  },
+  "certificate_time_sec": 0.0,
+  "config": "llm-lifted",
+  "end_to_end_with_generation_sec": 2.972119651734829,
+  "engine": "",
+  "error": "",
+  "expected_verdict": "safe",
+  "generation_time_sec": 2.972119651734829,
+  "matrix_schema": "pono-llm-routed-phase-matrix-v1",
+  "model_checker_time_sec": 0.0,
+  "offline_time_sec": 0.0,
+  "phase_count": 6,
+  "pilot_sha256": "723eb64225d2c39fb4fba8477759307d184f6b40293ac4407dd3518aa1d34d0c",
+  "pool_candidate_count": 0,
+  "route_count": 0,
+  "route_error": "route 0.variables must have one common width",
+  "route_sha256": "",
+  "route_valid": false,
+  "router": "llm",
+  "selected_candidate_count": 0,
+  "selection_role": "safe-baseline-hard",
+  "source_family_id": "dc97bca5346ebea9d4e8c92b83e2ca9cd8148855ad4c6ca4860ef9c37fdb5a67",
+  "verdict": "invalid-route"
+}

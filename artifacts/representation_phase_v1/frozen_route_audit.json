@@ -1,0 +1,6422 @@
+{
+  "benchmark_count": 21,
+  "candidate_count": 353,
+  "capture_integrity_sha256": "3bbb517519cf3630149739361e54ba546bb192c418d8643f59ad22aca4b2ccee",
+  "capture_manifest_sha256": "a4cbe7f9c144cc3cd74c832f0a67ca66bb076642a74f4bb0c9617e071168c006",
+  "family_counts": {
+    "affine": 5,
+    "pairwise_offset": 74,
+    "quadratic_recurrence": 6,
+    "sum_equality": 3,
+    "unary": 70,
+    "unmatched": 195
+  },
+  "matched_candidate_count": 158,
+  "matched_candidate_ratio": "0.447592",
+  "records": [
+    {
+      "benchmark_id": "2020/hwmcc20/btor2/bv/2019/goel/crafted/paper_v3/paper_v3.btor2",
+      "btor2_sha256": "5f4bea23079862d10f28b221780ba084438de5d814b1091ae8bf7f745bdcb964",
+      "candidate_count": 18,
+      "classifications": [
+        {
+          "candidate_index": 0,
+          "candidate_sha256": "a45dd6229d64f895c331d9fb4193fbca45e1d93a4b1bc2c294343991ab827eec",
+          "family": "pairwise_offset",
+          "matched": true,
+          "route_id": "00a8db1c4f61f88705b7ec26a2ccd32ec1706e3a6d53d35bd7da26b989190c6f",
+          "state_refs": [
+            "state5",
+            "state7"
+          ]
+        },
+        {
+          "candidate_index": 1,
+          "candidate_sha256": "296e39af4b5d1f4934a0882c73a8e1506b9d48c82b635b848e412aa8a823d700",
+          "matched": false,
+          "reason": "outside-preregistered-bounded-grammar",
+          "state_refs": [
+            "state7"
+          ]
+        },
+        {
+          "candidate_index": 2,
+          "candidate_sha256": "3f6bbf227af30f485fd6dc1be28b63cff64b65f46a011fdcb80295fb7466673a",
+          "matched": false,
+          "reason": "outside-preregistered-bounded-grammar",
+          "state_refs": [
+            "state5"
+          ]
+        },
+        {
+          "candidate_index": 3,
+          "candidate_sha256": "de8369b94385ad18609a22e107c4450bc20ede2a1e89e39d53a492d4e96e40d1",
+          "family": "unary",
+          "matched": true,
+          "route_id": "8eaa8b682a2d3418a484d0c412298b438397fc2fa6754f31e53803be85f93230",
+          "state_refs": [
+            "state7"
+          ]
+        },
+        {
+          "candidate_index": 4,
+          "candidate_sha256": "32d2aaeba9d32e0d270b65d00525187916fa43d4694eb650e27c99e5de30007f",
+          "family": "unary",
+          "matched": true,
+          "route_id": "fe8392783e483eb999e4a731a5de3541986c32950b2a5ea27a8acbd673492fc4",
+          "state_refs": [
+            "state5"
+          ]
+        },
+        {
+          "candidate_index": 5,
+          "candidate_sha256": "261da7a448a872bde887d83ec7d68b895f2f611d898e92ecdba6ac0600a89db9",
+          "matched": false,
+          "reason": "outside-preregistered-bounded-grammar",
+          "state_refs": [
+            "state5",
+            "state7"
+          ]
+        },
+        {
+          "candidate_index": 6,
+          "candidate_sha256": "6a5c1cf65c9c392d87243c0b35a8cf71b45494f822f295a7636a756340dc2787",
+          "matched": false,
+          "reason": "outside-preregistered-bounded-grammar",
+          "state_refs": [
+            "state5",
+            "state7"
+          ]
+        },
+        {
+          "candidate_index": 7,
+          "candidate_sha256": "fb17788d90004773c9d9bc092b98a27162294cb0c4d7da41361569afb159221d",
+          "family": "pairwise_offset",
+          "matched": true,
+          "route_id": "00a8db1c4f61f88705b7ec26a2ccd32ec1706e3a6d53d35bd7da26b989190c6f",
+          "state_refs": [
+            "state5",
+            "state7"
+          ]
+        },
+        {
+          "candidate_index": 8,
+          "candidate_sha256": "f9d0b3facaeb51fe73666f0f50199552c291f3fbb51509cb08a2c0efd29e3997",
+          "family": "pairwise_offset",
+          "matched": true,
+          "route_id": "00a8db1c4f61f88705b7ec26a2ccd32ec1706e3a6d53d35bd7da26b989190c6f",
+          "state_refs": [
+            "state5",
+            "state7"
+          ]
+        },
+        {
+          "candidate_index": 9,
+          "candidate_sha256": "8e17c67e4e60d794ede1db81ca0f3d1f45cca01f5c799ecf3b21019d19dba09e",
+          "matched": false,
+          "reason": "outside-preregistered-bounded-grammar",
+          "state_refs": [
+            "state5",
+            "state7"
+          ]
+        },
+        {
+          "candidate_index": 10,
+          "candidate_sha256": "c06e71b0c26bb3fdbf06106deba04fd8795cd4cb357322686af8c625ca07db31",
+          "matched": false,
+          "reason": "outside-preregistered-bounded-grammar",
+          "state_refs": [
+            "state5",
+            "state7"
+          ]
+        },
+        {
+          "candidate_index": 11,
+          "candidate_sha256": "62d290c148e1432ac72aecdb5fe451ea8b1531e2686ab818b8fad902724d631c",
+          "family": "pairwise_offset",
+          "matched": true,
+          "route_id": "00a8db1c4f61f88705b7ec26a2ccd32ec1706e3a6d53d35bd7da26b989190c6f",
+          "state_refs": [
+            "state5",
+            "state7"
+          ]
+        },
+        {
+          "candidate_index": 12,
+          "candidate_sha256": "1179d74bd3e54568da4ca3ebf35e7c1f744ddaf7734adff44acf5310748a0140",
+          "matched": false,
+          "reason": "outside-preregistered-bounded-grammar",
+          "state_refs": [
+            "state5",
+            "state7"
+          ]
+        },
+        {
+          "candidate_index": 13,
+          "candidate_sha256": "ce8e865c9e489a35ef40d21b085ef589115b03b35b09c3532a9d0a59d60932f6",
+          "matched": false,
+          "reason": "outside-preregistered-bounded-grammar",
+          "state_refs": [
+            "state5",
+            "state7"
+          ]
+        },
+        {
+          "candidate_index": 14,
+          "candidate_sha256": "6c65a92ad389558033d8e323e05601f8e4da01c4ad286708addca84236a9c66d",
+          "matched": false,
+          "reason": "outside-preregistered-bounded-grammar",
+          "state_refs": [
+            "state5",
+            "state7"
+          ]
+        },
+        {
+          "candidate_index": 15,
+          "candidate_sha256": "9427ce92a8c673f90c721edf344fce4f1675a21afea92fa6ce9fe1ff92984f4e",
+          "matched": false,
+          "reason": "outside-preregistered-bounded-grammar",
+          "state_refs": [
+            "state5",
+            "state7"
+          ]
+        },
+        {
+          "candidate_index": 16,
+          "candidate_sha256": "4a45c6bb4b18af701859c4419beb9c9c2368bd2cc94f5114bf55c3b70c1bff38",
+          "family": "pairwise_offset",
+          "matched": true,
+          "route_id": "00a8db1c4f61f88705b7ec26a2ccd32ec1706e3a6d53d35bd7da26b989190c6f",
+          "state_refs": [
+            "state5",
+            "state7"
+          ]
+        },
+        {
+          "candidate_index": 17,
+          "candidate_sha256": "ab746009f246ab4efc0674ccfd6c491b2330308e0f92a9415acb74200e14f8b5",
+          "matched": false,
+          "reason": "outside-preregistered-bounded-grammar",
+          "state_refs": [
+            "state5",
+            "state7"
+          ]
+        }
+      ],
+      "family_counts": {
+        "pairwise_offset": 5,
+        "unary": 2,
+        "unmatched": 11
+      },
+      "matched_candidate_count": 7,
+      "matched_candidate_ratio": "0.388889",
+      "predicate_sha256": "4c35591b4567bf9439ad0e4e3eb3382e6a2870b2b60850ffaf852aaa9b74e06b",
+      "route_sha256": "53995010483545536920518fadd0ac73aaab31ac226bd71d02d2efeb207bab6f",
+      "routed_expansion_candidate_count": 27,
+      "routes": [
+        {
+          "family": "pairwise_offset",
+          "offsets": [
+            0,
+            1,
+            -1,
+            2,
+            -2
+          ],
+          "relations": [
+            "eq",
+            "le",
+            "ge"
+          ],
+          "signedness": "unsigned",
+          "variables": [
+            "state5",
+            "state7"
+          ]
+        },
+        {
+          "constants": [
+            0,
+            1
+          ],
+          "family": "unary",
+          "relations": [
+            "eq",
+            "le",
+            "ge"
+          ],
+          "signedness": "unsigned",
+          "variables": [
+            "state7"
+          ]
+        },
+        {
+          "constants": [
+            0,
+            1
+          ],
+          "family": "unary",
+          "relations": [
+            "eq",
+            "le",
+            "ge"
+          ],
+          "signedness": "unsigned",
+          "variables": [
+            "state5"
+          ]
+        }
+      ],
+      "unique_route_count": 3
+    },
+    {
+      "benchmark_id": "2024/btor2/2024/hku/arithmetic_circuits/93.c/93.c.btor2",
+      "btor2_sha256": "47163e14a1fe4780f9383bb98be91fcde5ba0c166eb70f4353c269b129173666",
+      "candidate_count": 10,
+      "classifications": [
+        {
+          "candidate_index": 0,
+          "candidate_sha256": "7c9f27b9660ebe2b8521760fc24b66245bd1266223f1357ce25d6a4f19ea06bc",
+          "family": "pairwise_offset",
+          "matched": true,
+          "route_id": "87b995bf2a85b267cde8a40ef399dad00b63509e5155de2d60e913d388ac47fe",
+          "state_refs": [
+            "state10",
+            "state7"
+          ]
+        },
+        {
+          "candidate_index": 1,
+          "candidate_sha256": "537229a0f49c740b70c33d661bebd9ffab03d21d2cd882c28eada37a35d48021",
+          "matched": false,
+          "reason": "outside-preregistered-bounded-grammar",
+          "state_refs": [
+            "state20",
+            "state23",
+            "state7"
+          ]
+        },
+        {
+          "candidate_index": 2,
+          "candidate_sha256": "97518b42b06c7eea3c7a95fc12d24789352de59836365dae3b5a58399051525f",
+          "matched": false,
+          "reason": "outside-preregistered-bounded-grammar",
+          "state_refs": [
+            "state20",
+            "state7"
+          ]
+        },
+        {
+          "candidate_index": 3,
+          "candidate_sha256": "3381a75661b36fe4cdf49b537e3679c14fb3cb698739a96b61781000f49f5e16",
+          "matched": false,
+          "reason": "outside-preregistered-bounded-grammar",
+          "state_refs": [
+            "state23",
+            "state7"
+          ]
+        },
+        {
+          "candidate_index": 4,
+          "candidate_sha256": "49db6de9c7ed93daf93727e02d62702867e6c02c58d550fc7ae57e764ed8f8f7",
+          "family": "unary",
+          "matched": true,
+          "route_id": "a84c7d2ca877db3f8da4b9d4da49ee9b6d66c269cc5415e223d2e82fa083eac8",
+          "state_refs": [
+            "state10"
+          ]
+        },
+        {
+          "candidate_index": 5,
+          "candidate_sha256": "6fd54a70adbdf069a9aa62d4a1786137cf9639d737e64916fed5e423f074fd7e",
+          "matched": false,
+          "reason": "outside-preregistered-bounded-grammar",
+          "state_refs": [
+            "state10",
+            "state20",
+            "state23"
+          ]
+        },
+        {
+          "candidate_index": 6,
+          "candidate_sha256": "83a9a967f84d7a8433a05fe2ce9e6f1be84268048663c817419656f4a26ebee8",
+          "matched": false,
+          "reason": "more-than-three-state-references",
+          "state_refs": [
+            "state10",
+            "state20",
+            "state23",
+            "state7"
+          ]
+        },
+        {
+          "candidate_index": 7,
+          "candidate_sha256": "4d946176a348437bfb753078f6a422f15328142cd989afe25e1ffaee1087e5c4",
+          "matched": false,
+          "reason": "outside-preregistered-bounded-grammar",
+          "state_refs": [
+            "state10",
+            "state20",
+            "state23"
+          ]
+        },
+        {
+          "candidate_index": 8,
+          "candidate_sha256": "127f11a8d490260315fa49894c759ea53844699430226426e6ae71aa8c99d958",
+          "matched": false,
+          "reason": "more-than-three-state-references",
+          "state_refs": [
+            "state10",
+            "state20",
+            "state23",
+            "state7"
+          ]
+        },
+        {
+          "candidate_index": 9,
+          "candidate_sha256": "f1d182bfc8d499cf03e42ae3747ebecb772799c65b30fff2e5418cbbaaaed1d5",
+          "matched": false,
+          "reason": "more-than-three-state-references",
+          "state_refs": [
+            "state10",
+            "state20",
+            "state23",
+            "state7"
+          ]
+        }
+      ],
+      "family_counts": {
+        "pairwise_offset": 1,
+        "unary": 1,
+        "unmatched": 8
+      },
+      "matched_candidate_count": 2,
+      "matched_candidate_ratio": "0.200000",
+      "predicate_sha256": "cff14543ec34fd55d522a4e5c8c5b44874558955eda536c59b3316e162edbec3",
+      "route_sha256": "014e8f516b447e1be23fbba65f86ade8d8f30bca13db4bfe0e9f9e18694bd252",
+      "routed_expansion_candidate_count": 24,
+      "routes": [
+        {
+          "family": "pairwise_offset",
+          "offsets": [
+            0,
+            1,
+            -1,
+            2,
+            -2
+          ],
+          "relations": [
+            "eq",
+            "le",
+            "ge"
+          ],
+          "signedness": "unsigned",
+          "variables": [
+            "state7",
+            "state10"
+          ]
+        },
+        {
+          "constants": [
+            0,
+            1
+          ],
+          "family": "unary",
+          "relations": [
+            "eq",
+            "le",
+            "ge"
+          ],
+          "signedness": "unsigned",
+          "variables": [
+            "state10"
+          ]
+        }
+      ],
+      "unique_route_count": 2
+    },
+    {
+      "benchmark_id": "2024/btor2/2024/hku/arithmetic_circuits/fib_30/fib_30.btor2",
+      "btor2_sha256": "1bb400e569c8c3147d38245dd81458261c4cc0aac565286e731dabf78fdf31d0",
+      "candidate_count": 16,
+      "classifications": [
+        {
+          "candidate_index": 0,
+          "candidate_sha256": "3598fc39dcc5d672d5b3a9bd35bfa3234e6d45f2929169d2a2bd8360ca6bec1f",
+          "family": "pairwise_offset",
+          "matched": true,
+          "route_id": "6bf6fc5c7abbaad755ca68add911b92d9d436e155825aabfe7ea531683ee2ff1",
+          "state_refs": [
+            "state10",
+            "state14"
+          ]
+        },
+        {
+          "candidate_index": 1,
+          "candidate_sha256": "5bf291a7218717bc06439da4fb35b828c93fb795fee491144edeb298f39a0ed8",
+          "family": "unary",
+          "matched": true,
+          "route_id": "8eaa8b682a2d3418a484d0c412298b438397fc2fa6754f31e53803be85f93230",
+          "state_refs": [
+            "state7"
+          ]
+        },
+        {
+          "candidate_index": 2,
+          "candidate_sha256": "d132f2cdd577a61b140c44ac7244840e40d4a5a2c7cafb7f902aa2b39b7b8611",
+          "matched": false,
+          "reason": "outside-preregistered-bounded-grammar",
+          "state_refs": [
+            "state10",
+            "state7"
+          ]
+        },
+        {
+          "candidate_index": 3,
+          "candidate_sha256": "1703c83f33368fb154f7d62e532804725612b2cb1897bbfacc637a517cdf40b0",
+          "family": "unary",
+          "matched": true,
+          "route_id": "4416e63d3068fedf8c322cb396699a7d3f2adbc3d64302347ad2fec7fde07a09",
+          "state_refs": [
+            "state14"
+          ]
+        },
+        {
+          "candidate_index": 4,
+          "candidate_sha256": "112a95d6f1f9b498333a1bd9b40bef036de53a0f1784b552f7126ebe7d38acdb",
+          "matched": false,
+          "reason": "outside-preregistered-bounded-grammar",
+          "state_refs": [
+            "state10",
+            "state14",
+            "state7"
+          ]
+        },
+        {
+          "candidate_index": 5,
+          "candidate_sha256": "eb82b48763cf713954015bfe491275991dd9dfbb487058609afb2b86429c5014",
+          "family": "quadratic_recurrence",
+          "matched": true,
+          "route_id": "9e6d3de5d079595f11a84646c8a7f1591461653a1341c0c4ddcc7edfa96b4635",
+          "state_refs": [
+            "state10",
+            "state7"
+          ]
+        },
+        {
+          "candidate_index": 6,
+          "candidate_sha256": "9fccf66ebed786001d50d8e011754d1f5beebf6bf2e1e328e9d31ca904e7af0d",
+          "family": "unary",
+          "matched": true,
+          "route_id": "a84c7d2ca877db3f8da4b9d4da49ee9b6d66c269cc5415e223d2e82fa083eac8",
+          "state_refs": [
+            "state10"
+          ]
+        },
+        {
+          "candidate_index": 7,
+          "candidate_sha256": "8662771f908d433056e7a7c9fb34bad15a9fa147df11d496bbd621b6ffa203ef",
+          "matched": false,
+          "reason": "outside-preregistered-bounded-grammar",
+          "state_refs": [
+            "state10",
+            "state7"
+          ]
+        },
+        {
+          "candidate_index": 8,
+          "candidate_sha256": "7625d56e13e45c1cd4aaf09b432ef703955ac68246a5246ca37389a528ce3e6f",
+          "matched": false,
+          "reason": "outside-preregistered-bounded-grammar",
+          "state_refs": [
+            "state10",
+            "state14",
+            "state7"
+          ]
+        },
+        {
+          "candidate_index": 9,
+          "candidate_sha256": "b962cc6894a21106d72dc489a74100d10ebf794a7fbaa74f2165cfb6fd3b4881",
+          "matched": false,
+          "reason": "outside-preregistered-bounded-grammar",
+          "state_refs": [
+            "state10",
+            "state7"
+          ]
+        },
+        {
+          "candidate_index": 10,
+          "candidate_sha256": "6e59df78d1a236121a947d723c8409f8f1a579b929d879edad5ccb514e111c89",
+          "matched": false,
+          "reason": "outside-preregistered-bounded-grammar",
+          "state_refs": [
+            "state10",
+            "state14",
+            "state7"
+          ]
+        },
+        {
+          "candidate_index": 11,
+          "candidate_sha256": "e6abad17d73dad6eaa9f729ab2c73f054cb8a3bbb150f858a4d87ccbc8bcdc61",
+          "matched": false,
+          "reason": "outside-preregistered-bounded-grammar",
+          "state_refs": [
+            "state10",
+            "state14",
+            "state7"
+          ]
+        },
+        {
+          "candidate_index": 12,
+          "candidate_sha256": "30089fdf9519c7f6d0f9ef17de78b1395ef3f3cbe2958984fc3c8948e20a4f80",
+          "matched": false,
+          "reason": "outside-preregistered-bounded-grammar",
+          "state_refs": [
+            "state10",
+            "state14"
+          ]
+        },
+        {
+          "candidate_index": 13,
+          "candidate_sha256": "d9a7557ae3744746c4e75c8ca78f861791c3a4fe9387f0645aedc8bae445ceb3",
+          "family": "quadratic_recurrence",
+          "matched": true,
+          "route_id": "9e6d3de5d079595f11a84646c8a7f1591461653a1341c0c4ddcc7edfa96b4635",
+          "state_refs": [
+            "state10",
+            "state7"
+          ]
+        },
+        {
+          "candidate_index": 14,
+          "candidate_sha256": "ccc42064e74c343afc6bfab3e436bba8ceb3f26be0ff56e15179e8bdcdf9c155",
+          "matched": false,
+          "reason": "outside-preregistered-bounded-grammar",
+          "state_refs": [
+            "state10",
+            "state7"
+          ]
+        },
+        {
+          "candidate_index": 15,
+          "candidate_sha256": "a1dd40b64519bd45c26ba75fcb267c933fbddf13659d7753eef5cf23520b6fef",
+          "matched": false,
+          "reason": "outside-preregistered-bounded-grammar",
+          "state_refs": [
+            "state10",
+            "state14",
+            "state7"
+          ]
+        }
+      ],
+      "family_counts": {
+        "pairwise_offset": 1,
+        "quadratic_recurrence": 2,
+        "unary": 3,
+        "unmatched": 10
+      },
+      "matched_candidate_count": 6,
+      "matched_candidate_ratio": "0.375000",
+      "predicate_sha256": "5e359cb33547fe6ae5e3c9a8bea324d04505e9dba57772eb1cc061e0ecbc62b3",
+      "route_sha256": "de8318972bdae94e41e88638cc8603ed026b6735097ecab84a061be921ec3104",
+      "routed_expansion_candidate_count": 48,
+      "routes": [
+        {
+          "constants": [
+            0,
+            1
+          ],
+          "family": "unary",
+          "relations": [
+            "eq",
+            "le",
+            "ge"
+          ],
+          "signedness": "unsigned",
+          "variables": [
+            "state14"
+          ]
+        },
+        {
+          "family": "pairwise_offset",
+          "offsets": [
+            0,
+            1,
+            -1,
+            2,
+            -2
+          ],
+          "relations": [
+            "eq",
+            "le",
+            "ge"
+          ],
+          "signedness": "unsigned",
+          "variables": [
+            "state10",
+            "state14"
+          ]
+        },
+        {
+          "constants": [
+            0,
+            1
+          ],
+          "family": "unary",
+          "relations": [
+            "eq",
+            "le",
+            "ge"
+          ],
+          "signedness": "unsigned",
+          "variables": [
+            "state7"
+          ]
+        },
+        {
+          "counter_shifts": [
+            -1,
+            0,
+            1
+          ],
+          "family": "quadratic_recurrence",
+          "relations": [
+            "eq"
+          ],
+          "scales": [
+            1,
+            2,
+            3,
+            4
+          ],
+          "signedness": "unsigned",
+          "variables": [
+            "state7",
+            "state10"
+          ]
+        },
+        {
+          "constants": [
+            0,
+            1
+          ],
+          "family": "unary",
+          "relations": [
+            "eq",
+            "le",
+            "ge"
+          ],
+          "signedness": "unsigned",
+          "variables": [
+            "state10"
+          ]
+        }
+      ],
+      "unique_route_count": 5
+    },
+    {
+      "benchmark_id": "2024/btor2/2024/hku/arithmetic_circuits/fib_37/fib_37.btor2",
+      "btor2_sha256": "bc94066b5bdaade1ec8c162f91b9745224020425bf60ae251b0814b99b2d2c89",
+      "candidate_count": 10,
+      "classifications": [
+        {
+          "candidate_index": 0,
+          "candidate_sha256": "d797b5e6b5165ffd86c1d32923162356e8674db48c109857f46271f382cb8a51",
+          "family": "pairwise_offset",
+          "matched": true,
+          "route_id": "3a71eed7407c23ae588e4171dcbf1d9ff07b9841e61a9170b9b515dbf2bffcb3",
+          "state_refs": [
+            "state11",
+            "state14"
+          ]
+        },
+        {
+          "candidate_index": 1,
+          "candidate_sha256": "174b48c291e576dddaa1459e0903877da7cf0afd3b7baaa93cd915b7b2c70569",
+          "family": "pairwise_offset",
+          "matched": true,
+          "route_id": "5f7ecdfb1ad84483c6ac0a68d162672e1b712e80fc3005fa0f46b7940dd45060",
+          "state_refs": [
+            "state14",
+            "state7"
+          ]
+        },
+        {
+          "candidate_index": 2,
+          "candidate_sha256": "d16b0f0303c88e624d5a0540b14eed745a9d322507f82f3b4b33492a4e835202",
+          "family": "pairwise_offset",
+          "matched": true,
+          "route_id": "5807d71e7683d59c56acd5cfd50948d8e878055a27f440db80efebfd0ec1197d",
+          "state_refs": [
+            "state11",
+            "state7"
+          ]
+        },
+        {
+          "candidate_index": 3,
+          "candidate_sha256": "3441a2bdbfb93c2f43ad2125550706bdeba1f3820a52c05d71d4839fb8b517a1",
+          "family": "unary",
+          "matched": true,
+          "route_id": "8bf817a3521cf9e59c785523b6bdc194c7740e578123787589a0acfe86337cf6",
+          "state_refs": [
+            "state11"
+          ]
+        },
+        {
+          "candidate_index": 4,
+          "candidate_sha256": "cca7161c2c1fa97f3e081b26eb87bd2c04fc5c2d2935c2d1cd054e20f43945d6",
+          "family": "unary",
+          "matched": true,
+          "route_id": "4416e63d3068fedf8c322cb396699a7d3f2adbc3d64302347ad2fec7fde07a09",
+          "state_refs": [
+            "state14"
+          ]
+        },
+        {
+          "candidate_index": 5,
+          "candidate_sha256": "5bf291a7218717bc06439da4fb35b828c93fb795fee491144edeb298f39a0ed8",
+          "family": "unary",
+          "matched": true,
+          "route_id": "8eaa8b682a2d3418a484d0c412298b438397fc2fa6754f31e53803be85f93230",
+          "state_refs": [
+            "state7"
+          ]
+        },
+        {
+          "candidate_index": 6,
+          "candidate_sha256": "b11cb378207d9a67b7706a5e0aeb2992d807b897413e0f4e9253ed2b69873ad6",
+          "matched": false,
+          "reason": "outside-preregistered-bounded-grammar",
+          "state_refs": [
+            "state11",
+            "state14"
+          ]
+        },
+        {
+          "candidate_index": 7,
+          "candidate_sha256": "190d3d7e324bd81caac1f8af037befaa07fd00790bcd045bf6d0b052431ab706",
+          "family": "unary",
+          "matched": true,
+          "route_id": "8bf817a3521cf9e59c785523b6bdc194c7740e578123787589a0acfe86337cf6",
+          "state_refs": [
+            "state11"
+          ]
+        },
+        {
+          "candidate_index": 8,
+          "candidate_sha256": "bb2f6c34d855b9b04067d14a2eafb6131084b9b7f964f2d542661996aacb0830",
+          "matched": false,
+          "reason": "outside-preregistered-bounded-grammar",
+          "state_refs": [
+            "state14",
+            "state7"
+          ]
+        },
+        {
+          "candidate_index": 9,
+          "candidate_sha256": "9ed8e4dc6d4551bf15ac8884f20a97749d4226f772deda7b9aa56ad913065584",
+          "matched": false,
+          "reason": "outside-preregistered-bounded-grammar",
+          "state_refs": [
+            "state11",
+            "state14",
+            "state7"
+          ]
+        }
+      ],
+      "family_counts": {
+        "pairwise_offset": 3,
+        "unary": 4,
+        "unmatched": 3
+      },
+      "matched_candidate_count": 7,
+      "matched_candidate_ratio": "0.700000",
+      "predicate_sha256": "e3071984d698af6cbb662965d6c422b7f3d0c508a73581bea0065c228ea15cb1",
+      "route_sha256": "13bacc436b3fa62af7e910b0f28c6b8ee9fa7dbc2469038c349c69d6f836d1f5",
+      "routed_expansion_candidate_count": 66,
+      "routes": [
+        {
+          "family": "pairwise_offset",
+          "offsets": [
+            0,
+            1,
+            -1,
+            2,
+            -2
+          ],
+          "relations": [
+            "eq",
+            "le",
+            "ge"
+          ],
+          "signedness": "unsigned",
+          "variables": [
+            "state11",
+            "state14"
+          ]
+        },
+        {
+          "constants": [
+            0,
+            1
+          ],
+          "family": "unary",
+          "relations": [
+            "eq",
+            "le",
+            "ge"
+          ],
+          "signedness": "unsigned",
+          "variables": [
+            "state14"
+          ]
+        },
+        {
+          "family": "pairwise_offset",
+          "offsets": [
+            0,
+            1,
+            -1,
+            2,
+            -2
+          ],
+          "relations": [
+            "eq",
+            "le",
+            "ge"
+          ],
+          "signedness": "unsigned",
+          "variables": [
+            "state7",
+            "state11"
+          ]
+        },
+        {
+          "family": "pairwise_offset",
+          "offsets": [
+            0,
+            1,
+            -1,
+            2,
+            -2
+          ],
+          "relations": [
+            "eq",
+            "le",
+            "ge"
+          ],
+          "signedness": "unsigned",
+          "variables": [
+            "state7",
+            "state14"
+          ]
+        },
+        {
+          "constants": [
+            0,
+            1
+          ],
+          "family": "unary",
+          "relations": [
+            "eq",
+            "le",
+            "ge"
+          ],
+          "signedness": "unsigned",
+          "variables": [
+            "state11"
+          ]
+        },
+        {
+          "constants": [
+            0,
+            1
+          ],
+          "family": "unary",
+          "relations": [
+            "eq",
+            "le",
+            "ge"
+          ],
+          "signedness": "unsigned",
+          "variables": [
+            "state7"
+          ]
+        }
+      ],
+      "unique_route_count": 6
+    },
+    {
+      "benchmark_id": "2024/btor2/2024/sosylab/nla-digbench-scaling/dijkstra-u_valuebound1.btor2",
+      "btor2_sha256": "27ee3e350e8cf4de52b849c26803dc2c9ed17cd613994f432b93fbd50c869f71",
+      "candidate_count": 20,
+      "classifications": [
+        {
+          "candidate_index": 0,
+          "candidate_sha256": "3b2516198b6239c6387edaa16e62bbf5977e3032d92286287f765b5f6f280392",
+          "family": "pairwise_offset",
+          "matched": true,
+          "route_id": "688b7883ae4f4a38a4fa719a021dcf994799ead1ef145999cdfc83702da528ed",
+          "state_refs": [
+            "state18",
+            "state19"
+          ]
+        },
+        {
+          "candidate_index": 1,
+          "candidate_sha256": "ae9c7e02f7974ca1b1bee304426449e13841a010c07636e792466d051db9c37d",
+          "family": "pairwise_offset",
+          "matched": true,
+          "route_id": "7491cce71e6aa6227d8ca0583e1dbffa95e534d8964303b78af720ae32ca6a6f",
+          "state_refs": [
+            "state20",
+            "state21"
+          ]
+        },
+        {
+          "candidate_index": 2,
+          "candidate_sha256": "4b553062ddac4978b1ee3e669523ee259f18e0c76d89d797c30bad32e1774404",
+          "family": "pairwise_offset",
+          "matched": true,
+          "route_id": "0bf07937f30a78162682f2713f95b3ef36465583491c8ef4afcb011e9b03a573",
+          "state_refs": [
+            "state19",
+            "state22"
+          ]
+        },
+        {
+          "candidate_index": 3,
+          "candidate_sha256": "f3b78eb8fbf63a0e8635e628ad28175259c9be97fab0d0b3970c45314c80c016",
+          "matched": false,
+          "reason": "more-than-three-state-references",
+          "state_refs": [
+            "state18",
+            "state20",
+            "state21",
+            "state22"
+          ]
+        },
+        {
+          "candidate_index": 4,
+          "candidate_sha256": "3cab39b43c9ae3d77bc49784f8a250734c4666c7b45b361f41ad061e92ee78ff",
+          "family": "unary",
+          "matched": true,
+          "route_id": "2482ec8ace3a623f306058d62da95de3626850ebf8ec374c2746aff63546cf80",
+          "state_refs": [
+            "state18"
+          ]
+        },
+        {
+          "candidate_index": 5,
+          "candidate_sha256": "16b0698a121499c1568cc6c86543fd121d82d450da82da7c498448efab7db584",
+          "family": "unary",
+          "matched": true,
+          "route_id": "7a9055229dfd40dbcfb13dc23c24490446459983946f67d83bb99ea82670db80",
+          "state_refs": [
+            "state19"
+          ]
+        },
+        {
+          "candidate_index": 6,
+          "candidate_sha256": "650804e21079eae148b97f319ef55c29877c6c8afa04aa6c260703aab15d3607",
+          "matched": false,
+          "reason": "more-than-three-state-references",
+          "state_refs": [
+            "state18",
+            "state19",
+            "state20",
+            "state21",
+            "state22"
+          ]
+        },
+        {
+          "candidate_index": 7,
+          "candidate_sha256": "7c4ad381291c166ede9157360476f192131018ba8276115e17a151dd4c75b16d",
+          "family": "unary",
+          "matched": true,
+          "route_id": "2482ec8ace3a623f306058d62da95de3626850ebf8ec374c2746aff63546cf80",
+          "state_refs": [
+            "state18"
+          ]
+        },
+        {
+          "candidate_index": 8,
+          "candidate_sha256": "cf8afba8422517fdeab5f7ba006a17dcfb48bf74e8d7bf69e4af69528ae4de3c",
+          "family": "unary",
+          "matched": true,
+          "route_id": "525c6b31643021f74d94718745b46ce73a7929d12f037c35cad598633f5a798e",
+          "state_refs": [
+            "state20"
+          ]
+        },
+        {
+          "candidate_index": 9,
+          "candidate_sha256": "c312f3fbf22ca6062c0cb80d9dc50cd18965758595747e954db8ca66ed924fd0",
+          "family": "unary",
+          "matched": true,
+          "route_id": "dc98135df895d62deb4dbf0d36ea18dfc16d9ace0778291763577517c2657c71",
+          "state_refs": [
+            "state21"
+          ]
+        },
+        {
+          "candidate_index": 10,
+          "candidate_sha256": "fa4921edb37f4010651dea1b0bed85d36213c044f4b69e710abfd513eb0f8745",
+          "family": "unary",
+          "matched": true,
+          "route_id": "56d103fda17930fa9a8a70b2a6d5291b479f945374746a33e72f0e9366fceb65",
+          "state_refs": [
+            "state22"
+          ]
+        },
+        {
+          "candidate_index": 11,
+          "candidate_sha256": "70a8daa5f4af27c55d156f5929da716b0b78d1bb03f135f4b6393126265a682f",
+          "family": "pairwise_offset",
+          "matched": true,
+          "route_id": "f47dbad3c9c8e7365e7d5e9ea104fdd9e2cd854ede6ae9b6fc375bae35c42a7d",
+          "state_refs": [
+            "state21",
+            "state22"
+          ]
+        },
+        {
+          "candidate_index": 12,
+          "candidate_sha256": "2409dbef5c6400afcdf1478af854ed89b98961ace175545396f31e312f8476fd",
+          "family": "pairwise_offset",
+          "matched": true,
+          "route_id": "271d0eb96ffc4c016b3be7bd35c45789141675a02d33c50bfb99fdfec110d0ae",
+          "state_refs": [
+            "state20",
+            "state22"
+          ]
+        },
+        {
+          "candidate_index": 13,
+          "candidate_sha256": "e1513ca1cd80db463a591524b90deab881bafdf551472ab657bb0683d2bdea27",
+          "family": "pairwise_offset",
+          "matched": true,
+          "route_id": "05f2cd46809b27232d2af74d193e6826dd5270e685603015a09d79d8f943e496",
+          "state_refs": [
+            "state18",
+            "state20"
+          ]
+        },
+        {
+          "candidate_index": 14,
+          "candidate_sha256": "1835cd35330dce728826163d0cb11837cb876b5dab620bf8c15abb60aa88d5b1",
+          "family": "pairwise_offset",
+          "matched": true,
+          "route_id": "f20a3cb4d41bf37e7726bdad2346f049ac1419da6b66fa2c1d1055702215c019",
+          "state_refs": [
+            "state18",
+            "state21"
+          ]
+        },
+        {
+          "candidate_index": 15,
+          "candidate_sha256": "e2573a4d7ee5f76163db3a54bb16e876f553b09622ce2e4bb4916e16711f34e2",
+          "family": "pairwise_offset",
+          "matched": true,
+          "route_id": "83a5cf720eb995869ddcf07059a74538f5aeaaf4565f35713512e624af30ff00",
+          "state_refs": [
+            "state18",
+            "state22"
+          ]
+        },
+        {
+          "candidate_index": 16,
+          "candidate_sha256": "137c0e892494a13f2e0a025c6003fc6e6052201ce4ae3abb2500162f4e98d6a6",
+          "family": "pairwise_offset",
+          "matched": true,
+          "route_id": "21a78f74b79dc13dcaa6e6a127aef00e407eada009e967a8edd5511a8d877d3f",
+          "state_refs": [
+            "state19",
+            "state20"
+          ]
+        },
+        {
+          "candidate_index": 17,
+          "candidate_sha256": "e35d8cec360a8ed25449aba2dfa3092523df91e94a07ec3d7abc33b46460f46a",
+          "family": "pairwise_offset",
+          "matched": true,
+          "route_id": "57753a240f6ce6844c39e32104d23e539ecf59b5de5d5bf005a9840daffe4763",
+          "state_refs": [
+            "state19",
+            "state21"
+          ]
+        },
+        {
+          "candidate_index": 18,
+          "candidate_sha256": "d252c9343d97eb39593e40eb268bc909afa3b380c829917be36e5396107cf2ab",
+          "family": "sum_equality",
+          "matched": true,
+          "route_id": "aee12969316f476dd0252709d37a48b498f189c7f3c515d968ecba93901b65c6",
+          "state_refs": [
+            "state20",
+            "state21",
+            "state22"
+          ]
+        },
+        {
+          "candidate_index": 19,
+          "candidate_sha256": "04a8338c98fd874c4070d09489957cf8166cd8a4671f1acf8db0c419db1bce8b",
+          "family": "sum_equality",
+          "matched": true,
+          "route_id": "cee0ead5864aeaf0f20319ec1dd8897da71b0e6d4463237a67e7711cd904cc0a",
+          "state_refs": [
+            "state18",
+            "state19",
+            "state21"
+          ]
+        }
+      ],
+      "family_counts": {
+        "pairwise_offset": 10,
+        "sum_equality": 2,
+        "unary": 6,
+        "unmatched": 2
+      },
+      "matched_candidate_count": 18,
+      "matched_candidate_ratio": "0.900000",
+      "predicate_sha256": "f12cf4be87eaa97c9ad40aa936fd1cef53ff7b8c30ba9f71cdb38c67650b61cc",
+      "route_sha256": "61749ebaf2b0a1b6dfa1e0150080b94c9aa8db55b961ec710e236e2e467f2a4a",
+      "routed_expansion_candidate_count": 182,
+      "routes": [
+        {
+          "family": "pairwise_offset",
+          "offsets": [
+            0,
+            1,
+            -1,
+            2,
+            -2
+          ],
+          "relations": [
+            "eq",
+            "le",
+            "ge"
+          ],
+          "signedness": "unsigned",
+          "variables": [
+            "state18",
+            "state20"
+          ]
+        },
+        {
+          "family": "pairwise_offset",
+          "offsets": [
+            0,
+            1,
+            -1,
+            2,
+            -2
+          ],
+          "relations": [
+            "eq",
+            "le",
+            "ge"
+          ],
+          "signedness": "unsigned",
+          "variables": [
+            "state19",
+            "state22"
+          ]
+        },
+        {
+          "family": "pairwise_offset",
+          "offsets": [
+            0,
+            1,
+            -1,
+            2,
+            -2
+          ],
+          "relations": [
+            "eq",
+            "le",
+            "ge"
+          ],
+          "signedness": "unsigned",
+          "variables": [
+            "state19",
+            "state20"
+          ]
+        },
+        {
+          "constants": [
+            0,
+            1
+          ],
+          "family": "unary",
+          "relations": [
+            "eq",
+            "le",
+            "ge"
+          ],
+          "signedness": "unsigned",
+          "variables": [
+            "state18"
+          ]
+        },
+        {
+          "family": "pairwise_offset",
+          "offsets": [
+            0,
+            1,
+            -1,
+            2,
+            -2
+          ],
+          "relations": [
+            "eq",
+            "le",
+            "ge"
+          ],
+          "signedness": "unsigned",
+          "variables": [
+            "state20",
+            "state22"
+          ]
+        },
+        {
+          "constants": [
+            0,
+            1
+          ],
+          "family": "unary",
+          "relations": [
+            "eq",
+            "le",
+            "ge"
+          ],
+          "signedness": "unsigned",
+          "variables": [
+            "state20"
+          ]
+        },
+        {
+          "constants": [
+            0,
+            1
+          ],
+          "family": "unary",
+          "relations": [
+            "eq",
+            "le",
+            "ge"
+          ],
+          "signedness": "unsigned",
+          "variables": [
+            "state22"
+          ]
+        },
+        {
+          "family": "pairwise_offset",
+          "offsets": [
+            0,
+            1,
+            -1,
+            2,
+            -2
+          ],
+          "relations": [
+            "eq",
+            "le",
+            "ge"
+          ],
+          "signedness": "unsigned",
+          "variables": [
+            "state19",
+            "state21"
+          ]
+        },
+        {
+          "family": "pairwise_offset",
+          "offsets": [
+            0,
+            1,
+            -1,
+            2,
+            -2
+          ],
+          "relations": [
+            "eq",
+            "le",
+            "ge"
+          ],
+          "signedness": "unsigned",
+          "variables": [
+            "state18",
+            "state19"
+          ]
+        },
+        {
+          "family": "pairwise_offset",
+          "offsets": [
+            0,
+            1,
+            -1,
+            2,
+            -2
+          ],
+          "relations": [
+            "eq",
+            "le",
+            "ge"
+          ],
+          "signedness": "unsigned",
+          "variables": [
+            "state20",
+            "state21"
+          ]
+        },
+        {
+          "constants": [
+            0,
+            1
+          ],
+          "family": "unary",
+          "relations": [
+            "eq",
+            "le",
+            "ge"
+          ],
+          "signedness": "unsigned",
+          "variables": [
+            "state19"
+          ]
+        },
+        {
+          "family": "pairwise_offset",
+          "offsets": [
+            0,
+            1,
+            -1,
+            2,
+            -2
+          ],
+          "relations": [
+            "eq",
+            "le",
+            "ge"
+          ],
+          "signedness": "unsigned",
+          "variables": [
+            "state18",
+            "state22"
+          ]
+        },
+        {
+          "family": "sum_equality",
+          "relations": [
+            "eq"
+          ],
+          "signedness": "unsigned",
+          "variables": [
+            "state21",
+            "state20",
+            "state22"
+          ]
+        },
+        {
+          "family": "sum_equality",
+          "relations": [
+            "eq"
+          ],
+          "signedness": "unsigned",
+          "variables": [
+            "state19",
+            "state18",
+            "state21"
+          ]
+        },
+        {
+          "constants": [
+            0,
+            1
+          ],
+          "family": "unary",
+          "relations": [
+            "eq",
+            "le",
+            "ge"
+          ],
+          "signedness": "unsigned",
+          "variables": [
+            "state21"
+          ]
+        },
+        {
+          "family": "pairwise_offset",
+          "offsets": [
+            0,
+            1,
+            -1,
+            2,
+            -2
+          ],
+          "relations": [
+            "eq",
+            "le",
+            "ge"
+          ],
+          "signedness": "unsigned",
+          "variables": [
+            "state18",
+            "state21"
+          ]
+        },
+        {
+          "family": "pairwise_offset",
+          "offsets": [
+            0,
+            1,
+            -1,
+            2,
+            -2
+          ],
+          "relations": [
+            "eq",
+            "le",
+            "ge"
+          ],
+          "signedness": "unsigned",
+          "variables": [
+            "state21",
+            "state22"
+          ]
+        }
+      ],
+      "unique_route_count": 17
+    },
+    {
+      "benchmark_id": "2024/btor2/2024/sosylab/nla-digbench-scaling/egcd-ll_unwindbound10.btor2",
+      "btor2_sha256": "e4c403715215037126383eb0b64039f5aa8842700bc68690b3966ef529ffa865",
+      "candidate_count": 20,
+      "classifications": [
+        {
+          "candidate_index": 0,
+          "candidate_sha256": "9b91dbf98e16c24b2589d88eadfcecd5e05fe2c6a9f57eff61672ea40460c61a",
+          "matched": false,
+          "reason": "outside-preregistered-bounded-grammar",
+          "state_refs": [
+            "state35"
+          ]
+        },
+        {
+          "candidate_index": 1,
+          "candidate_sha256": "7137ac76ab97d68deebac5ab0800a452188cbf4218224c624eaa7e58126afba9",
+          "matched": false,
+          "reason": "more-than-three-state-references",
+          "state_refs": [
+            "state27",
+            "state28",
+            "state30",
+            "state31"
+          ]
+        },
+        {
+          "candidate_index": 2,
+          "candidate_sha256": "a47c31b3566bd94e5ca082357b009b1f7f1107ba7b2419e32bdeef59b1fadb05",
+          "matched": false,
+          "reason": "outside-preregistered-bounded-grammar",
+          "state_refs": [
+            "state28",
+            "state31"
+          ]
+        },
+        {
+          "candidate_index": 3,
+          "candidate_sha256": "29a04df72ac605058bd51e980de791a08dcc2d15226040fe4afdbf0e66fa25e9",
+          "matched": false,
+          "reason": "more-than-three-state-references",
+          "state_refs": [
+            "state27",
+            "state28",
+            "state29",
+            "state32",
+            "state33"
+          ]
+        },
+        {
+          "candidate_index": 4,
+          "candidate_sha256": "fb5b097c496972cee834d7399c177e52468beca33b295a9a77411af2cfe745aa",
+          "family": "pairwise_offset",
+          "matched": true,
+          "route_id": "6da7a5843dfdc8d640b2296c6cd9de9e62be1a6b61386f8790c7e58bdf36f672",
+          "state_refs": [
+            "state27",
+            "state28"
+          ]
+        },
+        {
+          "candidate_index": 5,
+          "candidate_sha256": "75b7f0e2e1aa35c4be629098f00a3d976b6e075993fa8bbd525ffcd21a00f24e",
+          "matched": false,
+          "reason": "outside-preregistered-bounded-grammar",
+          "state_refs": [
+            "state33",
+            "state34"
+          ]
+        },
+        {
+          "candidate_index": 6,
+          "candidate_sha256": "fe4709e378981c20345bcfcbbd2c22d8ba94ac5a5c01b7b34359aa45c2ef1b7c",
+          "family": "unary",
+          "matched": true,
+          "route_id": "d120d1fcfefa04aad1c68343b092a1bf52ed32ad5553c0b121d47328d913b7b3",
+          "state_refs": [
+            "state31"
+          ]
+        },
+        {
+          "candidate_index": 7,
+          "candidate_sha256": "241d1ced5c44dac8afc741399e95f371a212f536f5f5a778f7dc2d996467c954",
+          "matched": false,
+          "reason": "outside-preregistered-bounded-grammar",
+          "state_refs": [
+            "state28"
+          ]
+        },
+        {
+          "candidate_index": 8,
+          "candidate_sha256": "bab173e834fe3cf1168ae436a9758b40836f2c79cabf850d77fda61f2081e08d",
+          "matched": false,
+          "reason": "more-than-three-state-references",
+          "state_refs": [
+            "state27",
+            "state28",
+            "state29",
+            "state30",
+            "state31"
+          ]
+        },
+        {
+          "candidate_index": 9,
+          "candidate_sha256": "15b9b3e7cb75ba61883a4c79ba51d64bf147549635e794b002cc012807dafbb3",
+          "matched": false,
+          "reason": "more-than-three-state-references",
+          "state_refs": [
+            "state27",
+            "state28",
+            "state31",
+            "state32",
+            "state33"
+          ]
+        },
+        {
+          "candidate_index": 10,
+          "candidate_sha256": "e65639b08552476dc6d750cffc9c3dfd2135b3f3d260ff5eabe8dab76b18f133",
+          "matched": false,
+          "reason": "more-than-three-state-references",
+          "state_refs": [
+            "state29",
+            "state30",
+            "state32",
+            "state33"
+          ]
+        },
+        {
+          "candidate_index": 11,
+          "candidate_sha256": "1ee3c364931f59efbe41e18df7b81f3af73c61f89a90d722813dae7fec17c56a",
+          "matched": false,
+          "reason": "outside-preregistered-bounded-grammar",
+          "state_refs": [
+            "state27",
+            "state28",
+            "state31"
+          ]
+        },
+        {
+          "candidate_index": 12,
+          "candidate_sha256": "ebab63d556eb2d9be4a19ef71de2aab3fea8619e4d106da73127001f68bee5cd",
+          "matched": false,
+          "reason": "outside-preregistered-bounded-grammar",
+          "state_refs": [
+            "state27",
+            "state28"
+          ]
+        },
+        {
+          "candidate_index": 13,
+          "candidate_sha256": "ee1c89c1b0c40cb04731a7d3d1d156239a0f712ed8d4c6e7fe76573c82a09dc5",
+          "matched": false,
+          "reason": "more-than-three-state-references",
+          "state_refs": [
+            "state27",
+            "state28",
+            "state31",
+            "state35"
+          ]
+        },
+        {
+          "candidate_index": 14,
+          "candidate_sha256": "d8b181d18c816067fa19d68bb766acaccf2b3f8dc681c10f225c83bb91cf4349",
+          "matched": false,
+          "reason": "outside-preregistered-bounded-grammar",
+          "state_refs": [
+            "state27",
+            "state28",
+            "state31"
+          ]
+        },
+        {
+          "candidate_index": 15,
+          "candidate_sha256": "32edb065a379ba5930dd50a6de9b5b0661f69541089fced91fcd042736bfa9a2",
+          "family": "unary",
+          "matched": true,
+          "route_id": "35b121bbba9e67e97bd94321becb14c65544cc529da48795de395ce4c71b416a",
+          "state_refs": [
+            "state35"
+          ]
+        },
+        {
+          "candidate_index": 16,
+          "candidate_sha256": "d24a21d92d086dbcb8f45db4424475b0659a7727eb5e2e57061c4ad203df8d5e",
+          "matched": false,
+          "reason": "outside-preregistered-bounded-grammar",
+          "state_refs": [
+            "state27",
+            "state28"
+          ]
+        },
+        {
+          "candidate_index": 17,
+          "candidate_sha256": "bbffdd2a5bc6881a38ae4893427956152f0014dd32ecf07094fd7d9a0acf34e5",
+          "matched": false,
+          "reason": "more-than-three-state-references",
+          "state_refs": [
+            "state27",
+            "state28",
+            "state29",
+            "state30",
+            "state31"
+          ]
+        },
+        {
+          "candidate_index": 18,
+          "candidate_sha256": "e52919070316aac9a5445566aa9723436a84428695c3cb73b0ba65a6995011e4",
+          "family": "unary",
+          "matched": true,
+          "route_id": "af5583875fcce2bdadb0a39a524488fe820e07468ffeeded3f44d45f48ae9224",
+          "state_refs": [
+            "state32"
+          ]
+        },
+        {
+          "candidate_index": 19,
+          "candidate_sha256": "111dbf0b6ad20c427cd6c6078063e1897bdb6298a4d5b53089e433662ffb20fa",
+          "family": "unary",
+          "matched": true,
+          "route_id": "2e65dfff11a1cf20d1e724f21305877b5f455118b6a0f32b445460354d787e1a",
+          "state_refs": [
+            "state33"
+          ]
+        }
+      ],
+      "family_counts": {
+        "pairwise_offset": 1,
+        "unary": 4,
+        "unmatched": 15
+      },
+      "matched_candidate_count": 5,
+      "matched_candidate_ratio": "0.250000",
+      "predicate_sha256": "df6308895f8f4cf87bc11d770fa958f4f4497e2c8e50b6de3322642d37d03428",
+      "route_sha256": "2fe305d3aeb322f44ef0839ebf7ee09660a1dedcc0298b2e78d9ac23c7d3944d",
+      "routed_expansion_candidate_count": 39,
+      "routes": [
+        {
+          "constants": [
+            0,
+            1
+          ],
+          "family": "unary",
+          "relations": [
+            "eq",
+            "le",
+            "ge"
+          ],
+          "signedness": "unsigned",
+          "variables": [
+            "state33"
+          ]
+        },
+        {
+          "constants": [
+            0,
+            1
+          ],
+          "family": "unary",
+          "relations": [
+            "eq",
+            "le",
+            "ge"
+          ],
+          "signedness": "unsigned",
+          "variables": [
+            "state35"
+          ]
+        },
+        {
+          "family": "pairwise_offset",
+          "offsets": [
+            0,
+            1,
+            -1,
+            2,
+            -2
+          ],
+          "relations": [
+            "eq",
+            "le",
+            "ge"
+          ],
+          "signedness": "unsigned",
+          "variables": [
+            "state27",
+            "state28"
+          ]
+        },
+        {
+          "constants": [
+            0,
+            1
+          ],
+          "family": "unary",
+          "relations": [
+            "eq",
+            "le",
+            "ge"
+          ],
+          "signedness": "unsigned",
+          "variables": [
+            "state32"
+          ]
+        },
+        {
+          "constants": [
+            0,
+            1
+          ],
+          "family": "unary",
+          "relations": [
+            "eq",
+            "le",
+            "ge"
+          ],
+          "signedness": "unsigned",
+          "variables": [
+            "state31"
+          ]
+        }
+      ],
+      "unique_route_count": 5
+    },
+    {
+      "benchmark_id": "2024/btor2/2024/sosylab/nla-digbench-scaling/egcd3-ll_unwindbound2.btor2",
+      "btor2_sha256": "ab4af5b27e33acf693ab72193f78e0193688e8d125da6dbabebb9f63c4d8f904",
+      "candidate_count": 13,
+      "classifications": [
+        {
+          "candidate_index": 0,
+          "candidate_sha256": "5f8d4b4f621611bc8e36fd00bb98ffefcb9ce8df282a79b246726dd491a1887d",
+          "family": "pairwise_offset",
+          "matched": true,
+          "route_id": "b47e9b3e10b85982c85fee91a69e1c97e89a567b97b6e966552aa64af3207e86",
+          "state_refs": [
+            "state29",
+            "state30"
+          ]
+        },
+        {
+          "candidate_index": 1,
+          "candidate_sha256": "bed14f3746cc07581c2becabb35fef4e4a1063061e6defe17fc993f019dfbdd7",
+          "family": "pairwise_offset",
+          "matched": true,
+          "route_id": "b4a9038ed3e66aeaf03c737fb603707fe2c1520248160abea7a6817a951647e2",
+          "state_refs": [
+            "state31",
+            "state32"
+          ]
+        },
+        {
+          "candidate_index": 2,
+          "candidate_sha256": "fea2f35675b318f691c7e035a3f5d819761ec3df82a9b70e695ed575f0a55ab0",
+          "family": "pairwise_offset",
+          "matched": true,
+          "route_id": "99025a1a989e0dec4ffc6736140b62da8cad31c848583449bf8c68ed357d93e6",
+          "state_refs": [
+            "state34",
+            "state35"
+          ]
+        },
+        {
+          "candidate_index": 3,
+          "candidate_sha256": "e60655f600138e2482b65d97f36863ba4cc671d69f7cf0bd026a25adc46a5ea1",
+          "family": "pairwise_offset",
+          "matched": true,
+          "route_id": "ae4bed1b8a0bc115b8d9c982a5e0d4bd13b485bcda95823ce2641d1b4efa1354",
+          "state_refs": [
+            "state36",
+            "state37"
+          ]
+        },
+        {
+          "candidate_index": 4,
+          "candidate_sha256": "ed00089189044ff7fc8ebb89a0bede2bcd242894999de894d543231589c1954f",
+          "family": "pairwise_offset",
+          "matched": true,
+          "route_id": "15bb2b6c5dc3fafeba0293b40905cbfcf201ef6fb0897075f7ae569c2472a991",
+          "state_refs": [
+            "state40",
+            "state41"
+          ]
+        },
+        {
+          "candidate_index": 5,
+          "candidate_sha256": "0179f5cb3324a036ec62af386ec5386e0f6cf4e8d6622d065d7a2f8ecafda58e",
+          "family": "unary",
+          "matched": true,
+          "route_id": "3d6a019493f384b4ac52e2efae032101741c5595f5c762403c51bcda7a6508a6",
+          "state_refs": [
+            "state39"
+          ]
+        },
+        {
+          "candidate_index": 6,
+          "candidate_sha256": "4bd97461694c3af429a914a5e45640c38376991542fb5b0f12bb04d8c5b62f86",
+          "matched": false,
+          "reason": "outside-preregistered-bounded-grammar",
+          "state_refs": [
+            "state39"
+          ]
+        },
+        {
+          "candidate_index": 7,
+          "candidate_sha256": "26e74985ae0f2fc14154ae603d0dc1512af039c05d8670a4cc330b68f6340e89",
+          "family": "unary",
+          "matched": true,
+          "route_id": "2e65dfff11a1cf20d1e724f21305877b5f455118b6a0f32b445460354d787e1a",
+          "state_refs": [
+            "state33"
+          ]
+        },
+        {
+          "candidate_index": 8,
+          "candidate_sha256": "ea3bfb6d38197341a43612272ed53dd875bb96ff53d1a26fece7c95725bea435",
+          "family": "pairwise_offset",
+          "matched": true,
+          "route_id": "2bb6b7cfbeda6b6bf5a0e93fc7cbef42cd6045478ff02c6e3604e044fe363aa9",
+          "state_refs": [
+            "state33",
+            "state38"
+          ]
+        },
+        {
+          "candidate_index": 9,
+          "candidate_sha256": "0ae6a2989b89d71ea3f05506486633bcba4021db98aa633e2bd6e18c928028f9",
+          "family": "unary",
+          "matched": true,
+          "route_id": "b1ee7c617ee6aa7068d191bca353112d80d0e99dd506c2cbfd0f677264d73ff5",
+          "state_refs": [
+            "state38"
+          ]
+        },
+        {
+          "candidate_index": 10,
+          "candidate_sha256": "6bf2eb82f99d29aded66ade5b3f048d16e1d432ebd710765fb737cb21f0d9f4a",
+          "family": "unary",
+          "matched": true,
+          "route_id": "3d6a019493f384b4ac52e2efae032101741c5595f5c762403c51bcda7a6508a6",
+          "state_refs": [
+            "state39"
+          ]
+        },
+        {
+          "candidate_index": 11,
+          "candidate_sha256": "f3579f3ed95aeb8497b240878cea8fd93c74752d1530aab39de846daaf3c5d01",
+          "family": "unary",
+          "matched": true,
+          "route_id": "98efc4385d502fee6d246309eba020e0103555476b6dc43dc7ecddba23626fea",
+          "state_refs": [
+            "state40"
+          ]
+        },
+        {
+          "candidate_index": 12,
+          "candidate_sha256": "8b63f147f25d9fddde2bb3b34f05018e75afcd4a4bf0142c7dc5d3c5be762898",
+          "family": "unary",
+          "matched": true,
+          "route_id": "e1609c4eba858a416c4e232054d9477bfbf24c017aad3d7cbaa4be5c315cfc7f",
+          "state_refs": [
+            "state41"
+          ]
+        }
+      ],
+      "family_counts": {
+        "pairwise_offset": 6,
+        "unary": 6,
+        "unmatched": 1
+      },
+      "matched_candidate_count": 12,
+      "matched_candidate_ratio": "0.923077",
+      "predicate_sha256": "669498b5c94b2b5ce67b87f461183759598b58b6f0a8776440fde517646cc584",
+      "route_sha256": "15a02f11a425d33aefdabd47db4dd5fafdb4c08955f0bd02810f6919efbfce85",
+      "routed_expansion_candidate_count": 120,
+      "routes": [
+        {
+          "family": "pairwise_offset",
+          "offsets": [
+            0,
+            1,
+            -1,
+            2,
+            -2
+          ],
+          "relations": [
+            "eq",
+            "le",
+            "ge"
+          ],
+          "signedness": "unsigned",
+          "variables": [
+            "state40",
+            "state41"
+          ]
+        },
+        {
+          "family": "pairwise_offset",
+          "offsets": [
+            0,
+            1,
+            -1,
+            2,
+            -2
+          ],
+          "relations": [
+            "eq",
+            "le",
+            "ge"
+          ],
+          "signedness": "unsigned",
+          "variables": [
+            "state33",
+            "state38"
+          ]
+        },
+        {
+          "constants": [
+            0,
+            1
+          ],
+          "family": "unary",
+          "relations": [
+            "eq",
+            "le",
+            "ge"
+          ],
+          "signedness": "unsigned",
+          "variables": [
+            "state33"
+          ]
+        },
+        {
+          "constants": [
+            0,
+            1
+          ],
+          "family": "unary",
+          "relations": [
+            "eq",
+            "le",
+            "ge"
+          ],
+          "signedness": "unsigned",
+          "variables": [
+            "state39"
+          ]
+        },
+        {
+          "constants": [
+            0,
+            1
+          ],
+          "family": "unary",
+          "relations": [
+            "eq",
+            "le",
+            "ge"
+          ],
+          "signedness": "unsigned",
+          "variables": [
+            "state40"
+          ]
+        },
+        {
+          "family": "pairwise_offset",
+          "offsets": [
+            0,
+            1,
+            -1,
+            2,
+            -2
+          ],
+          "relations": [
+            "eq",
+            "le",
+            "ge"
+          ],
+          "signedness": "unsigned",
+          "variables": [
+            "state34",
+            "state35"
+          ]
+        },
+        {
+          "family": "pairwise_offset",
+          "offsets": [
+            0,
+            1,
+            -1,
+            2,
+            -2
+          ],
+          "relations": [
+            "eq",
+            "le",
+            "ge"
+          ],
+          "signedness": "unsigned",
+          "variables": [
+            "state36",
+            "state37"
+          ]
+        },
+        {
+          "constants": [
+            0,
+            1
+          ],
+          "family": "unary",
+          "relations": [
+            "eq",
+            "le",
+            "ge"
+          ],
+          "signedness": "unsigned",
+          "variables": [
+            "state38"
+          ]
+        },
+        {
+          "family": "pairwise_offset",
+          "offsets": [
+            0,
+            1,
+            -1,
+            2,
+            -2
+          ],
+          "relations": [
+            "eq",
+            "le",
+            "ge"
+          ],
+          "signedness": "unsigned",
+          "variables": [
+            "state29",
+            "state30"
+          ]
+        },
+        {
+          "family": "pairwise_offset",
+          "offsets": [
+            0,
+            1,
+            -1,
+            2,
+            -2
+          ],
+          "relations": [
+            "eq",
+            "le",
+            "ge"
+          ],
+          "signedness": "unsigned",
+          "variables": [
+            "state31",
+            "state32"
+          ]
+        },
+        {
+          "constants": [
+            0,
+            1
+          ],
+          "family": "unary",
+          "relations": [
+            "eq",
+            "le",
+            "ge"
+          ],
+          "signedness": "unsigned",
+          "variables": [
+            "state41"
+          ]
+        }
+      ],
+      "unique_route_count": 11
+    },
+    {
+      "benchmark_id": "2024/btor2/2024/sosylab/nla-digbench-scaling/freire1_valuebound1.btor2",
+      "btor2_sha256": "3419db378385752856c2bf03bb9b2f227f257ff5f7f119ee5cb60bf60c95ef91",
+      "candidate_count": 6,
+      "classifications": [
+        {
+          "candidate_index": 0,
+          "candidate_sha256": "15fb7eadbf63328038d6f89e5e0e6ca33b33d13027398518cfa31547d3734518",
+          "family": "unary",
+          "matched": true,
+          "route_id": "f669ef2ef0eac17998c794a371c2bce9792b94c054581a9bb52c7760e958a70e",
+          "state_refs": [
+            "state120"
+          ]
+        },
+        {
+          "candidate_index": 1,
+          "candidate_sha256": "7ed64a6385563a92f53cb7695986dd28d3bddc298b2bd2b3e7561bf5994fb4c2",
+          "family": "unary",
+          "matched": true,
+          "route_id": "f669ef2ef0eac17998c794a371c2bce9792b94c054581a9bb52c7760e958a70e",
+          "state_refs": [
+            "state120"
+          ]
+        },
+        {
+          "candidate_index": 2,
+          "candidate_sha256": "d46ce40c8b2a408a5b9159ef9dad3c4571dbb2317520f0d08cb0d624f407887d",
+          "family": "unary",
+          "matched": true,
+          "route_id": "f669ef2ef0eac17998c794a371c2bce9792b94c054581a9bb52c7760e958a70e",
+          "state_refs": [
+            "state120"
+          ]
+        },
+        {
+          "candidate_index": 3,
+          "candidate_sha256": "081d87034f103660bbd5cf39a330a073377ea76e16bf246c30f2cc48f3e37010",
+          "matched": false,
+          "reason": "outside-preregistered-bounded-grammar",
+          "state_refs": [
+            "state120"
+          ]
+        },
+        {
+          "candidate_index": 4,
+          "candidate_sha256": "ba9220ee4ab7e2da7fd7f7b1a49db78a2ab65ca480b9a08c2c9e551c16eb3475",
+          "matched": false,
+          "reason": "outside-preregistered-bounded-grammar",
+          "state_refs": [
+            "state120"
+          ]
+        },
+        {
+          "candidate_index": 5,
+          "candidate_sha256": "b27b7f276d49c310f833b1ed19ea7864d8bac582d9dbb948c212a40176ec7a96",
+          "family": "unary",
+          "matched": true,
+          "route_id": "f669ef2ef0eac17998c794a371c2bce9792b94c054581a9bb52c7760e958a70e",
+          "state_refs": [
+            "state120"
+          ]
+        }
+      ],
+      "family_counts": {
+        "unary": 4,
+        "unmatched": 2
+      },
+      "matched_candidate_count": 4,
+      "matched_candidate_ratio": "0.666667",
+      "predicate_sha256": "ebd043be4dd3d113ed0bb6162945e8231d26d6cc0c97287609c1ce5b954d6f92",
+      "route_sha256": "32565044a1726eb8a072f9b4140cd04ce37db2d0cef4581df9b5512beae551ca",
+      "routed_expansion_candidate_count": 6,
+      "routes": [
+        {
+          "constants": [
+            0,
+            1
+          ],
+          "family": "unary",
+          "relations": [
+            "eq",
+            "le",
+            "ge"
+          ],
+          "signedness": "unsigned",
+          "variables": [
+            "state120"
+          ]
+        }
+      ],
+      "unique_route_count": 1
+    },
+    {
+      "benchmark_id": "2024/btor2/2024/sosylab/nla-digbench-scaling/hard-ll_valuebound20.btor2",
+      "btor2_sha256": "6db2488767df2a27d060c36e19917239dd8b673bc15b35e4a28f8ee636a8daeb",
+      "candidate_count": 20,
+      "classifications": [
+        {
+          "candidate_index": 0,
+          "candidate_sha256": "50ecf0ff8887c7c1ed4ac84d4b25a67a7077a45b45a6de48526e0c87cb093843",
+          "matched": false,
+          "reason": "outside-preregistered-bounded-grammar",
+          "state_refs": [
+            "state22",
+            "state23",
+            "state24"
+          ]
+        },
+        {
+          "candidate_index": 1,
+          "candidate_sha256": "8d36c7000144d6b73f8fab75bbb770a85ec84ac889048281b161964cb640959f",
+          "matched": false,
+          "reason": "outside-preregistered-bounded-grammar",
+          "state_refs": [
+            "state22",
+            "state23",
+            "state25"
+          ]
+        },
+        {
+          "candidate_index": 2,
+          "candidate_sha256": "b78190cc66f4f8a6571cb74a0066cadaf6504a32945124e78de49a4d29814d57",
+          "matched": false,
+          "reason": "outside-preregistered-bounded-grammar",
+          "state_refs": [
+            "state23"
+          ]
+        },
+        {
+          "candidate_index": 3,
+          "candidate_sha256": "bff6d85f60eb73e00971d327ddaf5f129bc01dc759759d612af277dfb1277707",
+          "matched": false,
+          "reason": "outside-preregistered-bounded-grammar",
+          "state_refs": [
+            "state24"
+          ]
+        },
+        {
+          "candidate_index": 4,
+          "candidate_sha256": "947cd306ba5992316e8ebe0236a35f43cfd2d6b6ee69858a410413a94fcb5f47",
+          "family": "pairwise_offset",
+          "matched": true,
+          "route_id": "691163192b837d496b79c201346ff692dc058cae6761949eb9355a968226a8c4",
+          "state_refs": [
+            "state22",
+            "state23"
+          ]
+        },
+        {
+          "candidate_index": 5,
+          "candidate_sha256": "dcd105a9ad5263e8107a1784a8e9ba6701ba60a4043ac18e72d4d92bdb763d2e",
+          "family": "pairwise_offset",
+          "matched": true,
+          "route_id": "bab4ea2ca876eafcbb47f9136de8f0f1f00f6cfdf688e981fb67ee25747d0b79",
+          "state_refs": [
+            "state22",
+            "state24"
+          ]
+        },
+        {
+          "candidate_index": 6,
+          "candidate_sha256": "6fc9ec3c7475a0d5a268036b4776d48e6b3dde48ebf658e4e79cf65490a96afc",
+          "matched": false,
+          "reason": "outside-preregistered-bounded-grammar",
+          "state_refs": [
+            "state23",
+            "state25"
+          ]
+        },
+        {
+          "candidate_index": 7,
+          "candidate_sha256": "c4ec8a7d332eb297bab1e2902da4213cc5eea9cd106b6a382663d24bbc70318a",
+          "matched": false,
+          "reason": "more-than-three-state-references",
+          "state_refs": [
+            "state20",
+            "state23",
+            "state24",
+            "state25"
+          ]
+        },
+        {
+          "candidate_index": 8,
+          "candidate_sha256": "db91be2277f010b14b0c7b68436ac78687dfe4556c8da42c803370eaaf5c54cc",
+          "matched": false,
+          "reason": "outside-preregistered-bounded-grammar",
+          "state_refs": [
+            "state20",
+            "state25"
+          ]
+        },
+        {
+          "candidate_index": 9,
+          "candidate_sha256": "b4763f38887ee79576675833a60940084c685b46757209385596cc4999a27d1c",
+          "matched": false,
+          "reason": "outside-preregistered-bounded-grammar",
+          "state_refs": [
+            "state20"
+          ]
+        },
+        {
+          "candidate_index": 10,
+          "candidate_sha256": "5fe695c8896f209563b02876d7e9e3fe6c2e26a84f813f184ec5f0a95e8b1c5f",
+          "family": "pairwise_offset",
+          "matched": true,
+          "route_id": "691163192b837d496b79c201346ff692dc058cae6761949eb9355a968226a8c4",
+          "state_refs": [
+            "state22",
+            "state23"
+          ]
+        },
+        {
+          "candidate_index": 11,
+          "candidate_sha256": "c37f1deb5e83da7a406784427a64e96982642576bf0bb2562db191d37217342d",
+          "matched": false,
+          "reason": "more-than-three-state-references",
+          "state_refs": [
+            "state20",
+            "state22",
+            "state24",
+            "state25"
+          ]
+        },
+        {
+          "candidate_index": 12,
+          "candidate_sha256": "9a959787dea8ee32feb4622ed5966aa983a134756a462c7d60b693475de79c87",
+          "family": "unary",
+          "matched": true,
+          "route_id": "c639ec1136c16057aac02c4de18684ebfa5b1440373e3aabad170eca2c7bb3e5",
+          "state_refs": [
+            "state25"
+          ]
+        },
+        {
+          "candidate_index": 13,
+          "candidate_sha256": "268362295e5bd6435ad70fdb90c523c6be7133f53263967b28e682ce5f05437e",
+          "family": "unary",
+          "matched": true,
+          "route_id": "dc98135df895d62deb4dbf0d36ea18dfc16d9ace0778291763577517c2657c71",
+          "state_refs": [
+            "state21"
+          ]
+        },
+        {
+          "candidate_index": 14,
+          "candidate_sha256": "b3b81473d875890a23ce7db37327f1681191b79fe1a91953ee013ab0190a471a",
+          "matched": false,
+          "reason": "more-than-three-state-references",
+          "state_refs": [
+            "state22",
+            "state23",
+            "state24",
+            "state25"
+          ]
+        },
+        {
+          "candidate_index": 15,
+          "candidate_sha256": "ae9c7e02f7974ca1b1bee304426449e13841a010c07636e792466d051db9c37d",
+          "family": "pairwise_offset",
+          "matched": true,
+          "route_id": "7491cce71e6aa6227d8ca0583e1dbffa95e534d8964303b78af720ae32ca6a6f",
+          "state_refs": [
+            "state20",
+            "state21"
+          ]
+        },
+        {
+          "candidate_index": 16,
+          "candidate_sha256": "650e7b3b6bd33ff66d65c176b81f03c4da085e4b7b91e9277ad2c6103bcef192",
+          "family": "pairwise_offset",
+          "matched": true,
+          "route_id": "3f0f1c3cd3b34c591f7e71d42eb8832fdee734395cfc9a6a29d1ecf4092116f1",
+          "state_refs": [
+            "state22",
+            "state25"
+          ]
+        },
+        {
+          "candidate_index": 17,
+          "candidate_sha256": "3bc7891affe2151f369ac3f5ae592cd318f06da8cd57cc32464d6e547b936aaa",
+          "matched": false,
+          "reason": "outside-preregistered-bounded-grammar",
+          "state_refs": [
+            "state20"
+          ]
+        },
+        {
+          "candidate_index": 18,
+          "candidate_sha256": "3b15ae399b14f60dd48e22cff3bf681dd52e2a71dc79511b656539181bf4727a",
+          "matched": false,
+          "reason": "outside-preregistered-bounded-grammar",
+          "state_refs": [
+            "state21"
+          ]
+        },
+        {
+          "candidate_index": 19,
+          "candidate_sha256": "f5cc6f3389dd3fb2dc9ae84539fb9b3ec142c63199276dbf5faffc10745465c4",
+          "matched": false,
+          "reason": "more-than-three-state-references",
+          "state_refs": [
+            "state22",
+            "state23",
+            "state24",
+            "state25"
+          ]
+        }
+      ],
+      "family_counts": {
+        "pairwise_offset": 5,
+        "unary": 2,
+        "unmatched": 13
+      },
+      "matched_candidate_count": 7,
+      "matched_candidate_ratio": "0.350000",
+      "predicate_sha256": "ccba70caec5e6055b79d868503f1d4610d44f45d50c6fb53b654ed36d7eae3a7",
+      "route_sha256": "09d349106406d16dea26d67f5fb0997e4b7780c05c1cac58ce575fc9998906b3",
+      "routed_expansion_candidate_count": 72,
+      "routes": [
+        {
+          "family": "pairwise_offset",
+          "offsets": [
+            0,
+            1,
+            -1,
+            2,
+            -2
+          ],
+          "relations": [
+            "eq",
+            "le",
+            "ge"
+          ],
+          "signedness": "unsigned",
+          "variables": [
+            "state22",
+            "state25"
+          ]
+        },
+        {
+          "family": "pairwise_offset",
+          "offsets": [
+            0,
+            1,
+            -1,
+            2,
+            -2
+          ],
+          "relations": [
+            "eq",
+            "le",
+            "ge"
+          ],
+          "signedness": "unsigned",
+          "variables": [
+            "state22",
+            "state23"
+          ]
+        },
+        {
+          "family": "pairwise_offset",
+          "offsets": [
+            0,
+            1,
+            -1,
+            2,
+            -2
+          ],
+          "relations": [
+            "eq",
+            "le",
+            "ge"
+          ],
+          "signedness": "unsigned",
+          "variables": [
+            "state20",
+            "state21"
+          ]
+        },
+        {
+          "family": "pairwise_offset",
+          "offsets": [
+            0,
+            1,
+            -1,
+            2,
+            -2
+          ],
+          "relations": [
+            "eq",
+            "le",
+            "ge"
+          ],
+          "signedness": "unsigned",
+          "variables": [
+            "state22",
+            "state24"
+          ]
+        },
+        {
+          "constants": [
+            0,
+            1
+          ],
+          "family": "unary",
+          "relations": [
+            "eq",
+            "le",
+            "ge"
+          ],
+          "signedness": "unsigned",
+          "variables": [
+            "state25"
+          ]
+        },
+        {
+          "constants": [
+            0,
+            1
+          ],
+          "family": "unary",
+          "relations": [
+            "eq",
+            "le",
+            "ge"
+          ],
+          "signedness": "unsigned",
+          "variables": [
+            "state21"
+          ]
+        }
+      ],
+      "unique_route_count": 6
+    },
+    {
+      "benchmark_id": "2024/btor2/2024/sosylab/nla-digbench-scaling/lcm1_unwindbound2.btor2",
+      "btor2_sha256": "927372e149dafc1119ce5ee8aa99eea94acd22912610f86d7c9b3225fbcfe796",
+      "candidate_count": 18,
+      "classifications": [
+        {
+          "candidate_index": 0,
+          "candidate_sha256": "e9f007cebaab1bc323e79d91fb3111c360ae586e20c57720cd269e67e705bf68",
+          "matched": false,
+          "reason": "outside-preregistered-bounded-grammar",
+          "state_refs": [
+            "state18",
+            "state21",
+            "state23"
+          ]
+        },
+        {
+          "candidate_index": 1,
+          "candidate_sha256": "96d2fd8c5329d4c249f7b4b9fb70fe5dab0e634dd21c3b0a1eb1b7f24ea2d094",
+          "matched": false,
+          "reason": "outside-preregistered-bounded-grammar",
+          "state_refs": [
+            "state20",
+            "state22",
+            "state24"
+          ]
+        },
+        {
+          "candidate_index": 2,
+          "candidate_sha256": "4c6d8c5679fff20fbf268835dc5fa038429bdc62701e7f863a2249cc2f92b7d6",
+          "family": "pairwise_offset",
+          "matched": true,
+          "route_id": "f47dbad3c9c8e7365e7d5e9ea104fdd9e2cd854ede6ae9b6fc375bae35c42a7d",
+          "state_refs": [
+            "state21",
+            "state22"
+          ]
+        },
+        {
+          "candidate_index": 3,
+          "candidate_sha256": "462fad7f7667cc84a46e72fdadb1332720131a5c62ff840a39ba5b20efb4c82f",
+          "matched": false,
+          "reason": "more-than-three-state-references",
+          "state_refs": [
+            "state18",
+            "state20",
+            "state23",
+            "state24"
+          ]
+        },
+        {
+          "candidate_index": 4,
+          "candidate_sha256": "bdce36ae6a3e5f427da2ac152978c137d39bdf777903528236d421ff2a4434db",
+          "matched": false,
+          "reason": "outside-preregistered-bounded-grammar",
+          "state_refs": [
+            "state23",
+            "state24"
+          ]
+        },
+        {
+          "candidate_index": 5,
+          "candidate_sha256": "e6fc7271b67613a5720b300b7f630715405466117bdb380a2c35138250d228b5",
+          "family": "unary",
+          "matched": true,
+          "route_id": "7a9055229dfd40dbcfb13dc23c24490446459983946f67d83bb99ea82670db80",
+          "state_refs": [
+            "state19"
+          ]
+        },
+        {
+          "candidate_index": 6,
+          "candidate_sha256": "04cf0fd3d8d07d28f31e2164d82150438fd2b0a96d4202ddc7b924feb55d5fbc",
+          "matched": false,
+          "reason": "more-than-three-state-references",
+          "state_refs": [
+            "state18",
+            "state20",
+            "state21",
+            "state22",
+            "state23",
+            "state24"
+          ]
+        },
+        {
+          "candidate_index": 7,
+          "candidate_sha256": "0b56ce5693d397e80928544241f6a91784ab238279204a835df06d216c10ee4c",
+          "matched": false,
+          "reason": "outside-preregistered-bounded-grammar",
+          "state_refs": [
+            "state19"
+          ]
+        },
+        {
+          "candidate_index": 8,
+          "candidate_sha256": "1727a0f7d5e0d8ebe4f8f102bc9c683472014e86cbd4d80a98e3be58f8acf244",
+          "matched": false,
+          "reason": "outside-preregistered-bounded-grammar",
+          "state_refs": [
+            "state18"
+          ]
+        },
+        {
+          "candidate_index": 9,
+          "candidate_sha256": "b4763f38887ee79576675833a60940084c685b46757209385596cc4999a27d1c",
+          "matched": false,
+          "reason": "outside-preregistered-bounded-grammar",
+          "state_refs": [
+            "state20"
+          ]
+        },
+        {
+          "candidate_index": 10,
+          "candidate_sha256": "b84347e818e44a392f97259226d49445d895a2ca4079ae281c498bbbc1c00291",
+          "matched": false,
+          "reason": "more-than-three-state-references",
+          "state_refs": [
+            "state18",
+            "state20",
+            "state21",
+            "state22"
+          ]
+        },
+        {
+          "candidate_index": 11,
+          "candidate_sha256": "5410f3a1914cbd4a2502a393271634fdb108d2695adf0d90b9e2ffcd6867aca9",
+          "family": "pairwise_offset",
+          "matched": true,
+          "route_id": "7752746364a07d3942517ed2a8a70c17a688874be0a99f381acf83f4e6a5f692",
+          "state_refs": [
+            "state23",
+            "state24"
+          ]
+        },
+        {
+          "candidate_index": 12,
+          "candidate_sha256": "551d87760073edb90ba2d4688b64e2e4e33854761017c76fe092e2e1ec525aff",
+          "matched": false,
+          "reason": "outside-preregistered-bounded-grammar",
+          "state_refs": [
+            "state18",
+            "state20"
+          ]
+        },
+        {
+          "candidate_index": 13,
+          "candidate_sha256": "7d32d623f8d98d1a3daf289747e56ff63ac7c91b05bf6db6974bffc5755a3a85",
+          "matched": false,
+          "reason": "outside-preregistered-bounded-grammar",
+          "state_refs": [
+            "state21",
+            "state22"
+          ]
+        },
+        {
+          "candidate_index": 14,
+          "candidate_sha256": "475163d8a385bfa2aff78fb71d3b4bbbf37af0c0cc580b9d60e825d436662d5f",
+          "matched": false,
+          "reason": "outside-preregistered-bounded-grammar",
+          "state_refs": [
+            "state23",
+            "state24"
+          ]
+        },
+        {
+          "candidate_index": 15,
+          "candidate_sha256": "6b46274f12b9894578a205d0dd9ea3b9c593e75a56ac8d883726b482e5544817",
+          "matched": false,
+          "reason": "more-than-three-state-references",
+          "state_refs": [
+            "state21",
+            "state22",
+            "state23",
+            "state24"
+          ]
+        },
+        {
+          "candidate_index": 16,
+          "candidate_sha256": "c26a47d2616fea230aa3e1945ff7b5ccd59c6600140b4d4413627a9d60716455",
+          "matched": false,
+          "reason": "more-than-three-state-references",
+          "state_refs": [
+            "state18",
+            "state20",
+            "state23",
+            "state24"
+          ]
+        },
+        {
+          "candidate_index": 17,
+          "candidate_sha256": "620d54b83e06c5bdbb50468ae80798d286cd77e852891eceb9f1e6187efc1055",
+          "matched": false,
+          "reason": "outside-preregistered-bounded-grammar",
+          "state_refs": [
+            "state23",
+            "state24"
+          ]
+        }
+      ],
+      "family_counts": {
+        "pairwise_offset": 2,
+        "unary": 1,
+        "unmatched": 15
+      },
+      "matched_candidate_count": 3,
+      "matched_candidate_ratio": "0.166667",
+      "predicate_sha256": "092ae14500f395055829a0ad2a7531dd9888eabfcfb9c8d4150ade915f73b2ef",
+      "route_sha256": "0640cbb1519e39d6e6be49c3e929abaac59ec34c8453be1978874bc95a78489e",
+      "routed_expansion_candidate_count": 36,
+      "routes": [
+        {
+          "family": "pairwise_offset",
+          "offsets": [
+            0,
+            1,
+            -1,
+            2,
+            -2
+          ],
+          "relations": [
+            "eq",
+            "le",
+            "ge"
+          ],
+          "signedness": "unsigned",
+          "variables": [
+            "state23",
+            "state24"
+          ]
+        },
+        {
+          "constants": [
+            0,
+            1
+          ],
+          "family": "unary",
+          "relations": [
+            "eq",
+            "le",
+            "ge"
+          ],
+          "signedness": "unsigned",
+          "variables": [
+            "state19"
+          ]
+        },
+        {
+          "family": "pairwise_offset",
+          "offsets": [
+            0,
+            1,
+            -1,
+            2,
+            -2
+          ],
+          "relations": [
+            "eq",
+            "le",
+            "ge"
+          ],
+          "signedness": "unsigned",
+          "variables": [
+            "state21",
+            "state22"
+          ]
+        }
+      ],
+      "unique_route_count": 3
+    },
+    {
+      "benchmark_id": "2024/btor2/2024/sosylab/nla-digbench-scaling/lcm1_valuebound100.btor2",
+      "btor2_sha256": "f5154c1438162009e2930f3ca057ad6cd527933679870654342ca2394c921e29",
+      "candidate_count": 20,
+      "classifications": [
+        {
+          "candidate_index": 0,
+          "candidate_sha256": "e311453f037368be5b3a2e9b04c692fda89f859a694fe40a1ecca245a1f036d9",
+          "family": "pairwise_offset",
+          "matched": true,
+          "route_id": "adcc6766882ac6fd6ddd9684d5a9eb747974bbf1c5138faa2a01e742d598c5da",
+          "state_refs": [
+            "state17",
+            "state19"
+          ]
+        },
+        {
+          "candidate_index": 1,
+          "candidate_sha256": "4f66519409ad7e3c515724f21e963ee8ac45b704113647838acd2d2367934829",
+          "family": "pairwise_offset",
+          "matched": true,
+          "route_id": "05f2cd46809b27232d2af74d193e6826dd5270e685603015a09d79d8f943e496",
+          "state_refs": [
+            "state18",
+            "state20"
+          ]
+        },
+        {
+          "candidate_index": 2,
+          "candidate_sha256": "0c73b04d26b2149f93f9ea2e6d95f58509d7d33fcbfea0389774ed3bb83a6e7f",
+          "family": "pairwise_offset",
+          "matched": true,
+          "route_id": "8b90bc945273441951524dcf84b8b68a32d1acbb811f914e0ed3c0672ed4ade1",
+          "state_refs": [
+            "state17",
+            "state21"
+          ]
+        },
+        {
+          "candidate_index": 3,
+          "candidate_sha256": "628c73e03442fc8081f0af8aa512b740d725e05a8ce36e04680f9b85f0f22ea5",
+          "family": "pairwise_offset",
+          "matched": true,
+          "route_id": "83a5cf720eb995869ddcf07059a74538f5aeaaf4565f35713512e624af30ff00",
+          "state_refs": [
+            "state18",
+            "state22"
+          ]
+        },
+        {
+          "candidate_index": 4,
+          "candidate_sha256": "938e978e0664d6008c54f4da92fe71f6ae5f8c9ebba2882a8a76784ff171c2e1",
+          "matched": false,
+          "reason": "more-than-three-state-references",
+          "state_refs": [
+            "state19",
+            "state20",
+            "state21",
+            "state22"
+          ]
+        },
+        {
+          "candidate_index": 5,
+          "candidate_sha256": "11fe0d0a69e85ca9a3a4c210f39977fe08c7dc3a3da2dfb3d26945e2d3d124de",
+          "matched": false,
+          "reason": "more-than-three-state-references",
+          "state_refs": [
+            "state17",
+            "state18",
+            "state19",
+            "state20"
+          ]
+        },
+        {
+          "candidate_index": 6,
+          "candidate_sha256": "ee8c4260f1714e070d4756fda216a9836a32b33822a3712940ed4b8b3f69a89a",
+          "matched": false,
+          "reason": "more-than-three-state-references",
+          "state_refs": [
+            "state17",
+            "state18",
+            "state21",
+            "state22"
+          ]
+        },
+        {
+          "candidate_index": 7,
+          "candidate_sha256": "5a5691e72820938d729c680d161cdeb071c4f2ac92368a749d307339b8634d18",
+          "matched": false,
+          "reason": "more-than-three-state-references",
+          "state_refs": [
+            "state17",
+            "state18",
+            "state21",
+            "state22"
+          ]
+        },
+        {
+          "candidate_index": 8,
+          "candidate_sha256": "4c8dd26da5eea4b5c60c05f2a0b7dc569c59d20472febf0f495d95fff7370009",
+          "family": "affine",
+          "matched": true,
+          "route_id": "7c19ecfda02406a66ad13174f575e913d2097a7770e4e899dd043dda67da2da1",
+          "state_refs": [
+            "state17",
+            "state19",
+            "state21"
+          ]
+        },
+        {
+          "candidate_index": 9,
+          "candidate_sha256": "017f9a35e4c8f18ae5636109c38621c2e5e289773479507baa3f22b05cb74805",
+          "family": "affine",
+          "matched": true,
+          "route_id": "7a08ad9d2a6050678a76afec3f70f4cbe4773c3a1131e436e5dac4f4e95bfb29",
+          "state_refs": [
+            "state18",
+            "state20",
+            "state22"
+          ]
+        },
+        {
+          "candidate_index": 10,
+          "candidate_sha256": "77b344f399f5405f15c3cba52780bc7900a1b017bf442ffb15dc79f36b8e9006",
+          "family": "pairwise_offset",
+          "matched": true,
+          "route_id": "8b90bc945273441951524dcf84b8b68a32d1acbb811f914e0ed3c0672ed4ade1",
+          "state_refs": [
+            "state17",
+            "state21"
+          ]
+        },
+        {
+          "candidate_index": 11,
+          "candidate_sha256": "621a9ee4db9a49f93af8c25d4e765c65a8dc1fb6363b256937611f9e06c80f72",
+          "family": "pairwise_offset",
+          "matched": true,
+          "route_id": "83a5cf720eb995869ddcf07059a74538f5aeaaf4565f35713512e624af30ff00",
+          "state_refs": [
+            "state18",
+            "state22"
+          ]
+        },
+        {
+          "candidate_index": 12,
+          "candidate_sha256": "74271e015ae23d5b051b3b90394a55250ca71e40fda36740ebca76bfbd96cc77",
+          "family": "pairwise_offset",
+          "matched": true,
+          "route_id": "adcc6766882ac6fd6ddd9684d5a9eb747974bbf1c5138faa2a01e742d598c5da",
+          "state_refs": [
+            "state17",
+            "state19"
+          ]
+        },
+        {
+          "candidate_index": 13,
+          "candidate_sha256": "da3e8670a5a02db6ea633a0922e1c6401eed7be3156918672e94f15dc1cbf33b",
+          "family": "pairwise_offset",
+          "matched": true,
+          "route_id": "05f2cd46809b27232d2af74d193e6826dd5270e685603015a09d79d8f943e496",
+          "state_refs": [
+            "state18",
+            "state20"
+          ]
+        },
+        {
+          "candidate_index": 14,
+          "candidate_sha256": "1b8389eae2de3b62cfa06f088fc195049a88c9b6d200c37a1f162ea42d289c1d",
+          "matched": false,
+          "reason": "outside-preregistered-bounded-grammar",
+          "state_refs": [
+            "state17",
+            "state18",
+            "state21"
+          ]
+        },
+        {
+          "candidate_index": 15,
+          "candidate_sha256": "f24f7cd3f2f1cb41400acbc219059daf02a1bd8273094a70fe9a3d42a16974b2",
+          "matched": false,
+          "reason": "outside-preregistered-bounded-grammar",
+          "state_refs": [
+            "state17",
+            "state18",
+            "state22"
+          ]
+        },
+        {
+          "candidate_index": 16,
+          "candidate_sha256": "1fc7ea79b0456ef38b46c6a58f0cfa7ab5014bbdb6ca4bbcf7d914c14b1a1729",
+          "matched": false,
+          "reason": "outside-preregistered-bounded-grammar",
+          "state_refs": [
+            "state17",
+            "state18"
+          ]
+        },
+        {
+          "candidate_index": 17,
+          "candidate_sha256": "253cca735b7d5404be40761703011a8fabb810eb6001cbd0ac48881424e62e8a",
+          "matched": false,
+          "reason": "outside-preregistered-bounded-grammar",
+          "state_refs": [
+            "state17"
+          ]
+        },
+        {
+          "candidate_index": 18,
+          "candidate_sha256": "1727a0f7d5e0d8ebe4f8f102bc9c683472014e86cbd4d80a98e3be58f8acf244",
+          "matched": false,
+          "reason": "outside-preregistered-bounded-grammar",
+          "state_refs": [
+            "state18"
+          ]
+        },
+        {
+          "candidate_index": 19,
+          "candidate_sha256": "1bf35a02b20ab6df23ddcc259eb165b5135ad5af76ade3f694e1938871c009ee",
+          "family": "pairwise_offset",
+          "matched": true,
+          "route_id": "57753a240f6ce6844c39e32104d23e539ecf59b5de5d5bf005a9840daffe4763",
+          "state_refs": [
+            "state19",
+            "state21"
+          ]
+        }
+      ],
+      "family_counts": {
+        "affine": 2,
+        "pairwise_offset": 9,
+        "unmatched": 9
+      },
+      "matched_candidate_count": 11,
+      "matched_candidate_ratio": "0.550000",
+      "predicate_sha256": "51df16e78c98151c6f886f3e37f90ee5b879928606be981e2fbe74f2cf6a07e5",
+      "route_sha256": "0cd542bfac7b5d7b0907e4a93459a6effc2d9f61257415defcebf9dd9c19838a",
+      "routed_expansion_candidate_count": 117,
+      "routes": [
+        {
+          "family": "pairwise_offset",
+          "offsets": [
+            0,
+            1,
+            -1,
+            2,
+            -2
+          ],
+          "relations": [
+            "eq",
+            "le",
+            "ge"
+          ],
+          "signedness": "unsigned",
+          "variables": [
+            "state18",
+            "state20"
+          ]
+        },
+        {
+          "family": "pairwise_offset",
+          "offsets": [
+            0,
+            1,
+            -1,
+            2,
+            -2
+          ],
+          "relations": [
+            "eq",
+            "le",
+            "ge"
+          ],
+          "signedness": "unsigned",
+          "variables": [
+            "state19",
+            "state21"
+          ]
+        },
+        {
+          "coefficient_bound": 2,
+          "family": "affine",
+          "relations": [
+            "eq"
+          ],
+          "signedness": "unsigned",
+          "variables": [
+            "state18",
+            "state20",
+            "state22"
+          ]
+        },
+        {
+          "coefficient_bound": 2,
+          "family": "affine",
+          "relations": [
+            "eq"
+          ],
+          "signedness": "unsigned",
+          "variables": [
+            "state17",
+            "state19",
+            "state21"
+          ]
+        },
+        {
+          "family": "pairwise_offset",
+          "offsets": [
+            0,
+            1,
+            -1,
+            2,
+            -2
+          ],
+          "relations": [
+            "eq",
+            "le",
+            "ge"
+          ],
+          "signedness": "unsigned",
+          "variables": [
+            "state18",
+            "state22"
+          ]
+        },
+        {
+          "family": "pairwise_offset",
+          "offsets": [
+            0,
+            1,
+            -1,
+            2,
+            -2
+          ],
+          "relations": [
+            "eq",
+            "le",
+            "ge"
+          ],
+          "signedness": "unsigned",
+          "variables": [
+            "state17",
+            "state21"
+          ]
+        },
+        {
+          "family": "pairwise_offset",
+          "offsets": [
+            0,
+            1,
+            -1,
+            2,
+            -2
+          ],
+          "relations": [
+            "eq",
+            "le",
+            "ge"
+          ],
+          "signedness": "unsigned",
+          "variables": [
+            "state17",
+            "state19"
+          ]
+        }
+      ],
+      "unique_route_count": 7
+    },
+    {
+      "benchmark_id": "2024/btor2/2024/sosylab/nla-digbench-scaling/lcm2_unwindbound50.btor2",
+      "btor2_sha256": "8775da9895644886e7703addec69591f5afbc4bd520346801e1f4337979dc41c",
+      "candidate_count": 20,
+      "classifications": [
+        {
+          "candidate_index": 0,
+          "candidate_sha256": "4c0bded5d3ec8e9c2d40f83fc4c81cc06b7bc346d63b1fb89ede0ca0c445cc6f",
+          "matched": false,
+          "reason": "outside-preregistered-bounded-grammar",
+          "state_refs": [
+            "state21",
+            "state23",
+            "state25"
+          ]
+        },
+        {
+          "candidate_index": 1,
+          "candidate_sha256": "760b79eee460819a8451d1d7376d143e265d0d8945e4387d1ecd857f4015741e",
+          "matched": false,
+          "reason": "outside-preregistered-bounded-grammar",
+          "state_refs": [
+            "state22",
+            "state24",
+            "state26"
+          ]
+        },
+        {
+          "candidate_index": 2,
+          "candidate_sha256": "5410f3a1914cbd4a2502a393271634fdb108d2695adf0d90b9e2ffcd6867aca9",
+          "family": "pairwise_offset",
+          "matched": true,
+          "route_id": "7752746364a07d3942517ed2a8a70c17a688874be0a99f381acf83f4e6a5f692",
+          "state_refs": [
+            "state23",
+            "state24"
+          ]
+        },
+        {
+          "candidate_index": 3,
+          "candidate_sha256": "a2e01fb16c0b0f4bd93a6e172ceebccc4e3ff593496c9fbcbcbc2c3b0e2dee74",
+          "matched": false,
+          "reason": "outside-preregistered-bounded-grammar",
+          "state_refs": [
+            "state27"
+          ]
+        },
+        {
+          "candidate_index": 4,
+          "candidate_sha256": "dd320121682934c16a387aa04ef4bffe10199663acde692b2e1aff010268413c",
+          "matched": false,
+          "reason": "more-than-three-state-references",
+          "state_refs": [
+            "state21",
+            "state22",
+            "state25",
+            "state26"
+          ]
+        },
+        {
+          "candidate_index": 5,
+          "candidate_sha256": "d28b6d1007cb716b4cdb82cb387677897b83f5108514577f3731874ee21f494e",
+          "family": "pairwise_offset",
+          "matched": true,
+          "route_id": "913981399b9a4f8f00b279a40a21c045479ffe9de9cf3bff08a39ad0b7f5b81e",
+          "state_refs": [
+            "state21",
+            "state23"
+          ]
+        },
+        {
+          "candidate_index": 6,
+          "candidate_sha256": "47c10378da50217f8214a8c27c6bc3bc40366d9ab0e6e8683c399fcbb816b533",
+          "family": "pairwise_offset",
+          "matched": true,
+          "route_id": "bab4ea2ca876eafcbb47f9136de8f0f1f00f6cfdf688e981fb67ee25747d0b79",
+          "state_refs": [
+            "state22",
+            "state24"
+          ]
+        },
+        {
+          "candidate_index": 7,
+          "candidate_sha256": "cfa145555925d860a99f4e3135f2d9ea154c3c75318cc6267aca2b5270e7ff3d",
+          "matched": false,
+          "reason": "more-than-three-state-references",
+          "state_refs": [
+            "state21",
+            "state22",
+            "state23",
+            "state24"
+          ]
+        },
+        {
+          "candidate_index": 8,
+          "candidate_sha256": "884ec9433ae95344f87bfe8fe550d0412dd9317b15abd08f2a9e533b385fbfef",
+          "matched": false,
+          "reason": "outside-preregistered-bounded-grammar",
+          "state_refs": [
+            "state21"
+          ]
+        },
+        {
+          "candidate_index": 9,
+          "candidate_sha256": "44338ecefce7fb85b9c73502fc491faad2348ff3c63d6e042cdb6505c6127ffc",
+          "matched": false,
+          "reason": "outside-preregistered-bounded-grammar",
+          "state_refs": [
+            "state22"
+          ]
+        },
+        {
+          "candidate_index": 10,
+          "candidate_sha256": "b15e96f41ad522d2eb2dc19519c2f442e6ec52e4b830953d899e6cefc96c5e4e",
+          "family": "pairwise_offset",
+          "matched": true,
+          "route_id": "1303e52f30371e1fcd6971f366e39e40c66c4c3ed5eb7b918c97ec127d803b0e",
+          "state_refs": [
+            "state21",
+            "state25"
+          ]
+        },
+        {
+          "candidate_index": 11,
+          "candidate_sha256": "bb3ad6517302330217d3af5b8b0b810014dee57d05a62ba67ffb54a2694058da",
+          "family": "pairwise_offset",
+          "matched": true,
+          "route_id": "ad7b40c3b9a0edab881ad33b833da42c4e1f07959a389a223907ecd9d9944758",
+          "state_refs": [
+            "state22",
+            "state26"
+          ]
+        },
+        {
+          "candidate_index": 12,
+          "candidate_sha256": "2c9fda0fa17e3cf76ac48d0989c162fedf2cb911c0c28c6b7ec3a5f39094ae8f",
+          "matched": false,
+          "reason": "more-than-three-state-references",
+          "state_refs": [
+            "state21",
+            "state22",
+            "state25",
+            "state26"
+          ]
+        },
+        {
+          "candidate_index": 13,
+          "candidate_sha256": "9f8d982af277fa57d4ef655cb435273796201455a1939e25637b23931e2f9f14",
+          "family": "unary",
+          "matched": true,
+          "route_id": "4ed7afc875eb3f42909674b1e6f1cd271d06f76bcd338f23dbab9e2524b47449",
+          "state_refs": [
+            "state27"
+          ]
+        },
+        {
+          "candidate_index": 14,
+          "candidate_sha256": "46a17a61bf8ab8f3c294eb0fe741b1ed18f6b5167145d57dd7b95370e845a0fd",
+          "matched": false,
+          "reason": "more-than-three-state-references",
+          "state_refs": [
+            "state21",
+            "state22",
+            "state23",
+            "state24"
+          ]
+        },
+        {
+          "candidate_index": 15,
+          "candidate_sha256": "5a71c99e01333c26ad063e9cf506c751d8dd09f5c05624cf75911a0b073b5b26",
+          "matched": false,
+          "reason": "outside-preregistered-bounded-grammar",
+          "state_refs": [
+            "state21",
+            "state25"
+          ]
+        },
+        {
+          "candidate_index": 16,
+          "candidate_sha256": "1f63dc6033532fbea3de071930ae5862c718f03ee330ddab1c4f91c3e9061c57",
+          "matched": false,
+          "reason": "outside-preregistered-bounded-grammar",
+          "state_refs": [
+            "state22",
+            "state26"
+          ]
+        },
+        {
+          "candidate_index": 17,
+          "candidate_sha256": "a1b5bda3505ea9a35e9371c8a4a0c92f29080fc2f62f02fa8e9d06eb769b357a",
+          "matched": false,
+          "reason": "more-than-three-state-references",
+          "state_refs": [
+            "state21",
+            "state22",
+            "state23",
+            "state24"
+          ]
+        },
+        {
+          "candidate_index": 18,
+          "candidate_sha256": "7d32d623f8d98d1a3daf289747e56ff63ac7c91b05bf6db6974bffc5755a3a85",
+          "matched": false,
+          "reason": "outside-preregistered-bounded-grammar",
+          "state_refs": [
+            "state21",
+            "state22"
+          ]
+        },
+        {
+          "candidate_index": 19,
+          "candidate_sha256": "10f642036331a023a01f2cd4c96cd2ee62772c3bf523d4e970d7505d05c0c702",
+          "matched": false,
+          "reason": "outside-preregistered-bounded-grammar",
+          "state_refs": [
+            "state25",
+            "state26",
+            "state27"
+          ]
+        }
+      ],
+      "family_counts": {
+        "pairwise_offset": 5,
+        "unary": 1,
+        "unmatched": 14
+      },
+      "matched_candidate_count": 6,
+      "matched_candidate_ratio": "0.300000",
+      "predicate_sha256": "8da85466044c53d3806ac70662c4e678607ce0da53dec8949ab2c9be8f8cdab7",
+      "route_sha256": "bf3de28e9648ea8d8c5c04668e8fc3a123778ca89399ee3512d2cd34c8405000",
+      "routed_expansion_candidate_count": 81,
+      "routes": [
+        {
+          "family": "pairwise_offset",
+          "offsets": [
+            0,
+            1,
+            -1,
+            2,
+            -2
+          ],
+          "relations": [
+            "eq",
+            "le",
+            "ge"
+          ],
+          "signedness": "unsigned",
+          "variables": [
+            "state21",
+            "state25"
+          ]
+        },
+        {
+          "constants": [
+            0,
+            1
+          ],
+          "family": "unary",
+          "relations": [
+            "eq",
+            "le",
+            "ge"
+          ],
+          "signedness": "unsigned",
+          "variables": [
+            "state27"
+          ]
+        },
+        {
+          "family": "pairwise_offset",
+          "offsets": [
+            0,
+            1,
+            -1,
+            2,
+            -2
+          ],
+          "relations": [
+            "eq",
+            "le",
+            "ge"
+          ],
+          "signedness": "unsigned",
+          "variables": [
+            "state23",
+            "state24"
+          ]
+        },
+        {
+          "family": "pairwise_offset",
+          "offsets": [
+            0,
+            1,
+            -1,
+            2,
+            -2
+          ],
+          "relations": [
+            "eq",
+            "le",
+            "ge"
+          ],
+          "signedness": "unsigned",
+          "variables": [
+            "state21",
+            "state23"
+          ]
+        },
+        {
+          "family": "pairwise_offset",
+          "offsets": [
+            0,
+            1,
+            -1,
+            2,
+            -2
+          ],
+          "relations": [
+            "eq",
+            "le",
+            "ge"
+          ],
+          "signedness": "unsigned",
+          "variables": [
+            "state22",
+            "state26"
+          ]
+        },
+        {
+          "family": "pairwise_offset",
+          "offsets": [
+            0,
+            1,
+            -1,
+            2,
+            -2
+          ],
+          "relations": [
+            "eq",
+            "le",
+            "ge"
+          ],
+          "signedness": "unsigned",
+          "variables": [
+            "state22",
+            "state24"
+          ]
+        }
+      ],
+      "unique_route_count": 6
+    },
+    {
+      "benchmark_id": "2025/wordlevel/bv/2024/hkust/arithmetic_circuits/77.c/77.c.btor2",
+      "btor2_sha256": "68db6f77de82363380616dd08b12d0f58064ab1d6d34197c80beb1235f5d1889",
+      "candidate_count": 10,
+      "classifications": [
+        {
+          "candidate_index": 0,
+          "candidate_sha256": "7c9f27b9660ebe2b8521760fc24b66245bd1266223f1357ce25d6a4f19ea06bc",
+          "family": "pairwise_offset",
+          "matched": true,
+          "route_id": "87b995bf2a85b267cde8a40ef399dad00b63509e5155de2d60e913d388ac47fe",
+          "state_refs": [
+            "state10",
+            "state7"
+          ]
+        },
+        {
+          "candidate_index": 1,
+          "candidate_sha256": "174b48c291e576dddaa1459e0903877da7cf0afd3b7baaa93cd915b7b2c70569",
+          "family": "pairwise_offset",
+          "matched": true,
+          "route_id": "5f7ecdfb1ad84483c6ac0a68d162672e1b712e80fc3005fa0f46b7940dd45060",
+          "state_refs": [
+            "state14",
+            "state7"
+          ]
+        },
+        {
+          "candidate_index": 2,
+          "candidate_sha256": "21496b770e4232335977087644dc3c068e422ce9638f6bd0b80c1c2d2a09e4d0",
+          "matched": false,
+          "reason": "outside-preregistered-bounded-grammar",
+          "state_refs": [
+            "state10",
+            "state14"
+          ]
+        },
+        {
+          "candidate_index": 3,
+          "candidate_sha256": "ea74604adc27eed4d8b7bcc399e16edcf016c083e3b3961fcfeab0d5e0235a0f",
+          "matched": false,
+          "reason": "outside-preregistered-bounded-grammar",
+          "state_refs": [
+            "state14",
+            "state7"
+          ]
+        },
+        {
+          "candidate_index": 4,
+          "candidate_sha256": "46ed0127b1a8970c3a8926a44c298e26469d35d039c0453fed5adcb178c8b25f",
+          "family": "pairwise_offset",
+          "matched": true,
+          "route_id": "6bf6fc5c7abbaad755ca68add911b92d9d436e155825aabfe7ea531683ee2ff1",
+          "state_refs": [
+            "state10",
+            "state14"
+          ]
+        },
+        {
+          "candidate_index": 5,
+          "candidate_sha256": "bcff31f9ae074c7d4fc66e916a3e3e4d9d019e7bfda0fdce4b314ad5b83022ca",
+          "matched": false,
+          "reason": "outside-preregistered-bounded-grammar",
+          "state_refs": [
+            "state7"
+          ]
+        },
+        {
+          "candidate_index": 6,
+          "candidate_sha256": "07a1649b966a21afd8d759e21007b01272acba37be6b01c8fdbb92e7f66ca8da",
+          "family": "unary",
+          "matched": true,
+          "route_id": "8eaa8b682a2d3418a484d0c412298b438397fc2fa6754f31e53803be85f93230",
+          "state_refs": [
+            "state7"
+          ]
+        },
+        {
+          "candidate_index": 7,
+          "candidate_sha256": "96d4a87afec80f527294874c14420103c6a9512a8ce4547dcbd1b29776fef807",
+          "matched": false,
+          "reason": "outside-preregistered-bounded-grammar",
+          "state_refs": [
+            "state10",
+            "state14",
+            "state7"
+          ]
+        },
+        {
+          "candidate_index": 8,
+          "candidate_sha256": "50f6e18a6e584c7d01479eb80223ce74d27ab664c89a9d8e82364425510be066",
+          "matched": false,
+          "reason": "outside-preregistered-bounded-grammar",
+          "state_refs": [
+            "state10",
+            "state14"
+          ]
+        },
+        {
+          "candidate_index": 9,
+          "candidate_sha256": "0a687bfc6f1c815830e5d2dd8f56c6b5c552857a6dfb0b028aab2652f714483f",
+          "matched": false,
+          "reason": "outside-preregistered-bounded-grammar",
+          "state_refs": [
+            "state10",
+            "state7"
+          ]
+        }
+      ],
+      "family_counts": {
+        "pairwise_offset": 3,
+        "unary": 1,
+        "unmatched": 6
+      },
+      "matched_candidate_count": 4,
+      "matched_candidate_ratio": "0.400000",
+      "predicate_sha256": "3d1611ededafd0c3cd086224c49e882ae6d1ad9b8e681ae45e8b81179c27aaf3",
+      "route_sha256": "aac1a14b90c496ff0435a26c57577802b46dffb2f2b3f12f80d6bc0ab941b2cb",
+      "routed_expansion_candidate_count": 51,
+      "routes": [
+        {
+          "family": "pairwise_offset",
+          "offsets": [
+            0,
+            1,
+            -1,
+            2,
+            -2
+          ],
+          "relations": [
+            "eq",
+            "le",
+            "ge"
+          ],
+          "signedness": "unsigned",
+          "variables": [
+            "state7",
+            "state14"
+          ]
+        },
+        {
+          "family": "pairwise_offset",
+          "offsets": [
+            0,
+            1,
+            -1,
+            2,
+            -2
+          ],
+          "relations": [
+            "eq",
+            "le",
+            "ge"
+          ],
+          "signedness": "unsigned",
+          "variables": [
+            "state10",
+            "state14"
+          ]
+        },
+        {
+          "family": "pairwise_offset",
+          "offsets": [
+            0,
+            1,
+            -1,
+            2,
+            -2
+          ],
+          "relations": [
+            "eq",
+            "le",
+            "ge"
+          ],
+          "signedness": "unsigned",
+          "variables": [
+            "state7",
+            "state10"
+          ]
+        },
+        {
+          "constants": [
+            0,
+            1
+          ],
+          "family": "unary",
+          "relations": [
+            "eq",
+            "le",
+            "ge"
+          ],
+          "signedness": "unsigned",
+          "variables": [
+            "state7"
+          ]
+        }
+      ],
+      "unique_route_count": 4
+    },
+    {
+      "benchmark_id": "2025/wordlevel/bv/2024/hkust/arithmetic_circuits/fib_05/fib_05.btor2",
+      "btor2_sha256": "723e2cb4d2ef7e62a20a5fe340c2907e6a2988a8d590c744ed5bfcfa0ec36f35",
+      "candidate_count": 20,
+      "classifications": [
+        {
+          "candidate_index": 0,
+          "candidate_sha256": "f77944f42e2c5a2477d937b4141303d34c23d75573b4986dbaa2369f84639f41",
+          "family": "pairwise_offset",
+          "matched": true,
+          "route_id": "88331fbda7d49024ca7d661489b75cf832910fc725d89e701b9c59fd785d2305",
+          "state_refs": [
+            "state7",
+            "state9"
+          ]
+        },
+        {
+          "candidate_index": 1,
+          "candidate_sha256": "db1c47e8c1560058292c484eb28f08586555d14d3207d815e81c4bc5bfad067d",
+          "family": "pairwise_offset",
+          "matched": true,
+          "route_id": "4e09547478e9213e56355f6816e69b776a4a07b3afd8ee4751d3ee0de2ddfcf2",
+          "state_refs": [
+            "state15",
+            "state17"
+          ]
+        },
+        {
+          "candidate_index": 2,
+          "candidate_sha256": "eec8fee9c0c55cc53c26064ea56c07968d468d3f6a88f51692d0e3908fd21af0",
+          "matched": false,
+          "reason": "outside-preregistered-bounded-grammar",
+          "state_refs": [
+            "state15",
+            "state17",
+            "state7"
+          ]
+        },
+        {
+          "candidate_index": 3,
+          "candidate_sha256": "6f1f23b89c9c01b90821c699f5d9efc8b913d4d9d101aead413a05865a44fac5",
+          "family": "pairwise_offset",
+          "matched": true,
+          "route_id": "9637a58765ca2cfed241063dd83f9cf116e77f1e5d570e74a02601603825f136",
+          "state_refs": [
+            "state15",
+            "state9"
+          ]
+        },
+        {
+          "candidate_index": 4,
+          "candidate_sha256": "b73fd28bb7fd031217a2058785dde42b7abd92ac0954727544a1c4a2c23646a4",
+          "family": "affine",
+          "matched": true,
+          "route_id": "425ced3ae3bc6c5d4a6fa86ac6baef2abbe225f39aaf01bdc4880a9281e91782",
+          "state_refs": [
+            "state7",
+            "state9"
+          ]
+        },
+        {
+          "candidate_index": 5,
+          "candidate_sha256": "ab7758f484ee42cdcc66d65f20f800e7e5e84788923001951cc5320e375604d6",
+          "matched": false,
+          "reason": "outside-preregistered-bounded-grammar",
+          "state_refs": [
+            "state15",
+            "state7",
+            "state9"
+          ]
+        },
+        {
+          "candidate_index": 6,
+          "candidate_sha256": "f996addaf616d33a55c6be0f934d88146116e68d36e6eea2a34c3f8448f946eb",
+          "matched": false,
+          "reason": "outside-preregistered-bounded-grammar",
+          "state_refs": [
+            "state15",
+            "state7",
+            "state9"
+          ]
+        },
+        {
+          "candidate_index": 7,
+          "candidate_sha256": "4b722746c38774296877b3c6fa285c3f08b212bf692750200d53c6ba2ec75ded",
+          "matched": false,
+          "reason": "outside-preregistered-bounded-grammar",
+          "state_refs": [
+            "state17",
+            "state7",
+            "state9"
+          ]
+        },
+        {
+          "candidate_index": 8,
+          "candidate_sha256": "2c4f748589c2ee5e591994c4cb6d2e4ab4c9e1de7cce922fc4588f96edba9c8a",
+          "matched": false,
+          "reason": "outside-preregistered-bounded-grammar",
+          "state_refs": [
+            "state17",
+            "state7",
+            "state9"
+          ]
+        },
+        {
+          "candidate_index": 9,
+          "candidate_sha256": "8a4e3656e6370f0476d6ff614824815a08da830cc25bcf0581269d55ca0b925b",
+          "family": "affine",
+          "matched": true,
+          "route_id": "327498bbea343b1eddb7d79620b9d6dd17efd112d67dcdfe03650c62695db567",
+          "state_refs": [
+            "state15",
+            "state7"
+          ]
+        },
+        {
+          "candidate_index": 10,
+          "candidate_sha256": "c0b5808d740d8331c953017cfefa920dec0b66578738f34db399e2c2461e3fbc",
+          "family": "pairwise_offset",
+          "matched": true,
+          "route_id": "ab4622122d307c30b82862db9d70980033c4c2143ab10112e58f88733009a0e8",
+          "state_refs": [
+            "state15",
+            "state7"
+          ]
+        },
+        {
+          "candidate_index": 11,
+          "candidate_sha256": "fb20f7397b6de1058f35a2059066cabfc5db6992712d6cc72025c6196b447d7b",
+          "family": "pairwise_offset",
+          "matched": true,
+          "route_id": "67436eaf737272c99cdbb9a65daa161778ebb7f676e26ea4178faf8c9d76db20",
+          "state_refs": [
+            "state17",
+            "state7"
+          ]
+        },
+        {
+          "candidate_index": 12,
+          "candidate_sha256": "d8e3a86ea44e356fe56c9ec026836381e642ff40c9cce25351383b7315aa9ded",
+          "family": "pairwise_offset",
+          "matched": true,
+          "route_id": "7e4c45b373e78a56b7339ee8f304c7ee6f193c13056d2b6d3270593f0a4d35d5",
+          "state_refs": [
+            "state17",
+            "state9"
+          ]
+        },
+        {
+          "candidate_index": 13,
+          "candidate_sha256": "924b98a0c5fac66adde19699ba59521bd45befb8475d318f0b009beeb19207dc",
+          "family": "unary",
+          "matched": true,
+          "route_id": "71304cdcdd3bf1f9b71fdb98ddcbbce90c61f0febc99762efe5d8dbc6ead2987",
+          "state_refs": [
+            "state15"
+          ]
+        },
+        {
+          "candidate_index": 14,
+          "candidate_sha256": "21af94edddb0c7122ca92b412d69e5817952c9edba9b3fbac5458365a6f89bae",
+          "family": "unary",
+          "matched": true,
+          "route_id": "7c6ca89de3fde79448f00a71b3ab9a4a61e8cb95da747f31dc2681cf0e2ba094",
+          "state_refs": [
+            "state17"
+          ]
+        },
+        {
+          "candidate_index": 15,
+          "candidate_sha256": "7f756122339efb1f16d56c1a3f6c63081467e7bb99f662f333df00e5c70415e6",
+          "matched": false,
+          "reason": "outside-preregistered-bounded-grammar",
+          "state_refs": [
+            "state7"
+          ]
+        },
+        {
+          "candidate_index": 16,
+          "candidate_sha256": "5c4cbb19822e63662d134ede22fab7abb9fdbb4d6f19c902df71ecffe4bcf7fd",
+          "family": "pairwise_offset",
+          "matched": true,
+          "route_id": "9637a58765ca2cfed241063dd83f9cf116e77f1e5d570e74a02601603825f136",
+          "state_refs": [
+            "state15",
+            "state9"
+          ]
+        },
+        {
+          "candidate_index": 17,
+          "candidate_sha256": "bc20f7e967ad6741eb818c70081e15ee05b793510e0a2587e81c53ffe06f0de7",
+          "matched": false,
+          "reason": "outside-preregistered-bounded-grammar",
+          "state_refs": [
+            "state7",
+            "state9"
+          ]
+        },
+        {
+          "candidate_index": 18,
+          "candidate_sha256": "3356580cb124550da52e4a089ee8268a4ab617b233731b608cd2b019400f52ba",
+          "matched": false,
+          "reason": "outside-preregistered-bounded-grammar",
+          "state_refs": [
+            "state17",
+            "state7"
+          ]
+        },
+        {
+          "candidate_index": 19,
+          "candidate_sha256": "38759a7fdb16a8b351eb2cbd872dcdd6189cea5810d28e15d2f5029092b3f470",
+          "family": "pairwise_offset",
+          "matched": true,
+          "route_id": "9637a58765ca2cfed241063dd83f9cf116e77f1e5d570e74a02601603825f136",
+          "state_refs": [
+            "state15",
+            "state9"
+          ]
+        }
+      ],
+      "family_counts": {
+        "affine": 2,
+        "pairwise_offset": 8,
+        "unary": 2,
+        "unmatched": 8
+      },
+      "matched_candidate_count": 12,
+      "matched_candidate_ratio": "0.600000",
+      "predicate_sha256": "39b92fbea030fe461b54c80cfc115f33d6f1e16cfb28cf4f2ec287fd16cde19d",
+      "route_sha256": "d07c210d858def2ac800201894bf0460be198ede73152220ed7fdb9fbd5cfa51",
+      "routed_expansion_candidate_count": 120,
+      "routes": [
+        {
+          "coefficient_bound": 2,
+          "family": "affine",
+          "relations": [
+            "eq",
+            "le",
+            "ge"
+          ],
+          "signedness": "unsigned",
+          "variables": [
+            "state7",
+            "state15"
+          ]
+        },
+        {
+          "coefficient_bound": 2,
+          "family": "affine",
+          "relations": [
+            "eq",
+            "le",
+            "ge"
+          ],
+          "signedness": "unsigned",
+          "variables": [
+            "state7",
+            "state9"
+          ]
+        },
+        {
+          "family": "pairwise_offset",
+          "offsets": [
+            0,
+            1,
+            -1,
+            2,
+            -2
+          ],
+          "relations": [
+            "eq",
+            "le",
+            "ge"
+          ],
+          "signedness": "unsigned",
+          "variables": [
+            "state15",
+            "state17"
+          ]
+        },
+        {
+          "family": "pairwise_offset",
+          "offsets": [
+            0,
+            1,
+            -1,
+            2,
+            -2
+          ],
+          "relations": [
+            "eq",
+            "le",
+            "ge"
+          ],
+          "signedness": "unsigned",
+          "variables": [
+            "state7",
+            "state17"
+          ]
+        },
+        {
+          "constants": [
+            0,
+            1
+          ],
+          "family": "unary",
+          "relations": [
+            "eq",
+            "le",
+            "ge"
+          ],
+          "signedness": "unsigned",
+          "variables": [
+            "state15"
+          ]
+        },
+        {
+          "constants": [
+            0,
+            1
+          ],
+          "family": "unary",
+          "relations": [
+            "eq",
+            "le",
+            "ge"
+          ],
+          "signedness": "unsigned",
+          "variables": [
+            "state17"
+          ]
+        },
+        {
+          "family": "pairwise_offset",
+          "offsets": [
+            0,
+            1,
+            -1,
+            2,
+            -2
+          ],
+          "relations": [
+            "eq",
+            "le",
+            "ge"
+          ],
+          "signedness": "unsigned",
+          "variables": [
+            "state9",
+            "state17"
+          ]
+        },
+        {
+          "family": "pairwise_offset",
+          "offsets": [
+            0,
+            1,
+            -1,
+            2,
+            -2
+          ],
+          "relations": [
+            "eq",
+            "le",
+            "ge"
+          ],
+          "signedness": "unsigned",
+          "variables": [
+            "state7",
+            "state9"
+          ]
+        },
+        {
+          "family": "pairwise_offset",
+          "offsets": [
+            0,
+            1,
+            -1,
+            2,
+            -2
+          ],
+          "relations": [
+            "eq",
+            "le",
+            "ge"
+          ],
+          "signedness": "unsigned",
+          "variables": [
+            "state9",
+            "state15"
+          ]
+        },
+        {
+          "family": "pairwise_offset",
+          "offsets": [
+            0,
+            1,
+            -1,
+            2,
+            -2
+          ],
+          "relations": [
+            "eq",
+            "le",
+            "ge"
+          ],
+          "signedness": "unsigned",
+          "variables": [
+            "state7",
+            "state15"
+          ]
+        }
+      ],
+      "unique_route_count": 10
+    },
+    {
+      "benchmark_id": "2025/wordlevel/bv/2024/hkust/arithmetic_circuits/fib_23/fib_23.btor2",
+      "btor2_sha256": "a078bbffe6dc000ce0a24a4d11c45efade0c613ca55ca40db83dbb7b013338d6",
+      "candidate_count": 15,
+      "classifications": [
+        {
+          "candidate_index": 0,
+          "candidate_sha256": "7c9f27b9660ebe2b8521760fc24b66245bd1266223f1357ce25d6a4f19ea06bc",
+          "family": "pairwise_offset",
+          "matched": true,
+          "route_id": "87b995bf2a85b267cde8a40ef399dad00b63509e5155de2d60e913d388ac47fe",
+          "state_refs": [
+            "state10",
+            "state7"
+          ]
+        },
+        {
+          "candidate_index": 1,
+          "candidate_sha256": "5615f88b24f4c181b63988838fc85590a126830f071c9b80c2916a55874306be",
+          "family": "unary",
+          "matched": true,
+          "route_id": "6acd27917a705b7cba2d6c52f23e8451f8505b9bdcb7afd0bb2d882c0339be52",
+          "state_refs": [
+            "state13"
+          ]
+        },
+        {
+          "candidate_index": 2,
+          "candidate_sha256": "6349c5c291e7f4f7b11a3446f701fdcb43e8a1f0e3a1839b5c286daee600867f",
+          "family": "quadratic_recurrence",
+          "matched": true,
+          "route_id": "3e1d99a9e530734a991c0007f8f2aab966e2b7d8ef8229cf486d3dc54e51c228",
+          "state_refs": [
+            "state13",
+            "state7"
+          ]
+        },
+        {
+          "candidate_index": 3,
+          "candidate_sha256": "97ac5b34d489e7eb0b6649f8da9fbc5146cf8b1a980d833e0339672c2b22d673",
+          "matched": false,
+          "reason": "outside-preregistered-bounded-grammar",
+          "state_refs": [
+            "state13",
+            "state7"
+          ]
+        },
+        {
+          "candidate_index": 4,
+          "candidate_sha256": "3d7565aa3918cbafa16b620ca7d233d35068245b191d639ffbbaee28f6f14de7",
+          "matched": false,
+          "reason": "outside-preregistered-bounded-grammar",
+          "state_refs": [
+            "state13",
+            "state7"
+          ]
+        },
+        {
+          "candidate_index": 5,
+          "candidate_sha256": "5bf291a7218717bc06439da4fb35b828c93fb795fee491144edeb298f39a0ed8",
+          "family": "unary",
+          "matched": true,
+          "route_id": "8eaa8b682a2d3418a484d0c412298b438397fc2fa6754f31e53803be85f93230",
+          "state_refs": [
+            "state7"
+          ]
+        },
+        {
+          "candidate_index": 6,
+          "candidate_sha256": "c7784fdba76476df85fc7ff7e025d1a1c7553830e05ba3e4543ab3ae64eaa41e",
+          "family": "unary",
+          "matched": true,
+          "route_id": "a84c7d2ca877db3f8da4b9d4da49ee9b6d66c269cc5415e223d2e82fa083eac8",
+          "state_refs": [
+            "state10"
+          ]
+        },
+        {
+          "candidate_index": 7,
+          "candidate_sha256": "f80017f7fddc11525c82c220a66ede8c5201e12807d21580203d543ed401106d",
+          "matched": false,
+          "reason": "outside-preregistered-bounded-grammar",
+          "state_refs": [
+            "state10",
+            "state13",
+            "state7"
+          ]
+        },
+        {
+          "candidate_index": 8,
+          "candidate_sha256": "2433f040f3f5215b8dc7050e68dd1ceed1e7d32e7e06cf26617db40c4b5283ce",
+          "matched": false,
+          "reason": "outside-preregistered-bounded-grammar",
+          "state_refs": [
+            "state10",
+            "state13",
+            "state7"
+          ]
+        },
+        {
+          "candidate_index": 9,
+          "candidate_sha256": "64265a3cd1efe6cb9299e54faec522881ccbde1512618226b4a1250b1c9ceb2a",
+          "matched": false,
+          "reason": "outside-preregistered-bounded-grammar",
+          "state_refs": [
+            "state13",
+            "state7"
+          ]
+        },
+        {
+          "candidate_index": 10,
+          "candidate_sha256": "2d76d359e16cafc8fae8126a494c881ab46b82ecd0437d3bddf370d50a969400",
+          "family": "unary",
+          "matched": true,
+          "route_id": "6acd27917a705b7cba2d6c52f23e8451f8505b9bdcb7afd0bb2d882c0339be52",
+          "state_refs": [
+            "state13"
+          ]
+        },
+        {
+          "candidate_index": 11,
+          "candidate_sha256": "98fcc546b4bf370f79c9a64b0a0b332e53f0653db8eaa9b1659dc20b6cfabaef",
+          "family": "unary",
+          "matched": true,
+          "route_id": "8eaa8b682a2d3418a484d0c412298b438397fc2fa6754f31e53803be85f93230",
+          "state_refs": [
+            "state7"
+          ]
+        },
+        {
+          "candidate_index": 12,
+          "candidate_sha256": "83f53b7c0bc1066980fd5cea01ea4aeb5e44ea057d907737b8754c2e2e220575",
+          "matched": false,
+          "reason": "outside-preregistered-bounded-grammar",
+          "state_refs": [
+            "state10",
+            "state13",
+            "state7"
+          ]
+        },
+        {
+          "candidate_index": 13,
+          "candidate_sha256": "e1dd2795b2bb7b840bbc5277cb640a5afa1939bdc9813a3a3e925fd244aa333f",
+          "matched": false,
+          "reason": "outside-preregistered-bounded-grammar",
+          "state_refs": [
+            "state10",
+            "state13",
+            "state7"
+          ]
+        },
+        {
+          "candidate_index": 14,
+          "candidate_sha256": "7c605cbdf3f4011960736976fd10be03153d50f4e6befd7b920bb10e2e870969",
+          "matched": false,
+          "reason": "outside-preregistered-bounded-grammar",
+          "state_refs": [
+            "state7"
+          ]
+        }
+      ],
+      "family_counts": {
+        "pairwise_offset": 1,
+        "quadratic_recurrence": 1,
+        "unary": 5,
+        "unmatched": 8
+      },
+      "matched_candidate_count": 7,
+      "matched_candidate_ratio": "0.466667",
+      "predicate_sha256": "1c4949f52834c300985d67e5adb60cd14c3f240b2968d37ce22e7980504a6388",
+      "route_sha256": "4b5c09ad28fe453a8ddc9d14c39be8794c3633f304f1a5b972c7299c95c74b32",
+      "routed_expansion_candidate_count": 48,
+      "routes": [
+        {
+          "counter_shifts": [
+            -1,
+            0,
+            1
+          ],
+          "family": "quadratic_recurrence",
+          "relations": [
+            "eq"
+          ],
+          "scales": [
+            1,
+            2,
+            3,
+            4
+          ],
+          "signedness": "unsigned",
+          "variables": [
+            "state13",
+            "state7"
+          ]
+        },
+        {
+          "constants": [
+            0,
+            1
+          ],
+          "family": "unary",
+          "relations": [
+            "eq",
+            "le",
+            "ge"
+          ],
+          "signedness": "unsigned",
+          "variables": [
+            "state13"
+          ]
+        },
+        {
+          "family": "pairwise_offset",
+          "offsets": [
+            0,
+            1,
+            -1,
+            2,
+            -2
+          ],
+          "relations": [
+            "eq",
+            "le",
+            "ge"
+          ],
+          "signedness": "unsigned",
+          "variables": [
+            "state7",
+            "state10"
+          ]
+        },
+        {
+          "constants": [
+            0,
+            1
+          ],
+          "family": "unary",
+          "relations": [
+            "eq",
+            "le",
+            "ge"
+          ],
+          "signedness": "unsigned",
+          "variables": [
+            "state7"
+          ]
+        },
+        {
+          "constants": [
+            0,
+            1
+          ],
+          "family": "unary",
+          "relations": [
+            "eq",
+            "le",
+            "ge"
+          ],
+          "signedness": "unsigned",
+          "variables": [
+            "state10"
+          ]
+        }
+      ],
+      "unique_route_count": 5
+    },
+    {
+      "benchmark_id": "2025/wordlevel/bv/2024/sosylab/nla-digbench-scaling/prodbin-ll_unwindbound10.btor2",
+      "btor2_sha256": "90e3250e379178f0ca7135de996be479a57f0196e6742bebff52cd4fc1f68ef1",
+      "candidate_count": 20,
+      "classifications": [
+        {
+          "candidate_index": 0,
+          "candidate_sha256": "37fa359c25baf9d5daf977a21971ac4ea554b912c9e61ea61427bc964e486ac0",
+          "matched": false,
+          "reason": "outside-preregistered-bounded-grammar",
+          "state_refs": [
+            "state21",
+            "state23",
+            "state24"
+          ]
+        },
+        {
+          "candidate_index": 1,
+          "candidate_sha256": "1904d69652b24bbf01cda081cee0f5d8755b711d153818e6e0f0b61f39266bc5",
+          "matched": false,
+          "reason": "outside-preregistered-bounded-grammar",
+          "state_refs": [
+            "state19",
+            "state20",
+            "state21"
+          ]
+        },
+        {
+          "candidate_index": 2,
+          "candidate_sha256": "e989bec4b9916a42e1d262c797975e67b8b3cb9b8aa05bd19e17023ecb1a23f0",
+          "matched": false,
+          "reason": "more-than-three-state-references",
+          "state_refs": [
+            "state19",
+            "state20",
+            "state22",
+            "state23",
+            "state24"
+          ]
+        },
+        {
+          "candidate_index": 3,
+          "candidate_sha256": "3af07ec584bf75eacba41878df61a41140601d9b4c2ac1665deb31f7a4838c67",
+          "family": "pairwise_offset",
+          "matched": true,
+          "route_id": "271d0eb96ffc4c016b3be7bd35c45789141675a02d33c50bfb99fdfec110d0ae",
+          "state_refs": [
+            "state20",
+            "state22"
+          ]
+        },
+        {
+          "candidate_index": 4,
+          "candidate_sha256": "bdac746bdf3c9cd1043ba1fbf1dd3a8adc0804065894fac51a50fba86d2b4f2a",
+          "matched": false,
+          "reason": "outside-preregistered-bounded-grammar",
+          "state_refs": [
+            "state19",
+            "state23"
+          ]
+        },
+        {
+          "candidate_index": 5,
+          "candidate_sha256": "9fd5def018fb406fe80ded9dcdfe6aa4ab778ad3ec18f8c4fcab62f2a1ec5900",
+          "family": "unary",
+          "matched": true,
+          "route_id": "676d77cc81f0a993af94700bf77c435d72ebf1639250c7f8706fefad05f9e69e",
+          "state_refs": [
+            "state24"
+          ]
+        },
+        {
+          "candidate_index": 6,
+          "candidate_sha256": "8e63eb7f5657ff862342ddcf9783cff1f82111a6dea38173aa0c90d4a6848e15",
+          "matched": false,
+          "reason": "more-than-three-state-references",
+          "state_refs": [
+            "state19",
+            "state20",
+            "state21",
+            "state23",
+            "state24"
+          ]
+        },
+        {
+          "candidate_index": 7,
+          "candidate_sha256": "ae3138d92940078c725fa5d62e811f07a5ed12409e1679ccfb66dde130bbf2b7",
+          "matched": false,
+          "reason": "outside-preregistered-bounded-grammar",
+          "state_refs": [
+            "state22"
+          ]
+        },
+        {
+          "candidate_index": 8,
+          "candidate_sha256": "6a5d1019d725ce4d1e0345e0900f23c9790ca3972b47a8dc889c7cd3c501968b",
+          "matched": false,
+          "reason": "outside-preregistered-bounded-grammar",
+          "state_refs": [
+            "state23"
+          ]
+        },
+        {
+          "candidate_index": 9,
+          "candidate_sha256": "32bef631195a936bbd335dc24f31bdbd295f560be94c6a3ee2f3a077fa533650",
+          "matched": false,
+          "reason": "outside-preregistered-bounded-grammar",
+          "state_refs": [
+            "state19",
+            "state24"
+          ]
+        },
+        {
+          "candidate_index": 10,
+          "candidate_sha256": "4985580023cf923417f5c5a404de3ad1ead2ec9935d42f564d2f245d6231f1bc",
+          "matched": false,
+          "reason": "more-than-three-state-references",
+          "state_refs": [
+            "state19",
+            "state20",
+            "state21",
+            "state23",
+            "state24"
+          ]
+        },
+        {
+          "candidate_index": 11,
+          "candidate_sha256": "c523d4d85c58a490bb9d6b8a348572c21b36962c87c7f534ee0e0e01defea77a",
+          "matched": false,
+          "reason": "outside-preregistered-bounded-grammar",
+          "state_refs": [
+            "state19",
+            "state23"
+          ]
+        },
+        {
+          "candidate_index": 12,
+          "candidate_sha256": "0c3c6fd0a6023821485544997c8ed563530ccc586532d30ff0af4a52a1bde41e",
+          "matched": false,
+          "reason": "outside-preregistered-bounded-grammar",
+          "state_refs": [
+            "state20",
+            "state24"
+          ]
+        },
+        {
+          "candidate_index": 13,
+          "candidate_sha256": "8b49de5f2e68bcdb2da912d835d875eabb23dc3e4fe9d1b2731d45f57df7678f",
+          "matched": false,
+          "reason": "more-than-three-state-references",
+          "state_refs": [
+            "state19",
+            "state20",
+            "state21",
+            "state23",
+            "state24"
+          ]
+        },
+        {
+          "candidate_index": 14,
+          "candidate_sha256": "9a49149d68913264e1cfddf18d3226082101dd3b5ab0782229e96558b8c529c6",
+          "matched": false,
+          "reason": "outside-preregistered-bounded-grammar",
+          "state_refs": [
+            "state21",
+            "state23",
+            "state24"
+          ]
+        },
+        {
+          "candidate_index": 15,
+          "candidate_sha256": "b3975cc90cc7d1b8697a2a50e756360812b91dce2e88ad3346382b6f4bfd60a0",
+          "matched": false,
+          "reason": "outside-preregistered-bounded-grammar",
+          "state_refs": [
+            "state22"
+          ]
+        },
+        {
+          "candidate_index": 16,
+          "candidate_sha256": "fa4921edb37f4010651dea1b0bed85d36213c044f4b69e710abfd513eb0f8745",
+          "family": "unary",
+          "matched": true,
+          "route_id": "56d103fda17930fa9a8a70b2a6d5291b479f945374746a33e72f0e9366fceb65",
+          "state_refs": [
+            "state22"
+          ]
+        },
+        {
+          "candidate_index": 17,
+          "candidate_sha256": "efb68cc4c95a725cd4f3de47049c9e9b0c835697f4c0a89397963f01c8440b16",
+          "family": "pairwise_offset",
+          "matched": true,
+          "route_id": "21a78f74b79dc13dcaa6e6a127aef00e407eada009e967a8edd5511a8d877d3f",
+          "state_refs": [
+            "state19",
+            "state20"
+          ]
+        },
+        {
+          "candidate_index": 18,
+          "candidate_sha256": "9cd5d7fb5fe54fa3da76fa34aa01a0992514199bb93ff483a9665a3165229232",
+          "matched": false,
+          "reason": "outside-preregistered-bounded-grammar",
+          "state_refs": [
+            "state19",
+            "state23",
+            "state24"
+          ]
+        },
+        {
+          "candidate_index": 19,
+          "candidate_sha256": "6129432dfd2b1f4389e1d413792f7b70f48f03ced67994f1114e98edf4909deb",
+          "family": "sum_equality",
+          "matched": true,
+          "route_id": "f812dd1df81b4069a7df4adc97c4b8288aa0490987568c70716a2f72a3e7eb31",
+          "state_refs": [
+            "state21",
+            "state23",
+            "state24"
+          ]
+        }
+      ],
+      "family_counts": {
+        "pairwise_offset": 2,
+        "sum_equality": 1,
+        "unary": 2,
+        "unmatched": 15
+      },
+      "matched_candidate_count": 5,
+      "matched_candidate_ratio": "0.250000",
+      "predicate_sha256": "8dbc10b4805255d480538782ae70351a42ee89612e0e98a2641d74288dc907a1",
+      "route_sha256": "e5093bc41de39a6d624e3176b59a005f38e7b22360c003bd253b5f75679c5814",
+      "routed_expansion_candidate_count": 43,
+      "routes": [
+        {
+          "family": "pairwise_offset",
+          "offsets": [
+            0,
+            1,
+            -1,
+            2,
+            -2
+          ],
+          "relations": [
+            "eq",
+            "le",
+            "ge"
+          ],
+          "signedness": "unsigned",
+          "variables": [
+            "state19",
+            "state20"
+          ]
+        },
+        {
+          "family": "pairwise_offset",
+          "offsets": [
+            0,
+            1,
+            -1,
+            2,
+            -2
+          ],
+          "relations": [
+            "eq",
+            "le",
+            "ge"
+          ],
+          "signedness": "unsigned",
+          "variables": [
+            "state20",
+            "state22"
+          ]
+        },
+        {
+          "constants": [
+            0,
+            1
+          ],
+          "family": "unary",
+          "relations": [
+            "eq",
+            "le",
+            "ge"
+          ],
+          "signedness": "unsigned",
+          "variables": [
+            "state22"
+          ]
+        },
+        {
+          "constants": [
+            0,
+            1
+          ],
+          "family": "unary",
+          "relations": [
+            "eq",
+            "le",
+            "ge"
+          ],
+          "signedness": "unsigned",
+          "variables": [
+            "state24"
+          ]
+        },
+        {
+          "family": "sum_equality",
+          "relations": [
+            "eq"
+          ],
+          "signedness": "unsigned",
+          "variables": [
+            "state23",
+            "state21",
+            "state24"
+          ]
+        }
+      ],
+      "unique_route_count": 5
+    },
+    {
+      "benchmark_id": "2025/wordlevel/bv/2025/sosylab/safety-func/nla-digbench-scaling/geo1-u_valuebound100.btor2",
+      "btor2_sha256": "605e843bfdeede69adc7e881060b756f68712c438cff3380a7eb1b0b19758798",
+      "candidate_count": 17,
+      "classifications": [
+        {
+          "candidate_index": 0,
+          "candidate_sha256": "3ceeb7fedf91e617d548ad0e04570f760a8c0d7c7fa65cfa2bd6ed621b7fe325",
+          "matched": false,
+          "reason": "outside-preregistered-bounded-grammar",
+          "state_refs": [
+            "state29"
+          ]
+        },
+        {
+          "candidate_index": 1,
+          "candidate_sha256": "ffab524abe0dff169a0bb8e24eeff33451a97fee6a478780f4577a4ae041677b",
+          "matched": false,
+          "reason": "outside-preregistered-bounded-grammar",
+          "state_refs": [
+            "state30"
+          ]
+        },
+        {
+          "candidate_index": 2,
+          "candidate_sha256": "57452fcd4ed6a456fb4b0711812311c20e3a401aaa38a5f2826c53a967c87235",
+          "matched": false,
+          "reason": "outside-preregistered-bounded-grammar",
+          "state_refs": [
+            "state31"
+          ]
+        },
+        {
+          "candidate_index": 3,
+          "candidate_sha256": "b269a64bdb7eb4654644d0e8c0ec231b5aa37a4435e648079e1f330d55223a94",
+          "matched": false,
+          "reason": "outside-preregistered-bounded-grammar",
+          "state_refs": [
+            "state32"
+          ]
+        },
+        {
+          "candidate_index": 4,
+          "candidate_sha256": "bdd34f4edf955ec961cb09de987602faaba3d80240700a956477d45c6d4f7a4a",
+          "matched": false,
+          "reason": "outside-preregistered-bounded-grammar",
+          "state_refs": [
+            "state33"
+          ]
+        },
+        {
+          "candidate_index": 5,
+          "candidate_sha256": "5df8f6e5ce1953bb4dea358aa63a87ef2c9ae08a4e79de946e0e62aa7eb41722",
+          "matched": false,
+          "reason": "outside-preregistered-bounded-grammar",
+          "state_refs": [
+            "state29"
+          ]
+        },
+        {
+          "candidate_index": 6,
+          "candidate_sha256": "483b0a342d4bbe1036744c6fb53c0a026b791edc7c92bec32b1f54bc88cfa9a4",
+          "matched": false,
+          "reason": "outside-preregistered-bounded-grammar",
+          "state_refs": [
+            "state30"
+          ]
+        },
+        {
+          "candidate_index": 7,
+          "candidate_sha256": "ab47c296deec2fa075b8c4407e4d266fa652babdb7fdf58d4cf1074bbd6ff5ea",
+          "matched": false,
+          "reason": "outside-preregistered-bounded-grammar",
+          "state_refs": [
+            "state33"
+          ]
+        },
+        {
+          "candidate_index": 8,
+          "candidate_sha256": "5b04f3107c18b81f641ab9c136bd7ea7268d943fb04f7269f075f290d7291208",
+          "matched": false,
+          "reason": "outside-preregistered-bounded-grammar",
+          "state_refs": [
+            "state31"
+          ]
+        },
+        {
+          "candidate_index": 9,
+          "candidate_sha256": "da1973101b82c91d16c08abb870f2243aad76632d5661b0a8e394e7d23771a63",
+          "matched": false,
+          "reason": "outside-preregistered-bounded-grammar",
+          "state_refs": [
+            "state32"
+          ]
+        },
+        {
+          "candidate_index": 10,
+          "candidate_sha256": "7f7d0c84b2e667ab66f9df60ac9a0a8170431d601f604e247c6dbe5230c91792",
+          "family": "unary",
+          "matched": true,
+          "route_id": "67160cfb5a8bda1204ede0427f5448f3a29cc246ebca6604c196cd634bd2f25b",
+          "state_refs": [
+            "state29"
+          ]
+        },
+        {
+          "candidate_index": 11,
+          "candidate_sha256": "a5d15993ff8d9eaa279afe9d5c65838e4e30a347cec54072a58b206844319266",
+          "family": "unary",
+          "matched": true,
+          "route_id": "cd145de16815300b77f8e73286f7be4ae62db690a9557a13203dac2c7d865a43",
+          "state_refs": [
+            "state30"
+          ]
+        },
+        {
+          "candidate_index": 12,
+          "candidate_sha256": "fe4709e378981c20345bcfcbbd2c22d8ba94ac5a5c01b7b34359aa45c2ef1b7c",
+          "family": "unary",
+          "matched": true,
+          "route_id": "d120d1fcfefa04aad1c68343b092a1bf52ed32ad5553c0b121d47328d913b7b3",
+          "state_refs": [
+            "state31"
+          ]
+        },
+        {
+          "candidate_index": 13,
+          "candidate_sha256": "e11928e6a83c390f4ebbd9b5afbfcd88ef1b5572b39bf86f909da2df651fd052",
+          "matched": false,
+          "reason": "outside-preregistered-bounded-grammar",
+          "state_refs": [
+            "state29"
+          ]
+        },
+        {
+          "candidate_index": 14,
+          "candidate_sha256": "631b0721a802e6534aff512ceb82e0b34cdd8a1484c9d206dc0a4f4a831d6cf7",
+          "matched": false,
+          "reason": "outside-preregistered-bounded-grammar",
+          "state_refs": [
+            "state30"
+          ]
+        },
+        {
+          "candidate_index": 15,
+          "candidate_sha256": "64f76b5618e36e2fe803c450d25591ac32915efb1b52854fa62dcced88d55e20",
+          "matched": false,
+          "reason": "outside-preregistered-bounded-grammar",
+          "state_refs": [
+            "state33"
+          ]
+        },
+        {
+          "candidate_index": 16,
+          "candidate_sha256": "23679323a0311848755648787b5abb815edb7de035c39093eee8901dced0a902",
+          "family": "unary",
+          "matched": true,
+          "route_id": "2e65dfff11a1cf20d1e724f21305877b5f455118b6a0f32b445460354d787e1a",
+          "state_refs": [
+            "state33"
+          ]
+        }
+      ],
+      "family_counts": {
+        "unary": 4,
+        "unmatched": 13
+      },
+      "matched_candidate_count": 4,
+      "matched_candidate_ratio": "0.235294",
+      "predicate_sha256": "9b520805fd0c86de66af7eaea229f19eb959c5e58e72b5aa08123db08f8aa179",
+      "route_sha256": "4e88b81ad9d6d529702d40ef37f30b05f58974f9c7a9fd5972a22ccced8ad8a9",
+      "routed_expansion_candidate_count": 24,
+      "routes": [
+        {
+          "constants": [
+            0,
+            1
+          ],
+          "family": "unary",
+          "relations": [
+            "eq",
+            "le",
+            "ge"
+          ],
+          "signedness": "unsigned",
+          "variables": [
+            "state33"
+          ]
+        },
+        {
+          "constants": [
+            0,
+            1
+          ],
+          "family": "unary",
+          "relations": [
+            "eq",
+            "le",
+            "ge"
+          ],
+          "signedness": "unsigned",
+          "variables": [
+            "state29"
+          ]
+        },
+        {
+          "constants": [
+            0,
+            1
+          ],
+          "family": "unary",
+          "relations": [
+            "eq",
+            "le",
+            "ge"
+          ],
+          "signedness": "unsigned",
+          "variables": [
+            "state30"
+          ]
+        },
+        {
+          "constants": [
+            0,
+            1
+          ],
+          "family": "unary",
+          "relations": [
+            "eq",
+            "le",
+            "ge"
+          ],
+          "signedness": "unsigned",
+          "variables": [
+            "state31"
+          ]
+        }
+      ],
+      "unique_route_count": 4
+    },
+    {
+      "benchmark_id": "2025/wordlevel/bv/2025/sosylab/safety-func/nla-digbench-scaling/prodbin-ll_unwindbound50.btor2",
+      "btor2_sha256": "6a953053e46094875324775745185282dd4197c06a3a2b7c6c4955c7007719dd",
+      "candidate_count": 20,
+      "classifications": [
+        {
+          "candidate_index": 0,
+          "candidate_sha256": "07149ffc93d2c3337b22dda776905e45ab844faaec858fa45ef94e2e7f58326b",
+          "matched": false,
+          "reason": "outside-preregistered-bounded-grammar",
+          "state_refs": [
+            "state31",
+            "state33",
+            "state34"
+          ]
+        },
+        {
+          "candidate_index": 1,
+          "candidate_sha256": "35be3f0cfdcfc516a8d25d19b139b0647f09dc3e733a1bbf1a812df39e20bc16",
+          "matched": false,
+          "reason": "outside-preregistered-bounded-grammar",
+          "state_refs": [
+            "state32"
+          ]
+        },
+        {
+          "candidate_index": 2,
+          "candidate_sha256": "18712986efb7b56dd7c2e07266d3b879859a42a1d065e3dc98cee0d2e741807e",
+          "matched": false,
+          "reason": "outside-preregistered-bounded-grammar",
+          "state_refs": [
+            "state31",
+            "state33",
+            "state34"
+          ]
+        },
+        {
+          "candidate_index": 3,
+          "candidate_sha256": "629e1c9823c21a0ee4739c832c0b374b0701a6038c4ba202412818fae460ab5a",
+          "matched": false,
+          "reason": "outside-preregistered-bounded-grammar",
+          "state_refs": [
+            "state31",
+            "state33",
+            "state34"
+          ]
+        },
+        {
+          "candidate_index": 4,
+          "candidate_sha256": "bf405aace3f2f2a03f6f5172e14c43f831cd132195aa18e40f9c85465a57ac36",
+          "matched": false,
+          "reason": "outside-preregistered-bounded-grammar",
+          "state_refs": [
+            "state31",
+            "state33",
+            "state34"
+          ]
+        },
+        {
+          "candidate_index": 5,
+          "candidate_sha256": "f0a37f47bea8d1b7f622545475bb7796edb7c9cc962395ef31b657ffa8b39b30",
+          "family": "unary",
+          "matched": true,
+          "route_id": "2e65dfff11a1cf20d1e724f21305877b5f455118b6a0f32b445460354d787e1a",
+          "state_refs": [
+            "state33"
+          ]
+        },
+        {
+          "candidate_index": 6,
+          "candidate_sha256": "fe4709e378981c20345bcfcbbd2c22d8ba94ac5a5c01b7b34359aa45c2ef1b7c",
+          "family": "unary",
+          "matched": true,
+          "route_id": "d120d1fcfefa04aad1c68343b092a1bf52ed32ad5553c0b121d47328d913b7b3",
+          "state_refs": [
+            "state31"
+          ]
+        },
+        {
+          "candidate_index": 7,
+          "candidate_sha256": "01d4d8b9b379fdc4e8b74eaf5ac889278af6e39b8887c882b5e3f6924558c07c",
+          "family": "unary",
+          "matched": true,
+          "route_id": "694bdc87bdc6cc1fa40f2fae2f125addd0be4f2aa3a6aa36088c460a7e48ba24",
+          "state_refs": [
+            "state34"
+          ]
+        },
+        {
+          "candidate_index": 8,
+          "candidate_sha256": "d44df800e17534905bdc54df8a0947e085249bc567696ad946f1e3b21e124008",
+          "matched": false,
+          "reason": "outside-preregistered-bounded-grammar",
+          "state_refs": [
+            "state32",
+            "state33"
+          ]
+        },
+        {
+          "candidate_index": 9,
+          "candidate_sha256": "68039141382cc6684d54fa439a25fb419bc4e29f95ddd96bc5c9af03b30a686e",
+          "matched": false,
+          "reason": "outside-preregistered-bounded-grammar",
+          "state_refs": [
+            "state31",
+            "state33",
+            "state34"
+          ]
+        },
+        {
+          "candidate_index": 10,
+          "candidate_sha256": "2b851bda671d9f849710ec653970e530fe84d8d73db993c7779554bc05248deb",
+          "matched": false,
+          "reason": "outside-preregistered-bounded-grammar",
+          "state_refs": [
+            "state32"
+          ]
+        },
+        {
+          "candidate_index": 11,
+          "candidate_sha256": "a33f2c50c9f59c2db3cf169d6f71ec96fb3c0c361a210f861bf4140b5ae64dc3",
+          "matched": false,
+          "reason": "outside-preregistered-bounded-grammar",
+          "state_refs": [
+            "state31",
+            "state33",
+            "state34"
+          ]
+        },
+        {
+          "candidate_index": 12,
+          "candidate_sha256": "77444a375e8c58bcea6176aead8f812836f028ed131d9744c6999d629d9e6f91",
+          "matched": false,
+          "reason": "outside-preregistered-bounded-grammar",
+          "state_refs": [
+            "state31",
+            "state33",
+            "state34"
+          ]
+        },
+        {
+          "candidate_index": 13,
+          "candidate_sha256": "bdf499f1f2c0f56412b3b0261798d649cffba754b3c469f6d16e8ef69f859aa6",
+          "matched": false,
+          "reason": "outside-preregistered-bounded-grammar",
+          "state_refs": [
+            "state31",
+            "state33",
+            "state34"
+          ]
+        },
+        {
+          "candidate_index": 14,
+          "candidate_sha256": "fea7b724f3687de6d743e0def991773c08a6c0e2fcc8d3dd6c0e97d77c67b683",
+          "matched": false,
+          "reason": "outside-preregistered-bounded-grammar",
+          "state_refs": [
+            "state31",
+            "state33",
+            "state34"
+          ]
+        },
+        {
+          "candidate_index": 15,
+          "candidate_sha256": "534e9d6d07a3af9c91a4a123c7d257b84be2aa04ce98e867d915bd04c53c3b47",
+          "matched": false,
+          "reason": "more-than-three-state-references",
+          "state_refs": [
+            "state29",
+            "state30",
+            "state31",
+            "state33",
+            "state34"
+          ]
+        },
+        {
+          "candidate_index": 16,
+          "candidate_sha256": "dd5411bf73c16ee0e2adecc2e61a284369e9d0f81564066a587e444910ba5132",
+          "matched": false,
+          "reason": "outside-preregistered-bounded-grammar",
+          "state_refs": [
+            "state33"
+          ]
+        },
+        {
+          "candidate_index": 17,
+          "candidate_sha256": "f264aca226483acf84a8967ad25b5e7e526fea5bc2e011fc017c8ed0e2bc782a",
+          "matched": false,
+          "reason": "outside-preregistered-bounded-grammar",
+          "state_refs": [
+            "state31"
+          ]
+        },
+        {
+          "candidate_index": 18,
+          "candidate_sha256": "3d2be861a748b61cf1d4f2f217ea9b1db4ea8e28be8a12d663cf1db258c67a45",
+          "matched": false,
+          "reason": "outside-preregistered-bounded-grammar",
+          "state_refs": [
+            "state31",
+            "state33",
+            "state34"
+          ]
+        },
+        {
+          "candidate_index": 19,
+          "candidate_sha256": "055e4b633e3c5283b2014e6444d6de52d5cb1484f37ceef30e593fcd7a03d34c",
+          "matched": false,
+          "reason": "more-than-three-state-references",
+          "state_refs": [
+            "state29",
+            "state30",
+            "state31",
+            "state33",
+            "state34"
+          ]
+        }
+      ],
+      "family_counts": {
+        "unary": 3,
+        "unmatched": 17
+      },
+      "matched_candidate_count": 3,
+      "matched_candidate_ratio": "0.150000",
+      "predicate_sha256": "425aeac400b402b7e54452909875dbbb751dc86544a5d8d39c7ce051e4396c22",
+      "route_sha256": "647db4b982285fdf89c088379390738960b9ed43a1fca2f337d177f3cd12719a",
+      "routed_expansion_candidate_count": 18,
+      "routes": [
+        {
+          "constants": [
+            0,
+            1
+          ],
+          "family": "unary",
+          "relations": [
+            "eq",
+            "le",
+            "ge"
+          ],
+          "signedness": "unsigned",
+          "variables": [
+            "state33"
+          ]
+        },
+        {
+          "constants": [
+            0,
+            1
+          ],
+          "family": "unary",
+          "relations": [
+            "eq",
+            "le",
+            "ge"
+          ],
+          "signedness": "unsigned",
+          "variables": [
+            "state34"
+          ]
+        },
+        {
+          "constants": [
+            0,
+            1
+          ],
+          "family": "unary",
+          "relations": [
+            "eq",
+            "le",
+            "ge"
+          ],
+          "signedness": "unsigned",
+          "variables": [
+            "state31"
+          ]
+        }
+      ],
+      "unique_route_count": 3
+    },
+    {
+      "benchmark_id": "2025/wordlevel/bv/2025/sosylab/safety-func/nla-digbench-scaling/sqrt1-ll_valuebound100.btor2",
+      "btor2_sha256": "38f6500c8a2001693d14f0b0b4a5087d35d9ca7835c8943a5ba0fc9d519b9c13",
+      "candidate_count": 20,
+      "classifications": [
+        {
+          "candidate_index": 0,
+          "candidate_sha256": "34013699fa1dbe6a81619652f652df267e71473db7820f8613f18dd03bbe0233",
+          "family": "quadratic_recurrence",
+          "matched": true,
+          "route_id": "0f5b6113962d5069dc1b663efb1272884caa199cca048c7f8201404b3a9fae84",
+          "state_refs": [
+            "state40",
+            "state41"
+          ]
+        },
+        {
+          "candidate_index": 1,
+          "candidate_sha256": "0ae6a2989b89d71ea3f05506486633bcba4021db98aa633e2bd6e18c928028f9",
+          "family": "unary",
+          "matched": true,
+          "route_id": "b1ee7c617ee6aa7068d191bca353112d80d0e99dd506c2cbfd0f677264d73ff5",
+          "state_refs": [
+            "state38"
+          ]
+        },
+        {
+          "candidate_index": 2,
+          "candidate_sha256": "31ccdb8ac2b1bf7834f46cabd32fc1282f3c7435165c228363e6144d670b1270",
+          "matched": false,
+          "reason": "outside-preregistered-bounded-grammar",
+          "state_refs": [
+            "state39",
+            "state40"
+          ]
+        },
+        {
+          "candidate_index": 3,
+          "candidate_sha256": "e1b81f826d11a2a76062a07b8b4d87a18ce73a3995fe19ad3c5f5629f684309a",
+          "matched": false,
+          "reason": "outside-preregistered-bounded-grammar",
+          "state_refs": [
+            "state39",
+            "state40"
+          ]
+        },
+        {
+          "candidate_index": 4,
+          "candidate_sha256": "b2da5e8e61e34d013f9b0cf3e4ef2be4e380c5eef662097468b4afdc6cf5eabc",
+          "matched": false,
+          "reason": "outside-preregistered-bounded-grammar",
+          "state_refs": [
+            "state39",
+            "state41"
+          ]
+        },
+        {
+          "candidate_index": 5,
+          "candidate_sha256": "8133d8c7ee189aa9379a9ca487d34031755f50730c4df6f6103c045959f147c6",
+          "matched": false,
+          "reason": "outside-preregistered-bounded-grammar",
+          "state_refs": [
+            "state41"
+          ]
+        },
+        {
+          "candidate_index": 6,
+          "candidate_sha256": "d9829503e3b4670d299b02968b4e59eb0043cfb2bb895d5bf0e221dc7f02f2e5",
+          "family": "quadratic_recurrence",
+          "matched": true,
+          "route_id": "0f5b6113962d5069dc1b663efb1272884caa199cca048c7f8201404b3a9fae84",
+          "state_refs": [
+            "state40",
+            "state41"
+          ]
+        },
+        {
+          "candidate_index": 7,
+          "candidate_sha256": "e0d689b520006cc202f555909ae962a7c0639b4d1c1cddbd13afa9abdcbe1fac",
+          "matched": false,
+          "reason": "outside-preregistered-bounded-grammar",
+          "state_refs": [
+            "state40",
+            "state41"
+          ]
+        },
+        {
+          "candidate_index": 8,
+          "candidate_sha256": "cb7addda1bd8f565dc6554c63681321c18b588cdad69ab5fb1836d39e9dabde1",
+          "matched": false,
+          "reason": "outside-preregistered-bounded-grammar",
+          "state_refs": [
+            "state40",
+            "state41"
+          ]
+        },
+        {
+          "candidate_index": 9,
+          "candidate_sha256": "bf5c1bf7645932299b5a8dc74a29498204019912bba5d05fdf2e80c3d436859c",
+          "matched": false,
+          "reason": "outside-preregistered-bounded-grammar",
+          "state_refs": [
+            "state40",
+            "state41"
+          ]
+        },
+        {
+          "candidate_index": 10,
+          "candidate_sha256": "b5bc733e9e6ba63a551284f510c1e2eb0df0d000e37f5f8818c292187ab6bb4b",
+          "matched": false,
+          "reason": "outside-preregistered-bounded-grammar",
+          "state_refs": [
+            "state38",
+            "state39"
+          ]
+        },
+        {
+          "candidate_index": 11,
+          "candidate_sha256": "6bf2eb82f99d29aded66ade5b3f048d16e1d432ebd710765fb737cb21f0d9f4a",
+          "family": "unary",
+          "matched": true,
+          "route_id": "3d6a019493f384b4ac52e2efae032101741c5595f5c762403c51bcda7a6508a6",
+          "state_refs": [
+            "state39"
+          ]
+        },
+        {
+          "candidate_index": 12,
+          "candidate_sha256": "fef592a425c3de61b622e88a370ab1db90b070303745afe50403df03e8b43f22",
+          "family": "unary",
+          "matched": true,
+          "route_id": "98efc4385d502fee6d246309eba020e0103555476b6dc43dc7ecddba23626fea",
+          "state_refs": [
+            "state40"
+          ]
+        },
+        {
+          "candidate_index": 13,
+          "candidate_sha256": "e5cb0035507f03065ebec786dda9c78d7f82bd24aa00f11345cd1035e0c705b3",
+          "family": "unary",
+          "matched": true,
+          "route_id": "e1609c4eba858a416c4e232054d9477bfbf24c017aad3d7cbaa4be5c315cfc7f",
+          "state_refs": [
+            "state41"
+          ]
+        },
+        {
+          "candidate_index": 14,
+          "candidate_sha256": "29c666bf4f565f961a962ea494d1d8dda67824287b6ab29d1a389ff2bbc0128d",
+          "matched": false,
+          "reason": "more-than-three-state-references",
+          "state_refs": [
+            "state38",
+            "state39",
+            "state40",
+            "state41"
+          ]
+        },
+        {
+          "candidate_index": 15,
+          "candidate_sha256": "873c291f96a4252964e7c6f61e4632e6b107069a509cf43f8eb9442856627a3c",
+          "matched": false,
+          "reason": "outside-preregistered-bounded-grammar",
+          "state_refs": [
+            "state40",
+            "state41"
+          ]
+        },
+        {
+          "candidate_index": 16,
+          "candidate_sha256": "dee1d3f812ebb137241675485c3f631b27a218b3d80039a19d3326866a08856b",
+          "matched": false,
+          "reason": "outside-preregistered-bounded-grammar",
+          "state_refs": [
+            "state40",
+            "state41"
+          ]
+        },
+        {
+          "candidate_index": 17,
+          "candidate_sha256": "67e990ac53ca2db2f2093bc71fa68326c7a1b7678b97ed43e5553c762d4485ea",
+          "family": "quadratic_recurrence",
+          "matched": true,
+          "route_id": "0a599a74920dce56d25a2021f1abfc9fce26081380852518c03160aaa88c8dad",
+          "state_refs": [
+            "state38",
+            "state40"
+          ]
+        },
+        {
+          "candidate_index": 18,
+          "candidate_sha256": "e6a4e2e52b4d4a3187cc426ce3fc6017a63ad43a28495703404d8f3781518aca",
+          "matched": false,
+          "reason": "outside-preregistered-bounded-grammar",
+          "state_refs": [
+            "state38",
+            "state41"
+          ]
+        },
+        {
+          "candidate_index": 19,
+          "candidate_sha256": "d7c398bb4377b1d0ccb19976ac78793fb9c0c5d59eb5e3aef4c517a277b3da65",
+          "matched": false,
+          "reason": "outside-preregistered-bounded-grammar",
+          "state_refs": [
+            "state38",
+            "state40",
+            "state41"
+          ]
+        }
+      ],
+      "family_counts": {
+        "quadratic_recurrence": 3,
+        "unary": 4,
+        "unmatched": 13
+      },
+      "matched_candidate_count": 7,
+      "matched_candidate_ratio": "0.350000",
+      "predicate_sha256": "e2d6f380495bf9c00da5a45e71a4c77c6ef1d7234b952e187cd6206e699dc251",
+      "route_sha256": "1475d619d3528d0784edd32c8a6ff78fd24ae56b544965995cb83ab39f551572",
+      "routed_expansion_candidate_count": 48,
+      "routes": [
+        {
+          "counter_shifts": [
+            -1,
+            0,
+            1
+          ],
+          "family": "quadratic_recurrence",
+          "relations": [
+            "eq"
+          ],
+          "scales": [
+            1,
+            2,
+            3,
+            4
+          ],
+          "signedness": "unsigned",
+          "variables": [
+            "state40",
+            "state38"
+          ]
+        },
+        {
+          "counter_shifts": [
+            -1,
+            0,
+            1
+          ],
+          "family": "quadratic_recurrence",
+          "relations": [
+            "eq"
+          ],
+          "scales": [
+            1,
+            2,
+            3,
+            4
+          ],
+          "signedness": "unsigned",
+          "variables": [
+            "state40",
+            "state41"
+          ]
+        },
+        {
+          "constants": [
+            0,
+            1
+          ],
+          "family": "unary",
+          "relations": [
+            "eq",
+            "le",
+            "ge"
+          ],
+          "signedness": "unsigned",
+          "variables": [
+            "state39"
+          ]
+        },
+        {
+          "constants": [
+            0,
+            1
+          ],
+          "family": "unary",
+          "relations": [
+            "eq",
+            "le",
+            "ge"
+          ],
+          "signedness": "unsigned",
+          "variables": [
+            "state40"
+          ]
+        },
+        {
+          "constants": [
+            0,
+            1
+          ],
+          "family": "unary",
+          "relations": [
+            "eq",
+            "le",
+            "ge"
+          ],
+          "signedness": "unsigned",
+          "variables": [
+            "state38"
+          ]
+        },
+        {
+          "constants": [
+            0,
+            1
+          ],
+          "family": "unary",
+          "relations": [
+            "eq",
+            "le",
+            "ge"
+          ],
+          "signedness": "unsigned",
+          "variables": [
+            "state41"
+          ]
+        }
+      ],
+      "unique_route_count": 6
+    },
+    {
+      "benchmark_id": "2025/wordlevel/bv/2025/sosylab/safety-func/nla-digbench/fermat1-ll.btor2",
+      "btor2_sha256": "15154655f489e367f7ffc595c32b56c63d719457bda2b29f9268545af14d176e",
+      "candidate_count": 20,
+      "classifications": [
+        {
+          "candidate_index": 0,
+          "candidate_sha256": "ae276c7ff6ab1cb875ac689172e0849d28babf77403b3f7479ef54fb29277bdb",
+          "family": "pairwise_offset",
+          "matched": true,
+          "route_id": "00b2ec505e33e0f04c0c46a2d0d06f34951381abef97124d73e585357985c44b",
+          "state_refs": [
+            "state39",
+            "state40"
+          ]
+        },
+        {
+          "candidate_index": 1,
+          "candidate_sha256": "8633320e139e1dbbf55ffd1b6c80267d49ae610f56dfc3e0c934158f06a53850",
+          "family": "unary",
+          "matched": true,
+          "route_id": "98efc4385d502fee6d246309eba020e0103555476b6dc43dc7ecddba23626fea",
+          "state_refs": [
+            "state40"
+          ]
+        },
+        {
+          "candidate_index": 2,
+          "candidate_sha256": "c48c0a6b2b714693a0efe0b7f1a74550059d9121c963db4486835b3a2a9a501f",
+          "family": "unary",
+          "matched": true,
+          "route_id": "3d6a019493f384b4ac52e2efae032101741c5595f5c762403c51bcda7a6508a6",
+          "state_refs": [
+            "state39"
+          ]
+        },
+        {
+          "candidate_index": 3,
+          "candidate_sha256": "e5cb0035507f03065ebec786dda9c78d7f82bd24aa00f11345cd1035e0c705b3",
+          "family": "unary",
+          "matched": true,
+          "route_id": "e1609c4eba858a416c4e232054d9477bfbf24c017aad3d7cbaa4be5c315cfc7f",
+          "state_refs": [
+            "state41"
+          ]
+        },
+        {
+          "candidate_index": 4,
+          "candidate_sha256": "ab8fc35ffb9eb838c42cca2301d7be791f0babfede08bc667ece88dc33d4fea9",
+          "family": "unary",
+          "matched": true,
+          "route_id": "b1ee7c617ee6aa7068d191bca353112d80d0e99dd506c2cbfd0f677264d73ff5",
+          "state_refs": [
+            "state38"
+          ]
+        },
+        {
+          "candidate_index": 5,
+          "candidate_sha256": "84148a2c8821b2ccda87f3359d594861a87dd38125d61f62ca279143b62486e2",
+          "matched": false,
+          "reason": "outside-preregistered-bounded-grammar",
+          "state_refs": [
+            "state39"
+          ]
+        },
+        {
+          "candidate_index": 6,
+          "candidate_sha256": "8ca337a95ca8ed306a60881acac4b7ffa6b5f78edddee569d3c40f209bcbe2b5",
+          "matched": false,
+          "reason": "outside-preregistered-bounded-grammar",
+          "state_refs": [
+            "state40"
+          ]
+        },
+        {
+          "candidate_index": 7,
+          "candidate_sha256": "34d1ac1d02114ac863f68f4558fb78152925f1ccb0223d47df887c4ab8910571",
+          "matched": false,
+          "reason": "more-than-three-state-references",
+          "state_refs": [
+            "state38",
+            "state39",
+            "state40",
+            "state41"
+          ]
+        },
+        {
+          "candidate_index": 8,
+          "candidate_sha256": "3299e4cb42530a5585fedabcac04860a81d8f9f25cfb2922bb745e52059f1445",
+          "matched": false,
+          "reason": "outside-preregistered-bounded-grammar",
+          "state_refs": [
+            "state40"
+          ]
+        },
+        {
+          "candidate_index": 9,
+          "candidate_sha256": "f21ce5d5307450b6f1d9b1f94e6443fdf1a56c30ab99a470b3f0cc523f451069",
+          "family": "unary",
+          "matched": true,
+          "route_id": "e1609c4eba858a416c4e232054d9477bfbf24c017aad3d7cbaa4be5c315cfc7f",
+          "state_refs": [
+            "state41"
+          ]
+        },
+        {
+          "candidate_index": 10,
+          "candidate_sha256": "4ffc42d09deac8d37c84111c9ed70bd939c622cc38bf640fa8236400258942e6",
+          "matched": false,
+          "reason": "outside-preregistered-bounded-grammar",
+          "state_refs": [
+            "state39",
+            "state40"
+          ]
+        },
+        {
+          "candidate_index": 11,
+          "candidate_sha256": "492ed4dac995e76db164dddcd3f3372ffa058bfc1b6f7b1b0fe1aa061403e06b",
+          "matched": false,
+          "reason": "more-than-three-state-references",
+          "state_refs": [
+            "state38",
+            "state39",
+            "state40",
+            "state41"
+          ]
+        },
+        {
+          "candidate_index": 12,
+          "candidate_sha256": "729c33a50aa4ab83371d3ceff6d402c951f6097c40d2b6904bdd5e6c17e7824d",
+          "matched": false,
+          "reason": "outside-preregistered-bounded-grammar",
+          "state_refs": [
+            "state40",
+            "state41"
+          ]
+        },
+        {
+          "candidate_index": 13,
+          "candidate_sha256": "4f10bbde2491641d631ba78a3f4ddfbcf8113981e1cea3ad2d12613dda7259d8",
+          "matched": false,
+          "reason": "outside-preregistered-bounded-grammar",
+          "state_refs": [
+            "state39",
+            "state40"
+          ]
+        },
+        {
+          "candidate_index": 14,
+          "candidate_sha256": "94b434af2ddb8aad0e2608ab6a38e362597ea712788bd5b68d2d133d9c67d866",
+          "family": "pairwise_offset",
+          "matched": true,
+          "route_id": "00b2ec505e33e0f04c0c46a2d0d06f34951381abef97124d73e585357985c44b",
+          "state_refs": [
+            "state39",
+            "state40"
+          ]
+        },
+        {
+          "candidate_index": 15,
+          "candidate_sha256": "cba17770990c60853315f7b4130b2f690d5efc34339e52bfa1b9fd4b0b9bd540",
+          "family": "pairwise_offset",
+          "matched": true,
+          "route_id": "15bb2b6c5dc3fafeba0293b40905cbfcf201ef6fb0897075f7ae569c2472a991",
+          "state_refs": [
+            "state40",
+            "state41"
+          ]
+        },
+        {
+          "candidate_index": 16,
+          "candidate_sha256": "3e66bb98af86abdd6441f27aa77e6f0ff82761b31a6c35afb522869a5c2b8fce",
+          "matched": false,
+          "reason": "outside-preregistered-bounded-grammar",
+          "state_refs": [
+            "state39",
+            "state40",
+            "state41"
+          ]
+        },
+        {
+          "candidate_index": 17,
+          "candidate_sha256": "56abf177825bbb1a77aaad9e337f1fd4784e3935dae2434b0b1de92aeba2e8e3",
+          "family": "unary",
+          "matched": true,
+          "route_id": "b1ee7c617ee6aa7068d191bca353112d80d0e99dd506c2cbfd0f677264d73ff5",
+          "state_refs": [
+            "state38"
+          ]
+        },
+        {
+          "candidate_index": 18,
+          "candidate_sha256": "ed2db27ec66d15b651585299cf3ec09b61ee8d8219ea658132be606f18c6deef",
+          "family": "pairwise_offset",
+          "matched": true,
+          "route_id": "f77a89da6ef28a17751d7ca63be2881b1deda27dfa2a3a8f3a04dc2aa4ecb018",
+          "state_refs": [
+            "state39",
+            "state41"
+          ]
+        },
+        {
+          "candidate_index": 19,
+          "candidate_sha256": "7ffffb82babad806c31b37c2bdb7f3a1f9383023a33a27ec62897e23cf1c1cbc",
+          "family": "pairwise_offset",
+          "matched": true,
+          "route_id": "15bb2b6c5dc3fafeba0293b40905cbfcf201ef6fb0897075f7ae569c2472a991",
+          "state_refs": [
+            "state40",
+            "state41"
+          ]
+        }
+      ],
+      "family_counts": {
+        "pairwise_offset": 5,
+        "unary": 6,
+        "unmatched": 9
+      },
+      "matched_candidate_count": 11,
+      "matched_candidate_ratio": "0.550000",
+      "predicate_sha256": "b3e59063a5e4fce3f39b24e7349ce757a941a6ce06c0ea98f5888b9a28efaa1a",
+      "route_sha256": "8fbd76d72073f2b35c1d5a8d5420bbb08d42c1a48a00bfbd203eb1a575a148e2",
+      "routed_expansion_candidate_count": 69,
+      "routes": [
+        {
+          "family": "pairwise_offset",
+          "offsets": [
+            0,
+            1,
+            -1,
+            2,
+            -2
+          ],
+          "relations": [
+            "eq",
+            "le",
+            "ge"
+          ],
+          "signedness": "unsigned",
+          "variables": [
+            "state39",
+            "state40"
+          ]
+        },
+        {
+          "family": "pairwise_offset",
+          "offsets": [
+            0,
+            1,
+            -1,
+            2,
+            -2
+          ],
+          "relations": [
+            "eq",
+            "le",
+            "ge"
+          ],
+          "signedness": "unsigned",
+          "variables": [
+            "state40",
+            "state41"
+          ]
+        },
+        {
+          "constants": [
+            0,
+            1
+          ],
+          "family": "unary",
+          "relations": [
+            "eq",
+            "le",
+            "ge"
+          ],
+          "signedness": "unsigned",
+          "variables": [
+            "state39"
+          ]
+        },
+        {
+          "constants": [
+            0,
+            1
+          ],
+          "family": "unary",
+          "relations": [
+            "eq",
+            "le",
+            "ge"
+          ],
+          "signedness": "unsigned",
+          "variables": [
+            "state40"
+          ]
+        },
+        {
+          "constants": [
+            0,
+            1
+          ],
+          "family": "unary",
+          "relations": [
+            "eq",
+            "le",
+            "ge"
+          ],
+          "signedness": "unsigned",
+          "variables": [
+            "state38"
+          ]
+        },
+        {
+          "constants": [
+            0,
+            1
+          ],
+          "family": "unary",
+          "relations": [
+            "eq",
+            "le",
+            "ge"
+          ],
+          "signedness": "unsigned",
+          "variables": [
+            "state41"
+          ]
+        },
+        {
+          "family": "pairwise_offset",
+          "offsets": [
+            0,
+            1,
+            -1,
+            2,
+            -2
+          ],
+          "relations": [
+            "eq",
+            "le",
+            "ge"
+          ],
+          "signedness": "unsigned",
+          "variables": [
+            "state39",
+            "state41"
+          ]
+        }
+      ],
+      "unique_route_count": 7
+    },
+    {
+      "benchmark_id": "2025/wordlevel/bv/2025/sosylab/safety-rel/nla-digbench-scaling/geo2-ll2_unwindbound1.btor2",
+      "btor2_sha256": "a2f87b2fc7fa264546da730d46e70ddacc3e776b55ef5bc35c9bd7895d8ab750",
+      "candidate_count": 20,
+      "classifications": [
+        {
+          "candidate_index": 0,
+          "candidate_sha256": "64a2b099e042d39030534ef3786c41f4bd831a0cccb844bab1f90cb568ff27f3",
+          "family": "affine",
+          "matched": true,
+          "route_id": "97f84baf99598a4b95cbd366d36f3015a4006d76e85a5d9352ef643ff2adb0a3",
+          "state_refs": [
+            "state17",
+            "state19",
+            "state20"
+          ]
+        },
+        {
+          "candidate_index": 1,
+          "candidate_sha256": "4c6d8c5679fff20fbf268835dc5fa038429bdc62701e7f863a2249cc2f92b7d6",
+          "family": "pairwise_offset",
+          "matched": true,
+          "route_id": "f47dbad3c9c8e7365e7d5e9ea104fdd9e2cd854ede6ae9b6fc375bae35c42a7d",
+          "state_refs": [
+            "state21",
+            "state22"
+          ]
+        },
+        {
+          "candidate_index": 2,
+          "candidate_sha256": "26f8429dcefd1a1a0188da7b11fedc81ddd2fb99cee9d913d96b97961572e5e3",
+          "family": "pairwise_offset",
+          "matched": true,
+          "route_id": "83a5cf720eb995869ddcf07059a74538f5aeaaf4565f35713512e624af30ff00",
+          "state_refs": [
+            "state18",
+            "state22"
+          ]
+        },
+        {
+          "candidate_index": 3,
+          "candidate_sha256": "2cff7baab7b49e5f22bf854831a66184eba9caade2467f78ca54fe1aa575300d",
+          "matched": false,
+          "reason": "outside-preregistered-bounded-grammar",
+          "state_refs": [
+            "state19",
+            "state20"
+          ]
+        },
+        {
+          "candidate_index": 4,
+          "candidate_sha256": "c4fe9be007732e2066e10bad4c4773adf3436ab6a29011eeed5eecbc88689ffc",
+          "matched": false,
+          "reason": "outside-preregistered-bounded-grammar",
+          "state_refs": [
+            "state17",
+            "state19",
+            "state20"
+          ]
+        },
+        {
+          "candidate_index": 5,
+          "candidate_sha256": "621a9ee4db9a49f93af8c25d4e765c65a8dc1fb6363b256937611f9e06c80f72",
+          "family": "pairwise_offset",
+          "matched": true,
+          "route_id": "83a5cf720eb995869ddcf07059a74538f5aeaaf4565f35713512e624af30ff00",
+          "state_refs": [
+            "state18",
+            "state22"
+          ]
+        },
+        {
+          "candidate_index": 6,
+          "candidate_sha256": "7e04565b66eb5eea75406e8fc9e21d8feef240f85b728e5057ab2660843875d3",
+          "family": "pairwise_offset",
+          "matched": true,
+          "route_id": "f20a3cb4d41bf37e7726bdad2346f049ac1419da6b66fa2c1d1055702215c019",
+          "state_refs": [
+            "state18",
+            "state21"
+          ]
+        },
+        {
+          "candidate_index": 7,
+          "candidate_sha256": "4e13aa0d064f372030dad7663c462e4a12e7aa1599c913163b3f696ed8e4a4d0",
+          "family": "unary",
+          "matched": true,
+          "route_id": "56d103fda17930fa9a8a70b2a6d5291b479f945374746a33e72f0e9366fceb65",
+          "state_refs": [
+            "state22"
+          ]
+        },
+        {
+          "candidate_index": 8,
+          "candidate_sha256": "2310a39ac3fa86cbfd4ee9bb55f38ae41db0924f4892a6ab94fe7c3ff2b7dcdb",
+          "family": "unary",
+          "matched": true,
+          "route_id": "dc98135df895d62deb4dbf0d36ea18dfc16d9ace0778291763577517c2657c71",
+          "state_refs": [
+            "state21"
+          ]
+        },
+        {
+          "candidate_index": 9,
+          "candidate_sha256": "3cab39b43c9ae3d77bc49784f8a250734c4666c7b45b361f41ad061e92ee78ff",
+          "family": "unary",
+          "matched": true,
+          "route_id": "2482ec8ace3a623f306058d62da95de3626850ebf8ec374c2746aff63546cf80",
+          "state_refs": [
+            "state18"
+          ]
+        },
+        {
+          "candidate_index": 10,
+          "candidate_sha256": "efb68cc4c95a725cd4f3de47049c9e9b0c835697f4c0a89397963f01c8440b16",
+          "family": "pairwise_offset",
+          "matched": true,
+          "route_id": "21a78f74b79dc13dcaa6e6a127aef00e407eada009e967a8edd5511a8d877d3f",
+          "state_refs": [
+            "state19",
+            "state20"
+          ]
+        },
+        {
+          "candidate_index": 11,
+          "candidate_sha256": "26548e285985b56e820b06ab9ea2b129ad01c14fc478bc2f738b72624256abb6",
+          "family": "unary",
+          "matched": true,
+          "route_id": "7c6ca89de3fde79448f00a71b3ab9a4a61e8cb95da747f31dc2681cf0e2ba094",
+          "state_refs": [
+            "state17"
+          ]
+        },
+        {
+          "candidate_index": 12,
+          "candidate_sha256": "96781c93a56d6ed33d09cf063f9f86aae607d99e45c0d7752becb490ad611040",
+          "family": "pairwise_offset",
+          "matched": true,
+          "route_id": "f47dbad3c9c8e7365e7d5e9ea104fdd9e2cd854ede6ae9b6fc375bae35c42a7d",
+          "state_refs": [
+            "state21",
+            "state22"
+          ]
+        },
+        {
+          "candidate_index": 13,
+          "candidate_sha256": "628c73e03442fc8081f0af8aa512b740d725e05a8ce36e04680f9b85f0f22ea5",
+          "family": "pairwise_offset",
+          "matched": true,
+          "route_id": "83a5cf720eb995869ddcf07059a74538f5aeaaf4565f35713512e624af30ff00",
+          "state_refs": [
+            "state18",
+            "state22"
+          ]
+        },
+        {
+          "candidate_index": 14,
+          "candidate_sha256": "268362295e5bd6435ad70fdb90c523c6be7133f53263967b28e682ce5f05437e",
+          "family": "unary",
+          "matched": true,
+          "route_id": "dc98135df895d62deb4dbf0d36ea18dfc16d9ace0778291763577517c2657c71",
+          "state_refs": [
+            "state21"
+          ]
+        },
+        {
+          "candidate_index": 15,
+          "candidate_sha256": "1f66437aaa438de6d7a18ef65981ad4a4c1ef877ee4ae606b39bde5fd75f4516",
+          "family": "unary",
+          "matched": true,
+          "route_id": "2482ec8ace3a623f306058d62da95de3626850ebf8ec374c2746aff63546cf80",
+          "state_refs": [
+            "state18"
+          ]
+        },
+        {
+          "candidate_index": 16,
+          "candidate_sha256": "7ccb261ac70f8f17496c2b0359894a55d2bae16afca6522d23a8872def6b5e0e",
+          "family": "unary",
+          "matched": true,
+          "route_id": "7a9055229dfd40dbcfb13dc23c24490446459983946f67d83bb99ea82670db80",
+          "state_refs": [
+            "state19"
+          ]
+        },
+        {
+          "candidate_index": 17,
+          "candidate_sha256": "a51698c9754c242252d6891ccae16e018380ca5d44e1d42edd422f831f6f4b6d",
+          "family": "unary",
+          "matched": true,
+          "route_id": "525c6b31643021f74d94718745b46ce73a7929d12f037c35cad598633f5a798e",
+          "state_refs": [
+            "state20"
+          ]
+        },
+        {
+          "candidate_index": 18,
+          "candidate_sha256": "92a545a6372dc6c61961e6007d76b40fdf62b9dc344a813b98a3360acd5aea44",
+          "matched": false,
+          "reason": "outside-preregistered-bounded-grammar",
+          "state_refs": [
+            "state22"
+          ]
+        },
+        {
+          "candidate_index": 19,
+          "candidate_sha256": "19e04161773ced2cf85971476556ead239f08bf75c7234340465ced1521e7194",
+          "family": "unary",
+          "matched": true,
+          "route_id": "56d103fda17930fa9a8a70b2a6d5291b479f945374746a33e72f0e9366fceb65",
+          "state_refs": [
+            "state22"
+          ]
+        }
+      ],
+      "family_counts": {
+        "affine": 1,
+        "pairwise_offset": 7,
+        "unary": 9,
+        "unmatched": 3
+      },
+      "matched_candidate_count": 17,
+      "matched_candidate_ratio": "0.850000",
+      "predicate_sha256": "75dec79a270fb33a26095b545b532891601ae9593fd8df3708f63d3635bdb750",
+      "route_sha256": "c198c328f863c6ceeeb356b945233ba1e4134af701410b1c7ce91698aa66ca5a",
+      "routed_expansion_candidate_count": 117,
+      "routes": [
+        {
+          "family": "pairwise_offset",
+          "offsets": [
+            0,
+            1,
+            -1,
+            2,
+            -2
+          ],
+          "relations": [
+            "eq",
+            "le",
+            "ge"
+          ],
+          "signedness": "unsigned",
+          "variables": [
+            "state19",
+            "state20"
+          ]
+        },
+        {
+          "constants": [
+            0,
+            1
+          ],
+          "family": "unary",
+          "relations": [
+            "eq",
+            "le",
+            "ge"
+          ],
+          "signedness": "unsigned",
+          "variables": [
+            "state18"
+          ]
+        },
+        {
+          "constants": [
+            0,
+            1
+          ],
+          "family": "unary",
+          "relations": [
+            "eq",
+            "le",
+            "ge"
+          ],
+          "signedness": "unsigned",
+          "variables": [
+            "state20"
+          ]
+        },
+        {
+          "constants": [
+            0,
+            1
+          ],
+          "family": "unary",
+          "relations": [
+            "eq",
+            "le",
+            "ge"
+          ],
+          "signedness": "unsigned",
+          "variables": [
+            "state22"
+          ]
+        },
+        {
+          "constants": [
+            0,
+            1
+          ],
+          "family": "unary",
+          "relations": [
+            "eq",
+            "le",
+            "ge"
+          ],
+          "signedness": "unsigned",
+          "variables": [
+            "state19"
+          ]
+        },
+        {
+          "constants": [
+            0,
+            1
+          ],
+          "family": "unary",
+          "relations": [
+            "eq",
+            "le",
+            "ge"
+          ],
+          "signedness": "unsigned",
+          "variables": [
+            "state17"
+          ]
+        },
+        {
+          "family": "pairwise_offset",
+          "offsets": [
+            0,
+            1,
+            -1,
+            2,
+            -2
+          ],
+          "relations": [
+            "eq",
+            "le",
+            "ge"
+          ],
+          "signedness": "unsigned",
+          "variables": [
+            "state18",
+            "state22"
+          ]
+        },
+        {
+          "coefficient_bound": 2,
+          "family": "affine",
+          "relations": [
+            "eq"
+          ],
+          "signedness": "unsigned",
+          "variables": [
+            "state17",
+            "state19",
+            "state20"
+          ]
+        },
+        {
+          "constants": [
+            0,
+            1
+          ],
+          "family": "unary",
+          "relations": [
+            "eq",
+            "le",
+            "ge"
+          ],
+          "signedness": "unsigned",
+          "variables": [
+            "state21"
+          ]
+        },
+        {
+          "family": "pairwise_offset",
+          "offsets": [
+            0,
+            1,
+            -1,
+            2,
+            -2
+          ],
+          "relations": [
+            "eq",
+            "le",
+            "ge"
+          ],
+          "signedness": "unsigned",
+          "variables": [
+            "state18",
+            "state21"
+          ]
+        },
+        {
+          "family": "pairwise_offset",
+          "offsets": [
+            0,
+            1,
+            -1,
+            2,
+            -2
+          ],
+          "relations": [
+            "eq",
+            "le",
+            "ge"
+          ],
+          "signedness": "unsigned",
+          "variables": [
+            "state21",
+            "state22"
+          ]
+        }
+      ],
+      "unique_route_count": 11
+    }
+  ],
+  "report_sha256": "27d559845d3b5ca5d9fdec58d6ef820022de31066e04c12fa9dc14aecfaf28bc",
+  "routed_expansion_candidate_count_sum": 1356,
+  "schema": "pono-llm-frozen-route-audit-v1",
+  "unique_route_count_sum": 127
+}

@@ -1,6 +1,6 @@
 # Documentation Index
 
-**Last updated:** 2026-07-12 (Gate 2 complete; claims falsified; replay provenance hardened)
+**Last updated:** 2026-07-12 (paired representation/phase/grammar Gate v1 complete)
 
 Start here:
 
@@ -16,17 +16,19 @@ Start here:
 | File | Description |
 |------|-------------|
 | [`overview.md`](overview.md) | Current project scope, sound predicate-injection architecture, latest results |
-| [`plan.md`](plan.md) | Completed Phase 1+2/Gate 2 evidence and the active representation-pivot decision |
-| [`roadmap.md`](roadmap.md) | Current decision gates after the corrected deterministic-baseline audit |
+| [`plan.md`](plan.md) | Completed Gate 0--3 evidence, exact paired-gate result, reproduction, and stop/go decision |
+| [`roadmap.md`](roadmap.md) | Closed soundness/formula/dataset/representation gates and the next hypothesis decision |
 | [`notes.md`](notes.md) | Tacit knowledge, soundness gotchas, timing caveats, next-step decisions |
 | [`structure.md`](structure.md) | Directory map and module boundaries |
+| [`representation_phase_gate.md`](representation_phase_gate.md) | Completed source/lifted/raw phase-local grammar-routing contract and H1--H4 decisions |
 
 ## Supporting references
 
 | File | Description |
 |------|-------------|
 | [`plans/openrouter_provider_policy.md`](plans/openrouter_provider_policy.md) | OpenRouter provider filtering policy |
-| [`../artifacts/README.md`](../artifacts/README.md) | Canonical Phase 1+2/Gate 2 evidence, integrity sidecars, and hash manifests |
+| [`../artifacts/README.md`](../artifacts/README.md) | Canonical Phase 1+2, Gate 2, and representation/phase evidence |
+| [`../artifacts/representation_phase_v1/README.md`](../artifacts/representation_phase_v1/README.md) | Paired population, prompts, capture, matrices, certificates, and recursive integrity manifest |
 
 ## Archived in this update
 

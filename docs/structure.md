@@ -13,10 +13,10 @@
 | `smt/` | SMT utility wrappers |
 | `utils/` | Logging, timing, misc utilities |
 | `tests/` | C++ tests (googletest) + Python tests (`tests/python/`) |
-| `scripts/` | Benchmark harnesses and Phase 1+2/Gate 2 scripts: `preprocess_sw.py`, `predicate_workflow.py`, `experiment_manifest.py`, `capture_candidates.py`, `run_matrix.py`, `summarize_reliability.py`, `summarize_phase1_2.py`, `static_predicate_baseline.py`, `candidate_cert_check.py`, `extract_btor_features.py`, `select_gate2_corpus.py`, `select_gate2_survivors.py`, `select_gate2_llm_targets.py`, `summarize_gate2.py`, `hash_research_artifacts.py` |
+| `scripts/` | Benchmark harnesses and research tools: Phase 1+2/Gate 2 plus the paired population, source/lifted/raw renderer, strict grammar routes, phase-local replay, route capture, routed baselines, and independent UNSAT audit. |
 | `benchmarks/` | Micro-benchmarks and BTOR2 test cases |
 | `bench_results/` | Experiment output (not in git) |
-| `artifacts/` | Frozen Phase 1+2 captures and canonical matrices; see `artifacts/README.md` and its SHA-256 manifest. |
+| `artifacts/` | Frozen Phase 1+2/Gate 2 evidence plus `representation_phase_v1/`, whose recursive integrity manifest binds paired inputs, prompts, routes, matrices, and certificates. |
 | `docs/` | Active docs; historical docs live under `archive/docs/` |
 | `diagnosis/` | Per-phase diagnosis notes |
 | `prompts/` | LLM prompt templates |
@@ -49,6 +49,34 @@
   downstream selectors verify before accepting a matrix.
 - **Deterministic baseline:** `scripts/static_predicate_baseline.py` round-robins unary, pairwise, affine-2, and affine-3 templates, derives affine projections, provides a separate generic consecutive-counter quadratic family for `static-quadratic-oracle`, and exposes a post-hoc low-complexity named-variable order/sum ranking baseline.
 - **Direct candidate certification:** `scripts/candidate_cert_check.py` checks every BAD property, uses exact C++ AST semantics, and supports sound Houdini subset extraction; only all-UNSAT C1/C2/C3 is a certificate.
+- **Phase-local grammar kernel:** `scripts/grammar_routes.py` validates
+  `pono-llm-grammar-route-v1`, resolves unambiguous scalar state symbols,
+  expands bounded signed/unsigned deterministic grammar families, implements a
+  fixed transition-structure router, extracts strict functional CPV `!pc`
+  phases, and wraps candidates as `phase => predicate`.
+  `scripts/run_phase_grammar.py` sends the guarded conjunction to the existing
+  Houdini/C1-C2-C3 checker and, if it is not a direct certificate, supplies the
+  same untrusted candidates to IC3IA on the original model.
+- **Paired population and views:** `scripts/build_paired_corpus.py` binds the
+  official translation/source/CPV revisions, source/BTOR hashes, source-family
+  identity, unique source-state mapping, and explicit exclusions.
+  `scripts/screen_paired_baseline.py` runs the full eligible engine screen and
+  `scripts/select_paired_pilot.py` freezes the family/content-independent pilot
+  before LLM results. `scripts/representation_views.py` emits matched source,
+  target-derived lifted, and raw-property-cone prompts under a documented
+  lexical cap plus full prompts.
+- **Grammar route capture/replay:** `scripts/capture_grammar_routes.py` freezes
+  one strict JSON route per paired view with prompt/response/model/token/latency
+  hashes; invalid routes remain explicit data. `scripts/run_paired_phase_matrix.py`
+  executes global/all-phase bounded grammar controls.
+  `scripts/run_routed_phase_matrix.py` compares frozen LLM, candidate-budget-
+  matched random, and deterministic structural routes without API calls.
+- **Representation-gate audits:** `scripts/audit_frozen_routes.py` classifies
+  historical full21 formulas against the bounded grammar.
+  `scripts/audit_routed_unsat.py` regenerates every non-direct routed UNSAT,
+  requests Pono's invariant, and independently checks C1/C2/C3.
+  `scripts/summarize_representation_phase.py` validates the complete recursive
+  artifact and derives the H1--H4 decision.
 - **Gate 2 corpus control:** `scripts/extract_btor_features.py` performs a
   durable full-tree feature scan; `scripts/select_gate2_corpus.py` produces a
   portable, content-deduplicated, fixed-seed stratified manifest; and

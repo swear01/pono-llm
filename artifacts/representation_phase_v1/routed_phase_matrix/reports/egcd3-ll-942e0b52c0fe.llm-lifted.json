@@ -1,0 +1,778 @@
+{
+  "arm": "lifted",
+  "benchmark": "/tmp/svcomp25-sparse/translated/safety-func/nla-digbench/egcd3-ll.btor2",
+  "benchmark_id": "nla-digbench/egcd3-ll.btor2",
+  "benchmark_sha256": "ab95af590341bbc5985f8b139fac708e4abf9e4330e4027156b9d4e44d6675a4",
+  "candidate_generation_sec": 0.004866987466812134,
+  "candidate_sha256": "0f6d4614cfcc9a5326970ed1c0f35cd54238c6c7a6ab5d857561fa2d741db7e5",
+  "certificate": {
+    "checks": [
+      {
+        "name": "C1 Init=>H",
+        "result": "unsat"
+      },
+      {
+        "name": "C2 inductive",
+        "result": "unknown"
+      },
+      {
+        "name": "C3 H=>notBAD",
+        "result": "not-run"
+      }
+    ],
+    "init_queries": 2,
+    "ok": false,
+    "removed_initial_indices": [
+      1,
+      23,
+      34,
+      56,
+      67,
+      89
+    ],
+    "removed_step_indices": [
+      9,
+      31,
+      42,
+      64,
+      75,
+      86,
+      97,
+      119,
+      130,
+      141,
+      152,
+      163,
+      174,
+      185,
+      196,
+      0,
+      11,
+      22,
+      33,
+      55,
+      66,
+      77,
+      88,
+      99,
+      110,
+      121,
+      132,
+      143,
+      154,
+      165,
+      176,
+      187,
+      5,
+      16,
+      27,
+      38,
+      49,
+      60,
+      71,
+      82,
+      93,
+      104,
+      115,
+      126,
+      137,
+      148,
+      159,
+      170,
+      181,
+      192,
+      20,
+      53,
+      108,
+      10,
+      21,
+      32,
+      43,
+      54,
+      65,
+      76,
+      87,
+      98,
+      109,
+      120,
+      131,
+      142,
+      153,
+      164,
+      175,
+      186,
+      197
+    ],
+    "selected_indices": [
+      2,
+      3,
+      4,
+      6,
+      7,
+      8,
+      12,
+      13,
+      14,
+      15,
+      17,
+      18,
+      19,
+      24,
+      25,
+      26,
+      28,
+      29,
+      30,
+      35,
+      36,
+      37,
+      39,
+      40,
+      41,
+      44,
+      45,
+      46,
+      47,
+      48,
+      50,
+      51,
+      52,
+      57,
+      58,
+      59,
+      61,
+      62,
+      63,
+      68,
+      69,
+      70,
+      72,
+      73,
+      74,
+      78,
+      79,
+      80,
+      81,
+      83,
+      84,
+      85,
+      90,
+      91,
+      92,
+      94,
+      95,
+      96,
+      100,
+      101,
+      102,
+      103,
+      105,
+      106,
+      107,
+      111,
+      112,
+      113,
+      114,
+      116,
+      117,
+      118,
+      122,
+      123,
+      124,
+      125,
+      127,
+      128,
+      129,
+      133,
+      134,
+      135,
+      136,
+      138,
+      139,
+      140,
+      144,
+      145,
+      146,
+      147,
+      149,
+      150,
+      151,
+      155,
+      156,
+      157,
+      158,
+      160,
+      161,
+      162,
+      166,
+      167,
+      168,
+      169,
+      171,
+      172,
+      173,
+      177,
+      178,
+      179,
+      180,
+      182,
+      183,
+      184,
+      188,
+      189,
+      190,
+      191,
+      193,
+      194,
+      195
+    ],
+    "step_queries": 6,
+    "timeout_phase": "C2",
+    "unsupported_candidates": []
+  },
+  "certificate_time_sec": 20.108490210026503,
+  "config": "llm-lifted",
+  "end_to_end_sec": 30.178318288177252,
+  "end_to_end_with_generation_sec": 33.62036944180727,
+  "engine": "phase-grammar-ic3ia",
+  "error": "",
+  "exit": null,
+  "expected_verdict": "safe",
+  "generation_time_sec": 3.4420511536300182,
+  "matrix_schema": "pono-llm-routed-phase-matrix-v1",
+  "model_checker_time_sec": 10.064961090683937,
+  "offline_time_sec": 30.178318288177252,
+  "phase_count": 11,
+  "phase_mode": "all",
+  "phases": [
+    {
+      "equality_node": 18,
+      "guard_ast": {
+        "args": [
+          {
+            "form": "ref",
+            "ref": "state17"
+          },
+          {
+            "const": "1",
+            "form": "const",
+            "width": 11
+          }
+        ],
+        "form": "eq"
+      },
+      "is_bad": false,
+      "is_initial": false,
+      "pc_ref": "state17",
+      "phase_id": "pc_state17_w11_v1",
+      "value": 1,
+      "width": 11
+    },
+    {
+      "equality_node": 19,
+      "guard_ast": {
+        "args": [
+          {
+            "form": "ref",
+            "ref": "state17"
+          },
+          {
+            "const": "2",
+            "form": "const",
+            "width": 11
+          }
+        ],
+        "form": "eq"
+      },
+      "is_bad": false,
+      "is_initial": true,
+      "pc_ref": "state17",
+      "phase_id": "pc_state17_w11_v2",
+      "value": 2,
+      "width": 11
+    },
+    {
+      "equality_node": 20,
+      "guard_ast": {
+        "args": [
+          {
+            "form": "ref",
+            "ref": "state17"
+          },
+          {
+            "const": "4",
+            "form": "const",
+            "width": 11
+          }
+        ],
+        "form": "eq"
+      },
+      "is_bad": false,
+      "is_initial": false,
+      "pc_ref": "state17",
+      "phase_id": "pc_state17_w11_v4",
+      "value": 4,
+      "width": 11
+    },
+    {
+      "equality_node": 21,
+      "guard_ast": {
+        "args": [
+          {
+            "form": "ref",
+            "ref": "state17"
+          },
+          {
+            "const": "8",
+            "form": "const",
+            "width": 11
+          }
+        ],
+        "form": "eq"
+      },
+      "is_bad": false,
+      "is_initial": false,
+      "pc_ref": "state17",
+      "phase_id": "pc_state17_w11_v8",
+      "value": 8,
+      "width": 11
+    },
+    {
+      "equality_node": 22,
+      "guard_ast": {
+        "args": [
+          {
+            "form": "ref",
+            "ref": "state17"
+          },
+          {
+            "const": "16",
+            "form": "const",
+            "width": 11
+          }
+        ],
+        "form": "eq"
+      },
+      "is_bad": false,
+      "is_initial": false,
+      "pc_ref": "state17",
+      "phase_id": "pc_state17_w11_v16",
+      "value": 16,
+      "width": 11
+    },
+    {
+      "equality_node": 23,
+      "guard_ast": {
+        "args": [
+          {
+            "form": "ref",
+            "ref": "state17"
+          },
+          {
+            "const": "32",
+            "form": "const",
+            "width": 11
+          }
+        ],
+        "form": "eq"
+      },
+      "is_bad": false,
+      "is_initial": false,
+      "pc_ref": "state17",
+      "phase_id": "pc_state17_w11_v32",
+      "value": 32,
+      "width": 11
+    },
+    {
+      "equality_node": 24,
+      "guard_ast": {
+        "args": [
+          {
+            "form": "ref",
+            "ref": "state17"
+          },
+          {
+            "const": "64",
+            "form": "const",
+            "width": 11
+          }
+        ],
+        "form": "eq"
+      },
+      "is_bad": false,
+      "is_initial": false,
+      "pc_ref": "state17",
+      "phase_id": "pc_state17_w11_v64",
+      "value": 64,
+      "width": 11
+    },
+    {
+      "equality_node": 25,
+      "guard_ast": {
+        "args": [
+          {
+            "form": "ref",
+            "ref": "state17"
+          },
+          {
+            "const": "128",
+            "form": "const",
+            "width": 11
+          }
+        ],
+        "form": "eq"
+      },
+      "is_bad": false,
+      "is_initial": false,
+      "pc_ref": "state17",
+      "phase_id": "pc_state17_w11_v128",
+      "value": 128,
+      "width": 11
+    },
+    {
+      "equality_node": 26,
+      "guard_ast": {
+        "args": [
+          {
+            "form": "ref",
+            "ref": "state17"
+          },
+          {
+            "const": "256",
+            "form": "const",
+            "width": 11
+          }
+        ],
+        "form": "eq"
+      },
+      "is_bad": false,
+      "is_initial": false,
+      "pc_ref": "state17",
+      "phase_id": "pc_state17_w11_v256",
+      "value": 256,
+      "width": 11
+    },
+    {
+      "equality_node": 27,
+      "guard_ast": {
+        "args": [
+          {
+            "form": "ref",
+            "ref": "state17"
+          },
+          {
+            "const": "512",
+            "form": "const",
+            "width": 11
+          }
+        ],
+        "form": "eq"
+      },
+      "is_bad": false,
+      "is_initial": false,
+      "pc_ref": "state17",
+      "phase_id": "pc_state17_w11_v512",
+      "value": 512,
+      "width": 11
+    },
+    {
+      "equality_node": 28,
+      "guard_ast": {
+        "args": [
+          {
+            "form": "ref",
+            "ref": "state17"
+          },
+          {
+            "const": "1024",
+            "form": "const",
+            "width": 11
+          }
+        ],
+        "form": "eq"
+      },
+      "is_bad": false,
+      "is_initial": false,
+      "pc_ref": "state17",
+      "phase_id": "pc_state17_w11_v1024",
+      "value": 1024,
+      "width": 11
+    }
+  ],
+  "pilot_sha256": "723eb64225d2c39fb4fba8477759307d184f6b40293ac4407dd3518aa1d34d0c",
+  "pool_candidate_count": 198,
+  "proof_time_sec": 30.17345130071044,
+  "route_count": 6,
+  "route_diagnostics": {
+    "capture_metadata": "metadata/egcd3-ll-942e0b52c0fe.lifted.json"
+  },
+  "route_error": "",
+  "route_sha256": "e268046f808345814ddf2410e8deb26e32cea1f4a3c7903da093a88f8de93a9c",
+  "route_valid": true,
+  "router": "llm",
+  "routes": [
+    {
+      "family": "pairwise_offset",
+      "offsets": [
+        -1,
+        0,
+        1
+      ],
+      "relations": [
+        "eq"
+      ],
+      "requested_variables": [
+        "c",
+        "v"
+      ],
+      "route_id": "71fe0d1c120b73855cdb1afd5ad0b11820118ea18023eb7fd6c79ff43eff6b81",
+      "signedness": "signed",
+      "variables": [
+        "state38",
+        "state45"
+      ],
+      "width": 64
+    },
+    {
+      "family": "pairwise_offset",
+      "offsets": [
+        -1,
+        0,
+        1
+      ],
+      "relations": [
+        "eq"
+      ],
+      "requested_variables": [
+        "d",
+        "v"
+      ],
+      "route_id": "7addc00b08170500e8ca42341f0fc200d69b45ad083da569cc25b05245925a85",
+      "signedness": "signed",
+      "variables": [
+        "state39",
+        "state45"
+      ],
+      "width": 64
+    },
+    {
+      "family": "pairwise_offset",
+      "offsets": [
+        -1,
+        0,
+        1
+      ],
+      "relations": [
+        "eq"
+      ],
+      "requested_variables": [
+        "k",
+        "d"
+      ],
+      "route_id": "fb7002d4cc5c7da83135831e5df2298a2a5bcc6dbe9cffc340ef530d3a4553cc",
+      "signedness": "signed",
+      "variables": [
+        "state40",
+        "state39"
+      ],
+      "width": 64
+    },
+    {
+      "family": "sum_equality",
+      "relations": [
+        "eq"
+      ],
+      "requested_variables": [
+        "c",
+        "k",
+        "d"
+      ],
+      "route_id": "c894c62fe8e47b417a116a889f988be0063aa1286ec58661630685073edbe94d",
+      "signedness": "signed",
+      "variables": [
+        "state38",
+        "state40",
+        "state39"
+      ],
+      "width": 64
+    },
+    {
+      "counter_shifts": [
+        0,
+        1
+      ],
+      "family": "quadratic_recurrence",
+      "relations": [
+        "eq"
+      ],
+      "requested_variables": [
+        "d",
+        "v"
+      ],
+      "route_id": "bec4745d323913794ba938ee82ab019c143e0b42952f51dbf85d60eab0599d45",
+      "scales": [
+        1,
+        2
+      ],
+      "signedness": "signed",
+      "variables": [
+        "state39",
+        "state45"
+      ],
+      "width": 64
+    },
+    {
+      "counter_shifts": [
+        0,
+        1
+      ],
+      "family": "quadratic_recurrence",
+      "relations": [
+        "eq"
+      ],
+      "requested_variables": [
+        "c",
+        "v"
+      ],
+      "route_id": "c42a8a9d689a8cdd7288df930ccfa6612e4af4d46f7205fb9383c415990f65ff",
+      "scales": [
+        1,
+        2
+      ],
+      "signedness": "signed",
+      "variables": [
+        "state38",
+        "state45"
+      ],
+      "width": 64
+    }
+  ],
+  "schema": "pono-llm-phase-grammar-run-v1",
+  "selected_candidate_count": 121,
+  "selected_indices": [
+    2,
+    3,
+    4,
+    6,
+    7,
+    8,
+    12,
+    13,
+    14,
+    15,
+    17,
+    18,
+    19,
+    24,
+    25,
+    26,
+    28,
+    29,
+    30,
+    35,
+    36,
+    37,
+    39,
+    40,
+    41,
+    44,
+    45,
+    46,
+    47,
+    48,
+    50,
+    51,
+    52,
+    57,
+    58,
+    59,
+    61,
+    62,
+    63,
+    68,
+    69,
+    70,
+    72,
+    73,
+    74,
+    78,
+    79,
+    80,
+    81,
+    83,
+    84,
+    85,
+    90,
+    91,
+    92,
+    94,
+    95,
+    96,
+    100,
+    101,
+    102,
+    103,
+    105,
+    106,
+    107,
+    111,
+    112,
+    113,
+    114,
+    116,
+    117,
+    118,
+    122,
+    123,
+    124,
+    125,
+    127,
+    128,
+    129,
+    133,
+    134,
+    135,
+    136,
+    138,
+    139,
+    140,
+    144,
+    145,
+    146,
+    147,
+    149,
+    150,
+    151,
+    155,
+    156,
+    157,
+    158,
+    160,
+    161,
+    162,
+    166,
+    167,
+    168,
+    169,
+    171,
+    172,
+    173,
+    177,
+    178,
+    179,
+    180,
+    182,
+    183,
+    184,
+    188,
+    189,
+    190,
+    191,
+    193,
+    194,
+    195
+  ],
+  "selection_role": "safe-baseline-hard",
+  "source_family_id": "a40529a439578e1198455e5c5437d504f7a9abab2945aad1927cb716cf1970b6",
+  "verdict": "timeout"
+}

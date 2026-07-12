@@ -1,0 +1,32 @@
+{
+  "arm": "raw",
+  "benchmark_id": "loop-simple/nested_5.btor2",
+  "benchmark_sha256": "c4ce35cac2ae918082fab514f4ef1b626e9128be4e75072869e28c44ef885b11",
+  "candidate_sha256": "",
+  "certificate": {
+    "checks": [],
+    "ok": false
+  },
+  "certificate_time_sec": 0.0,
+  "config": "llm-raw",
+  "end_to_end_with_generation_sec": 3.780307039618492,
+  "engine": "",
+  "error": "",
+  "expected_verdict": "safe",
+  "generation_time_sec": 3.780307039618492,
+  "matrix_schema": "pono-llm-routed-phase-matrix-v1",
+  "model_checker_time_sec": 0.0,
+  "offline_time_sec": 0.0,
+  "phase_count": 9,
+  "pilot_sha256": "723eb64225d2c39fb4fba8477759307d184f6b40293ac4407dd3518aa1d34d0c",
+  "pool_candidate_count": 0,
+  "route_count": 0,
+  "route_error": "route 0 affine requires exactly 2 or 3 variables",
+  "route_sha256": "",
+  "route_valid": false,
+  "router": "llm",
+  "selected_candidate_count": 0,
+  "selection_role": "safe-baseline-hard",
+  "source_family_id": "348dcd12f337ed254c2896d444c3d3122d552a933adff74da2b68d49eb4d2d92",
+  "verdict": "invalid-route"
+}

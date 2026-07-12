@@ -177,8 +177,19 @@ python3 scripts/run_matrix.py \
 The corrected Phase 1+2 and exhaustive eligible-HWMCC Gate 2 experiments find
 zero solved case unique to the LLM under the tested deterministic baselines.
 Gate 2's remaining `up.btor2` compactness observation is also removed by a
-post-hoc fixed low-complexity `static-ranked` baseline. This is not currently a
-coverage-improvement claim; see the active roadmap before extending the study.
+post-hoc fixed low-complexity `static-ranked` baseline.
+
+The subsequent official paired source/lifted/raw grammar-routing gate also
+fails its utility thresholds: phase conditioning adds one baseline-hard task
+(threshold three), source has zero unique solve, and deterministic structural
+routing covers the three-task union reached by all LLM representation arms.
+Strict validation accepts only 36/60 route responses. Soundness remains intact:
+all 12 routed UNSAT rows pass an independent original-model certificate and no
+unsafe control becomes UNSAT. Canonical evidence is in
+[`artifacts/representation_phase_v1/`](artifacts/representation_phase_v1/).
+
+This is not currently a coverage-improvement claim; see the active roadmap
+before extending the study.
 
 Current status and claim boundaries:
 

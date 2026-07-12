@@ -1,0 +1,59 @@
+{
+  "schema": "pono-llm-grammar-route-v1",
+  "routes": [
+    {
+      "variables": ["a", "b", "c", "d", "e"],
+      "family": "affine",
+      "relations": ["eq"],
+      "signedness": "unsigned",
+      "coefficient_bound": 1
+    },
+    {
+      "variables": ["a", "b", "c", "d", "e"],
+      "family": "affine",
+      "relations": ["eq"],
+      "signedness": "signed",
+      "coefficient_bound": 1
+    },
+    {
+      "variables": ["a", "b"],
+      "family": "pairwise_offset",
+      "relations": ["eq"],
+      "signedness": "unsigned",
+      "offsets": [0]
+    },
+    {
+      "variables": ["c", "d"],
+      "family": "pairwise_offset",
+      "relations": ["eq"],
+      "signedness": "unsigned",
+      "offsets": [0]
+    },
+    {
+      "variables": ["a", "b", "c"],
+      "family": "sum_equality",
+      "relations": ["eq"],
+      "signedness": "unsigned"
+    },
+    {
+      "variables": ["a", "b", "c"],
+      "family": "sum_equality",
+      "relations": ["eq"],
+      "signedness": "signed"
+    },
+    {
+      "variables": ["a", "b"],
+      "family": "unary",
+      "relations": ["eq"],
+      "signedness": "unsigned",
+      "constants": [0]
+    },
+    {
+      "variables": ["c", "d"],
+      "family": "unary",
+      "relations": ["eq"],
+      "signedness": "unsigned",
+      "constants": [0]
+    }
+  ]
+}

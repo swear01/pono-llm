@@ -1,0 +1,286 @@
+{
+  "arm": "raw",
+  "benchmark": "/tmp/svcomp25-sparse/translated/safety-func/loops/sum04-1.btor2",
+  "benchmark_id": "loops/sum04-1.btor2",
+  "benchmark_sha256": "a639d02fe419a440cfb716f5a0cdd5348193144d7117cd83acd5830807c7aa31",
+  "candidate_generation_sec": 0.0013619773089885712,
+  "candidate_sha256": "e7556c8b6748ea979ff183f249ef4c3dcdb88f2a6e017719722d4298bf43aabf",
+  "certificate": {
+    "checks": [
+      {
+        "name": "C1 Init=>H",
+        "result": "unsat"
+      },
+      {
+        "name": "C2 inductive",
+        "result": "unsat"
+      },
+      {
+        "name": "C3 H=>notBAD",
+        "result": "sat"
+      }
+    ],
+    "init_queries": 1,
+    "ok": false,
+    "removed_initial_indices": [],
+    "removed_step_indices": [
+      4,
+      9,
+      19,
+      0,
+      5,
+      15,
+      14,
+      7,
+      12,
+      2,
+      17,
+      10
+    ],
+    "selected_indices": [
+      1,
+      3,
+      6,
+      8,
+      11,
+      13,
+      16,
+      18
+    ],
+    "step_queries": 7,
+    "unsupported_candidates": []
+  },
+  "certificate_time_sec": 0.10704879090189934,
+  "config": "llm-raw",
+  "end_to_end_sec": 1.4198683574795723,
+  "end_to_end_with_generation_sec": 3.863005205988884,
+  "engine": "phase-grammar-ic3ia",
+  "error": "",
+  "exit": 255,
+  "expected_verdict": "unsafe",
+  "generation_time_sec": 2.4431368485093117,
+  "matrix_schema": "pono-llm-routed-phase-matrix-v1",
+  "model_checker_time_sec": 1.3114575892686844,
+  "offline_time_sec": 1.4198683574795723,
+  "phase_count": 5,
+  "phase_mode": "all",
+  "phases": [
+    {
+      "equality_node": 11,
+      "guard_ast": {
+        "args": [
+          {
+            "form": "ref",
+            "ref": "state10"
+          },
+          {
+            "const": "1",
+            "form": "const",
+            "width": 5
+          }
+        ],
+        "form": "eq"
+      },
+      "is_bad": false,
+      "is_initial": false,
+      "pc_ref": "state10",
+      "phase_id": "pc_state10_w5_v1",
+      "value": 1,
+      "width": 5
+    },
+    {
+      "equality_node": 12,
+      "guard_ast": {
+        "args": [
+          {
+            "form": "ref",
+            "ref": "state10"
+          },
+          {
+            "const": "2",
+            "form": "const",
+            "width": 5
+          }
+        ],
+        "form": "eq"
+      },
+      "is_bad": false,
+      "is_initial": false,
+      "pc_ref": "state10",
+      "phase_id": "pc_state10_w5_v2",
+      "value": 2,
+      "width": 5
+    },
+    {
+      "equality_node": 13,
+      "guard_ast": {
+        "args": [
+          {
+            "form": "ref",
+            "ref": "state10"
+          },
+          {
+            "const": "4",
+            "form": "const",
+            "width": 5
+          }
+        ],
+        "form": "eq"
+      },
+      "is_bad": true,
+      "is_initial": false,
+      "pc_ref": "state10",
+      "phase_id": "pc_state10_w5_v4",
+      "value": 4,
+      "width": 5
+    },
+    {
+      "equality_node": 14,
+      "guard_ast": {
+        "args": [
+          {
+            "form": "ref",
+            "ref": "state10"
+          },
+          {
+            "const": "8",
+            "form": "const",
+            "width": 5
+          }
+        ],
+        "form": "eq"
+      },
+      "is_bad": false,
+      "is_initial": true,
+      "pc_ref": "state10",
+      "phase_id": "pc_state10_w5_v8",
+      "value": 8,
+      "width": 5
+    },
+    {
+      "equality_node": 15,
+      "guard_ast": {
+        "args": [
+          {
+            "form": "ref",
+            "ref": "state10"
+          },
+          {
+            "const": "16",
+            "form": "const",
+            "width": 5
+          }
+        ],
+        "form": "eq"
+      },
+      "is_bad": false,
+      "is_initial": false,
+      "pc_ref": "state10",
+      "phase_id": "pc_state10_w5_v16",
+      "value": 16,
+      "width": 5
+    }
+  ],
+  "pilot_sha256": "723eb64225d2c39fb4fba8477759307d184f6b40293ac4407dd3518aa1d34d0c",
+  "pool_candidate_count": 20,
+  "proof_time_sec": 1.4185063801705837,
+  "route_count": 4,
+  "route_diagnostics": {
+    "capture_metadata": "metadata/sum04-1-adebbfcc4d3e.raw.json"
+  },
+  "route_error": "",
+  "route_sha256": "c0bb04bede89f282360c73474fbc7d7512367188da00bb0a37061508a4aa4bd3",
+  "route_valid": true,
+  "router": "llm",
+  "routes": [
+    {
+      "family": "pairwise_offset",
+      "offsets": [
+        0
+      ],
+      "relations": [
+        "eq"
+      ],
+      "requested_variables": [
+        "i",
+        "sn"
+      ],
+      "route_id": "c2d7c04bdad9adcb4b4e189ec0946ad44a7ed15e134ce396126834cf398aa16c",
+      "signedness": "unsigned",
+      "variables": [
+        "state26",
+        "state27"
+      ],
+      "width": 32
+    },
+    {
+      "constants": [
+        0
+      ],
+      "family": "unary",
+      "relations": [
+        "eq"
+      ],
+      "requested_variables": [
+        "i"
+      ],
+      "route_id": "30ef40a3e2a7bfdb1aa3885dd8cda002ae7ad29818556f1cb15a847d3591fb2c",
+      "signedness": "unsigned",
+      "variables": [
+        "state26"
+      ],
+      "width": 32
+    },
+    {
+      "constants": [
+        0
+      ],
+      "family": "unary",
+      "relations": [
+        "eq"
+      ],
+      "requested_variables": [
+        "sn"
+      ],
+      "route_id": "7d54c3d080878311e7444c8ca9cddd4e8865b2a294df83effdbeb97640069b61",
+      "signedness": "unsigned",
+      "variables": [
+        "state27"
+      ],
+      "width": 32
+    },
+    {
+      "coefficient_bound": 1,
+      "family": "affine",
+      "relations": [
+        "eq"
+      ],
+      "requested_variables": [
+        "i",
+        "sn"
+      ],
+      "route_id": "d7159d22c533f4273016d80ca781a122dd887277d0aae6dd0731909ea262e7f2",
+      "signedness": "unsigned",
+      "variables": [
+        "state26",
+        "state27"
+      ],
+      "width": 32
+    }
+  ],
+  "schema": "pono-llm-phase-grammar-run-v1",
+  "selected_candidate_count": 8,
+  "selected_indices": [
+    1,
+    3,
+    6,
+    8,
+    11,
+    13,
+    16,
+    18
+  ],
+  "selection_role": "unsafe-soundness-control",
+  "source_family_id": "d38cd40ac0fe4efe013008e5b86e7584cade32d9260a4f76243ae529936dacae",
+  "verdict": "unknown"
+}

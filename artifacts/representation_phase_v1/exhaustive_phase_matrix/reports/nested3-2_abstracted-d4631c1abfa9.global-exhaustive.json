@@ -1,0 +1,438 @@
+{
+  "benchmark": "/tmp/svcomp25-sparse/translated/safety-func/loops-crafted-1/nested3-2_abstracted.btor2",
+  "benchmark_id": "loops-crafted-1/nested3-2_abstracted.btor2",
+  "benchmark_sha256": "28fa096eb1709c2a6215f7028153410bf5caeb7c9375da0aabe3a784b4ed7fcd",
+  "bounded_grammar_max_variables": 6,
+  "candidate_generation_sec": 0.001997247338294983,
+  "candidate_sha256": "88351ab7e567acfbe4dfc6605f62eb1fec16514e54976fbe8c0b0a8ac773eb38",
+  "certificate": {
+    "checks": [
+      {
+        "name": "C1 Init=>H",
+        "result": "unsat"
+      },
+      {
+        "name": "C2 inductive",
+        "result": "unsat"
+      },
+      {
+        "name": "C3 H=>notBAD",
+        "result": "sat"
+      }
+    ],
+    "init_queries": 2,
+    "ok": false,
+    "removed_initial_indices": [
+      3,
+      5,
+      9,
+      13,
+      15,
+      19,
+      23,
+      25,
+      26,
+      28,
+      29,
+      31,
+      32,
+      34,
+      38,
+      39,
+      42,
+      43
+    ],
+    "removed_step_indices": [],
+    "selected_indices": [
+      0,
+      1,
+      2,
+      4,
+      6,
+      7,
+      8,
+      10,
+      11,
+      12,
+      14,
+      16,
+      17,
+      18,
+      20,
+      21,
+      22,
+      24,
+      27,
+      30,
+      33,
+      35,
+      36,
+      37,
+      40,
+      41,
+      44,
+      45,
+      46,
+      47,
+      48,
+      49,
+      50,
+      51,
+      52,
+      53,
+      54,
+      55,
+      56,
+      57,
+      58,
+      59,
+      60,
+      61,
+      62,
+      63,
+      64,
+      65,
+      66,
+      67,
+      68,
+      69,
+      70,
+      71,
+      72,
+      73,
+      74,
+      75,
+      76,
+      77,
+      78,
+      79,
+      80,
+      81,
+      82,
+      83
+    ],
+    "step_queries": 1,
+    "unsupported_candidates": []
+  },
+  "certificate_time_sec": 0.0853741392493248,
+  "config": "global-exhaustive",
+  "end_to_end_sec": 3.4131250828504562,
+  "engine": "phase-grammar-ic3ia",
+  "error": "",
+  "exit": 0,
+  "expected_verdict": "unsafe",
+  "matrix_schema": "pono-llm-paired-phase-matrix-v1",
+  "model_checker_time_sec": 3.3257536962628365,
+  "offline_time_sec": 3.4131250828504562,
+  "phase_count": 0,
+  "phase_mode": "global",
+  "phases": [],
+  "pilot_sha256": "723eb64225d2c39fb4fba8477759307d184f6b40293ac4407dd3518aa1d34d0c",
+  "pool_candidate_count": 84,
+  "proof_time_sec": 3.4111278355121613,
+  "route_count": 10,
+  "route_sha256": "01419a8bdab7988dbc5143ac0b26e74e93e8f343b670050f27294eb67d2dbac0",
+  "routes": [
+    {
+      "constants": [
+        0,
+        1
+      ],
+      "family": "unary",
+      "relations": [
+        "eq",
+        "le",
+        "ge"
+      ],
+      "requested_variables": [
+        "state29"
+      ],
+      "route_id": "67160cfb5a8bda1204ede0427f5448f3a29cc246ebca6604c196cd634bd2f25b",
+      "signedness": "unsigned",
+      "variables": [
+        "state29"
+      ],
+      "width": 32
+    },
+    {
+      "constants": [
+        0,
+        1
+      ],
+      "family": "unary",
+      "relations": [
+        "le",
+        "ge"
+      ],
+      "requested_variables": [
+        "state29"
+      ],
+      "route_id": "28da6367f485b1748eaa25e7d50105a3b9a5112695d206b6d7291a32a431c10c",
+      "signedness": "signed",
+      "variables": [
+        "state29"
+      ],
+      "width": 32
+    },
+    {
+      "constants": [
+        0,
+        1
+      ],
+      "family": "unary",
+      "relations": [
+        "eq",
+        "le",
+        "ge"
+      ],
+      "requested_variables": [
+        "state30"
+      ],
+      "route_id": "cd145de16815300b77f8e73286f7be4ae62db690a9557a13203dac2c7d865a43",
+      "signedness": "unsigned",
+      "variables": [
+        "state30"
+      ],
+      "width": 32
+    },
+    {
+      "constants": [
+        0,
+        1
+      ],
+      "family": "unary",
+      "relations": [
+        "le",
+        "ge"
+      ],
+      "requested_variables": [
+        "state30"
+      ],
+      "route_id": "c41a30d5ed9b9a5701ad513c4fc100d234c0df7859df78dcc6a5d160831d5c16",
+      "signedness": "signed",
+      "variables": [
+        "state30"
+      ],
+      "width": 32
+    },
+    {
+      "family": "pairwise_offset",
+      "offsets": [
+        0,
+        1,
+        -1,
+        2,
+        -2
+      ],
+      "relations": [
+        "eq",
+        "le",
+        "ge"
+      ],
+      "requested_variables": [
+        "state29",
+        "state30"
+      ],
+      "route_id": "b47e9b3e10b85982c85fee91a69e1c97e89a567b97b6e966552aa64af3207e86",
+      "signedness": "unsigned",
+      "variables": [
+        "state29",
+        "state30"
+      ],
+      "width": 32
+    },
+    {
+      "family": "pairwise_offset",
+      "offsets": [
+        0,
+        1,
+        -1,
+        2,
+        -2
+      ],
+      "relations": [
+        "le",
+        "ge"
+      ],
+      "requested_variables": [
+        "state29",
+        "state30"
+      ],
+      "route_id": "e57eb8fff7b12752062bc7c235820a86750e6f8e8e2d2ed53f992d6e0223c2ed",
+      "signedness": "signed",
+      "variables": [
+        "state29",
+        "state30"
+      ],
+      "width": 32
+    },
+    {
+      "coefficient_bound": 2,
+      "family": "affine",
+      "relations": [
+        "eq",
+        "le",
+        "ge"
+      ],
+      "requested_variables": [
+        "state29",
+        "state30"
+      ],
+      "route_id": "ded05dd83ffe98fc73df481f82a7b8dbd7e2609c89cb973d42f4ca542df75cfa",
+      "signedness": "unsigned",
+      "variables": [
+        "state29",
+        "state30"
+      ],
+      "width": 32
+    },
+    {
+      "coefficient_bound": 2,
+      "family": "affine",
+      "relations": [
+        "le",
+        "ge"
+      ],
+      "requested_variables": [
+        "state29",
+        "state30"
+      ],
+      "route_id": "82941385a962da334a110973a6b82a6a4fc01b625155cf037747d68dcd6f4aa8",
+      "signedness": "signed",
+      "variables": [
+        "state29",
+        "state30"
+      ],
+      "width": 32
+    },
+    {
+      "counter_shifts": [
+        -1,
+        0,
+        1
+      ],
+      "family": "quadratic_recurrence",
+      "relations": [
+        "eq"
+      ],
+      "requested_variables": [
+        "state29",
+        "state30"
+      ],
+      "route_id": "804f762ed5525b45bd9d18d0c6edf2b3b0a57b71ddf3a72b4d9851f7c5ceef03",
+      "scales": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "signedness": "unsigned",
+      "variables": [
+        "state29",
+        "state30"
+      ],
+      "width": 32
+    },
+    {
+      "counter_shifts": [
+        -1,
+        0,
+        1
+      ],
+      "family": "quadratic_recurrence",
+      "relations": [
+        "eq"
+      ],
+      "requested_variables": [
+        "state30",
+        "state29"
+      ],
+      "route_id": "ac3a0f7c84da34830a6a993863c12ac37bdaa82cb8a644704d72a374563a0868",
+      "scales": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "signedness": "unsigned",
+      "variables": [
+        "state30",
+        "state29"
+      ],
+      "width": 32
+    }
+  ],
+  "schema": "pono-llm-phase-grammar-run-v1",
+  "selected_candidate_count": 66,
+  "selected_indices": [
+    0,
+    1,
+    2,
+    4,
+    6,
+    7,
+    8,
+    10,
+    11,
+    12,
+    14,
+    16,
+    17,
+    18,
+    20,
+    21,
+    22,
+    24,
+    27,
+    30,
+    33,
+    35,
+    36,
+    37,
+    40,
+    41,
+    44,
+    45,
+    46,
+    47,
+    48,
+    49,
+    50,
+    51,
+    52,
+    53,
+    54,
+    55,
+    56,
+    57,
+    58,
+    59,
+    60,
+    61,
+    62,
+    63,
+    64,
+    65,
+    66,
+    67,
+    68,
+    69,
+    70,
+    71,
+    72,
+    73,
+    74,
+    75,
+    76,
+    77,
+    78,
+    79,
+    80,
+    81,
+    82,
+    83
+  ],
+  "selection_role": "unsafe-soundness-control",
+  "source_family_id": "c09cb7c581286218f6d3a556de44c3c501e0f45f8e4d681dcc16faa2c3d7bb95",
+  "verdict": "sat"
+}

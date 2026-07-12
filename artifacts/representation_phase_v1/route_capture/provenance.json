@@ -1,0 +1,23 @@
+{
+  "created_at": "2026-07-12T15:18:30.427166+00:00",
+  "git_head": "4bb1908ec1030b55e98333397ad4658cea73aae1",
+  "git_tracked_worktree_dirty": true,
+  "max_response_tokens": 2048,
+  "model": "deepseek/deepseek-v4-flash",
+  "pilot_sha256": "723eb64225d2c39fb4fba8477759307d184f6b40293ac4407dd3518aa1d34d0c",
+  "provider": "openrouter",
+  "reasoning_effort": "none",
+  "response_normalization": "llm_client.extract_json",
+  "schema": "pono-llm-grammar-route-provenance-v1",
+  "source_sha256": {
+    "llm_worker/env_config.py": "001e77f23949be5711c079259c499bd4c7309ebd7650b0d9f90588f98fbded0f",
+    "llm_worker/llm_client.py": "6e803c3feee5577f29cf8e535b5906b176b4f28deae533688b8b9a70b5b8f303",
+    "llm_worker/openrouter_routing.py": "5fdd6c62d4ae5cd3bc9173f365195e3f911328787e307a956569ad57c27fa7f6",
+    "scripts/capture_grammar_routes.py": "51070bfa470b5293b7871fb64566ccc0f0e894f0fd2f6ed2654ad1f4b38bbe38",
+    "scripts/grammar_routes.py": "5e80bb9576124889d05cf5df21f8d39bcf3ee0cfd423f000ac0041bc70594608",
+    "scripts/representation_views.py": "e3e56f5dca6f4b96b5e0e6981ed0adea6a918a4c70c72452dc416b1a32f518f4"
+  },
+  "system_prompt_sha256": "1832d59a6e5db29e62b7c152b04921f8329cbf87c3d5f4c6c82e22c3a5118d4e",
+  "temperature": 0.0,
+  "view_bundle_sha256": "04b4cf9a20a4861f4c2ea21cb62c4ea2dcfa448f95ede685c0881a3913100a4a"
+}

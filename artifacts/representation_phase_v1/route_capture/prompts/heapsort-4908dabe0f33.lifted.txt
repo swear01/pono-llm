@@ -1,0 +1,199 @@
+REPRESENTATION: TARGET-DERIVED LIFTED RECURRENCE
+MODULE: unknown
+
+PHASES:
+- pc_state24_w19_v1: state24 == 1 (width 19)
+- pc_state24_w19_v2: state24 == 2 (width 19)
+- pc_state24_w19_v4: state24 == 4 (width 19)
+- pc_state24_w19_v8: state24 == 8 (width 19)
+- pc_state24_w19_v16: state24 == 16 (width 19)
+- pc_state24_w19_v32: state24 == 32 (width 19)
+- pc_state24_w19_v64: state24 == 64 (width 19)
+- pc_state24_w19_v128: state24 == 128 (width 19)
+- pc_state24_w19_v256: state24 == 256 (width 19)
+- pc_state24_w19_v512: state24 == 512 (width 19)
+- pc_state24_w19_v1024: state24 == 1024 (width 19)
+- pc_state24_w19_v2048: state24 == 2048 (width 19)
+- pc_state24_w19_v4096: state24 == 4096 (width 19)
+- pc_state24_w19_v8192: state24 == 8192 (width 19)
+- pc_state24_w19_v16384: state24 == 16384 (width 19)
+- pc_state24_w19_v32768: state24 == 32768 (width 19)
+- pc_state24_w19_v65536: state24 == 65536 (width 19)
+- pc_state24_w19_v131072: state24 == 131072 (width 19)
+- pc_state24_w19_v262144: state24 == 262144 (width 19)
+
+TRANSITIONS:
+- !pc' = (((!pc == 16) && (((((... && ...) && !...) && !(... == ...)) && !(... == 0)) && (!{$(in_main#0)<$(in___VERIFIER_nondet_int#8)<h#<__VERIFIER_nondet_int.return>>>} == 0))) ? 131072 : (((!pc == 16) && ((((... && !...) && !(... == ...)) && !(... == 0)) && (!{$(in_main#0)<$(in___VERIFIER_nondet_int#8)<h#<__VERIFIER_nondet_int.return>>>} == 0))) ? 65536 : (((!pc == 32) && (1 && !(... <s ...))) ? 262144 : (((!pc == 16) && ((... && ...) && !...)) ? 512 : (((!pc == ...) && (1 && ...)) ? 262144 : (((!pc == ...) && ...) ? 32 : ...))))))
+- i' = ((((!pc == 16) && (((((... && ...) && !...) && !(... == ...)) && !(... == 0)) && (!{$(in_main#0)<$(in___VERIFIER_nondet_int#8)<h#<__VERIFIER_nondet_int.return>>>} == 0))) || ((!pc == 16) && ((((... && !...) && !(... == ...)) && !(... == 0)) && (!{$(in_main#0)<$(in___VERIFIER_nondet_int#8)<h#<__VERIFIER_nondet_int.return>>>} == 0)))) ? i : ((((!pc == 32) && (1 && !(... <s ...))) || ((!pc == 16) && ((... && ...) && !...))) ? i : ((((!pc == ...) && (1 && ...)) || ((!pc == ...) && ...)) ? %{$(in_main#0)<i>}#1 : ((... || ...) ? i : ...))))
+- j' = ((((!pc == 16) && (((((... && ...) && !...) && !(... == ...)) && !(... == 0)) && (!{$(in_main#0)<$(in___VERIFIER_nondet_int#8)<h#<__VERIFIER_nondet_int.return>>>} == 0))) || ((!pc == 16) && ((((... && !...) && !(... == ...)) && !(... == 0)) && (!{$(in_main#0)<$(in___VERIFIER_nondet_int#8)<h#<__VERIFIER_nondet_int.return>>>} == 0)))) ? %{$(in_main#0)<j>}#2 : (((!pc == 32) && (1 && !(... <s ...))) ? j : (((!pc == 16) && ((... && ...) && !...)) ? %{$(in_main#0)<j>}#2 : ((((!pc == ...) && (1 && ...)) || ((!pc == ...) && ...)) ? %{$(in_main#0)<j>}#1 : (... ? j : ...)))))
+- l' = ((((!pc == 16) && (((((... && ...) && !...) && !(... == ...)) && !(... == 0)) && (!{$(in_main#0)<$(in___VERIFIER_nondet_int#8)<h#<__VERIFIER_nondet_int.return>>>} == 0))) || ((!pc == 16) && ((((... && !...) && !(... == ...)) && !(... == 0)) && (!{$(in_main#0)<$(in___VERIFIER_nondet_int#8)<h#<__VERIFIER_nondet_int.return>>>} == 0)))) ? l : ((((!pc == 32) && (1 && !(... <s ...))) || ((!pc == 16) && ((... && ...) && !...))) ? l : (((!pc == ...) && (1 && ...)) ? %{$(in_main#0)<l>}#1 : (((!pc == ...) && ...) ? ... : ((... || ...) ? l : ...)))))
+- n' = ((((!pc == 16) && (((((... && ...) && !...) && !(... == ...)) && !(... == 0)) && (!{$(in_main#0)<$(in___VERIFIER_nondet_int#8)<h#<__VERIFIER_nondet_int.return>>>} == 0))) || ((!pc == 16) && ((((... && !...) && !(... == ...)) && !(... == 0)) && (!{$(in_main#0)<$(in___VERIFIER_nondet_int#8)<h#<__VERIFIER_nondet_int.return>>>} == 0)))) ? n : ((((!pc == 32) && (1 && !(... <s ...))) || ((!pc == 16) && ((... && ...) && !...))) ? n : ((((!pc == ...) && (1 && ...)) || ((!pc == ...) && ...)) ? !{$(in_main#0)<$(in___VERIFIER_nondet_int#0)<h#<__VERIFIER_nondet_int.return>>>} : ((... || ...) ? n : ...))))
+- r' = ((((!pc == 16) && (((((... && ...) && !...) && !(... == ...)) && !(... == 0)) && (!{$(in_main#0)<$(in___VERIFIER_nondet_int#8)<h#<__VERIFIER_nondet_int.return>>>} == 0))) || ((!pc == 16) && ((((... && !...) && !(... == ...)) && !(... == 0)) && (!{$(in_main#0)<$(in___VERIFIER_nondet_int#8)<h#<__VERIFIER_nondet_int.return>>>} == 0)))) ? r : ((((!pc == 32) && (1 && !(... <s r))) || ((!pc == 16) && ((... && ...) && !...))) ? r : (((!pc == ...) && (1 && ...)) ? %{$(in_main#0)<r>}#1 : (((!pc == ...) && ...) ? ... : ((... || ...) ? r : ...)))))
+
+BAD:
+- (((((((... || ...) || (... == ...)) || (!pc == 2)) || (!pc == 131072)) || (!pc == 4)) || (!pc == 4096)) || (!pc == 32768))
+
+--- COMMON FORMAL ROUTE CONTRACT ---
+TASK: Choose a small invariant-synthesis grammar. Do not output an invariant,
+proof, coefficient value, or assertion. The formal backend expands every route,
+runs Houdini, and checks the original BTOR2. Your output is untrusted routing
+advice only.
+
+MACHINE SEMANTICS:
+- All state arithmetic is fixed-width bit-vector arithmetic modulo 2^width.
+- Comparisons must state signed or unsigned semantics.
+- A route may use only variables from the catalog below.
+- Phase guards are applied by the formal experiment, not selected by you.
+
+VARIABLE_CATALOG_JSON:
+[
+  {
+    "init": "0",
+    "name": "i",
+    "ref": "state52",
+    "width": 32
+  },
+  {
+    "init": "0",
+    "name": "j",
+    "ref": "state53",
+    "width": 32
+  },
+  {
+    "init": "0",
+    "name": "l",
+    "ref": "state54",
+    "width": 32
+  },
+  {
+    "init": "0",
+    "name": "n",
+    "ref": "state55",
+    "width": 32
+  },
+  {
+    "init": "0",
+    "name": "r",
+    "ref": "state56",
+    "width": 32
+  }
+]
+
+PHASE_CATALOG_JSON:
+[
+  {
+    "guard": "state24 == 1",
+    "phase_id": "pc_state24_w19_v1",
+    "width": 19
+  },
+  {
+    "guard": "state24 == 2",
+    "phase_id": "pc_state24_w19_v2",
+    "width": 19
+  },
+  {
+    "guard": "state24 == 4",
+    "phase_id": "pc_state24_w19_v4",
+    "width": 19
+  },
+  {
+    "guard": "state24 == 8",
+    "phase_id": "pc_state24_w19_v8",
+    "width": 19
+  },
+  {
+    "guard": "state24 == 16",
+    "phase_id": "pc_state24_w19_v16",
+    "width": 19
+  },
+  {
+    "guard": "state24 == 32",
+    "phase_id": "pc_state24_w19_v32",
+    "width": 19
+  },
+  {
+    "guard": "state24 == 64",
+    "phase_id": "pc_state24_w19_v64",
+    "width": 19
+  },
+  {
+    "guard": "state24 == 128",
+    "phase_id": "pc_state24_w19_v128",
+    "width": 19
+  },
+  {
+    "guard": "state24 == 256",
+    "phase_id": "pc_state24_w19_v256",
+    "width": 19
+  },
+  {
+    "guard": "state24 == 512",
+    "phase_id": "pc_state24_w19_v512",
+    "width": 19
+  },
+  {
+    "guard": "state24 == 1024",
+    "phase_id": "pc_state24_w19_v1024",
+    "width": 19
+  },
+  {
+    "guard": "state24 == 2048",
+    "phase_id": "pc_state24_w19_v2048",
+    "width": 19
+  },
+  {
+    "guard": "state24 == 4096",
+    "phase_id": "pc_state24_w19_v4096",
+    "width": 19
+  },
+  {
+    "guard": "state24 == 8192",
+    "phase_id": "pc_state24_w19_v8192",
+    "width": 19
+  },
+  {
+    "guard": "state24 == 16384",
+    "phase_id": "pc_state24_w19_v16384",
+    "width": 19
+  },
+  {
+    "guard": "state24 == 32768",
+    "phase_id": "pc_state24_w19_v32768",
+    "width": 19
+  },
+  {
+    "guard": "state24 == 65536",
+    "phase_id": "pc_state24_w19_v65536",
+    "width": 19
+  },
+  {
+    "guard": "state24 == 131072",
+    "phase_id": "pc_state24_w19_v131072",
+    "width": 19
+  },
+  {
+    "guard": "state24 == 262144",
+    "phase_id": "pc_state24_w19_v262144",
+    "width": 19
+  }
+]
+
+OUTPUT CONTRACT:
+- Output exactly one JSON object and no Markdown.
+- Top-level fields: "schema" and "routes" only.
+- schema must be "pono-llm-grammar-route-v1".
+- routes must contain 1 to 8 route objects.
+- Every route has exactly variables, family, relations, signedness, plus only
+  the family field listed below.
+- family="unary": one variable; optional constants integer list [-16,16].
+- family="pairwise_offset": two same-width variables; optional offsets integer
+  list [-16,16].
+- family="affine": two or three same-width variables; optional
+  coefficient_bound integer [1,8].
+- family="sum_equality": three same-width variables ordered as result, addend1,
+  addend2; no family-specific field.
+- family="quadratic_recurrence": two same-width variables ordered as accumulator,
+  counter; optional scales [1,8] and counter_shifts [-4,4].
+- relations is a non-empty subset of ["eq","le","ge"].
+- signedness is exactly "signed" or "unsigned".
+- No explanation and no extra fields.

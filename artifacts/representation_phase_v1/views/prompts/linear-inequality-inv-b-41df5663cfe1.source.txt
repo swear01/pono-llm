@@ -1,0 +1,130 @@
+REPRESENTATION: PINNED SOURCE C
+SOURCE_FILE: linear-inequality-inv-b.c
+
+// This file is part of the SV-Benchmarks collection of verification tasks:
+// https://github.com/sosy-lab/sv-benchmarks
+//
+// SPDX-FileCopyrightText: 2022 Dirk Beyer, Matthias Dangl, Daniel Dietsch, Matthias Heizmann, Thomas Lemberger, and Michael Tautschnig
+//
+// SPDX-License-Identifier: Apache-2.0
+
+extern void __assert_fail(const char *, const char *, unsigned int, const char *) __attribute__ ((__nothrow__ , __leaf__)) __attribute__ ((__noreturn__));
+void reach_error() { __assert_fail("0", "linear-inequality-inv-b.c", 2, "reach_error"); }
+extern unsigned char __VERIFIER_nondet_uchar(void);
+int main() {
+  unsigned char n = __VERIFIER_nondet_uchar();
+  if (n == 0) {
+    return 0;
+  }
+  unsigned char v = 0;
+  unsigned char s = 0;
+  unsigned int  i = 0;
+  while (i < n) {
+    v = __VERIFIER_nondet_uchar();
+    s += v;
+    ++i;
+  }
+  if (s < v) {
+    reach_error();
+    return 1;
+  }
+  if (s > 65025) {
+    reach_error();
+    return 1;
+  }
+  return 0;
+}
+
+--- COMMON FORMAL ROUTE CONTRACT ---
+TASK: Choose a small invariant-synthesis grammar. Do not output an invariant,
+proof, coefficient value, or assertion. The formal backend expands every route,
+runs Houdini, and checks the original BTOR2. Your output is untrusted routing
+advice only.
+
+MACHINE SEMANTICS:
+- All state arithmetic is fixed-width bit-vector arithmetic modulo 2^width.
+- Comparisons must state signed or unsigned semantics.
+- A route may use only variables from the catalog below.
+- Phase guards are applied by the formal experiment, not selected by you.
+
+VARIABLE_CATALOG_JSON:
+[
+  {
+    "init": "0",
+    "name": "i",
+    "ref": "state26",
+    "width": 32
+  },
+  {
+    "init": "0",
+    "name": "n",
+    "ref": "state27",
+    "width": 8
+  },
+  {
+    "init": "0",
+    "name": "s",
+    "ref": "state28",
+    "width": 8
+  },
+  {
+    "init": "0",
+    "name": "v",
+    "ref": "state29",
+    "width": 8
+  }
+]
+
+PHASE_CATALOG_JSON:
+[
+  {
+    "guard": "state12 == 1",
+    "phase_id": "pc_state12_w6_v1",
+    "width": 6
+  },
+  {
+    "guard": "state12 == 2",
+    "phase_id": "pc_state12_w6_v2",
+    "width": 6
+  },
+  {
+    "guard": "state12 == 4",
+    "phase_id": "pc_state12_w6_v4",
+    "width": 6
+  },
+  {
+    "guard": "state12 == 8",
+    "phase_id": "pc_state12_w6_v8",
+    "width": 6
+  },
+  {
+    "guard": "state12 == 16",
+    "phase_id": "pc_state12_w6_v16",
+    "width": 6
+  },
+  {
+    "guard": "state12 == 32",
+    "phase_id": "pc_state12_w6_v32",
+    "width": 6
+  }
+]
+
+OUTPUT CONTRACT:
+- Output exactly one JSON object and no Markdown.
+- Top-level fields: "schema" and "routes" only.
+- schema must be "pono-llm-grammar-route-v1".
+- routes must contain 1 to 8 route objects.
+- Every route has exactly variables, family, relations, signedness, plus only
+  the family field listed below.
+- family="unary": one variable; optional constants integer list [-16,16].
+- family="pairwise_offset": two same-width variables; optional offsets integer
+  list [-16,16].
+- family="affine": two or three same-width variables; optional
+  coefficient_bound integer [1,8].
+- family="sum_equality": three same-width variables ordered as result, addend1,
+  addend2; no family-specific field.
+- family="quadratic_recurrence": two same-width variables ordered as accumulator,
+  counter; optional scales [1,8] and counter_shifts [-4,4].
+- relations is a non-empty subset of ["eq","le","ge"].
+- signedness is exactly "signed" or "unsigned".
+- No explanation and no extra fields.

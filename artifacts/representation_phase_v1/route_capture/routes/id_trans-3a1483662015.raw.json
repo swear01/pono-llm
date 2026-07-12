@@ -1,0 +1,104 @@
+{
+  "routes": [
+    {
+      "family": "pairwise_offset",
+      "offsets": [
+        -16,
+        16
+      ],
+      "relations": [
+        "le"
+      ],
+      "requested_variables": [
+        "j",
+        "nlen"
+      ],
+      "route_id": "b2d5299954d823f8b830389eb37ad4d1d4151161883e8b013c8257fe9058bcf0",
+      "signedness": "signed",
+      "variables": [
+        "state32",
+        "state34"
+      ],
+      "width": 32
+    },
+    {
+      "family": "pairwise_offset",
+      "offsets": [
+        -16,
+        16
+      ],
+      "relations": [
+        "le"
+      ],
+      "requested_variables": [
+        "j",
+        "idBitLength"
+      ],
+      "route_id": "ad83bb8e706deef5e3f21e442bb9bf4a443f28a554d7fc23a6fd37f0048f37a2",
+      "signedness": "signed",
+      "variables": [
+        "state32",
+        "state31"
+      ],
+      "width": 32
+    },
+    {
+      "constants": [
+        0,
+        16
+      ],
+      "family": "unary",
+      "relations": [
+        "ge"
+      ],
+      "requested_variables": [
+        "j"
+      ],
+      "route_id": "f4364babbb234b7aeea9e8f44bcbb1cc9af346661619048bd2f813e1c676c8fa",
+      "signedness": "signed",
+      "variables": [
+        "state32"
+      ],
+      "width": 32
+    },
+    {
+      "constants": [
+        0,
+        16
+      ],
+      "family": "unary",
+      "relations": [
+        "ge"
+      ],
+      "requested_variables": [
+        "nlen"
+      ],
+      "route_id": "4f28ceef42add1a669b087859bf1616615d56101896c04232066928b2a87d295",
+      "signedness": "signed",
+      "variables": [
+        "state34"
+      ],
+      "width": 32
+    },
+    {
+      "constants": [
+        0,
+        16
+      ],
+      "family": "unary",
+      "relations": [
+        "ge"
+      ],
+      "requested_variables": [
+        "idBitLength"
+      ],
+      "route_id": "ad2ab679cb922726e902ebe232ae4a8913eb0660fb6372d7b09cd4a13bb5d9b0",
+      "signedness": "signed",
+      "variables": [
+        "state31"
+      ],
+      "width": 32
+    }
+  ],
+  "schema": "pono-llm-grammar-route-v1"
+}

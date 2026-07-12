@@ -1,0 +1,480 @@
+{
+  "arm": "lifted",
+  "benchmark": "/tmp/svcomp25-sparse/translated/safety-func/loop-simple/nested_5.btor2",
+  "benchmark_id": "loop-simple/nested_5.btor2",
+  "benchmark_sha256": "c4ce35cac2ae918082fab514f4ef1b626e9128be4e75072869e28c44ef885b11",
+  "candidate_generation_sec": 0.0029891617596149445,
+  "candidate_sha256": "1cec53ea120ccfbe91e6e8411cebe59febb5cfc2cdb93d91a637a6d2e22bea45",
+  "certificate": {
+    "checks": [
+      {
+        "name": "C1 Init=>H",
+        "result": "unsat"
+      },
+      {
+        "name": "C2 inductive",
+        "result": "unknown"
+      },
+      {
+        "name": "C3 H=>notBAD",
+        "result": "not-run"
+      }
+    ],
+    "init_queries": 1,
+    "ok": false,
+    "removed_initial_indices": [],
+    "removed_step_indices": [
+      49,
+      50,
+      51,
+      46
+    ],
+    "selected_indices": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      21,
+      22,
+      23,
+      24,
+      25,
+      26,
+      27,
+      28,
+      29,
+      30,
+      31,
+      32,
+      33,
+      34,
+      35,
+      36,
+      37,
+      38,
+      39,
+      40,
+      41,
+      42,
+      43,
+      44,
+      45,
+      47,
+      48,
+      52,
+      53,
+      54,
+      55,
+      56,
+      57,
+      58,
+      59,
+      60,
+      61,
+      62
+    ],
+    "step_queries": 5,
+    "timeout_phase": "C2",
+    "unsupported_candidates": []
+  },
+  "certificate_time_sec": 20.064326770603657,
+  "config": "llm-lifted",
+  "end_to_end_sec": 30.265811409801245,
+  "end_to_end_with_generation_sec": 37.91466357186437,
+  "engine": "phase-grammar-ic3ia",
+  "error": "",
+  "exit": null,
+  "expected_verdict": "safe",
+  "generation_time_sec": 7.648852162063122,
+  "matrix_schema": "pono-llm-routed-phase-matrix-v1",
+  "model_checker_time_sec": 10.198495477437973,
+  "offline_time_sec": 30.265811409801245,
+  "phase_count": 9,
+  "phase_mode": "all",
+  "phases": [
+    {
+      "equality_node": 15,
+      "guard_ast": {
+        "args": [
+          {
+            "form": "ref",
+            "ref": "state14"
+          },
+          {
+            "const": "1",
+            "form": "const",
+            "width": 9
+          }
+        ],
+        "form": "eq"
+      },
+      "is_bad": true,
+      "is_initial": false,
+      "pc_ref": "state14",
+      "phase_id": "pc_state14_w9_v1",
+      "value": 1,
+      "width": 9
+    },
+    {
+      "equality_node": 16,
+      "guard_ast": {
+        "args": [
+          {
+            "form": "ref",
+            "ref": "state14"
+          },
+          {
+            "const": "2",
+            "form": "const",
+            "width": 9
+          }
+        ],
+        "form": "eq"
+      },
+      "is_bad": false,
+      "is_initial": false,
+      "pc_ref": "state14",
+      "phase_id": "pc_state14_w9_v2",
+      "value": 2,
+      "width": 9
+    },
+    {
+      "equality_node": 17,
+      "guard_ast": {
+        "args": [
+          {
+            "form": "ref",
+            "ref": "state14"
+          },
+          {
+            "const": "4",
+            "form": "const",
+            "width": 9
+          }
+        ],
+        "form": "eq"
+      },
+      "is_bad": false,
+      "is_initial": true,
+      "pc_ref": "state14",
+      "phase_id": "pc_state14_w9_v4",
+      "value": 4,
+      "width": 9
+    },
+    {
+      "equality_node": 18,
+      "guard_ast": {
+        "args": [
+          {
+            "form": "ref",
+            "ref": "state14"
+          },
+          {
+            "const": "8",
+            "form": "const",
+            "width": 9
+          }
+        ],
+        "form": "eq"
+      },
+      "is_bad": false,
+      "is_initial": false,
+      "pc_ref": "state14",
+      "phase_id": "pc_state14_w9_v8",
+      "value": 8,
+      "width": 9
+    },
+    {
+      "equality_node": 19,
+      "guard_ast": {
+        "args": [
+          {
+            "form": "ref",
+            "ref": "state14"
+          },
+          {
+            "const": "16",
+            "form": "const",
+            "width": 9
+          }
+        ],
+        "form": "eq"
+      },
+      "is_bad": false,
+      "is_initial": false,
+      "pc_ref": "state14",
+      "phase_id": "pc_state14_w9_v16",
+      "value": 16,
+      "width": 9
+    },
+    {
+      "equality_node": 20,
+      "guard_ast": {
+        "args": [
+          {
+            "form": "ref",
+            "ref": "state14"
+          },
+          {
+            "const": "32",
+            "form": "const",
+            "width": 9
+          }
+        ],
+        "form": "eq"
+      },
+      "is_bad": false,
+      "is_initial": false,
+      "pc_ref": "state14",
+      "phase_id": "pc_state14_w9_v32",
+      "value": 32,
+      "width": 9
+    },
+    {
+      "equality_node": 21,
+      "guard_ast": {
+        "args": [
+          {
+            "form": "ref",
+            "ref": "state14"
+          },
+          {
+            "const": "64",
+            "form": "const",
+            "width": 9
+          }
+        ],
+        "form": "eq"
+      },
+      "is_bad": false,
+      "is_initial": false,
+      "pc_ref": "state14",
+      "phase_id": "pc_state14_w9_v64",
+      "value": 64,
+      "width": 9
+    },
+    {
+      "equality_node": 22,
+      "guard_ast": {
+        "args": [
+          {
+            "form": "ref",
+            "ref": "state14"
+          },
+          {
+            "const": "128",
+            "form": "const",
+            "width": 9
+          }
+        ],
+        "form": "eq"
+      },
+      "is_bad": false,
+      "is_initial": false,
+      "pc_ref": "state14",
+      "phase_id": "pc_state14_w9_v128",
+      "value": 128,
+      "width": 9
+    },
+    {
+      "equality_node": 23,
+      "guard_ast": {
+        "args": [
+          {
+            "form": "ref",
+            "ref": "state14"
+          },
+          {
+            "const": "256",
+            "form": "const",
+            "width": 9
+          }
+        ],
+        "form": "eq"
+      },
+      "is_bad": false,
+      "is_initial": false,
+      "pc_ref": "state14",
+      "phase_id": "pc_state14_w9_v256",
+      "value": 256,
+      "width": 9
+    }
+  ],
+  "pilot_sha256": "723eb64225d2c39fb4fba8477759307d184f6b40293ac4407dd3518aa1d34d0c",
+  "pool_candidate_count": 63,
+  "proof_time_sec": 30.26282224804163,
+  "route_count": 4,
+  "route_diagnostics": {
+    "capture_metadata": "metadata/nested_5-6d8e843cdbd0.lifted.json"
+  },
+  "route_error": "",
+  "route_sha256": "ab819584235afc28414abc880cb8bda6681956855062eb5eed902e06c809ed0e",
+  "route_valid": true,
+  "router": "llm",
+  "routes": [
+    {
+      "family": "pairwise_offset",
+      "offsets": [
+        0,
+        1
+      ],
+      "relations": [
+        "le"
+      ],
+      "requested_variables": [
+        "c",
+        "d"
+      ],
+      "route_id": "b10b4eb0f7c1c36e9abb781d0c33601f7bc3c9cd64bd83c33eaca5b0253bddf0",
+      "signedness": "unsigned",
+      "variables": [
+        "state32",
+        "state33"
+      ],
+      "width": 32
+    },
+    {
+      "coefficient_bound": 2,
+      "family": "affine",
+      "relations": [
+        "le"
+      ],
+      "requested_variables": [
+        "c",
+        "d"
+      ],
+      "route_id": "1c8e08d1c407d0791a9d85ab9fb47551a8559277fb2be92ba8bf821011015181",
+      "signedness": "unsigned",
+      "variables": [
+        "state32",
+        "state33"
+      ],
+      "width": 32
+    },
+    {
+      "family": "sum_equality",
+      "relations": [
+        "eq"
+      ],
+      "requested_variables": [
+        "c",
+        "d",
+        "e"
+      ],
+      "route_id": "323e717b7c86b04e21aa6cad88ae949a534906310190492857bf4c2a17870be2",
+      "signedness": "unsigned",
+      "variables": [
+        "state32",
+        "state33",
+        "state34"
+      ],
+      "width": 32
+    },
+    {
+      "counter_shifts": [
+        0
+      ],
+      "family": "quadratic_recurrence",
+      "relations": [
+        "le"
+      ],
+      "requested_variables": [
+        "c",
+        "d"
+      ],
+      "route_id": "c2047ea4f5c9b528d4b31d86c349035561da783137479f8c5aafbea08c60567b",
+      "scales": [
+        1
+      ],
+      "signedness": "unsigned",
+      "variables": [
+        "state32",
+        "state33"
+      ],
+      "width": 32
+    }
+  ],
+  "schema": "pono-llm-phase-grammar-run-v1",
+  "selected_candidate_count": 59,
+  "selected_indices": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24,
+    25,
+    26,
+    27,
+    28,
+    29,
+    30,
+    31,
+    32,
+    33,
+    34,
+    35,
+    36,
+    37,
+    38,
+    39,
+    40,
+    41,
+    42,
+    43,
+    44,
+    45,
+    47,
+    48,
+    52,
+    53,
+    54,
+    55,
+    56,
+    57,
+    58,
+    59,
+    60,
+    61,
+    62
+  ],
+  "selection_role": "safe-baseline-hard",
+  "source_family_id": "348dcd12f337ed254c2896d444c3d3122d552a933adff74da2b68d49eb4d2d92",
+  "verdict": "timeout"
+}

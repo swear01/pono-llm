@@ -1,0 +1,139 @@
+REPRESENTATION: PINNED SOURCE C
+SOURCE_FILE: id_trans.i
+
+extern void abort(void);
+
+extern void __assert_fail (const char *__assertion, const char *__file,
+      unsigned int __line, const char *__function)
+     __attribute__ ((__nothrow__ , __leaf__)) __attribute__ ((__noreturn__));
+extern void __assert_perror_fail (int __errnum, const char *__file,
+      unsigned int __line, const char *__function)
+     __attribute__ ((__nothrow__ , __leaf__)) __attribute__ ((__noreturn__));
+extern void __assert (const char *__assertion, const char *__file, int __line)
+     __attribute__ ((__nothrow__ , __leaf__)) __attribute__ ((__noreturn__));
+
+void reach_error() { ((void) sizeof ((0) ? 1 : 0), __extension__ ({ if (0) ; else __assert_fail ("0", "assert.h", 3, __extension__ __PRETTY_FUNCTION__); })); }
+extern void abort(void);
+void assume_abort_if_not(int cond) {
+  if(!cond) {abort();}
+}
+void __VERIFIER_assert(int cond) {
+  if (!(cond)) {
+    ERROR: {reach_error();abort();}
+  }
+  return;
+}
+int __VERIFIER_nondet_int();
+int main() {
+  int idBitLength, material_length, nlen;
+  int j, k;
+  nlen = __VERIFIER_nondet_int();
+  idBitLength = __VERIFIER_nondet_int();
+  material_length = __VERIFIER_nondet_int();
+    if (!( nlen == idBitLength / 32 )) return 0;
+  for (j = 0; (j < idBitLength / 8) && (j < material_length); j++) {
+    __VERIFIER_assert( 0 <= j);
+    __VERIFIER_assert( j < material_length );
+    __VERIFIER_assert( 0 <= j/4 );
+    __VERIFIER_assert( j/4 < nlen);
+  }
+  return 0;
+}
+
+--- COMMON FORMAL ROUTE CONTRACT ---
+TASK: Choose a small invariant-synthesis grammar. Do not output an invariant,
+proof, coefficient value, or assertion. The formal backend expands every route,
+runs Houdini, and checks the original BTOR2. Your output is untrusted routing
+advice only.
+
+MACHINE SEMANTICS:
+- All state arithmetic is fixed-width bit-vector arithmetic modulo 2^width.
+- Comparisons must state signed or unsigned semantics.
+- A route may use only variables from the catalog below.
+- Phase guards are applied by the formal experiment, not selected by you.
+
+VARIABLE_CATALOG_JSON:
+[
+  {
+    "init": "0",
+    "name": "idBitLength",
+    "ref": "state31",
+    "width": 32
+  },
+  {
+    "init": "0",
+    "name": "j",
+    "ref": "state32",
+    "width": 32
+  },
+  {
+    "init": "0",
+    "name": "nlen",
+    "ref": "state34",
+    "width": 32
+  }
+]
+
+PHASE_CATALOG_JSON:
+[
+  {
+    "guard": "state13 == 1",
+    "phase_id": "pc_state13_w8_v1",
+    "width": 8
+  },
+  {
+    "guard": "state13 == 2",
+    "phase_id": "pc_state13_w8_v2",
+    "width": 8
+  },
+  {
+    "guard": "state13 == 4",
+    "phase_id": "pc_state13_w8_v4",
+    "width": 8
+  },
+  {
+    "guard": "state13 == 8",
+    "phase_id": "pc_state13_w8_v8",
+    "width": 8
+  },
+  {
+    "guard": "state13 == 16",
+    "phase_id": "pc_state13_w8_v16",
+    "width": 8
+  },
+  {
+    "guard": "state13 == 32",
+    "phase_id": "pc_state13_w8_v32",
+    "width": 8
+  },
+  {
+    "guard": "state13 == 64",
+    "phase_id": "pc_state13_w8_v64",
+    "width": 8
+  },
+  {
+    "guard": "state13 == 128",
+    "phase_id": "pc_state13_w8_v128",
+    "width": 8
+  }
+]
+
+OUTPUT CONTRACT:
+- Output exactly one JSON object and no Markdown.
+- Top-level fields: "schema" and "routes" only.
+- schema must be "pono-llm-grammar-route-v1".
+- routes must contain 1 to 8 route objects.
+- Every route has exactly variables, family, relations, signedness, plus only
+  the family field listed below.
+- family="unary": one variable; optional constants integer list [-16,16].
+- family="pairwise_offset": two same-width variables; optional offsets integer
+  list [-16,16].
+- family="affine": two or three same-width variables; optional
+  coefficient_bound integer [1,8].
+- family="sum_equality": three same-width variables ordered as result, addend1,
+  addend2; no family-specific field.
+- family="quadratic_recurrence": two same-width variables ordered as accumulator,
+  counter; optional scales [1,8] and counter_shifts [-4,4].
+- relations is a non-empty subset of ["eq","le","ge"].
+- signedness is exactly "signed" or "unsigned".
+- No explanation and no extra fields.

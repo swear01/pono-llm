@@ -1,0 +1,245 @@
+REPRESENTATION: PINNED SOURCE C
+SOURCE_FILE: SpamAssassin-loop.i
+
+extern void abort(void);
+
+extern void __assert_fail (const char *__assertion, const char *__file,
+      unsigned int __line, const char *__function)
+     __attribute__ ((__nothrow__ , __leaf__)) __attribute__ ((__noreturn__));
+extern void __assert_perror_fail (int __errnum, const char *__file,
+      unsigned int __line, const char *__function)
+     __attribute__ ((__nothrow__ , __leaf__)) __attribute__ ((__noreturn__));
+extern void __assert (const char *__assertion, const char *__file, int __line)
+     __attribute__ ((__nothrow__ , __leaf__)) __attribute__ ((__noreturn__));
+
+void reach_error() { ((void) sizeof ((0) ? 1 : 0), __extension__ ({ if (0) ; else __assert_fail ("0", "assert.h", 3, __extension__ __PRETTY_FUNCTION__); })); }
+extern void abort(void);
+void assume_abort_if_not(int cond) {
+  if(!cond) {abort();}
+}
+void __VERIFIER_assert(int cond) {
+  if (!(cond)) {
+    ERROR: {reach_error();abort();}
+  }
+  return;
+}
+int __VERIFIER_nondet_int();
+int main()
+{
+  int len;
+  int i;
+  int j;
+  int bufsize;
+  bufsize = __VERIFIER_nondet_int();
+  if (bufsize < 0) return 0;
+  len = __VERIFIER_nondet_int();
+  int limit = bufsize - 4;
+  for (i = 0; i < len; ) {
+    for (j = 0; i < len && j < limit; ){
+      if (i + 1 < len){
+ __VERIFIER_assert(i+1<len);
+ __VERIFIER_assert(0<=i);
+ if( __VERIFIER_nondet_int() ) goto ELSE;
+        __VERIFIER_assert(i<len);
+ __VERIFIER_assert(0<=i);
+        __VERIFIER_assert(j<bufsize);
+ __VERIFIER_assert(0<=j);
+        j++;
+        i++;
+        __VERIFIER_assert(i<len);
+ __VERIFIER_assert(0<=i);
+        __VERIFIER_assert(j<bufsize);
+ __VERIFIER_assert(0<=j);
+        j++;
+        i++;
+        __VERIFIER_assert(j<bufsize);
+ __VERIFIER_assert(0<=j);
+        j++;
+      } else {
+ELSE:
+        __VERIFIER_assert(i<len);
+ __VERIFIER_assert(0<=i);
+        __VERIFIER_assert(j<bufsize);
+ __VERIFIER_assert(0<=j);
+        j++;
+        i++;
+      }
+    }
+  }
+  return 0;
+}
+
+--- COMMON FORMAL ROUTE CONTRACT ---
+TASK: Choose a small invariant-synthesis grammar. Do not output an invariant,
+proof, coefficient value, or assertion. The formal backend expands every route,
+runs Houdini, and checks the original BTOR2. Your output is untrusted routing
+advice only.
+
+MACHINE SEMANTICS:
+- All state arithmetic is fixed-width bit-vector arithmetic modulo 2^width.
+- Comparisons must state signed or unsigned semantics.
+- A route may use only variables from the catalog below.
+- Phase guards are applied by the formal experiment, not selected by you.
+
+VARIABLE_CATALOG_JSON:
+[
+  {
+    "init": "0",
+    "name": "bufsize",
+    "ref": "state59",
+    "width": 32
+  },
+  {
+    "init": "0",
+    "name": "i",
+    "ref": "state60",
+    "width": 32
+  },
+  {
+    "init": "0",
+    "name": "j",
+    "ref": "state61",
+    "width": 32
+  },
+  {
+    "init": "0",
+    "name": "len",
+    "ref": "state57",
+    "width": 32
+  },
+  {
+    "init": "0",
+    "name": "limit",
+    "ref": "state58",
+    "width": 32
+  }
+]
+
+PHASE_CATALOG_JSON:
+[
+  {
+    "guard": "state26 == 1",
+    "phase_id": "pc_state26_w21_v1",
+    "width": 21
+  },
+  {
+    "guard": "state26 == 2",
+    "phase_id": "pc_state26_w21_v2",
+    "width": 21
+  },
+  {
+    "guard": "state26 == 4",
+    "phase_id": "pc_state26_w21_v4",
+    "width": 21
+  },
+  {
+    "guard": "state26 == 8",
+    "phase_id": "pc_state26_w21_v8",
+    "width": 21
+  },
+  {
+    "guard": "state26 == 16",
+    "phase_id": "pc_state26_w21_v16",
+    "width": 21
+  },
+  {
+    "guard": "state26 == 32",
+    "phase_id": "pc_state26_w21_v32",
+    "width": 21
+  },
+  {
+    "guard": "state26 == 64",
+    "phase_id": "pc_state26_w21_v64",
+    "width": 21
+  },
+  {
+    "guard": "state26 == 128",
+    "phase_id": "pc_state26_w21_v128",
+    "width": 21
+  },
+  {
+    "guard": "state26 == 256",
+    "phase_id": "pc_state26_w21_v256",
+    "width": 21
+  },
+  {
+    "guard": "state26 == 512",
+    "phase_id": "pc_state26_w21_v512",
+    "width": 21
+  },
+  {
+    "guard": "state26 == 1024",
+    "phase_id": "pc_state26_w21_v1024",
+    "width": 21
+  },
+  {
+    "guard": "state26 == 2048",
+    "phase_id": "pc_state26_w21_v2048",
+    "width": 21
+  },
+  {
+    "guard": "state26 == 4096",
+    "phase_id": "pc_state26_w21_v4096",
+    "width": 21
+  },
+  {
+    "guard": "state26 == 8192",
+    "phase_id": "pc_state26_w21_v8192",
+    "width": 21
+  },
+  {
+    "guard": "state26 == 16384",
+    "phase_id": "pc_state26_w21_v16384",
+    "width": 21
+  },
+  {
+    "guard": "state26 == 32768",
+    "phase_id": "pc_state26_w21_v32768",
+    "width": 21
+  },
+  {
+    "guard": "state26 == 65536",
+    "phase_id": "pc_state26_w21_v65536",
+    "width": 21
+  },
+  {
+    "guard": "state26 == 131072",
+    "phase_id": "pc_state26_w21_v131072",
+    "width": 21
+  },
+  {
+    "guard": "state26 == 262144",
+    "phase_id": "pc_state26_w21_v262144",
+    "width": 21
+  },
+  {
+    "guard": "state26 == 524288",
+    "phase_id": "pc_state26_w21_v524288",
+    "width": 21
+  },
+  {
+    "guard": "state26 == 1048576",
+    "phase_id": "pc_state26_w21_v1048576",
+    "width": 21
+  }
+]
+
+OUTPUT CONTRACT:
+- Output exactly one JSON object and no Markdown.
+- Top-level fields: "schema" and "routes" only.
+- schema must be "pono-llm-grammar-route-v1".
+- routes must contain 1 to 8 route objects.
+- Every route has exactly variables, family, relations, signedness, plus only
+  the family field listed below.
+- family="unary": one variable; optional constants integer list [-16,16].
+- family="pairwise_offset": two same-width variables; optional offsets integer
+  list [-16,16].
+- family="affine": two or three same-width variables; optional
+  coefficient_bound integer [1,8].
+- family="sum_equality": three same-width variables ordered as result, addend1,
+  addend2; no family-specific field.
+- family="quadratic_recurrence": two same-width variables ordered as accumulator,
+  counter; optional scales [1,8] and counter_shifts [-4,4].
+- relations is a non-empty subset of ["eq","le","ge"].
+- signedness is exactly "signed" or "unsigned".
+- No explanation and no extra fields.

@@ -1,0 +1,33 @@
+{
+  "schema": "pono-llm-grammar-route-v1",
+  "routes": [
+    {
+      "variables": ["i", "sn"],
+      "family": "pairwise_offset",
+      "relations": ["eq"],
+      "signedness": "unsigned",
+      "offsets": [0]
+    },
+    {
+      "variables": ["i"],
+      "family": "unary",
+      "relations": ["eq"],
+      "signedness": "unsigned",
+      "constants": [0]
+    },
+    {
+      "variables": ["sn"],
+      "family": "unary",
+      "relations": ["eq"],
+      "signedness": "unsigned",
+      "constants": [0]
+    },
+    {
+      "variables": ["i", "sn"],
+      "family": "affine",
+      "relations": ["eq"],
+      "signedness": "unsigned",
+      "coefficient_bound": 1
+    }
+  ]
+}

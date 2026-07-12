@@ -1,0 +1,67 @@
+{
+  "all_phase_candidate_count": 405,
+  "api_latency_ms": 2230.377435684204,
+  "arm": "source",
+  "benchmark_id": "loop-simple/nested_5.btor2",
+  "client_stats": {
+    "completion_tokens": 208,
+    "content_chars": 661,
+    "json_mode": "json_object",
+    "latency_ms": 2230.377435684204,
+    "openrouter_routing": {
+      "allow_fallbacks": true,
+      "ignore": [
+        "deepinfra",
+        "venice",
+        "gmicloud",
+        "digitalocean",
+        "cloudflare",
+        "morph",
+        "akashml",
+        "siliconflow"
+      ],
+      "only": [
+        "novita",
+        "deepseek",
+        "baidu",
+        "parasail",
+        "alibaba",
+        "streamlake",
+        "atlas-cloud"
+      ],
+      "quantizations": [
+        "fp8",
+        "fp16",
+        "bf16",
+        "fp32",
+        "unknown"
+      ],
+      "sort": "throughput"
+    },
+    "prompt_tokens": 1325,
+    "provider": "openrouter",
+    "reasoning_chars": 0,
+    "thinking_mode": "disabled",
+    "total_tokens": 1533
+  },
+  "content_sha256": "c4ce35cac2ae918082fab514f4ef1b626e9128be4e75072869e28c44ef885b11",
+  "global_candidate_count": 45,
+  "model": "deepseek/deepseek-v4-flash",
+  "phase_count": 9,
+  "prompt_lexical_tokens": 1100,
+  "prompt_path": "prompts/nested_5-6d8e843cdbd0.source.txt",
+  "prompt_sha256": "68618c1c119bf028760cdaa4cf772e4690f02b84660c5811603d3565ba32c68c",
+  "provider": "openrouter",
+  "response_path": "responses/nested_5-6d8e843cdbd0.source.txt",
+  "response_sha256": "f3dd8b4fffad23001fab519e70ec92cb55e3f07994782eed96dcdbc498fad904",
+  "route_count": 5,
+  "route_error": "",
+  "route_path": "routes/nested_5-6d8e843cdbd0.source.json",
+  "route_sha256": "5d1f51d3c49b985cbb95d4b716a4be14035e767bf55c3cbea5ed4661b1f2461c",
+  "route_valid": true,
+  "schema": "pono-llm-grammar-route-meta-v1",
+  "selection_role": "safe-baseline-hard",
+  "source_family_id": "348dcd12f337ed254c2896d444c3d3122d552a933adff74da2b68d49eb4d2d92",
+  "tokens": 1533,
+  "wall_latency_sec": 2.2304012402892113
+}

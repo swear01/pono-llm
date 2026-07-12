@@ -1,0 +1,3421 @@
+{
+  "benchmark": "/tmp/svcomp25-sparse/translated/safety-func/loop-invgen/heapsort.btor2",
+  "benchmark_id": "loop-invgen/heapsort.btor2",
+  "benchmark_sha256": "f7fb24aa2f34d8713d3565db2bac6fa89ad16599a9ee04a53519277a86350df3",
+  "bounded_grammar_max_variables": 6,
+  "candidate_generation_sec": 0.02043646201491356,
+  "candidate_sha256": "51b4729b75aacd3b874dc1da1573fa1a5b4f7e9c41dcfa700086243c8d6b4479",
+  "certificate": {
+    "checks": [
+      {
+        "name": "C1 Init=>H",
+        "result": "unsat"
+      },
+      {
+        "name": "C2 inductive",
+        "result": "unsat"
+      },
+      {
+        "name": "C3 H=>notBAD",
+        "result": "sat"
+      }
+    ],
+    "init_queries": 2,
+    "ok": false,
+    "removed_initial_indices": [
+      3,
+      5,
+      9,
+      13,
+      15,
+      19,
+      23,
+      25,
+      29,
+      33,
+      35,
+      39,
+      43,
+      45,
+      49,
+      53,
+      55,
+      56,
+      58,
+      59,
+      61,
+      62,
+      64,
+      68,
+      69,
+      72,
+      73,
+      93,
+      95,
+      96,
+      98,
+      99,
+      101,
+      102,
+      104,
+      108,
+      109,
+      112,
+      113,
+      133,
+      135,
+      136,
+      138,
+      139,
+      141,
+      142,
+      144,
+      148,
+      149,
+      152,
+      153,
+      173,
+      175,
+      176,
+      178,
+      179,
+      181,
+      182,
+      184,
+      188,
+      189,
+      192,
+      193,
+      213,
+      215,
+      216,
+      218,
+      219,
+      221,
+      222,
+      224,
+      228,
+      229,
+      232,
+      233,
+      253,
+      255,
+      256,
+      258,
+      259,
+      261,
+      262,
+      264,
+      268,
+      269,
+      272,
+      273,
+      293,
+      295,
+      296,
+      298,
+      299,
+      301,
+      302,
+      304,
+      308,
+      309,
+      312,
+      313,
+      333,
+      335,
+      336,
+      338,
+      339,
+      341,
+      342,
+      344,
+      348,
+      349,
+      352,
+      353,
+      373,
+      375,
+      376,
+      378,
+      379,
+      381,
+      382,
+      384,
+      388,
+      389,
+      392,
+      393,
+      413,
+      415,
+      416,
+      418,
+      419,
+      421,
+      422,
+      424,
+      428,
+      429,
+      432,
+      433
+    ],
+    "removed_step_indices": [
+      0,
+      1,
+      4,
+      6,
+      8,
+      10,
+      11,
+      14,
+      17,
+      20,
+      21,
+      24,
+      26,
+      28,
+      30,
+      31,
+      34,
+      37,
+      40,
+      41,
+      44,
+      46,
+      48,
+      50,
+      52,
+      65,
+      67,
+      71,
+      75,
+      77,
+      78,
+      79,
+      81,
+      82,
+      84,
+      86,
+      88,
+      90,
+      91,
+      94,
+      97,
+      100,
+      103,
+      105,
+      107,
+      111,
+      115,
+      116,
+      118,
+      119,
+      121,
+      122,
+      124,
+      126,
+      129,
+      130,
+      132,
+      145,
+      147,
+      151,
+      155,
+      157,
+      158,
+      160,
+      161,
+      163,
+      164,
+      166,
+      169,
+      170,
+      171,
+      174,
+      177,
+      180,
+      183,
+      185,
+      187,
+      191,
+      195,
+      196,
+      198,
+      199,
+      201,
+      202,
+      204,
+      206,
+      209,
+      210,
+      211,
+      214,
+      217,
+      220,
+      223,
+      226,
+      230,
+      234,
+      235,
+      236,
+      238,
+      239,
+      241,
+      242,
+      245,
+      247,
+      248,
+      250,
+      252,
+      266,
+      270,
+      274,
+      275,
+      277,
+      278,
+      279,
+      281,
+      283,
+      285,
+      286,
+      288,
+      290,
+      291,
+      294,
+      297,
+      300,
+      303,
+      306,
+      310,
+      314,
+      315,
+      316,
+      318,
+      319,
+      321,
+      322,
+      325,
+      327,
+      328,
+      330,
+      332,
+      345,
+      347,
+      351,
+      355,
+      357,
+      358,
+      360,
+      361,
+      363,
+      364,
+      366,
+      368,
+      370,
+      371,
+      374,
+      377,
+      380,
+      383,
+      385,
+      387,
+      391,
+      395,
+      396,
+      398,
+      400,
+      401,
+      402,
+      404,
+      407,
+      408,
+      410,
+      411,
+      414,
+      417,
+      420,
+      423,
+      426,
+      430,
+      434,
+      435,
+      436,
+      438,
+      439,
+      441,
+      442,
+      445,
+      447,
+      449,
+      450,
+      451,
+      452,
+      454,
+      455,
+      456,
+      457,
+      458,
+      459,
+      460,
+      461,
+      462,
+      463,
+      464,
+      465,
+      466,
+      467,
+      468,
+      469,
+      470,
+      471,
+      472,
+      473,
+      474,
+      475,
+      476,
+      477,
+      478,
+      479,
+      480,
+      481,
+      482,
+      483,
+      484,
+      485,
+      486,
+      487,
+      488,
+      489,
+      490,
+      491,
+      492,
+      493,
+      494,
+      495,
+      496,
+      497,
+      498,
+      499,
+      500,
+      501,
+      502,
+      503,
+      504,
+      505,
+      506,
+      507,
+      508,
+      509,
+      510,
+      511,
+      512,
+      513,
+      514,
+      515,
+      516,
+      517,
+      518,
+      519,
+      520,
+      521,
+      522,
+      523,
+      524,
+      525,
+      526,
+      527,
+      528,
+      529,
+      530,
+      531,
+      532,
+      533,
+      534,
+      535,
+      536,
+      537,
+      538,
+      539,
+      540,
+      541,
+      542,
+      543,
+      544,
+      545,
+      546,
+      547,
+      548,
+      549,
+      550,
+      551,
+      552,
+      553,
+      554,
+      555,
+      556,
+      557,
+      558,
+      559,
+      560,
+      561,
+      562,
+      563,
+      564,
+      565,
+      566,
+      567,
+      568,
+      569,
+      570,
+      571,
+      572,
+      573,
+      574,
+      575,
+      576,
+      577,
+      578,
+      579,
+      580,
+      581,
+      582,
+      583,
+      584,
+      585,
+      586,
+      587,
+      588,
+      589,
+      590,
+      591,
+      592,
+      593,
+      594,
+      595,
+      596,
+      597,
+      598,
+      599,
+      600,
+      601,
+      602,
+      603,
+      604,
+      605,
+      606,
+      607,
+      608,
+      609,
+      610,
+      611,
+      612,
+      613,
+      614,
+      615,
+      616,
+      617,
+      618,
+      619,
+      620,
+      621,
+      622,
+      623,
+      624,
+      625,
+      626,
+      627,
+      628,
+      629,
+      630,
+      631,
+      632,
+      633,
+      634,
+      635,
+      636,
+      637,
+      638,
+      639,
+      640,
+      641,
+      642,
+      643,
+      644,
+      645,
+      646,
+      647,
+      648,
+      649,
+      650,
+      651,
+      652,
+      653,
+      654,
+      655,
+      656,
+      657,
+      658,
+      659,
+      660,
+      661,
+      662,
+      663,
+      664,
+      665,
+      666,
+      667,
+      668,
+      669,
+      670,
+      671,
+      672,
+      673,
+      674,
+      675,
+      676,
+      677,
+      678,
+      679,
+      680,
+      681,
+      682,
+      683,
+      684,
+      685,
+      686,
+      687,
+      688,
+      689,
+      690,
+      691,
+      692,
+      693,
+      694,
+      695,
+      696,
+      697,
+      698,
+      699,
+      700,
+      701,
+      702,
+      703,
+      704,
+      705,
+      706,
+      707,
+      708,
+      709,
+      710,
+      711,
+      712,
+      713,
+      714,
+      715,
+      716,
+      717,
+      718,
+      719,
+      720,
+      721,
+      722,
+      723,
+      724,
+      725,
+      726,
+      727,
+      728,
+      729,
+      730,
+      731,
+      732,
+      733,
+      734,
+      735,
+      736,
+      737,
+      738,
+      739,
+      740,
+      741,
+      742,
+      743,
+      744,
+      745,
+      746,
+      747,
+      748,
+      749,
+      750,
+      751,
+      752,
+      753,
+      754,
+      755,
+      756,
+      757,
+      758,
+      759,
+      760,
+      761,
+      762,
+      763,
+      764,
+      765,
+      766,
+      767,
+      768,
+      769,
+      770,
+      771,
+      772,
+      773,
+      774,
+      775,
+      776,
+      777,
+      778,
+      779,
+      780,
+      781,
+      782,
+      783,
+      784,
+      785,
+      786,
+      787,
+      788,
+      789,
+      790,
+      791,
+      792,
+      793,
+      794,
+      795,
+      796,
+      797,
+      798,
+      799,
+      800,
+      801,
+      802,
+      803,
+      804,
+      805,
+      806,
+      807,
+      808,
+      809,
+      810,
+      811,
+      812,
+      813,
+      814,
+      815,
+      816,
+      817,
+      818,
+      819,
+      820,
+      821,
+      822,
+      823,
+      824,
+      825,
+      826,
+      827,
+      828,
+      829,
+      830,
+      831,
+      832,
+      833,
+      834,
+      835,
+      836,
+      837,
+      838,
+      839,
+      840,
+      841,
+      842,
+      843,
+      844,
+      845,
+      846,
+      847,
+      848,
+      849,
+      850,
+      851,
+      852,
+      853,
+      854,
+      855,
+      856,
+      857,
+      858,
+      859,
+      860,
+      861,
+      862,
+      863,
+      864,
+      865,
+      866,
+      867,
+      868,
+      869,
+      870,
+      871,
+      872,
+      873,
+      874,
+      875,
+      876,
+      877,
+      878,
+      879,
+      880,
+      881,
+      882,
+      883,
+      884,
+      885,
+      886,
+      887,
+      888,
+      889,
+      890,
+      891,
+      892,
+      893,
+      894,
+      895,
+      896,
+      897,
+      898,
+      899,
+      900,
+      901,
+      902,
+      903,
+      904,
+      905,
+      906,
+      907,
+      908,
+      909,
+      910,
+      911,
+      912,
+      913,
+      914,
+      915,
+      916,
+      917,
+      918,
+      919,
+      16,
+      18,
+      27,
+      36,
+      38,
+      47,
+      51,
+      54,
+      57,
+      60,
+      63,
+      76,
+      80,
+      89,
+      92,
+      117,
+      120,
+      128,
+      131,
+      134,
+      137,
+      140,
+      143,
+      156,
+      162,
+      172,
+      197,
+      200,
+      208,
+      212,
+      225,
+      227,
+      231,
+      237,
+      240,
+      244,
+      246,
+      251,
+      254,
+      257,
+      260,
+      263,
+      265,
+      267,
+      271,
+      276,
+      280,
+      282,
+      284,
+      289,
+      292,
+      305,
+      307,
+      311,
+      317,
+      320,
+      323,
+      324,
+      326,
+      329,
+      331,
+      334,
+      337,
+      340,
+      343,
+      346,
+      350,
+      354,
+      356,
+      359,
+      362,
+      365,
+      369,
+      372,
+      386,
+      390,
+      394,
+      397,
+      403,
+      405,
+      409,
+      412,
+      425,
+      427,
+      431,
+      437,
+      440,
+      443,
+      444,
+      446,
+      453,
+      7,
+      66,
+      70,
+      74,
+      85,
+      87,
+      106,
+      110,
+      114,
+      123,
+      125,
+      127,
+      150,
+      154,
+      159,
+      167,
+      168,
+      186,
+      190,
+      194,
+      203,
+      205,
+      207,
+      243,
+      249,
+      399,
+      406,
+      448,
+      83,
+      146,
+      165,
+      287,
+      367
+    ],
+    "selected_indices": [
+      2,
+      12,
+      22,
+      32,
+      42
+    ],
+    "step_queries": 5,
+    "unsupported_candidates": []
+  },
+  "certificate_time_sec": 2.01334498077631,
+  "config": "global-exhaustive",
+  "end_to_end_sec": 12.224485993385315,
+  "engine": "phase-grammar-ic3ia",
+  "error": "",
+  "exit": null,
+  "expected_verdict": "safe",
+  "matrix_schema": "pono-llm-paired-phase-matrix-v1",
+  "model_checker_time_sec": 10.190704550594091,
+  "offline_time_sec": 12.224485993385315,
+  "phase_count": 0,
+  "phase_mode": "global",
+  "phases": [],
+  "pilot_sha256": "723eb64225d2c39fb4fba8477759307d184f6b40293ac4407dd3518aa1d34d0c",
+  "pool_candidate_count": 920,
+  "proof_time_sec": 12.204049531370401,
+  "route_count": 110,
+  "route_sha256": "d52c1a29497588aee327bb79c2294390838a3d53855f2962806cf6fd989d006e",
+  "routes": [
+    {
+      "constants": [
+        0,
+        1
+      ],
+      "family": "unary",
+      "relations": [
+        "eq",
+        "le",
+        "ge"
+      ],
+      "requested_variables": [
+        "state52"
+      ],
+      "route_id": "32c5d7bf98afe195d78cb6bc443b8c6c33f2d4857f3ed356b7ddcd8dac79ba79",
+      "signedness": "unsigned",
+      "variables": [
+        "state52"
+      ],
+      "width": 32
+    },
+    {
+      "constants": [
+        0,
+        1
+      ],
+      "family": "unary",
+      "relations": [
+        "le",
+        "ge"
+      ],
+      "requested_variables": [
+        "state52"
+      ],
+      "route_id": "8d6433ae3018737a36da3897fd9a20e85e4ca277c9be7e8b2a275fbf296f345a",
+      "signedness": "signed",
+      "variables": [
+        "state52"
+      ],
+      "width": 32
+    },
+    {
+      "constants": [
+        0,
+        1
+      ],
+      "family": "unary",
+      "relations": [
+        "eq",
+        "le",
+        "ge"
+      ],
+      "requested_variables": [
+        "state53"
+      ],
+      "route_id": "4d778ed846f169d5ecf8bdd9350ade20c62729eefc87936882ffb35b08a77546",
+      "signedness": "unsigned",
+      "variables": [
+        "state53"
+      ],
+      "width": 32
+    },
+    {
+      "constants": [
+        0,
+        1
+      ],
+      "family": "unary",
+      "relations": [
+        "le",
+        "ge"
+      ],
+      "requested_variables": [
+        "state53"
+      ],
+      "route_id": "3d706d2b5812353f780f99f2579f94be441f7400943807b8b29684bc570ed468",
+      "signedness": "signed",
+      "variables": [
+        "state53"
+      ],
+      "width": 32
+    },
+    {
+      "constants": [
+        0,
+        1
+      ],
+      "family": "unary",
+      "relations": [
+        "eq",
+        "le",
+        "ge"
+      ],
+      "requested_variables": [
+        "state54"
+      ],
+      "route_id": "ce97e21071b2682fdfc4ea9595887e0217c5355caa9dd50277dae75566770bc8",
+      "signedness": "unsigned",
+      "variables": [
+        "state54"
+      ],
+      "width": 32
+    },
+    {
+      "constants": [
+        0,
+        1
+      ],
+      "family": "unary",
+      "relations": [
+        "le",
+        "ge"
+      ],
+      "requested_variables": [
+        "state54"
+      ],
+      "route_id": "c3ee1e74b6dd335b82886daf3d9eaf10f35a4ff7cebf0caf703a9582b8eb8b3a",
+      "signedness": "signed",
+      "variables": [
+        "state54"
+      ],
+      "width": 32
+    },
+    {
+      "constants": [
+        0,
+        1
+      ],
+      "family": "unary",
+      "relations": [
+        "eq",
+        "le",
+        "ge"
+      ],
+      "requested_variables": [
+        "state55"
+      ],
+      "route_id": "300c826250dda2fb077cdae1bfd83ecf0d4888155c0280c39cb4ade18fde83f2",
+      "signedness": "unsigned",
+      "variables": [
+        "state55"
+      ],
+      "width": 32
+    },
+    {
+      "constants": [
+        0,
+        1
+      ],
+      "family": "unary",
+      "relations": [
+        "le",
+        "ge"
+      ],
+      "requested_variables": [
+        "state55"
+      ],
+      "route_id": "daed8784f55f82364be65c1fb19bd8fee58ac09485192e0e61e1a9b88e74ba36",
+      "signedness": "signed",
+      "variables": [
+        "state55"
+      ],
+      "width": 32
+    },
+    {
+      "constants": [
+        0,
+        1
+      ],
+      "family": "unary",
+      "relations": [
+        "eq",
+        "le",
+        "ge"
+      ],
+      "requested_variables": [
+        "state56"
+      ],
+      "route_id": "b75f9342cbb6e0d5a96a33580bd9bc945890de0a4ab8cb79981cef3bfa243616",
+      "signedness": "unsigned",
+      "variables": [
+        "state56"
+      ],
+      "width": 32
+    },
+    {
+      "constants": [
+        0,
+        1
+      ],
+      "family": "unary",
+      "relations": [
+        "le",
+        "ge"
+      ],
+      "requested_variables": [
+        "state56"
+      ],
+      "route_id": "49b0a489dd470b7e1ea3f2aba6c87ae8a57004272bb62c7490c48fd4d3e579e6",
+      "signedness": "signed",
+      "variables": [
+        "state56"
+      ],
+      "width": 32
+    },
+    {
+      "family": "pairwise_offset",
+      "offsets": [
+        0,
+        1,
+        -1,
+        2,
+        -2
+      ],
+      "relations": [
+        "eq",
+        "le",
+        "ge"
+      ],
+      "requested_variables": [
+        "state52",
+        "state53"
+      ],
+      "route_id": "ef0f1a7d96065caaf7cf5220b25cd67f69bc78ebbd51ba1955bf4bf6663023aa",
+      "signedness": "unsigned",
+      "variables": [
+        "state52",
+        "state53"
+      ],
+      "width": 32
+    },
+    {
+      "family": "pairwise_offset",
+      "offsets": [
+        0,
+        1,
+        -1,
+        2,
+        -2
+      ],
+      "relations": [
+        "le",
+        "ge"
+      ],
+      "requested_variables": [
+        "state52",
+        "state53"
+      ],
+      "route_id": "c5a293a8d7821edd21c574c03d47f8038f8d71a95e5974cfb910c166617ce3dc",
+      "signedness": "signed",
+      "variables": [
+        "state52",
+        "state53"
+      ],
+      "width": 32
+    },
+    {
+      "coefficient_bound": 2,
+      "family": "affine",
+      "relations": [
+        "eq",
+        "le",
+        "ge"
+      ],
+      "requested_variables": [
+        "state52",
+        "state53"
+      ],
+      "route_id": "0442ef2f319d2daa04f73d3ca9e1f40981bc8a4d11856c2fe757cbaae2d84396",
+      "signedness": "unsigned",
+      "variables": [
+        "state52",
+        "state53"
+      ],
+      "width": 32
+    },
+    {
+      "coefficient_bound": 2,
+      "family": "affine",
+      "relations": [
+        "le",
+        "ge"
+      ],
+      "requested_variables": [
+        "state52",
+        "state53"
+      ],
+      "route_id": "bee6610ca82d43c139a8d24af2aa0b0a0a1d50b133d1ea4199d8f2ffccadff6b",
+      "signedness": "signed",
+      "variables": [
+        "state52",
+        "state53"
+      ],
+      "width": 32
+    },
+    {
+      "family": "pairwise_offset",
+      "offsets": [
+        0,
+        1,
+        -1,
+        2,
+        -2
+      ],
+      "relations": [
+        "eq",
+        "le",
+        "ge"
+      ],
+      "requested_variables": [
+        "state52",
+        "state54"
+      ],
+      "route_id": "65c8f101fd5c83949bb65a61b2ca7ec42aae11ab0109d88dc9e4a40f126142af",
+      "signedness": "unsigned",
+      "variables": [
+        "state52",
+        "state54"
+      ],
+      "width": 32
+    },
+    {
+      "family": "pairwise_offset",
+      "offsets": [
+        0,
+        1,
+        -1,
+        2,
+        -2
+      ],
+      "relations": [
+        "le",
+        "ge"
+      ],
+      "requested_variables": [
+        "state52",
+        "state54"
+      ],
+      "route_id": "e70699a00f8d4db5781848fe96ca3ab394e0242ae99934c6b2c4442fbc8f4a4f",
+      "signedness": "signed",
+      "variables": [
+        "state52",
+        "state54"
+      ],
+      "width": 32
+    },
+    {
+      "coefficient_bound": 2,
+      "family": "affine",
+      "relations": [
+        "eq",
+        "le",
+        "ge"
+      ],
+      "requested_variables": [
+        "state52",
+        "state54"
+      ],
+      "route_id": "a2aed467da29ccdec315c06710b8e7c40b611508c005858a791a418325dd360d",
+      "signedness": "unsigned",
+      "variables": [
+        "state52",
+        "state54"
+      ],
+      "width": 32
+    },
+    {
+      "coefficient_bound": 2,
+      "family": "affine",
+      "relations": [
+        "le",
+        "ge"
+      ],
+      "requested_variables": [
+        "state52",
+        "state54"
+      ],
+      "route_id": "0ae5c7f7ba51cd3e66b422dde6ece4634b471c3b58ac795179cea80be5047771",
+      "signedness": "signed",
+      "variables": [
+        "state52",
+        "state54"
+      ],
+      "width": 32
+    },
+    {
+      "family": "pairwise_offset",
+      "offsets": [
+        0,
+        1,
+        -1,
+        2,
+        -2
+      ],
+      "relations": [
+        "eq",
+        "le",
+        "ge"
+      ],
+      "requested_variables": [
+        "state52",
+        "state55"
+      ],
+      "route_id": "35c8ccae3eb7070a4651c6e2dec6376ed364bdb5924dcf149d66a45e5edac30b",
+      "signedness": "unsigned",
+      "variables": [
+        "state52",
+        "state55"
+      ],
+      "width": 32
+    },
+    {
+      "family": "pairwise_offset",
+      "offsets": [
+        0,
+        1,
+        -1,
+        2,
+        -2
+      ],
+      "relations": [
+        "le",
+        "ge"
+      ],
+      "requested_variables": [
+        "state52",
+        "state55"
+      ],
+      "route_id": "014e55bf6a39c32afa7d2752e76bcfe2a940d8bedc85c1f5da8f046506798dec",
+      "signedness": "signed",
+      "variables": [
+        "state52",
+        "state55"
+      ],
+      "width": 32
+    },
+    {
+      "coefficient_bound": 2,
+      "family": "affine",
+      "relations": [
+        "eq",
+        "le",
+        "ge"
+      ],
+      "requested_variables": [
+        "state52",
+        "state55"
+      ],
+      "route_id": "77277765611fce9a01347f71a0b23023aef453f07ee95cbfb22196ac14643f7f",
+      "signedness": "unsigned",
+      "variables": [
+        "state52",
+        "state55"
+      ],
+      "width": 32
+    },
+    {
+      "coefficient_bound": 2,
+      "family": "affine",
+      "relations": [
+        "le",
+        "ge"
+      ],
+      "requested_variables": [
+        "state52",
+        "state55"
+      ],
+      "route_id": "195e9d5c89a9bdf0a5e4525212ca9b2fb81fb20097ba873a83a5cfaea03fb51f",
+      "signedness": "signed",
+      "variables": [
+        "state52",
+        "state55"
+      ],
+      "width": 32
+    },
+    {
+      "family": "pairwise_offset",
+      "offsets": [
+        0,
+        1,
+        -1,
+        2,
+        -2
+      ],
+      "relations": [
+        "eq",
+        "le",
+        "ge"
+      ],
+      "requested_variables": [
+        "state52",
+        "state56"
+      ],
+      "route_id": "f6f7bd4ecd5c320d171875fea2cc4a71bede2ffed754ad50759e3c77ba510fa8",
+      "signedness": "unsigned",
+      "variables": [
+        "state52",
+        "state56"
+      ],
+      "width": 32
+    },
+    {
+      "family": "pairwise_offset",
+      "offsets": [
+        0,
+        1,
+        -1,
+        2,
+        -2
+      ],
+      "relations": [
+        "le",
+        "ge"
+      ],
+      "requested_variables": [
+        "state52",
+        "state56"
+      ],
+      "route_id": "933d5da3f88f5777b3adec4f3fc60238ec3eeeb0d09991c13285eff02553444e",
+      "signedness": "signed",
+      "variables": [
+        "state52",
+        "state56"
+      ],
+      "width": 32
+    },
+    {
+      "coefficient_bound": 2,
+      "family": "affine",
+      "relations": [
+        "eq",
+        "le",
+        "ge"
+      ],
+      "requested_variables": [
+        "state52",
+        "state56"
+      ],
+      "route_id": "7f99a01cfefdd5fb421dc8859ffad7062b994dae42c64519fa723728e590d2af",
+      "signedness": "unsigned",
+      "variables": [
+        "state52",
+        "state56"
+      ],
+      "width": 32
+    },
+    {
+      "coefficient_bound": 2,
+      "family": "affine",
+      "relations": [
+        "le",
+        "ge"
+      ],
+      "requested_variables": [
+        "state52",
+        "state56"
+      ],
+      "route_id": "e04b6ba5d2a8c3ef6f9d9e855b53cc63f3a7375f4d3ca384c1348d97bdcd9143",
+      "signedness": "signed",
+      "variables": [
+        "state52",
+        "state56"
+      ],
+      "width": 32
+    },
+    {
+      "family": "pairwise_offset",
+      "offsets": [
+        0,
+        1,
+        -1,
+        2,
+        -2
+      ],
+      "relations": [
+        "eq",
+        "le",
+        "ge"
+      ],
+      "requested_variables": [
+        "state53",
+        "state54"
+      ],
+      "route_id": "626faffe50c64e4e98e9f145d983134e13f6fcb67f09311f736d7e0c2aad3266",
+      "signedness": "unsigned",
+      "variables": [
+        "state53",
+        "state54"
+      ],
+      "width": 32
+    },
+    {
+      "family": "pairwise_offset",
+      "offsets": [
+        0,
+        1,
+        -1,
+        2,
+        -2
+      ],
+      "relations": [
+        "le",
+        "ge"
+      ],
+      "requested_variables": [
+        "state53",
+        "state54"
+      ],
+      "route_id": "fee91e762a9fc7f03f2d0503f68ca33ccab5ce26bd7a29e894e5e0f9d2303c2f",
+      "signedness": "signed",
+      "variables": [
+        "state53",
+        "state54"
+      ],
+      "width": 32
+    },
+    {
+      "coefficient_bound": 2,
+      "family": "affine",
+      "relations": [
+        "eq",
+        "le",
+        "ge"
+      ],
+      "requested_variables": [
+        "state53",
+        "state54"
+      ],
+      "route_id": "6ccf4ff207bd41c2634ea783e5f8924e08de2fc62a93d2701df155fbcdee50a8",
+      "signedness": "unsigned",
+      "variables": [
+        "state53",
+        "state54"
+      ],
+      "width": 32
+    },
+    {
+      "coefficient_bound": 2,
+      "family": "affine",
+      "relations": [
+        "le",
+        "ge"
+      ],
+      "requested_variables": [
+        "state53",
+        "state54"
+      ],
+      "route_id": "1d1cb8d791b0be7a432f937678b31cf2404fba9196a635c626927e8591f99340",
+      "signedness": "signed",
+      "variables": [
+        "state53",
+        "state54"
+      ],
+      "width": 32
+    },
+    {
+      "family": "pairwise_offset",
+      "offsets": [
+        0,
+        1,
+        -1,
+        2,
+        -2
+      ],
+      "relations": [
+        "eq",
+        "le",
+        "ge"
+      ],
+      "requested_variables": [
+        "state53",
+        "state55"
+      ],
+      "route_id": "4c13f0118d57ddacdb679ba2f5af993e0319cb18de57d00e0dca845135d623f1",
+      "signedness": "unsigned",
+      "variables": [
+        "state53",
+        "state55"
+      ],
+      "width": 32
+    },
+    {
+      "family": "pairwise_offset",
+      "offsets": [
+        0,
+        1,
+        -1,
+        2,
+        -2
+      ],
+      "relations": [
+        "le",
+        "ge"
+      ],
+      "requested_variables": [
+        "state53",
+        "state55"
+      ],
+      "route_id": "2d39c609dee3c5f7cc9e17210714093013e991529b0d4664093f5596ba85a295",
+      "signedness": "signed",
+      "variables": [
+        "state53",
+        "state55"
+      ],
+      "width": 32
+    },
+    {
+      "coefficient_bound": 2,
+      "family": "affine",
+      "relations": [
+        "eq",
+        "le",
+        "ge"
+      ],
+      "requested_variables": [
+        "state53",
+        "state55"
+      ],
+      "route_id": "68998c3693dd13f04d8b9bde221ccaa46c378785427c8dd97590bfc86f583f80",
+      "signedness": "unsigned",
+      "variables": [
+        "state53",
+        "state55"
+      ],
+      "width": 32
+    },
+    {
+      "coefficient_bound": 2,
+      "family": "affine",
+      "relations": [
+        "le",
+        "ge"
+      ],
+      "requested_variables": [
+        "state53",
+        "state55"
+      ],
+      "route_id": "c0e6b0d600668216e38a21fc1d82fd2a6f40e91fc226ad199861c16d0d8d1487",
+      "signedness": "signed",
+      "variables": [
+        "state53",
+        "state55"
+      ],
+      "width": 32
+    },
+    {
+      "family": "pairwise_offset",
+      "offsets": [
+        0,
+        1,
+        -1,
+        2,
+        -2
+      ],
+      "relations": [
+        "eq",
+        "le",
+        "ge"
+      ],
+      "requested_variables": [
+        "state53",
+        "state56"
+      ],
+      "route_id": "9c60b30bde1e67c010123cf8406e268443a444cc33d9aa15261089f5e136243c",
+      "signedness": "unsigned",
+      "variables": [
+        "state53",
+        "state56"
+      ],
+      "width": 32
+    },
+    {
+      "family": "pairwise_offset",
+      "offsets": [
+        0,
+        1,
+        -1,
+        2,
+        -2
+      ],
+      "relations": [
+        "le",
+        "ge"
+      ],
+      "requested_variables": [
+        "state53",
+        "state56"
+      ],
+      "route_id": "6f40c67bf72a1416ee83d6f36abe2aa6bf38465e10520d67f5a5a107c297b071",
+      "signedness": "signed",
+      "variables": [
+        "state53",
+        "state56"
+      ],
+      "width": 32
+    },
+    {
+      "coefficient_bound": 2,
+      "family": "affine",
+      "relations": [
+        "eq",
+        "le",
+        "ge"
+      ],
+      "requested_variables": [
+        "state53",
+        "state56"
+      ],
+      "route_id": "ef2ac4dcfc73213c0d270c3610b07afa2304680c448aff5a0bb2383f626d7626",
+      "signedness": "unsigned",
+      "variables": [
+        "state53",
+        "state56"
+      ],
+      "width": 32
+    },
+    {
+      "coefficient_bound": 2,
+      "family": "affine",
+      "relations": [
+        "le",
+        "ge"
+      ],
+      "requested_variables": [
+        "state53",
+        "state56"
+      ],
+      "route_id": "0fa9aa4b0a23b1928827bf03536f3d68e5afbf4cf784e81b683ecfc3fb6a1008",
+      "signedness": "signed",
+      "variables": [
+        "state53",
+        "state56"
+      ],
+      "width": 32
+    },
+    {
+      "family": "pairwise_offset",
+      "offsets": [
+        0,
+        1,
+        -1,
+        2,
+        -2
+      ],
+      "relations": [
+        "eq",
+        "le",
+        "ge"
+      ],
+      "requested_variables": [
+        "state54",
+        "state55"
+      ],
+      "route_id": "9b37918b74686eb56b29436fddbe6964a9e5b3893da09b4ef64729faff07f3f7",
+      "signedness": "unsigned",
+      "variables": [
+        "state54",
+        "state55"
+      ],
+      "width": 32
+    },
+    {
+      "family": "pairwise_offset",
+      "offsets": [
+        0,
+        1,
+        -1,
+        2,
+        -2
+      ],
+      "relations": [
+        "le",
+        "ge"
+      ],
+      "requested_variables": [
+        "state54",
+        "state55"
+      ],
+      "route_id": "4c3f411c822107b282378287765ae7538d5eafe98c6f1eb6496fb20c2fd6ace6",
+      "signedness": "signed",
+      "variables": [
+        "state54",
+        "state55"
+      ],
+      "width": 32
+    },
+    {
+      "coefficient_bound": 2,
+      "family": "affine",
+      "relations": [
+        "eq",
+        "le",
+        "ge"
+      ],
+      "requested_variables": [
+        "state54",
+        "state55"
+      ],
+      "route_id": "ef5741cdce0638a072bfa31812051224a33b4404412a4b3ab0e9a6c6d15e979f",
+      "signedness": "unsigned",
+      "variables": [
+        "state54",
+        "state55"
+      ],
+      "width": 32
+    },
+    {
+      "coefficient_bound": 2,
+      "family": "affine",
+      "relations": [
+        "le",
+        "ge"
+      ],
+      "requested_variables": [
+        "state54",
+        "state55"
+      ],
+      "route_id": "7655768bfc86a9919bafa404ebdf77f6f3bb482eba6f4048e0440892de6d37d8",
+      "signedness": "signed",
+      "variables": [
+        "state54",
+        "state55"
+      ],
+      "width": 32
+    },
+    {
+      "family": "pairwise_offset",
+      "offsets": [
+        0,
+        1,
+        -1,
+        2,
+        -2
+      ],
+      "relations": [
+        "eq",
+        "le",
+        "ge"
+      ],
+      "requested_variables": [
+        "state54",
+        "state56"
+      ],
+      "route_id": "b833ee275d7fa382196003d05084cb78b143f4153871dc2b9f4e0c06cbe171f8",
+      "signedness": "unsigned",
+      "variables": [
+        "state54",
+        "state56"
+      ],
+      "width": 32
+    },
+    {
+      "family": "pairwise_offset",
+      "offsets": [
+        0,
+        1,
+        -1,
+        2,
+        -2
+      ],
+      "relations": [
+        "le",
+        "ge"
+      ],
+      "requested_variables": [
+        "state54",
+        "state56"
+      ],
+      "route_id": "229cec487980549333c1d111aa2f0587c1f5c30c5234fea55146e168f474e1a0",
+      "signedness": "signed",
+      "variables": [
+        "state54",
+        "state56"
+      ],
+      "width": 32
+    },
+    {
+      "coefficient_bound": 2,
+      "family": "affine",
+      "relations": [
+        "eq",
+        "le",
+        "ge"
+      ],
+      "requested_variables": [
+        "state54",
+        "state56"
+      ],
+      "route_id": "344d4e85f0f1a78300fe0db98bfcebaf7b3faf04f1dc7ae765eabdabff61b804",
+      "signedness": "unsigned",
+      "variables": [
+        "state54",
+        "state56"
+      ],
+      "width": 32
+    },
+    {
+      "coefficient_bound": 2,
+      "family": "affine",
+      "relations": [
+        "le",
+        "ge"
+      ],
+      "requested_variables": [
+        "state54",
+        "state56"
+      ],
+      "route_id": "d268b2d19c6b627ea747553c8e57e92ab4006e48931f1a46681f8cb6d4937b98",
+      "signedness": "signed",
+      "variables": [
+        "state54",
+        "state56"
+      ],
+      "width": 32
+    },
+    {
+      "family": "pairwise_offset",
+      "offsets": [
+        0,
+        1,
+        -1,
+        2,
+        -2
+      ],
+      "relations": [
+        "eq",
+        "le",
+        "ge"
+      ],
+      "requested_variables": [
+        "state55",
+        "state56"
+      ],
+      "route_id": "a45bec913c905f160729ffa732123d927610fb77f7a65a566dcf7da64789fbc5",
+      "signedness": "unsigned",
+      "variables": [
+        "state55",
+        "state56"
+      ],
+      "width": 32
+    },
+    {
+      "family": "pairwise_offset",
+      "offsets": [
+        0,
+        1,
+        -1,
+        2,
+        -2
+      ],
+      "relations": [
+        "le",
+        "ge"
+      ],
+      "requested_variables": [
+        "state55",
+        "state56"
+      ],
+      "route_id": "66044e1827f28d1ebb7733c1fcc356990c99a37134e96b24f70244c7947aa44b",
+      "signedness": "signed",
+      "variables": [
+        "state55",
+        "state56"
+      ],
+      "width": 32
+    },
+    {
+      "coefficient_bound": 2,
+      "family": "affine",
+      "relations": [
+        "eq",
+        "le",
+        "ge"
+      ],
+      "requested_variables": [
+        "state55",
+        "state56"
+      ],
+      "route_id": "9cac88f5da2256d9208dec2b41eeb518c1e3f2e13371962bbb7acb3ba0f640b1",
+      "signedness": "unsigned",
+      "variables": [
+        "state55",
+        "state56"
+      ],
+      "width": 32
+    },
+    {
+      "coefficient_bound": 2,
+      "family": "affine",
+      "relations": [
+        "le",
+        "ge"
+      ],
+      "requested_variables": [
+        "state55",
+        "state56"
+      ],
+      "route_id": "3fc713edde5a1a74b1c689da82df8ba894239409f1d635b12e34794fa1804120",
+      "signedness": "signed",
+      "variables": [
+        "state55",
+        "state56"
+      ],
+      "width": 32
+    },
+    {
+      "coefficient_bound": 2,
+      "family": "affine",
+      "relations": [
+        "eq"
+      ],
+      "requested_variables": [
+        "state52",
+        "state53",
+        "state54"
+      ],
+      "route_id": "97e0ac17320ee8ff2b8f1559c3fd2d62b6b4be1ada544a090220d28b3da90c9c",
+      "signedness": "unsigned",
+      "variables": [
+        "state52",
+        "state53",
+        "state54"
+      ],
+      "width": 32
+    },
+    {
+      "family": "sum_equality",
+      "relations": [
+        "eq"
+      ],
+      "requested_variables": [
+        "state52",
+        "state53",
+        "state54"
+      ],
+      "route_id": "697c0723d1c65dda84d109e16ff7db713420a0aaa388c18b8e00b79bf3c69119",
+      "signedness": "unsigned",
+      "variables": [
+        "state52",
+        "state53",
+        "state54"
+      ],
+      "width": 32
+    },
+    {
+      "family": "sum_equality",
+      "relations": [
+        "eq"
+      ],
+      "requested_variables": [
+        "state53",
+        "state52",
+        "state54"
+      ],
+      "route_id": "bc0e8490ed8aa9dfa2051a5e8ea06dda9559fc245e43edd72f6f4b19df5534fd",
+      "signedness": "unsigned",
+      "variables": [
+        "state53",
+        "state52",
+        "state54"
+      ],
+      "width": 32
+    },
+    {
+      "family": "sum_equality",
+      "relations": [
+        "eq"
+      ],
+      "requested_variables": [
+        "state54",
+        "state52",
+        "state53"
+      ],
+      "route_id": "2c8b40293195537b14315b5833a45cb78b89478fc83abeefcea2a81d08e61ce6",
+      "signedness": "unsigned",
+      "variables": [
+        "state54",
+        "state52",
+        "state53"
+      ],
+      "width": 32
+    },
+    {
+      "coefficient_bound": 2,
+      "family": "affine",
+      "relations": [
+        "eq"
+      ],
+      "requested_variables": [
+        "state52",
+        "state53",
+        "state55"
+      ],
+      "route_id": "68b8fe65aab8ea2644620b360200af2b8e28699db5680b33c61176bdf878e8ba",
+      "signedness": "unsigned",
+      "variables": [
+        "state52",
+        "state53",
+        "state55"
+      ],
+      "width": 32
+    },
+    {
+      "family": "sum_equality",
+      "relations": [
+        "eq"
+      ],
+      "requested_variables": [
+        "state52",
+        "state53",
+        "state55"
+      ],
+      "route_id": "a912ff6cbaca58759fb03962d6239f382c0b052374d0d50d41473179dcaae489",
+      "signedness": "unsigned",
+      "variables": [
+        "state52",
+        "state53",
+        "state55"
+      ],
+      "width": 32
+    },
+    {
+      "family": "sum_equality",
+      "relations": [
+        "eq"
+      ],
+      "requested_variables": [
+        "state53",
+        "state52",
+        "state55"
+      ],
+      "route_id": "fa35a0ef93451a5de2ad2e7cf03830c4c81e68ef49300230e7a00a320a08c3d6",
+      "signedness": "unsigned",
+      "variables": [
+        "state53",
+        "state52",
+        "state55"
+      ],
+      "width": 32
+    },
+    {
+      "family": "sum_equality",
+      "relations": [
+        "eq"
+      ],
+      "requested_variables": [
+        "state55",
+        "state52",
+        "state53"
+      ],
+      "route_id": "8401d7051bb8b6e4ac6d9fb3ddb6c765b11d499316cde23234cf0486781fa840",
+      "signedness": "unsigned",
+      "variables": [
+        "state55",
+        "state52",
+        "state53"
+      ],
+      "width": 32
+    },
+    {
+      "coefficient_bound": 2,
+      "family": "affine",
+      "relations": [
+        "eq"
+      ],
+      "requested_variables": [
+        "state52",
+        "state53",
+        "state56"
+      ],
+      "route_id": "59180ef9c27cc8e090c012ee93fb27f129604c68368e8856acd344ccd742f291",
+      "signedness": "unsigned",
+      "variables": [
+        "state52",
+        "state53",
+        "state56"
+      ],
+      "width": 32
+    },
+    {
+      "family": "sum_equality",
+      "relations": [
+        "eq"
+      ],
+      "requested_variables": [
+        "state52",
+        "state53",
+        "state56"
+      ],
+      "route_id": "1a90574f11f23833ddd832f0a14233e695eae7c1a2e3b2bd165c8da2543729e4",
+      "signedness": "unsigned",
+      "variables": [
+        "state52",
+        "state53",
+        "state56"
+      ],
+      "width": 32
+    },
+    {
+      "family": "sum_equality",
+      "relations": [
+        "eq"
+      ],
+      "requested_variables": [
+        "state53",
+        "state52",
+        "state56"
+      ],
+      "route_id": "5ffb4eb43a9decc230b29e9b1a339439d31100112a6cc10bcac819299464673e",
+      "signedness": "unsigned",
+      "variables": [
+        "state53",
+        "state52",
+        "state56"
+      ],
+      "width": 32
+    },
+    {
+      "family": "sum_equality",
+      "relations": [
+        "eq"
+      ],
+      "requested_variables": [
+        "state56",
+        "state52",
+        "state53"
+      ],
+      "route_id": "5baecb2db83006c9d7a8769751c350a1fd1ae2c9eac31ae7a7226f42a3a4a0ab",
+      "signedness": "unsigned",
+      "variables": [
+        "state56",
+        "state52",
+        "state53"
+      ],
+      "width": 32
+    },
+    {
+      "coefficient_bound": 2,
+      "family": "affine",
+      "relations": [
+        "eq"
+      ],
+      "requested_variables": [
+        "state52",
+        "state54",
+        "state55"
+      ],
+      "route_id": "fcfb346c94d97d769de12b2390613de3d1ac0b2f001dbeb48221bdac37956564",
+      "signedness": "unsigned",
+      "variables": [
+        "state52",
+        "state54",
+        "state55"
+      ],
+      "width": 32
+    },
+    {
+      "family": "sum_equality",
+      "relations": [
+        "eq"
+      ],
+      "requested_variables": [
+        "state52",
+        "state54",
+        "state55"
+      ],
+      "route_id": "81319f49c9d1af2577b754642a6a7172d6a91b0146784a01f6c7d5ce0121a429",
+      "signedness": "unsigned",
+      "variables": [
+        "state52",
+        "state54",
+        "state55"
+      ],
+      "width": 32
+    },
+    {
+      "family": "sum_equality",
+      "relations": [
+        "eq"
+      ],
+      "requested_variables": [
+        "state54",
+        "state52",
+        "state55"
+      ],
+      "route_id": "b324fde41a9088b2bb30d0bfa722c4c31f57a8afbaa00ef8101f38671c9314b4",
+      "signedness": "unsigned",
+      "variables": [
+        "state54",
+        "state52",
+        "state55"
+      ],
+      "width": 32
+    },
+    {
+      "family": "sum_equality",
+      "relations": [
+        "eq"
+      ],
+      "requested_variables": [
+        "state55",
+        "state52",
+        "state54"
+      ],
+      "route_id": "98e3ebdfec17f9fd48ecf7433d8028f57ad6792ec967be08ab0025821c5d3512",
+      "signedness": "unsigned",
+      "variables": [
+        "state55",
+        "state52",
+        "state54"
+      ],
+      "width": 32
+    },
+    {
+      "coefficient_bound": 2,
+      "family": "affine",
+      "relations": [
+        "eq"
+      ],
+      "requested_variables": [
+        "state52",
+        "state54",
+        "state56"
+      ],
+      "route_id": "96993090abf81c6cbc139c05e44c45c4de267440427b8982d4c5a4a7c222b07a",
+      "signedness": "unsigned",
+      "variables": [
+        "state52",
+        "state54",
+        "state56"
+      ],
+      "width": 32
+    },
+    {
+      "family": "sum_equality",
+      "relations": [
+        "eq"
+      ],
+      "requested_variables": [
+        "state52",
+        "state54",
+        "state56"
+      ],
+      "route_id": "daa7609a949024b1fe3ea100073237df0514abbd7ca00e5c851c059a42d4377b",
+      "signedness": "unsigned",
+      "variables": [
+        "state52",
+        "state54",
+        "state56"
+      ],
+      "width": 32
+    },
+    {
+      "family": "sum_equality",
+      "relations": [
+        "eq"
+      ],
+      "requested_variables": [
+        "state54",
+        "state52",
+        "state56"
+      ],
+      "route_id": "acb388fb1326f222fcbf31a781bfff903ef01f1b66364def090ee01cac77316e",
+      "signedness": "unsigned",
+      "variables": [
+        "state54",
+        "state52",
+        "state56"
+      ],
+      "width": 32
+    },
+    {
+      "family": "sum_equality",
+      "relations": [
+        "eq"
+      ],
+      "requested_variables": [
+        "state56",
+        "state52",
+        "state54"
+      ],
+      "route_id": "9fd3f8f6d5532dfe5f8b14a37fcd53cabb74324f20bf80c4a045c59985e9a7fc",
+      "signedness": "unsigned",
+      "variables": [
+        "state56",
+        "state52",
+        "state54"
+      ],
+      "width": 32
+    },
+    {
+      "coefficient_bound": 2,
+      "family": "affine",
+      "relations": [
+        "eq"
+      ],
+      "requested_variables": [
+        "state52",
+        "state55",
+        "state56"
+      ],
+      "route_id": "eebadd646f2d6d37aae706868d4227dc81192d27e24c127660b7954684a129cb",
+      "signedness": "unsigned",
+      "variables": [
+        "state52",
+        "state55",
+        "state56"
+      ],
+      "width": 32
+    },
+    {
+      "family": "sum_equality",
+      "relations": [
+        "eq"
+      ],
+      "requested_variables": [
+        "state52",
+        "state55",
+        "state56"
+      ],
+      "route_id": "bc022ea653849243ec7d16278e007aea2a611ae33284fc48c9e4a51ba4ff6218",
+      "signedness": "unsigned",
+      "variables": [
+        "state52",
+        "state55",
+        "state56"
+      ],
+      "width": 32
+    },
+    {
+      "family": "sum_equality",
+      "relations": [
+        "eq"
+      ],
+      "requested_variables": [
+        "state55",
+        "state52",
+        "state56"
+      ],
+      "route_id": "64797665d072475964e0bfaa582f97c575a4029c6177b27df530ca72853bd2da",
+      "signedness": "unsigned",
+      "variables": [
+        "state55",
+        "state52",
+        "state56"
+      ],
+      "width": 32
+    },
+    {
+      "family": "sum_equality",
+      "relations": [
+        "eq"
+      ],
+      "requested_variables": [
+        "state56",
+        "state52",
+        "state55"
+      ],
+      "route_id": "4fe54b6f3dc0611c86c8ee76a610fef4bcb6679ada7aa7d2ed29d7f2343487e3",
+      "signedness": "unsigned",
+      "variables": [
+        "state56",
+        "state52",
+        "state55"
+      ],
+      "width": 32
+    },
+    {
+      "coefficient_bound": 2,
+      "family": "affine",
+      "relations": [
+        "eq"
+      ],
+      "requested_variables": [
+        "state53",
+        "state54",
+        "state55"
+      ],
+      "route_id": "8facd2b039eee38be92f9abeab6791dfd7ccc92d47a18087d694c2ac1f442e63",
+      "signedness": "unsigned",
+      "variables": [
+        "state53",
+        "state54",
+        "state55"
+      ],
+      "width": 32
+    },
+    {
+      "family": "sum_equality",
+      "relations": [
+        "eq"
+      ],
+      "requested_variables": [
+        "state53",
+        "state54",
+        "state55"
+      ],
+      "route_id": "2377dc9d1787e3d342292a2d68c3b1bbe2600c806f8320828f31cccfe8094a29",
+      "signedness": "unsigned",
+      "variables": [
+        "state53",
+        "state54",
+        "state55"
+      ],
+      "width": 32
+    },
+    {
+      "family": "sum_equality",
+      "relations": [
+        "eq"
+      ],
+      "requested_variables": [
+        "state54",
+        "state53",
+        "state55"
+      ],
+      "route_id": "5eaf6f527145612fa7234413331342ef14cd9497d7569a99b427a50d3263e3c3",
+      "signedness": "unsigned",
+      "variables": [
+        "state54",
+        "state53",
+        "state55"
+      ],
+      "width": 32
+    },
+    {
+      "family": "sum_equality",
+      "relations": [
+        "eq"
+      ],
+      "requested_variables": [
+        "state55",
+        "state53",
+        "state54"
+      ],
+      "route_id": "d1a542d8dd651593f5f8f568684c42bcec7065cfdd3de9f7a7c81ef785baa804",
+      "signedness": "unsigned",
+      "variables": [
+        "state55",
+        "state53",
+        "state54"
+      ],
+      "width": 32
+    },
+    {
+      "coefficient_bound": 2,
+      "family": "affine",
+      "relations": [
+        "eq"
+      ],
+      "requested_variables": [
+        "state53",
+        "state54",
+        "state56"
+      ],
+      "route_id": "5043ab8e56fcf9a8b710fa0a2a3017f71861bcbac6dcc71a5214ce7dddc0b20c",
+      "signedness": "unsigned",
+      "variables": [
+        "state53",
+        "state54",
+        "state56"
+      ],
+      "width": 32
+    },
+    {
+      "family": "sum_equality",
+      "relations": [
+        "eq"
+      ],
+      "requested_variables": [
+        "state53",
+        "state54",
+        "state56"
+      ],
+      "route_id": "87560878bacbda3965641299bc4e047886c7d208e82f6e3422bb430b0a14eaac",
+      "signedness": "unsigned",
+      "variables": [
+        "state53",
+        "state54",
+        "state56"
+      ],
+      "width": 32
+    },
+    {
+      "family": "sum_equality",
+      "relations": [
+        "eq"
+      ],
+      "requested_variables": [
+        "state54",
+        "state53",
+        "state56"
+      ],
+      "route_id": "91445011c6f5436c61260223d0de448b2e04bd46f9c2cc8eadca4b4524d0ca04",
+      "signedness": "unsigned",
+      "variables": [
+        "state54",
+        "state53",
+        "state56"
+      ],
+      "width": 32
+    },
+    {
+      "family": "sum_equality",
+      "relations": [
+        "eq"
+      ],
+      "requested_variables": [
+        "state56",
+        "state53",
+        "state54"
+      ],
+      "route_id": "e706d145000d24504be9aaacbd0918bc6927484a6eaac6f085cf0d5485516769",
+      "signedness": "unsigned",
+      "variables": [
+        "state56",
+        "state53",
+        "state54"
+      ],
+      "width": 32
+    },
+    {
+      "coefficient_bound": 2,
+      "family": "affine",
+      "relations": [
+        "eq"
+      ],
+      "requested_variables": [
+        "state53",
+        "state55",
+        "state56"
+      ],
+      "route_id": "5399984771865a54bb3fc54ff34c331299354c6de76acf495c7c792e930b6adf",
+      "signedness": "unsigned",
+      "variables": [
+        "state53",
+        "state55",
+        "state56"
+      ],
+      "width": 32
+    },
+    {
+      "family": "sum_equality",
+      "relations": [
+        "eq"
+      ],
+      "requested_variables": [
+        "state53",
+        "state55",
+        "state56"
+      ],
+      "route_id": "34a2724acf7d8abdfab536100c3ead9f47c2746fc5f23b5d96fcadab4bf4642f",
+      "signedness": "unsigned",
+      "variables": [
+        "state53",
+        "state55",
+        "state56"
+      ],
+      "width": 32
+    },
+    {
+      "family": "sum_equality",
+      "relations": [
+        "eq"
+      ],
+      "requested_variables": [
+        "state55",
+        "state53",
+        "state56"
+      ],
+      "route_id": "ebe95bddf7a131f90809c1e9d5dcb1d3be243c3a153918e2b253da7b81ff58be",
+      "signedness": "unsigned",
+      "variables": [
+        "state55",
+        "state53",
+        "state56"
+      ],
+      "width": 32
+    },
+    {
+      "family": "sum_equality",
+      "relations": [
+        "eq"
+      ],
+      "requested_variables": [
+        "state56",
+        "state53",
+        "state55"
+      ],
+      "route_id": "9559eaeafc496d1f2ec48df09276a7a715d0e30d5273077fb98a6fd45c656765",
+      "signedness": "unsigned",
+      "variables": [
+        "state56",
+        "state53",
+        "state55"
+      ],
+      "width": 32
+    },
+    {
+      "coefficient_bound": 2,
+      "family": "affine",
+      "relations": [
+        "eq"
+      ],
+      "requested_variables": [
+        "state54",
+        "state55",
+        "state56"
+      ],
+      "route_id": "4d57929d55785ec704b3afceda4dd79ee931f8b6230f2ac61bb4933b6b9b4676",
+      "signedness": "unsigned",
+      "variables": [
+        "state54",
+        "state55",
+        "state56"
+      ],
+      "width": 32
+    },
+    {
+      "family": "sum_equality",
+      "relations": [
+        "eq"
+      ],
+      "requested_variables": [
+        "state54",
+        "state55",
+        "state56"
+      ],
+      "route_id": "27e78380f7aa0883afa6adc4f5844b4f8ba9e11e33a5f0d9841672b0fc5299d8",
+      "signedness": "unsigned",
+      "variables": [
+        "state54",
+        "state55",
+        "state56"
+      ],
+      "width": 32
+    },
+    {
+      "family": "sum_equality",
+      "relations": [
+        "eq"
+      ],
+      "requested_variables": [
+        "state55",
+        "state54",
+        "state56"
+      ],
+      "route_id": "b8907c5040160296f5ce32df6f6014316ec83bea93181b20ab54e4fca9a03f4c",
+      "signedness": "unsigned",
+      "variables": [
+        "state55",
+        "state54",
+        "state56"
+      ],
+      "width": 32
+    },
+    {
+      "family": "sum_equality",
+      "relations": [
+        "eq"
+      ],
+      "requested_variables": [
+        "state56",
+        "state54",
+        "state55"
+      ],
+      "route_id": "3c48333aaaa2dc8d2116845c9b49acb833198d92ae4c1ea0f896667ca98c1b4f",
+      "signedness": "unsigned",
+      "variables": [
+        "state56",
+        "state54",
+        "state55"
+      ],
+      "width": 32
+    },
+    {
+      "counter_shifts": [
+        -1,
+        0,
+        1
+      ],
+      "family": "quadratic_recurrence",
+      "relations": [
+        "eq"
+      ],
+      "requested_variables": [
+        "state52",
+        "state53"
+      ],
+      "route_id": "8b024d0c28c3a07756cd84397c4104884e8552d2dcd58b1e2758ad1c56fed632",
+      "scales": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "signedness": "unsigned",
+      "variables": [
+        "state52",
+        "state53"
+      ],
+      "width": 32
+    },
+    {
+      "counter_shifts": [
+        -1,
+        0,
+        1
+      ],
+      "family": "quadratic_recurrence",
+      "relations": [
+        "eq"
+      ],
+      "requested_variables": [
+        "state52",
+        "state54"
+      ],
+      "route_id": "6e22852780adbd5f5e8058d7cb20ea178579b136169186686590f6efabc805cc",
+      "scales": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "signedness": "unsigned",
+      "variables": [
+        "state52",
+        "state54"
+      ],
+      "width": 32
+    },
+    {
+      "counter_shifts": [
+        -1,
+        0,
+        1
+      ],
+      "family": "quadratic_recurrence",
+      "relations": [
+        "eq"
+      ],
+      "requested_variables": [
+        "state52",
+        "state55"
+      ],
+      "route_id": "660010935dd0748d352188b2a7774515b6ad8f81b57659453fd58dec69362d6d",
+      "scales": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "signedness": "unsigned",
+      "variables": [
+        "state52",
+        "state55"
+      ],
+      "width": 32
+    },
+    {
+      "counter_shifts": [
+        -1,
+        0,
+        1
+      ],
+      "family": "quadratic_recurrence",
+      "relations": [
+        "eq"
+      ],
+      "requested_variables": [
+        "state52",
+        "state56"
+      ],
+      "route_id": "61dd4279020d6c4ef5eceec969d51f947f03811e42c2b96f57cecc104706cf1f",
+      "scales": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "signedness": "unsigned",
+      "variables": [
+        "state52",
+        "state56"
+      ],
+      "width": 32
+    },
+    {
+      "counter_shifts": [
+        -1,
+        0,
+        1
+      ],
+      "family": "quadratic_recurrence",
+      "relations": [
+        "eq"
+      ],
+      "requested_variables": [
+        "state53",
+        "state52"
+      ],
+      "route_id": "7d7332c9442a9e08d274acaab73364cd3f8e04dcc5af9e6451406c47acb63199",
+      "scales": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "signedness": "unsigned",
+      "variables": [
+        "state53",
+        "state52"
+      ],
+      "width": 32
+    },
+    {
+      "counter_shifts": [
+        -1,
+        0,
+        1
+      ],
+      "family": "quadratic_recurrence",
+      "relations": [
+        "eq"
+      ],
+      "requested_variables": [
+        "state53",
+        "state54"
+      ],
+      "route_id": "8714743a07ee2183c75a76e91c888beb3f9b6c52a627c8c5a22a17cb0514d373",
+      "scales": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "signedness": "unsigned",
+      "variables": [
+        "state53",
+        "state54"
+      ],
+      "width": 32
+    },
+    {
+      "counter_shifts": [
+        -1,
+        0,
+        1
+      ],
+      "family": "quadratic_recurrence",
+      "relations": [
+        "eq"
+      ],
+      "requested_variables": [
+        "state53",
+        "state55"
+      ],
+      "route_id": "2a88ad4cf2f3c81087f14fe0217ae7c2d800520f03a9b4f9409d6ad398feae37",
+      "scales": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "signedness": "unsigned",
+      "variables": [
+        "state53",
+        "state55"
+      ],
+      "width": 32
+    },
+    {
+      "counter_shifts": [
+        -1,
+        0,
+        1
+      ],
+      "family": "quadratic_recurrence",
+      "relations": [
+        "eq"
+      ],
+      "requested_variables": [
+        "state53",
+        "state56"
+      ],
+      "route_id": "5322760401aa7d50f0608d63352b7c49ec52e869f538b60f0cdc999ecf87062d",
+      "scales": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "signedness": "unsigned",
+      "variables": [
+        "state53",
+        "state56"
+      ],
+      "width": 32
+    },
+    {
+      "counter_shifts": [
+        -1,
+        0,
+        1
+      ],
+      "family": "quadratic_recurrence",
+      "relations": [
+        "eq"
+      ],
+      "requested_variables": [
+        "state54",
+        "state52"
+      ],
+      "route_id": "f7b2198300c7ace4cbe1f68b04b740ce6deb96a4cedfc4d77ad4c880a1609e6e",
+      "scales": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "signedness": "unsigned",
+      "variables": [
+        "state54",
+        "state52"
+      ],
+      "width": 32
+    },
+    {
+      "counter_shifts": [
+        -1,
+        0,
+        1
+      ],
+      "family": "quadratic_recurrence",
+      "relations": [
+        "eq"
+      ],
+      "requested_variables": [
+        "state54",
+        "state53"
+      ],
+      "route_id": "8158f00d8bbbc958a12449bdd1ff49e07c50537257b3b99f3e9447266a5ba620",
+      "scales": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "signedness": "unsigned",
+      "variables": [
+        "state54",
+        "state53"
+      ],
+      "width": 32
+    },
+    {
+      "counter_shifts": [
+        -1,
+        0,
+        1
+      ],
+      "family": "quadratic_recurrence",
+      "relations": [
+        "eq"
+      ],
+      "requested_variables": [
+        "state54",
+        "state55"
+      ],
+      "route_id": "163e14c32e10abe4d0506e20915c9c57b3454aa78c8ccc3eac071e188638afd2",
+      "scales": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "signedness": "unsigned",
+      "variables": [
+        "state54",
+        "state55"
+      ],
+      "width": 32
+    },
+    {
+      "counter_shifts": [
+        -1,
+        0,
+        1
+      ],
+      "family": "quadratic_recurrence",
+      "relations": [
+        "eq"
+      ],
+      "requested_variables": [
+        "state54",
+        "state56"
+      ],
+      "route_id": "7d9ffa928fc7676cc0e4d2a25c95e36e274b3eac6df7139e663556035d608244",
+      "scales": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "signedness": "unsigned",
+      "variables": [
+        "state54",
+        "state56"
+      ],
+      "width": 32
+    },
+    {
+      "counter_shifts": [
+        -1,
+        0,
+        1
+      ],
+      "family": "quadratic_recurrence",
+      "relations": [
+        "eq"
+      ],
+      "requested_variables": [
+        "state55",
+        "state52"
+      ],
+      "route_id": "996ef718240b433c0bf3ca87a30e32884df6095c71c7ec510412b74e020da462",
+      "scales": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "signedness": "unsigned",
+      "variables": [
+        "state55",
+        "state52"
+      ],
+      "width": 32
+    },
+    {
+      "counter_shifts": [
+        -1,
+        0,
+        1
+      ],
+      "family": "quadratic_recurrence",
+      "relations": [
+        "eq"
+      ],
+      "requested_variables": [
+        "state55",
+        "state53"
+      ],
+      "route_id": "aac6788feba56cf5ef794ac91308d56f461fcfd45e9d105bd5c88abb179c1a7f",
+      "scales": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "signedness": "unsigned",
+      "variables": [
+        "state55",
+        "state53"
+      ],
+      "width": 32
+    },
+    {
+      "counter_shifts": [
+        -1,
+        0,
+        1
+      ],
+      "family": "quadratic_recurrence",
+      "relations": [
+        "eq"
+      ],
+      "requested_variables": [
+        "state55",
+        "state54"
+      ],
+      "route_id": "28db329e57de7c22e8feb7defa6c735a643211c7aad1ca0b8a549a9c9690e62d",
+      "scales": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "signedness": "unsigned",
+      "variables": [
+        "state55",
+        "state54"
+      ],
+      "width": 32
+    },
+    {
+      "counter_shifts": [
+        -1,
+        0,
+        1
+      ],
+      "family": "quadratic_recurrence",
+      "relations": [
+        "eq"
+      ],
+      "requested_variables": [
+        "state55",
+        "state56"
+      ],
+      "route_id": "062dedb29a246dd3e48b48a8bf0f2e39a7818f035e7c2938ab28e1cdda60f5f5",
+      "scales": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "signedness": "unsigned",
+      "variables": [
+        "state55",
+        "state56"
+      ],
+      "width": 32
+    },
+    {
+      "counter_shifts": [
+        -1,
+        0,
+        1
+      ],
+      "family": "quadratic_recurrence",
+      "relations": [
+        "eq"
+      ],
+      "requested_variables": [
+        "state56",
+        "state52"
+      ],
+      "route_id": "cdbd76e71f081e8c9ee664ca4116cac08f19566c4681d8f7de192ee25e0f9475",
+      "scales": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "signedness": "unsigned",
+      "variables": [
+        "state56",
+        "state52"
+      ],
+      "width": 32
+    },
+    {
+      "counter_shifts": [
+        -1,
+        0,
+        1
+      ],
+      "family": "quadratic_recurrence",
+      "relations": [
+        "eq"
+      ],
+      "requested_variables": [
+        "state56",
+        "state53"
+      ],
+      "route_id": "21bf072a2ec92e068540031ad86c6167334a7d1d1b7db696c32ac2d9222d7d3b",
+      "scales": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "signedness": "unsigned",
+      "variables": [
+        "state56",
+        "state53"
+      ],
+      "width": 32
+    },
+    {
+      "counter_shifts": [
+        -1,
+        0,
+        1
+      ],
+      "family": "quadratic_recurrence",
+      "relations": [
+        "eq"
+      ],
+      "requested_variables": [
+        "state56",
+        "state54"
+      ],
+      "route_id": "cc0245fe0229f302c182bd89a7c65c147811ab434aa77bb1f8d6c3b1fc314e80",
+      "scales": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "signedness": "unsigned",
+      "variables": [
+        "state56",
+        "state54"
+      ],
+      "width": 32
+    },
+    {
+      "counter_shifts": [
+        -1,
+        0,
+        1
+      ],
+      "family": "quadratic_recurrence",
+      "relations": [
+        "eq"
+      ],
+      "requested_variables": [
+        "state56",
+        "state55"
+      ],
+      "route_id": "2f471cae2d087d40618642bda131b9b2f5fdbfeb5fbc9ebf91e2296d56bf76e2",
+      "scales": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "signedness": "unsigned",
+      "variables": [
+        "state56",
+        "state55"
+      ],
+      "width": 32
+    }
+  ],
+  "schema": "pono-llm-phase-grammar-run-v1",
+  "selected_candidate_count": 5,
+  "selected_indices": [
+    2,
+    12,
+    22,
+    32,
+    42
+  ],
+  "selection_role": "safe-baseline-hard",
+  "source_family_id": "a9ddc1895f3a2766e8e86b924ecab86dd64e4eb86a07ad3ff7ccc92aec803dfd",
+  "verdict": "timeout"
+}

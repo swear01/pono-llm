@@ -1,0 +1,67 @@
+{
+  "all_phase_candidate_count": 63,
+  "api_latency_ms": 7648.836135864258,
+  "arm": "lifted",
+  "benchmark_id": "loop-simple/nested_5.btor2",
+  "client_stats": {
+    "completion_tokens": 226,
+    "content_chars": 712,
+    "json_mode": "json_object",
+    "latency_ms": 7648.836135864258,
+    "openrouter_routing": {
+      "allow_fallbacks": true,
+      "ignore": [
+        "deepinfra",
+        "venice",
+        "gmicloud",
+        "digitalocean",
+        "cloudflare",
+        "morph",
+        "akashml",
+        "siliconflow"
+      ],
+      "only": [
+        "novita",
+        "deepseek",
+        "baidu",
+        "parasail",
+        "alibaba",
+        "streamlake",
+        "atlas-cloud"
+      ],
+      "quantizations": [
+        "fp8",
+        "fp16",
+        "bf16",
+        "fp32",
+        "unknown"
+      ],
+      "sort": "throughput"
+    },
+    "prompt_tokens": 1871,
+    "provider": "openrouter",
+    "reasoning_chars": 0,
+    "thinking_mode": "disabled",
+    "total_tokens": 2097
+  },
+  "content_sha256": "c4ce35cac2ae918082fab514f4ef1b626e9128be4e75072869e28c44ef885b11",
+  "global_candidate_count": 7,
+  "model": "deepseek/deepseek-v4-flash",
+  "phase_count": 9,
+  "prompt_lexical_tokens": 1931,
+  "prompt_path": "prompts/nested_5-6d8e843cdbd0.lifted.txt",
+  "prompt_sha256": "5bf6d51512c7873fed42948d631079d27d38e4e77a4ccea0a3108049d21d23e5",
+  "provider": "openrouter",
+  "response_path": "responses/nested_5-6d8e843cdbd0.lifted.txt",
+  "response_sha256": "9c9fcd2d86b544a650f331335dd793ea539c991c450cb2a3cfd6c1fa443742c7",
+  "route_count": 4,
+  "route_error": "",
+  "route_path": "routes/nested_5-6d8e843cdbd0.lifted.json",
+  "route_sha256": "9dac201dd29ed075cacd3f9423f3e4a47900c77f8a3a745b78c9e7433775004c",
+  "route_valid": true,
+  "schema": "pono-llm-grammar-route-meta-v1",
+  "selection_role": "safe-baseline-hard",
+  "source_family_id": "348dcd12f337ed254c2896d444c3d3122d552a933adff74da2b68d49eb4d2d92",
+  "tokens": 2097,
+  "wall_latency_sec": 7.648852162063122
+}

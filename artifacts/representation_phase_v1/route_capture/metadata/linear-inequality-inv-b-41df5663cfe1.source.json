@@ -1,0 +1,67 @@
+{
+  "all_phase_candidate_count": 0,
+  "api_latency_ms": 2388.294219970703,
+  "arm": "source",
+  "benchmark_id": "loop-invariants/linear-inequality-inv-b.btor2",
+  "client_stats": {
+    "completion_tokens": 214,
+    "content_chars": 690,
+    "json_mode": "json_object",
+    "latency_ms": 2388.294219970703,
+    "openrouter_routing": {
+      "allow_fallbacks": true,
+      "ignore": [
+        "deepinfra",
+        "venice",
+        "gmicloud",
+        "digitalocean",
+        "cloudflare",
+        "morph",
+        "akashml",
+        "siliconflow"
+      ],
+      "only": [
+        "novita",
+        "deepseek",
+        "baidu",
+        "parasail",
+        "alibaba",
+        "streamlake",
+        "atlas-cloud"
+      ],
+      "quantizations": [
+        "fp8",
+        "fp16",
+        "bf16",
+        "fp32",
+        "unknown"
+      ],
+      "sort": "throughput"
+    },
+    "prompt_tokens": 1157,
+    "provider": "openrouter",
+    "reasoning_chars": 0,
+    "thinking_mode": "disabled",
+    "total_tokens": 1371
+  },
+  "content_sha256": "25e9281249a4d8672c62e280c95e1bf5825f9d806caeb7722f5ca3934598544e",
+  "global_candidate_count": 0,
+  "model": "deepseek/deepseek-v4-flash",
+  "phase_count": 6,
+  "prompt_lexical_tokens": 921,
+  "prompt_path": "prompts/linear-inequality-inv-b-41df5663cfe1.source.txt",
+  "prompt_sha256": "29fce833b264e032ad04639e2843c4ff720a736714384bfb0d3c4877da40ae0e",
+  "provider": "openrouter",
+  "response_path": "responses/linear-inequality-inv-b-41df5663cfe1.source.txt",
+  "response_sha256": "1166d1a20d3e7294e355d285282a300aa91df487183ba105f241f65602b9cc86",
+  "route_count": 0,
+  "route_error": "route 1.constants values must be between -16 and 16",
+  "route_path": null,
+  "route_sha256": null,
+  "route_valid": false,
+  "schema": "pono-llm-grammar-route-meta-v1",
+  "selection_role": "unsafe-soundness-control",
+  "source_family_id": "0f55e4302edb0a37ff86342391f10b4bccef988db9bdfaf948e856d980098b5e",
+  "tokens": 1371,
+  "wall_latency_sec": 2.3883109986782074
+}

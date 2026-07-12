@@ -1,0 +1,238 @@
+REPRESENTATION: PINNED SOURCE C
+SOURCE_FILE: heapsort.i
+
+extern void abort(void);
+
+extern void __assert_fail (const char *__assertion, const char *__file,
+      unsigned int __line, const char *__function)
+     __attribute__ ((__nothrow__ , __leaf__)) __attribute__ ((__noreturn__));
+extern void __assert_perror_fail (int __errnum, const char *__file,
+      unsigned int __line, const char *__function)
+     __attribute__ ((__nothrow__ , __leaf__)) __attribute__ ((__noreturn__));
+extern void __assert (const char *__assertion, const char *__file, int __line)
+     __attribute__ ((__nothrow__ , __leaf__)) __attribute__ ((__noreturn__));
+
+void reach_error() { ((void) sizeof ((0) ? 1 : 0), __extension__ ({ if (0) ; else __assert_fail ("0", "assert.h", 3, __extension__ __PRETTY_FUNCTION__); })); }
+extern void abort(void);
+void assume_abort_if_not(int cond) {
+  if(!cond) {abort();}
+}
+void __VERIFIER_assert(int cond) {
+  if (!(cond)) {
+    ERROR: {reach_error();abort();}
+  }
+  return;
+}
+int __VERIFIER_nondet_int();
+int main( int argc, char *argv[]){
+  int n,l,r,i,j;
+  n = __VERIFIER_nondet_int();
+  if (!(1 <= n && n <= 1000000)) return 0;
+  l = n/2 + 1;
+  r = n;
+  if(l>1) {
+    l--;
+  } else {
+    r--;
+  }
+  while(r > 1) {
+    i = l;
+    j = 2*l;
+    while(j <= r) {
+      if( j < r) {
+ __VERIFIER_assert(1 <= j);
+ __VERIFIER_assert(j <= n);
+ __VERIFIER_assert(1 <= j+1);
+ __VERIFIER_assert(j+1 <= n);
+ if( __VERIFIER_nondet_int() )
+   j = j + 1;
+      }
+      __VERIFIER_assert(1 <= j);
+      __VERIFIER_assert(j <= n);
+      if( __VERIFIER_nondet_int() ) {
+       break;
+      }
+      __VERIFIER_assert(1 <= i);
+      __VERIFIER_assert(i <= n);
+      __VERIFIER_assert(1 <= j);
+      __VERIFIER_assert(j <= n);
+      i = j;
+      j = 2*j;
+    }
+    if(l > 1) {
+      __VERIFIER_assert(1 <= l);
+      __VERIFIER_assert(l <= n);
+      l--;
+    } else {
+      __VERIFIER_assert(1 <= r);
+      __VERIFIER_assert(r <= n);
+      r--;
+    }
+  }
+  return 0;
+}
+
+--- COMMON FORMAL ROUTE CONTRACT ---
+TASK: Choose a small invariant-synthesis grammar. Do not output an invariant,
+proof, coefficient value, or assertion. The formal backend expands every route,
+runs Houdini, and checks the original BTOR2. Your output is untrusted routing
+advice only.
+
+MACHINE SEMANTICS:
+- All state arithmetic is fixed-width bit-vector arithmetic modulo 2^width.
+- Comparisons must state signed or unsigned semantics.
+- A route may use only variables from the catalog below.
+- Phase guards are applied by the formal experiment, not selected by you.
+
+VARIABLE_CATALOG_JSON:
+[
+  {
+    "init": "0",
+    "name": "i",
+    "ref": "state52",
+    "width": 32
+  },
+  {
+    "init": "0",
+    "name": "j",
+    "ref": "state53",
+    "width": 32
+  },
+  {
+    "init": "0",
+    "name": "l",
+    "ref": "state54",
+    "width": 32
+  },
+  {
+    "init": "0",
+    "name": "n",
+    "ref": "state55",
+    "width": 32
+  },
+  {
+    "init": "0",
+    "name": "r",
+    "ref": "state56",
+    "width": 32
+  }
+]
+
+PHASE_CATALOG_JSON:
+[
+  {
+    "guard": "state24 == 1",
+    "phase_id": "pc_state24_w19_v1",
+    "width": 19
+  },
+  {
+    "guard": "state24 == 2",
+    "phase_id": "pc_state24_w19_v2",
+    "width": 19
+  },
+  {
+    "guard": "state24 == 4",
+    "phase_id": "pc_state24_w19_v4",
+    "width": 19
+  },
+  {
+    "guard": "state24 == 8",
+    "phase_id": "pc_state24_w19_v8",
+    "width": 19
+  },
+  {
+    "guard": "state24 == 16",
+    "phase_id": "pc_state24_w19_v16",
+    "width": 19
+  },
+  {
+    "guard": "state24 == 32",
+    "phase_id": "pc_state24_w19_v32",
+    "width": 19
+  },
+  {
+    "guard": "state24 == 64",
+    "phase_id": "pc_state24_w19_v64",
+    "width": 19
+  },
+  {
+    "guard": "state24 == 128",
+    "phase_id": "pc_state24_w19_v128",
+    "width": 19
+  },
+  {
+    "guard": "state24 == 256",
+    "phase_id": "pc_state24_w19_v256",
+    "width": 19
+  },
+  {
+    "guard": "state24 == 512",
+    "phase_id": "pc_state24_w19_v512",
+    "width": 19
+  },
+  {
+    "guard": "state24 == 1024",
+    "phase_id": "pc_state24_w19_v1024",
+    "width": 19
+  },
+  {
+    "guard": "state24 == 2048",
+    "phase_id": "pc_state24_w19_v2048",
+    "width": 19
+  },
+  {
+    "guard": "state24 == 4096",
+    "phase_id": "pc_state24_w19_v4096",
+    "width": 19
+  },
+  {
+    "guard": "state24 == 8192",
+    "phase_id": "pc_state24_w19_v8192",
+    "width": 19
+  },
+  {
+    "guard": "state24 == 16384",
+    "phase_id": "pc_state24_w19_v16384",
+    "width": 19
+  },
+  {
+    "guard": "state24 == 32768",
+    "phase_id": "pc_state24_w19_v32768",
+    "width": 19
+  },
+  {
+    "guard": "state24 == 65536",
+    "phase_id": "pc_state24_w19_v65536",
+    "width": 19
+  },
+  {
+    "guard": "state24 == 131072",
+    "phase_id": "pc_state24_w19_v131072",
+    "width": 19
+  },
+  {
+    "guard": "state24 == 262144",
+    "phase_id": "pc_state24_w19_v262144",
+    "width": 19
+  }
+]
+
+OUTPUT CONTRACT:
+- Output exactly one JSON object and no Markdown.
+- Top-level fields: "schema" and "routes" only.
+- schema must be "pono-llm-grammar-route-v1".
+- routes must contain 1 to 8 route objects.
+- Every route has exactly variables, family, relations, signedness, plus only
+  the family field listed below.
+- family="unary": one variable; optional constants integer list [-16,16].
+- family="pairwise_offset": two same-width variables; optional offsets integer
+  list [-16,16].
+- family="affine": two or three same-width variables; optional
+  coefficient_bound integer [1,8].
+- family="sum_equality": three same-width variables ordered as result, addend1,
+  addend2; no family-specific field.
+- family="quadratic_recurrence": two same-width variables ordered as accumulator,
+  counter; optional scales [1,8] and counter_shifts [-4,4].
+- relations is a non-empty subset of ["eq","le","ge"].
+- signedness is exactly "signed" or "unsigned".
+- No explanation and no extra fields.

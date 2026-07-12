@@ -1,0 +1,324 @@
+{
+  "arm": "source",
+  "benchmark": "/tmp/svcomp25-sparse/translated/safety-func/loop-lit/gj2007b.btor2",
+  "benchmark_id": "loop-lit/gj2007b.btor2",
+  "benchmark_sha256": "fc08e6eb13be10ad1e5bce28b33cd91902045c026dbe81f6393c1e76a879978c",
+  "candidate_generation_sec": 0.0014628618955612183,
+  "candidate_sha256": "14d08134d578b051e4f1736217115a1a4d503341d123b6561116412544cf7e2e",
+  "certificate": {
+    "checks": [
+      {
+        "name": "C1 Init=>H",
+        "result": "unsat"
+      },
+      {
+        "name": "C2 inductive",
+        "result": "unsat"
+      },
+      {
+        "name": "C3 H=>notBAD",
+        "result": "sat"
+      }
+    ],
+    "init_queries": 1,
+    "ok": false,
+    "removed_initial_indices": [],
+    "removed_step_indices": [
+      6,
+      5,
+      11,
+      16,
+      10,
+      15
+    ],
+    "selected_indices": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      7,
+      8,
+      9,
+      12,
+      13,
+      14,
+      17,
+      18,
+      19,
+      20,
+      21,
+      22,
+      23,
+      24
+    ],
+    "step_queries": 5,
+    "unsupported_candidates": []
+  },
+  "certificate_time_sec": 0.07875688746571541,
+  "config": "llm-source",
+  "end_to_end_sec": 3.7589647099375725,
+  "end_to_end_with_generation_sec": 6.328344009816647,
+  "engine": "phase-grammar-ic3ia",
+  "error": "",
+  "exit": 255,
+  "expected_verdict": "safe",
+  "generation_time_sec": 2.569379299879074,
+  "matrix_schema": "pono-llm-routed-phase-matrix-v1",
+  "model_checker_time_sec": 3.678744960576296,
+  "offline_time_sec": 3.7589647099375725,
+  "phase_count": 5,
+  "phase_mode": "all",
+  "phases": [
+    {
+      "equality_node": 11,
+      "guard_ast": {
+        "args": [
+          {
+            "form": "ref",
+            "ref": "state10"
+          },
+          {
+            "const": "1",
+            "form": "const",
+            "width": 5
+          }
+        ],
+        "form": "eq"
+      },
+      "is_bad": false,
+      "is_initial": false,
+      "pc_ref": "state10",
+      "phase_id": "pc_state10_w5_v1",
+      "value": 1,
+      "width": 5
+    },
+    {
+      "equality_node": 12,
+      "guard_ast": {
+        "args": [
+          {
+            "form": "ref",
+            "ref": "state10"
+          },
+          {
+            "const": "2",
+            "form": "const",
+            "width": 5
+          }
+        ],
+        "form": "eq"
+      },
+      "is_bad": false,
+      "is_initial": false,
+      "pc_ref": "state10",
+      "phase_id": "pc_state10_w5_v2",
+      "value": 2,
+      "width": 5
+    },
+    {
+      "equality_node": 13,
+      "guard_ast": {
+        "args": [
+          {
+            "form": "ref",
+            "ref": "state10"
+          },
+          {
+            "const": "4",
+            "form": "const",
+            "width": 5
+          }
+        ],
+        "form": "eq"
+      },
+      "is_bad": false,
+      "is_initial": true,
+      "pc_ref": "state10",
+      "phase_id": "pc_state10_w5_v4",
+      "value": 4,
+      "width": 5
+    },
+    {
+      "equality_node": 14,
+      "guard_ast": {
+        "args": [
+          {
+            "form": "ref",
+            "ref": "state10"
+          },
+          {
+            "const": "8",
+            "form": "const",
+            "width": 5
+          }
+        ],
+        "form": "eq"
+      },
+      "is_bad": false,
+      "is_initial": false,
+      "pc_ref": "state10",
+      "phase_id": "pc_state10_w5_v8",
+      "value": 8,
+      "width": 5
+    },
+    {
+      "equality_node": 15,
+      "guard_ast": {
+        "args": [
+          {
+            "form": "ref",
+            "ref": "state10"
+          },
+          {
+            "const": "16",
+            "form": "const",
+            "width": 5
+          }
+        ],
+        "form": "eq"
+      },
+      "is_bad": false,
+      "is_initial": false,
+      "pc_ref": "state10",
+      "phase_id": "pc_state10_w5_v16",
+      "value": 16,
+      "width": 5
+    }
+  ],
+  "pilot_sha256": "723eb64225d2c39fb4fba8477759307d184f6b40293ac4407dd3518aa1d34d0c",
+  "pool_candidate_count": 25,
+  "proof_time_sec": 3.7575018480420113,
+  "route_count": 5,
+  "route_diagnostics": {
+    "capture_metadata": "metadata/gj2007b-072df8f25540.source.json"
+  },
+  "route_error": "",
+  "route_sha256": "1629e573a515ecf97abcecf2ff84213169081de36b10461fa5a0943c427cd571",
+  "route_valid": true,
+  "router": "llm",
+  "routes": [
+    {
+      "constants": [
+        0
+      ],
+      "family": "unary",
+      "relations": [
+        "ge"
+      ],
+      "requested_variables": [
+        "m"
+      ],
+      "route_id": "4a9bd703c502ee480517fdc37404e0b08a31664a30f361e9a5e5cbcd694a599d",
+      "signedness": "signed",
+      "variables": [
+        "state22"
+      ],
+      "width": 32
+    },
+    {
+      "constants": [
+        0
+      ],
+      "family": "unary",
+      "relations": [
+        "le"
+      ],
+      "requested_variables": [
+        "n"
+      ],
+      "route_id": "029dcc20f181f6ff387eb6b862cdc01b9a97fff9bbe0fbe206db072ddd62cd44",
+      "signedness": "signed",
+      "variables": [
+        "state23"
+      ],
+      "width": 32
+    },
+    {
+      "family": "pairwise_offset",
+      "offsets": [
+        0
+      ],
+      "relations": [
+        "le"
+      ],
+      "requested_variables": [
+        "m",
+        "n"
+      ],
+      "route_id": "19edca5619437ab142c734e179d003f3e6023ac1de45c099ceafbf37b068e598",
+      "signedness": "signed",
+      "variables": [
+        "state22",
+        "state23"
+      ],
+      "width": 32
+    },
+    {
+      "family": "pairwise_offset",
+      "offsets": [
+        0
+      ],
+      "relations": [
+        "le"
+      ],
+      "requested_variables": [
+        "x",
+        "n"
+      ],
+      "route_id": "354819062b9d1af84789db0cd085c4fab4e86ce6740bbdfbf55364f03188d600",
+      "signedness": "signed",
+      "variables": [
+        "state24",
+        "state23"
+      ],
+      "width": 32
+    },
+    {
+      "family": "pairwise_offset",
+      "offsets": [
+        0
+      ],
+      "relations": [
+        "le"
+      ],
+      "requested_variables": [
+        "m",
+        "x"
+      ],
+      "route_id": "d3d9fc78d4a9c087bf4a53f4b2c303572cfa087201b57e44bfee73724447d32c",
+      "signedness": "signed",
+      "variables": [
+        "state22",
+        "state24"
+      ],
+      "width": 32
+    }
+  ],
+  "schema": "pono-llm-phase-grammar-run-v1",
+  "selected_candidate_count": 19,
+  "selected_indices": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    7,
+    8,
+    9,
+    12,
+    13,
+    14,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24
+  ],
+  "selection_role": "safe-baseline-hard",
+  "source_family_id": "10ecc8f124fe27235e8a482b96c33b6e4d36ee4c6a008626524a42cd3a1c73fa",
+  "verdict": "unknown"
+}

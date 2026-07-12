@@ -1,0 +1,79 @@
+{
+  "routes": [
+    {
+      "family": "pairwise_offset",
+      "offsets": [
+        0
+      ],
+      "relations": [
+        "eq"
+      ],
+      "requested_variables": [
+        "x",
+        "y"
+      ],
+      "route_id": "eecc8545ea540493e1b367699f9e6a6d197babcedb1a760a49e0cdb132624d3d",
+      "signedness": "unsigned",
+      "variables": [
+        "state29",
+        "state30"
+      ],
+      "width": 32
+    },
+    {
+      "constants": [
+        0
+      ],
+      "family": "unary",
+      "relations": [
+        "eq"
+      ],
+      "requested_variables": [
+        "x"
+      ],
+      "route_id": "02cfc687a9dc5782636a7fc11d6f107333b31298afa7632de2b458f8c756fb19",
+      "signedness": "unsigned",
+      "variables": [
+        "state29"
+      ],
+      "width": 32
+    },
+    {
+      "constants": [
+        0
+      ],
+      "family": "unary",
+      "relations": [
+        "eq"
+      ],
+      "requested_variables": [
+        "y"
+      ],
+      "route_id": "11d5a994055f2c547f442f8b87e0e3e8022f8d87115c522e26feb576ecc53b84",
+      "signedness": "unsigned",
+      "variables": [
+        "state30"
+      ],
+      "width": 32
+    },
+    {
+      "coefficient_bound": 2,
+      "family": "affine",
+      "relations": [
+        "eq"
+      ],
+      "requested_variables": [
+        "x",
+        "y"
+      ],
+      "route_id": "d358dba52980ff955d81c1e8a95ced77546fc31d8c9e2332de2bc4b9f14dcd0f",
+      "signedness": "unsigned",
+      "variables": [
+        "state29",
+        "state30"
+      ],
+      "width": 32
+    }
+  ],
+  "schema": "pono-llm-grammar-route-v1"
+}

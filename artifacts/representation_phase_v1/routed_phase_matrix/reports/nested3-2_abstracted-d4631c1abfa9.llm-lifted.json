@@ -1,0 +1,32 @@
+{
+  "arm": "lifted",
+  "benchmark_id": "loops-crafted-1/nested3-2_abstracted.btor2",
+  "benchmark_sha256": "28fa096eb1709c2a6215f7028153410bf5caeb7c9375da0aabe3a784b4ed7fcd",
+  "candidate_sha256": "",
+  "certificate": {
+    "checks": [],
+    "ok": false
+  },
+  "certificate_time_sec": 0.0,
+  "config": "llm-lifted",
+  "end_to_end_with_generation_sec": 3.2771121859550476,
+  "engine": "",
+  "error": "",
+  "expected_verdict": "unsafe",
+  "generation_time_sec": 3.2771121859550476,
+  "matrix_schema": "pono-llm-routed-phase-matrix-v1",
+  "model_checker_time_sec": 0.0,
+  "offline_time_sec": 0.0,
+  "phase_count": 8,
+  "pilot_sha256": "723eb64225d2c39fb4fba8477759307d184f6b40293ac4407dd3518aa1d34d0c",
+  "pool_candidate_count": 0,
+  "route_count": 0,
+  "route_error": "route 4.variables resolve to duplicate states",
+  "route_sha256": "",
+  "route_valid": false,
+  "router": "llm",
+  "selected_candidate_count": 0,
+  "selection_role": "unsafe-soundness-control",
+  "source_family_id": "c09cb7c581286218f6d3a556de44c3c501e0f45f8e4d681dcc16faa2c3d7bb95",
+  "verdict": "invalid-route"
+}

@@ -1,4 +1,4 @@
-# Phase 1+2 and Gate 2 Research Artifacts
+# Phase 1+2, Gate 2, and Representation/Phase Research Artifacts
 
 **Canonical bundle finalized:** 2026-07-12
 
@@ -120,4 +120,33 @@ canonical summaries and both hash manifests with:
 python3 scripts/summarize_phase1_2.py > artifacts/phase1_2_summary_v1.json
 python3 scripts/summarize_gate2.py > artifacts/gate2_summary_v1.json
 python3 scripts/hash_research_artifacts.py
+```
+
+## Representation/phase/grammar Gate v1 (complete)
+
+[`representation_phase_v1/summary.json`](representation_phase_v1/summary.json)
+is the machine-readable entry point. The canonical bundle contains:
+
+- all 267 official paired census rows and 164-task eligible engine screen;
+- the pre-LLM 20-family pilot;
+- source/lifted/raw capped and full prompts;
+- 60 frozen OpenRouter route responses with strict validation and provider
+  token/latency data;
+- global/all-phase exhaustive controls plus structural, random, and LLM routed
+  matrices;
+- an independent certificate for all 12 routed UNSAT rows;
+- a recursive artifact integrity manifest.
+
+Decisions: H1 phase-local **fail (1/3)**, H2 source representation **fail**,
+H3 LLM routing **fail**, H4 soundness **pass**. Deterministic structural routing
+solves the three-task union reached across all LLM representation arms. See
+[`representation_phase_v1/README.md`](representation_phase_v1/README.md) and
+[`../docs/representation_phase_gate.md`](../docs/representation_phase_gate.md).
+
+Regenerate the validated summary and recursive integrity file only in a fresh
+artifact directory:
+
+```bash
+python3 scripts/summarize_representation_phase.py \
+  artifacts/representation_phase_v1
 ```

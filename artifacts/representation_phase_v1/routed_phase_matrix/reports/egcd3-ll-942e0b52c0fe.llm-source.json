@@ -1,0 +1,32 @@
+{
+  "arm": "source",
+  "benchmark_id": "nla-digbench/egcd3-ll.btor2",
+  "benchmark_sha256": "ab95af590341bbc5985f8b139fac708e4abf9e4330e4027156b9d4e44d6675a4",
+  "candidate_sha256": "",
+  "certificate": {
+    "checks": [],
+    "ok": false
+  },
+  "certificate_time_sec": 0.0,
+  "config": "llm-source",
+  "end_to_end_with_generation_sec": 3.603097416460514,
+  "engine": "",
+  "error": "",
+  "expected_verdict": "safe",
+  "generation_time_sec": 3.603097416460514,
+  "matrix_schema": "pono-llm-routed-phase-matrix-v1",
+  "model_checker_time_sec": 0.0,
+  "offline_time_sec": 0.0,
+  "phase_count": 11,
+  "pilot_sha256": "723eb64225d2c39fb4fba8477759307d184f6b40293ac4407dd3518aa1d34d0c",
+  "pool_candidate_count": 0,
+  "route_count": 0,
+  "route_error": "route 0 affine requires exactly 2 or 3 variables",
+  "route_sha256": "",
+  "route_valid": false,
+  "router": "llm",
+  "selected_candidate_count": 0,
+  "selection_role": "safe-baseline-hard",
+  "source_family_id": "a40529a439578e1198455e5c5437d504f7a9abab2945aad1927cb716cf1970b6",
+  "verdict": "invalid-route"
+}

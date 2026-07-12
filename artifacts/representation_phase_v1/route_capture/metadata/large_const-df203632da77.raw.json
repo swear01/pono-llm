@@ -1,0 +1,67 @@
+{
+  "all_phase_candidate_count": 7926,
+  "api_latency_ms": 2698.9431381225586,
+  "arm": "raw",
+  "benchmark_id": "loop-invgen/large_const.btor2",
+  "client_stats": {
+    "completion_tokens": 259,
+    "content_chars": 809,
+    "json_mode": "json_object",
+    "latency_ms": 2698.9431381225586,
+    "openrouter_routing": {
+      "allow_fallbacks": true,
+      "ignore": [
+        "deepinfra",
+        "venice",
+        "gmicloud",
+        "digitalocean",
+        "cloudflare",
+        "morph",
+        "akashml",
+        "siliconflow"
+      ],
+      "only": [
+        "novita",
+        "deepseek",
+        "baidu",
+        "parasail",
+        "alibaba",
+        "streamlake",
+        "atlas-cloud"
+      ],
+      "quantizations": [
+        "fp8",
+        "fp16",
+        "bf16",
+        "fp32",
+        "unknown"
+      ],
+      "sort": "throughput"
+    },
+    "prompt_tokens": 3217,
+    "provider": "openrouter",
+    "reasoning_chars": 0,
+    "thinking_mode": "disabled",
+    "total_tokens": 3476
+  },
+  "content_sha256": "05fe412e48b075bcd4cdd210c6baf79f1c33f49f3dccbbf31ff1a6837696f285",
+  "global_candidate_count": 1321,
+  "model": "deepseek/deepseek-v4-flash",
+  "phase_count": 6,
+  "prompt_lexical_tokens": 2024,
+  "prompt_path": "prompts/large_const-df203632da77.raw.txt",
+  "prompt_sha256": "905798797db09eee675234d323ffa23dabb4edab804fa9e1950e5324f1bd4da7",
+  "provider": "openrouter",
+  "response_path": "responses/large_const-df203632da77.raw.txt",
+  "response_sha256": "878a875356141a1d00da2aa9f30ae45d6121fc74c60de4161fab1492cfec9ded",
+  "route_count": 5,
+  "route_error": "",
+  "route_path": "routes/large_const-df203632da77.raw.json",
+  "route_sha256": "6e854ee1a48e4cd54c845b0c5828482f390df9b41d7592f8d92506ecd46c2062",
+  "route_valid": true,
+  "schema": "pono-llm-grammar-route-meta-v1",
+  "selection_role": "safe-baseline-control",
+  "source_family_id": "e5fce9620a92b3264ac061ff282608f1ae2ec756d27dfb9473ffb217ff0e20b5",
+  "tokens": 3476,
+  "wall_latency_sec": 2.6989586018025875
+}

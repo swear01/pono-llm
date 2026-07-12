@@ -1,0 +1,200 @@
+REPRESENTATION: TARGET-DERIVED LIFTED RECURRENCE
+MODULE: unknown
+
+PHASES:
+- pc_state17_w11_v1: state17 == 1 (width 11)
+- pc_state17_w11_v2: state17 == 2 (width 11)
+- pc_state17_w11_v4: state17 == 4 (width 11)
+- pc_state17_w11_v8: state17 == 8 (width 11)
+- pc_state17_w11_v16: state17 == 16 (width 11)
+- pc_state17_w11_v32: state17 == 32 (width 11)
+- pc_state17_w11_v64: state17 == 64 (width 11)
+- pc_state17_w11_v128: state17 == 128 (width 11)
+- pc_state17_w11_v256: state17 == 256 (width 11)
+- pc_state17_w11_v512: state17 == 512 (width 11)
+- pc_state17_w11_v1024: state17 == 1024 (width 11)
+
+TRANSITIONS:
+- !pc' = (((!pc == 8) && (1 && (((b == (... + ...)) ? 1 : 0) == 0))) ? 1024 : (((!pc == 32) && ((((1 && ...) && !...) && !(((b == (... + ...)) ? 1 : 0) == 0)) && !((... ? 1 : 0) == 0))) ? 256 : (((!pc == 256) && (1 && !(... <s ...))) ? 32 : (((!pc == 32) && ((... && !((... ? 1 : 0) == 0)) && !(((b == (... + ...)) ? 1 : 0) == 0))) ? 1 : (((!pc == 32) && (... && !(((b == (... + ...)) ? 1 : 0) == 0))) ? 128 : ((... && ...) ? 32 : (... ? 1024 : ...)))))))
+- a' = ((((!pc == 8) && (1 && (((b == (... + ...)) ? 1 : 0) == 0))) || ((!pc == 32) && ((((1 && ...) && !...) && !(((b == (... + ...)) ? 1 : 0) == 0)) && !((... ? 1 : 0) == 0)))) ? a : ((((!pc == 256) && (1 && !(... <s ...))) || ((!pc == 32) && ((... && !((... ? 1 : 0) == 0)) && !(((b == (... + ...)) ? 1 : 0) == 0)))) ? a : ((((!pc == 32) && (... && !(((b == (... + ...)) ? 1 : 0) == 0))) || (... && ...)) ? a : ((... || ...) ? a : ...))))
+- b' = ((((!pc == 8) && (1 && (((b == (... + ...)) ? 1 : 0) == 0))) || ((!pc == 32) && ((((1 && ...) && !...) && !(((b == (... + ...)) ? 1 : 0) == 0)) && !((... ? 1 : 0) == 0)))) ? b : ((((!pc == 256) && (1 && !(... <s ...))) || ((!pc == 32) && ((... && !((... ? 1 : 0) == 0)) && !(((b == (... + ...)) ? 1 : 0) == 0)))) ? b : ((((!pc == 32) && (... && !(((b == (... + ...)) ? 1 : 0) == 0))) || (... && ...)) ? b : ((... || ...) ? b : ...))))
+- c' = ((((!pc == 8) && (1 && (((b == (... + ...)) ? 1 : 0) == 0))) || ((!pc == 32) && ((((1 && ...) && !...) && !(((b == (... + ...)) ? 1 : 0) == 0)) && !((... ? 1 : 0) == 0)))) ? c : (((!pc == 256) && (1 && !(c <s ...))) ? c : (((!pc == 32) && ((... && !((... ? 1 : 0) == 0)) && !(((b == (... + ...)) ? 1 : 0) == 0))) ? (c + neg(v)) : ((((!pc == 32) && (... && !(((b == (... + ...)) ? 1 : 0) == 0))) || (... && ...)) ? c : ((... || ...) ? c : ...)))))
+- d' = ((((!pc == 8) && (1 && (((b == (... + ...)) ? 1 : 0) == 0))) || ((!pc == 32) && ((((1 && ...) && !...) && !(((b == (... + ...)) ? 1 : 0) == 0)) && !((... ? 1 : 0) == 0)))) ? d : (((!pc == 256) && (1 && !(... <s ...))) ? sll(d, 1) : ((((!pc == 32) && ((... && !((... ? 1 : 0) == 0)) && !(((b == (... + ...)) ? 1 : 0) == 0))) || ((!pc == 32) && (... && !(((b == (... + ...)) ? 1 : 0) == 0)))) ? d : ((... && ...) ? sll(d, 1) : ((... || ...) ? d : ...)))))
+- k' = ((((!pc == 8) && (1 && (((b == (... + ...)) ? 1 : 0) == 0))) || ((!pc == 32) && ((((1 && ...) && !...) && !(((b == (... + ...)) ? 1 : 0) == 0)) && !((... ? 1 : 0) == 0)))) ? k : (((!pc == 256) && (1 && !(... <s ...))) ? k : (((!pc == 32) && ((... && !((... ? 1 : 0) == 0)) && !(((b == (... + ...)) ? 1 : 0) == 0))) ? (d + k) : ((((!pc == 32) && (... && !(((b == (... + ...)) ? 1 : 0) == 0))) || (... && ...)) ? k : ((... || ...) ? k : ...)))))
+- p' = ((((!pc == 8) && (1 && (((b == (... + ...)) ? 1 : 0) == 0))) || ((!pc == 32) && ((((1 && ...) && !...) && !(((b == (... + ...)) ? 1 : 0) == 0)) && !((... ? 1 : 0) == 0)))) ? p : ((((!pc == 256) && (1 && !(... <s ...))) || ((!pc == 32) && ((... && !((... ? 1 : 0) == 0)) && !(((b == (... + ...)) ? 1 : 0) == 0)))) ? p : ((((!pc == 32) && (... && !(((b == (... + ...)) ? 1 : 0) == 0))) || (... && ...)) ? p : ((... || ...) ? p : ...))))
+- q' = ((((!pc == 8) && (1 && (((b == (... + ...)) ? 1 : 0) == 0))) || ((!pc == 32) && ((((1 && ...) && !...) && !(((b == (... + ...)) ? 1 : 0) == 0)) && !((... ? 1 : 0) == 0)))) ? q : ((((!pc == 256) && (1 && !(... <s ...))) || ((!pc == 32) && ((... && !((... ? 1 : 0) == 0)) && !(((b == (... + ...)) ? 1 : 0) == 0)))) ? q : ((((!pc == 32) && (... && !(((b == (... + ...)) ? 1 : 0) == 0))) || (... && ...)) ? q : ((... || ...) ? q : ...))))
+- r' = ((((!pc == 8) && (1 && (((b == (... + ...)) ? 1 : 0) == 0))) || ((!pc == 32) && ((((1 && ...) && !...) && !(((b == (... + ...)) ? 1 : 0) == 0)) && !((... ? 1 : 0) == 0)))) ? r : ((((!pc == 256) && (1 && !(... <s ...))) || ((!pc == 32) && ((... && !((... ? 1 : 0) == 0)) && !(((b == (... + ...)) ? 1 : 0) == 0)))) ? r : ((((!pc == 32) && (... && !(((b == (... + ...)) ? 1 : 0) == 0))) || (... && ...)) ? r : ((... || ...) ? r : ...))))
+- s' = ((((!pc == 8) && (1 && (((b == (... + ...)) ? 1 : 0) == 0))) || ((!pc == 32) && ((((1 && ...) && !...) && !(((b == (... + ...)) ? 1 : 0) == 0)) && !((... ? 1 : 0) == 0)))) ? s : ((((!pc == 256) && (1 && !(... <s ...))) || ((!pc == 32) && ((... && !((... ? 1 : 0) == 0)) && !(((b == (... + ...)) ? 1 : 0) == 0)))) ? s : ((((!pc == 32) && (... && !(((b == (... + ...)) ? 1 : 0) == 0))) || (... && ...)) ? s : ((... || ...) ? s : ...))))
+- v' = ((((!pc == 8) && (1 && (((b == (... + ...)) ? 1 : 0) == 0))) || ((!pc == 32) && ((((1 && ...) && !...) && !(((b == (... + ...)) ? 1 : 0) == 0)) && !((... ? 1 : 0) == 0)))) ? v : (((!pc == 256) && (1 && !(... <s ...))) ? sll(v, 1) : ((((!pc == 32) && ((... && !((... ? 1 : 0) == 0)) && !(((b == (... + ...)) ? 1 : 0) == 0))) || ((!pc == 32) && (... && !(((b == (... + ...)) ? 1 : 0) == 0)))) ? v : ((... && ...) ? sll(v, 1) : ((... || ...) ? v : ...)))))
+- x' = ((((!pc == 8) && (1 && (((b == (... + ...)) ? 1 : 0) == 0))) || ((!pc == 32) && ((((1 && ...) && !...) && !(((b == (... + ...)) ? 1 : 0) == 0)) && !((... ? 1 : 0) == 0)))) ? x : ((((!pc == 256) && (1 && !(... <s ...))) || ((!pc == 32) && ((... && !((... ? 1 : 0) == 0)) && !(((b == (... + ...)) ? 1 : 0) == 0)))) ? x : ((((!pc == 32) && (... && !(((b == (... + ...)) ? 1 : 0) == 0))) || (... && ...)) ? x : ((... || ...) ? x : ...))))
+- y' = ((((!pc == 8) && (1 && (((b == (... + ...)) ? 1 : 0) == 0))) || ((!pc == 32) && ((((1 && ...) && !...) && !(((b == (... + ...)) ? 1 : 0) == 0)) && !((... ? 1 : 0) == 0)))) ? y : ((((!pc == 256) && (1 && !(... <s ...))) || ((!pc == 32) && ((... && !((... ? 1 : 0) == 0)) && !(((b == (... + ...)) ? 1 : 0) == 0)))) ? y : ((((!pc == 32) && (... && !(((b == (... + ...)) ? 1 : 0) == 0))) || (... && ...)) ? y : ((... || ...) ? y : ...))))
+
+BAD:
+- (((((!pc == 4) || (!pc == 8)) || (!pc == 128)) || (!pc == 256)) || (!pc == 1024))
+
+--- COMMON FORMAL ROUTE CONTRACT ---
+TASK: Choose a small invariant-synthesis grammar. Do not output an invariant,
+proof, coefficient value, or assertion. The formal backend expands every route,
+runs Houdini, and checks the original BTOR2. Your output is untrusted routing
+advice only.
+
+MACHINE SEMANTICS:
+- All state arithmetic is fixed-width bit-vector arithmetic modulo 2^width.
+- Comparisons must state signed or unsigned semantics.
+- A route may use only variables from the catalog below.
+- Phase guards are applied by the formal experiment, not selected by you.
+
+VARIABLE_CATALOG_JSON:
+[
+  {
+    "init": "0",
+    "name": "a",
+    "ref": "state36",
+    "width": 64
+  },
+  {
+    "init": "0",
+    "name": "b",
+    "ref": "state37",
+    "width": 64
+  },
+  {
+    "init": "0",
+    "name": "c",
+    "ref": "state38",
+    "width": 64
+  },
+  {
+    "init": "0",
+    "name": "d",
+    "ref": "state39",
+    "width": 64
+  },
+  {
+    "init": "0",
+    "name": "k",
+    "ref": "state40",
+    "width": 64
+  },
+  {
+    "init": "0",
+    "name": "p",
+    "ref": "state41",
+    "width": 64
+  },
+  {
+    "init": "0",
+    "name": "q",
+    "ref": "state42",
+    "width": 64
+  },
+  {
+    "init": "0",
+    "name": "r",
+    "ref": "state43",
+    "width": 64
+  },
+  {
+    "init": "0",
+    "name": "s",
+    "ref": "state44",
+    "width": 64
+  },
+  {
+    "init": "0",
+    "name": "v",
+    "ref": "state45",
+    "width": 64
+  },
+  {
+    "init": "0",
+    "name": "x",
+    "ref": "state46",
+    "width": 32
+  },
+  {
+    "init": "0",
+    "name": "y",
+    "ref": "state47",
+    "width": 32
+  }
+]
+
+PHASE_CATALOG_JSON:
+[
+  {
+    "guard": "state17 == 1",
+    "phase_id": "pc_state17_w11_v1",
+    "width": 11
+  },
+  {
+    "guard": "state17 == 2",
+    "phase_id": "pc_state17_w11_v2",
+    "width": 11
+  },
+  {
+    "guard": "state17 == 4",
+    "phase_id": "pc_state17_w11_v4",
+    "width": 11
+  },
+  {
+    "guard": "state17 == 8",
+    "phase_id": "pc_state17_w11_v8",
+    "width": 11
+  },
+  {
+    "guard": "state17 == 16",
+    "phase_id": "pc_state17_w11_v16",
+    "width": 11
+  },
+  {
+    "guard": "state17 == 32",
+    "phase_id": "pc_state17_w11_v32",
+    "width": 11
+  },
+  {
+    "guard": "state17 == 64",
+    "phase_id": "pc_state17_w11_v64",
+    "width": 11
+  },
+  {
+    "guard": "state17 == 128",
+    "phase_id": "pc_state17_w11_v128",
+    "width": 11
+  },
+  {
+    "guard": "state17 == 256",
+    "phase_id": "pc_state17_w11_v256",
+    "width": 11
+  },
+  {
+    "guard": "state17 == 512",
+    "phase_id": "pc_state17_w11_v512",
+    "width": 11
+  },
+  {
+    "guard": "state17 == 1024",
+    "phase_id": "pc_state17_w11_v1024",
+    "width": 11
+  }
+]
+
+OUTPUT CONTRACT:
+- Output exactly one JSON object and no Markdown.
+- Top-level fields: "schema" and "routes" only.
+- schema must be "pono-llm-grammar-route-v1".
+- routes must contain 1 to 8 route objects.
+- Every route has exactly variables, family, relations, signedness, plus only
+  the family field listed below.
+- family="unary": one variable; optional constants integer list [-16,16].
+- family="pairwise_offset": two same-width variables; optional offsets integer
+  list [-16,16].
+- family="affine": two or three same-width variables; optional
+  coefficient_bound integer [1,8].
+- family="sum_equality": three same-width variables ordered as result, addend1,
+  addend2; no family-specific field.
+- family="quadratic_recurrence": two same-width variables ordered as accumulator,
+  counter; optional scales [1,8] and counter_shifts [-4,4].
+- relations is a non-empty subset of ["eq","le","ge"].
+- signedness is exactly "signed" or "unsigned".
+- No explanation and no extra fields.

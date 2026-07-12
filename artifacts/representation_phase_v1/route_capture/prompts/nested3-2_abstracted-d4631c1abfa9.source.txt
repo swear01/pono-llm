@@ -1,0 +1,150 @@
+REPRESENTATION: PINNED SOURCE C
+SOURCE_FILE: nested3-2_abstracted.c
+
+extern void abort(void);
+extern int __VERIFIER_nondet_int();
+extern _Bool __VERIFIER_nondet_bool();
+extern char __VERIFIER_nondet_char();
+extern double __VERIFIER_nondet_double();
+extern float __VERIFIER_nondet_float();
+extern unsigned long __VERIFIER_nondet_ulong();
+extern unsigned long long __VERIFIER_nondet_ulonglong();
+extern unsigned int __VERIFIER_nondet_uint();
+extern int __VERIFIER_nondet_int();
+extern void abort(void);
+extern void __assert_fail(const char *, const char *, unsigned int, const char *) __attribute__ ((__nothrow__ , __leaf__)) __attribute__ ((__noreturn__));
+void reach_error() { __assert_fail("0", "nested3-2_abstracted.c", 3, "reach_error"); }
+
+void __VERIFIER_assert(int cond) {
+  if (!(cond)) {
+    ERROR: {reach_error();abort();}
+  }
+  return;
+}
+
+int main()
+{
+  unsigned int x = 0;
+  unsigned int y = 0;
+  unsigned int z = 0;
+  unsigned int w = 0;
+
+  while (x < 0x0fffffff) {
+    y = 0;
+
+    while (y < 0x0fffffff) {
+   	z =0;
+	// START CONSTANTEXTRAPOLATION
+	if (z < (268435455)) {
+	  long long int z__VERIFIER_LA_tmp0;
+	  z__VERIFIER_LA_tmp0 = z;
+	  long long int __VERIFIER_LA_iterations0;
+	  __VERIFIER_LA_iterations0 = (268435455 - z__VERIFIER_LA_tmp0) / 1L;
+	  unsigned int z__VERIFIER_LA_old_tmp0;
+	  z__VERIFIER_LA_old_tmp0 = z;
+	  z = (__VERIFIER_LA_iterations0 * 1L) + z__VERIFIER_LA_old_tmp0;
+	}
+	// END CONSTANTEXTRAPOLATION
+    	__VERIFIER_assert(!(z % 4));
+	y++;
+    }
+    __VERIFIER_assert(!(y % 2));
+
+    x++;
+  }
+  __VERIFIER_assert(!(x % 2));
+ return 0;
+
+}
+
+--- COMMON FORMAL ROUTE CONTRACT ---
+TASK: Choose a small invariant-synthesis grammar. Do not output an invariant,
+proof, coefficient value, or assertion. The formal backend expands every route,
+runs Houdini, and checks the original BTOR2. Your output is untrusted routing
+advice only.
+
+MACHINE SEMANTICS:
+- All state arithmetic is fixed-width bit-vector arithmetic modulo 2^width.
+- Comparisons must state signed or unsigned semantics.
+- A route may use only variables from the catalog below.
+- Phase guards are applied by the formal experiment, not selected by you.
+
+VARIABLE_CATALOG_JSON:
+[
+  {
+    "init": "0",
+    "name": "x",
+    "ref": "state29",
+    "width": 32
+  },
+  {
+    "init": "0",
+    "name": "y",
+    "ref": "state30",
+    "width": 32
+  }
+]
+
+PHASE_CATALOG_JSON:
+[
+  {
+    "guard": "state13 == 1",
+    "phase_id": "pc_state13_w8_v1",
+    "width": 8
+  },
+  {
+    "guard": "state13 == 2",
+    "phase_id": "pc_state13_w8_v2",
+    "width": 8
+  },
+  {
+    "guard": "state13 == 4",
+    "phase_id": "pc_state13_w8_v4",
+    "width": 8
+  },
+  {
+    "guard": "state13 == 8",
+    "phase_id": "pc_state13_w8_v8",
+    "width": 8
+  },
+  {
+    "guard": "state13 == 16",
+    "phase_id": "pc_state13_w8_v16",
+    "width": 8
+  },
+  {
+    "guard": "state13 == 32",
+    "phase_id": "pc_state13_w8_v32",
+    "width": 8
+  },
+  {
+    "guard": "state13 == 64",
+    "phase_id": "pc_state13_w8_v64",
+    "width": 8
+  },
+  {
+    "guard": "state13 == 128",
+    "phase_id": "pc_state13_w8_v128",
+    "width": 8
+  }
+]
+
+OUTPUT CONTRACT:
+- Output exactly one JSON object and no Markdown.
+- Top-level fields: "schema" and "routes" only.
+- schema must be "pono-llm-grammar-route-v1".
+- routes must contain 1 to 8 route objects.
+- Every route has exactly variables, family, relations, signedness, plus only
+  the family field listed below.
+- family="unary": one variable; optional constants integer list [-16,16].
+- family="pairwise_offset": two same-width variables; optional offsets integer
+  list [-16,16].
+- family="affine": two or three same-width variables; optional
+  coefficient_bound integer [1,8].
+- family="sum_equality": three same-width variables ordered as result, addend1,
+  addend2; no family-specific field.
+- family="quadratic_recurrence": two same-width variables ordered as accumulator,
+  counter; optional scales [1,8] and counter_shifts [-4,4].
+- relations is a non-empty subset of ["eq","le","ge"].
+- signedness is exactly "signed" or "unsigned".
+- No explanation and no extra fields.

@@ -1,0 +1,67 @@
+{
+  "all_phase_candidate_count": 0,
+  "api_latency_ms": 2666.243076324463,
+  "arm": "raw",
+  "benchmark_id": "loop-invgen/SpamAssassin-loop.btor2",
+  "client_stats": {
+    "completion_tokens": 277,
+    "content_chars": 852,
+    "json_mode": "json_object",
+    "latency_ms": 2666.243076324463,
+    "openrouter_routing": {
+      "allow_fallbacks": true,
+      "ignore": [
+        "deepinfra",
+        "venice",
+        "gmicloud",
+        "digitalocean",
+        "cloudflare",
+        "morph",
+        "akashml",
+        "siliconflow"
+      ],
+      "only": [
+        "novita",
+        "deepseek",
+        "baidu",
+        "parasail",
+        "alibaba",
+        "streamlake",
+        "atlas-cloud"
+      ],
+      "quantizations": [
+        "fp8",
+        "fp16",
+        "bf16",
+        "fp32",
+        "unknown"
+      ],
+      "sort": "throughput"
+    },
+    "prompt_tokens": 7275,
+    "provider": "openrouter",
+    "reasoning_chars": 0,
+    "thinking_mode": "disabled",
+    "total_tokens": 7552
+  },
+  "content_sha256": "8766f2f99e909941ced206fdb9a1dab7205d1110e0a0c2ee85db86100df3236b",
+  "global_candidate_count": 0,
+  "model": "deepseek/deepseek-v4-flash",
+  "phase_count": 21,
+  "prompt_lexical_tokens": 4279,
+  "prompt_path": "prompts/SpamAssassin-loop-dd56a58e9ddb.raw.txt",
+  "prompt_sha256": "589bc7d28d7829e5764ca13a5bed5fe790c2f318972c0d7ab14446e4eaa94033",
+  "provider": "openrouter",
+  "response_path": "responses/SpamAssassin-loop-dd56a58e9ddb.raw.txt",
+  "response_sha256": "30cb37562225c58d718e0ad6e378c239372dc1e7cf9c770e253c09dd188039fc",
+  "route_count": 0,
+  "route_error": "route 0.offsets must not contain duplicates",
+  "route_path": null,
+  "route_sha256": null,
+  "route_valid": false,
+  "schema": "pono-llm-grammar-route-meta-v1",
+  "selection_role": "safe-baseline-hard",
+  "source_family_id": "68d0cd7105ca5c9fa73e412cfaf7aa09b6f04a9b26a9696fb8132e09b90da9ba",
+  "tokens": 7552,
+  "wall_latency_sec": 2.6662591733038425
+}

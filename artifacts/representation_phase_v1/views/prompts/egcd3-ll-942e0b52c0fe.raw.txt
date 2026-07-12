@@ -1,0 +1,1045 @@
+REPRESENTATION: RAW BTOR2 PROPERTY/TRANSITION CONE
+ROOT_EXPRESSION_NODES: -22,18,19,20,21,22,23,24,25,26,27,28,206,261,316,371,426,481,536,591,646,701,756,811,867,890
+NODE_BUDGET: 1200
+SELECTED_LINES: 881
+TRUNCATED_FRONTIER_COUNT: 0
+
+1 sort bitvec 1
+2 sort bitvec 11
+3 sort bitvec 64
+4 sort bitvec 32
+6 const 2 00000000001
+7 const 2 00000000010
+8 const 2 00000000100
+9 const 2 00000001000
+10 const 2 00000010000
+11 const 2 00000100000
+12 const 2 00001000000
+13 const 2 00010000000
+14 const 2 00100000000
+15 const 2 01000000000
+16 const 2 10000000000
+17 state 2 !pc
+18 eq 1 17 6
+19 eq 1 17 7
+20 eq 1 17 8
+21 eq 1 17 9
+22 eq 1 17 10
+23 eq 1 17 11
+24 eq 1 17 12
+25 eq 1 17 13
+26 eq 1 17 14
+27 eq 1 17 15
+28 eq 1 17 16
+30 const 1 1
+31 const 3 0000000000000000000000000000000000000000000000000000000000000001
+32 const 3 0000000000000000000000000000000000000000000000000000000000000000
+33 const 4 00000000000000000000000000000001
+34 const 4 00000000000000000000000000000000
+36 state 3 !{$(in_main#0)<a>}
+37 state 3 !{$(in_main#0)<b>}
+38 state 3 !{$(in_main#0)<c>}
+39 state 3 !{$(in_main#0)<d>}
+40 state 3 !{$(in_main#0)<k>}
+41 state 3 !{$(in_main#0)<p>}
+42 state 3 !{$(in_main#0)<q>}
+43 state 3 !{$(in_main#0)<r>}
+44 state 3 !{$(in_main#0)<s>}
+45 state 3 !{$(in_main#0)<v>}
+46 state 4 !{$(in_main#0)<x>}
+47 state 4 !{$(in_main#0)<y>}
+48 input 3 %{$(in_main#0)<d>}#1
+49 input 3 %{$(in_main#0)<k>}#1
+50 input 3 %{$(in_main#0)<v>}#1
+51 input 4 !{$(in_main#0)<$(in___VERIFIER_nondet_int#0)<h#<__VERIFIER_nondet_int.return>>>}
+52 input 4 !{$(in_main#0)<$(in___VERIFIER_nondet_int#1)<h#<__VERIFIER_nondet_int.return>>>}
+53 input 3 %{$(in_main#0)<c>}#1
+55 mul 3 40 44
+56 mul 3 40 42
+57 sll 3 45 31
+58 sll 3 39 31
+59 eq 1 37 32
+60 sext 3 46 32
+61 sext 3 47 32
+62 mul 3 37 39
+63 mul 3 37 40
+64 slt 1 52 33
+65 slt 1 51 33
+66 slt 1 38 37
+67 add 3 39 40
+68 neg 3 45
+69 sext 3 52 32
+70 sext 3 51 32
+71 neg 3 55
+72 neg 3 56
+73 and 1 30 59
+74 mul 3 41 60
+75 mul 3 42 60
+76 mul 3 43 61
+77 mul 3 44 61
+78 slt 1 38 57
+79 eq 1 45 62
+80 add 3 38 63
+81 not 1 59
+82 not 1 64
+83 not 1 65
+84 and 1 30 66
+85 not 1 66
+86 add 3 38 68
+87 add 3 43 71
+88 add 3 41 72
+89 neg 3 75
+90 neg 3 77
+91 add 3 75 77
+92 not 1 78
+93 ite 4 79 33 34
+94 and 1 30 78
+95 eq 1 36 80
+96 and 1 30 81
+97 add 3 74 76
+98 ite 4 82 33 34
+99 ite 4 83 33 34
+100 and 1 30 85
+101 add 3 74 89
+102 eq 1 37 91
+103 and 1 30 92
+104 eq 1 93 34
+105 ite 4 95 33 34
+106 eq 1 36 97
+107 eq 1 98 34
+108 eq 1 99 34
+109 add 3 101 76
+110 ite 4 102 33 34
+111 not 1 104
+112 eq 1 105 34
+113 and 1 30 104
+114 ite 4 106 33 34
+115 not 1 107
+116 not 1 108
+117 add 3 109 90
+118 eq 1 110 34
+119 and 1 103 111
+120 and 1 94 111
+121 not 1 112
+122 and 1 30 112
+123 eq 1 114 34
+124 and 1 30 115
+125 eq 1 36 117
+126 and 1 30 118
+127 and 1 120 121
+128 and 1 113 121
+129 and 1 119 121
+130 not 1 123
+131 not 1 118
+132 and 1 124 116
+133 and 1 30 123
+134 ite 4 125 33 34
+135 and 1 127 130
+136 and 1 129 130
+137 and 1 128 131
+138 and 1 122 130
+139 and 1 30 130
+140 and 1 129 131
+141 and 1 127 131
+142 and 1 122 131
+143 eq 1 134 34
+144 and 1 135 131
+145 and 1 136 131
+146 and 1 137 130
+147 and 1 138 131
+148 and 1 139 118
+149 not 1 143
+150 and 1 73 143
+151 and 1 73 149
+153 and 1 18 100
+154 ite 4 153 46 46
+155 and 1 28 128
+156 ite 4 155 46 154
+157 and 1 25 119
+158 ite 4 157 46 156
+159 and 1 19 132
+160 ite 4 159 51 158
+161 and 1 26 94
+162 ite 4 161 46 160
+163 and 1 27 150
+164 ite 4 163 46 162
+165 and 1 21 142
+166 ite 4 165 46 164
+167 and 1 18 84
+168 ite 4 167 46 166
+169 and 1 27 96
+170 ite 4 169 46 168
+171 and 1 28 127
+172 ite 4 171 46 170
+173 and 1 27 151
+174 ite 4 173 46 172
+175 and 1 23 145
+176 ite 4 175 46 174
+177 and 1 21 141
+178 ite 4 177 46 176
+179 and 1 21 137
+180 ite 4 179 46 178
+181 and 1 21 140
+182 ite 4 181 46 180
+183 and 1 25 120
+184 ite 4 183 46 182
+185 and 1 28 122
+186 ite 4 185 46 184
+187 and 1 23 133
+188 ite 4 187 46 186
+189 and 1 20 30
+190 ite 4 189 46 188
+191 and 1 25 113
+192 ite 4 191 46 190
+193 and 1 23 148
+194 ite 4 193 46 192
+195 and 1 28 129
+196 ite 4 195 46 194
+197 and 1 23 147
+198 ite 4 197 46 196
+199 and 1 23 144
+200 ite 4 199 46 198
+201 and 1 26 103
+202 ite 4 201 46 200
+203 and 1 23 146
+204 ite 4 203 46 202
+205 and 1 21 126
+206 ite 4 205 46 204
+207 next 4 46 206
+208 and 1 18 100
+209 ite 4 208 47 47
+210 and 1 28 128
+211 ite 4 210 47 209
+212 and 1 25 119
+213 ite 4 212 47 211
+214 and 1 19 132
+215 ite 4 214 52 213
+216 and 1 26 94
+217 ite 4 216 47 215
+218 and 1 27 150
+219 ite 4 218 47 217
+220 and 1 21 142
+221 ite 4 220 47 219
+222 and 1 18 84
+223 ite 4 222 47 221
+224 and 1 27 96
+225 ite 4 224 47 223
+226 and 1 28 127
+227 ite 4 226 47 225
+228 and 1 27 151
+229 ite 4 228 47 227
+230 and 1 23 145
+231 ite 4 230 47 229
+232 and 1 21 141
+233 ite 4 232 47 231
+234 and 1 21 137
+235 ite 4 234 47 233
+236 and 1 21 140
+237 ite 4 236 47 235
+238 and 1 25 120
+239 ite 4 238 47 237
+240 and 1 28 122
+241 ite 4 240 47 239
+242 and 1 23 133
+243 ite 4 242 47 241
+244 and 1 20 30
+245 ite 4 244 47 243
+246 and 1 25 113
+247 ite 4 246 47 245
+248 and 1 23 148
+249 ite 4 248 47 247
+250 and 1 28 129
+251 ite 4 250 47 249
+252 and 1 23 147
+253 ite 4 252 47 251
+254 and 1 23 144
+255 ite 4 254 47 253
+256 and 1 26 103
+257 ite 4 256 47 255
+258 and 1 23 146
+259 ite 4 258 47 257
+260 and 1 21 126
+261 ite 4 260 47 259
+262 next 4 47 261
+263 and 1 18 100
+264 ite 3 263 37 45
+265 and 1 28 128
+266 ite 3 265 45 264
+267 and 1 25 119
+268 ite 3 267 57 266
+269 and 1 19 132
+270 ite 3 269 50 268
+271 and 1 26 94
+272 ite 3 271 45 270
+273 and 1 27 150
+274 ite 3 273 45 272
+275 and 1 21 142
+276 ite 3 275 45 274
+277 and 1 18 84
+278 ite 3 277 45 276
+279 and 1 27 96
+280 ite 3 279 45 278
+281 and 1 28 127
+282 ite 3 281 45 280
+283 and 1 27 151
+284 ite 3 283 45 282
+285 and 1 23 145
+286 ite 3 285 57 284
+287 and 1 21 141
+288 ite 3 287 45 286
+289 and 1 21 137
+290 ite 3 289 45 288
+291 and 1 21 140
+292 ite 3 291 57 290
+293 and 1 25 120
+294 ite 3 293 45 292
+295 and 1 28 122
+296 ite 3 295 45 294
+297 and 1 23 133
+298 ite 3 297 45 296
+299 and 1 20 30
+300 ite 3 299 45 298
+301 and 1 25 113
+302 ite 3 301 45 300
+303 and 1 23 148
+304 ite 3 303 45 302
+305 and 1 28 129
+306 ite 3 305 57 304
+307 and 1 23 147
+308 ite 3 307 45 306
+309 and 1 23 144
+310 ite 3 309 45 308
+311 and 1 26 103
+312 ite 3 311 57 310
+313 and 1 23 146
+314 ite 3 313 45 312
+315 and 1 21 126
+316 ite 3 315 45 314
+317 next 3 45 316
+318 and 1 18 100
+319 ite 3 318 31 39
+320 and 1 28 128
+321 ite 3 320 39 319
+322 and 1 25 119
+323 ite 3 322 58 321
+324 and 1 19 132
+325 ite 3 324 48 323
+326 and 1 26 94
+327 ite 3 326 39 325
+328 and 1 27 150
+329 ite 3 328 39 327
+330 and 1 21 142
+331 ite 3 330 39 329
+332 and 1 18 84
+333 ite 3 332 39 331
+334 and 1 27 96
+335 ite 3 334 39 333
+336 and 1 28 127
+337 ite 3 336 39 335
+338 and 1 27 151
+339 ite 3 338 39 337
+340 and 1 23 145
+341 ite 3 340 58 339
+342 and 1 21 141
+343 ite 3 342 39 341
+344 and 1 21 137
+345 ite 3 344 39 343
+346 and 1 21 140
+347 ite 3 346 58 345
+348 and 1 25 120
+349 ite 3 348 39 347
+350 and 1 28 122
+351 ite 3 350 39 349
+352 and 1 23 133
+353 ite 3 352 39 351
+354 and 1 20 30
+355 ite 3 354 39 353
+356 and 1 25 113
+357 ite 3 356 39 355
+358 and 1 23 148
+359 ite 3 358 39 357
+360 and 1 28 129
+361 ite 3 360 58 359
+362 and 1 23 147
+363 ite 3 362 39 361
+364 and 1 23 144
+365 ite 3 364 39 363
+366 and 1 26 103
+367 ite 3 366 58 365
+368 and 1 23 146
+369 ite 3 368 39 367
+370 and 1 21 126
+371 ite 3 370 39 369
+372 next 3 39 371
+373 and 1 18 100
+374 ite 3 373 38 38
+375 and 1 28 128
+376 ite 3 375 38 374
+377 and 1 25 119
+378 ite 3 377 38 376
+379 and 1 19 132
+380 ite 3 379 53 378
+381 and 1 26 94
+382 ite 3 381 86 380
+383 and 1 27 150
+384 ite 3 383 38 382
+385 and 1 21 142
+386 ite 3 385 38 384
+387 and 1 18 84
+388 ite 3 387 38 386
+389 and 1 27 96
+390 ite 3 389 36 388
+391 and 1 28 127
+392 ite 3 391 86 390
+393 and 1 27 151
+394 ite 3 393 38 392
+395 and 1 23 145
+396 ite 3 395 38 394
+397 and 1 21 141
+398 ite 3 397 86 396
+399 and 1 21 137
+400 ite 3 399 38 398
+401 and 1 21 140
+402 ite 3 401 38 400
+403 and 1 25 120
+404 ite 3 403 86 402
+405 and 1 28 122
+406 ite 3 405 38 404
+407 and 1 23 133
+408 ite 3 407 38 406
+409 and 1 20 30
+410 ite 3 409 38 408
+411 and 1 25 113
+412 ite 3 411 38 410
+413 and 1 23 148
+414 ite 3 413 38 412
+415 and 1 28 129
+416 ite 3 415 38 414
+417 and 1 23 147
+418 ite 3 417 38 416
+419 and 1 23 144
+420 ite 3 419 86 418
+421 and 1 26 103
+422 ite
+
+[... deterministic middle truncation ...]
+
+435 ite 3 434 69 433
+436 and 1 26 94
+437 ite 3 436 37 435
+438 and 1 27 150
+439 ite 3 438 37 437
+440 and 1 21 142
+441 ite 3 440 37 439
+442 and 1 18 84
+443 ite 3 442 38 441
+444 and 1 27 96
+445 ite 3 444 37 443
+446 and 1 28 127
+447 ite 3 446 37 445
+448 and 1 27 151
+449 ite 3 448 37 447
+450 and 1 23 145
+451 ite 3 450 37 449
+452 and 1 21 141
+453 ite 3 452 37 451
+454 and 1 21 137
+455 ite 3 454 37 453
+456 and 1 21 140
+457 ite 3 456 37 455
+458 and 1 25 120
+459 ite 3 458 37 457
+460 and 1 28 122
+461 ite 3 460 37 459
+462 and 1 23 133
+463 ite 3 462 37 461
+464 and 1 20 30
+465 ite 3 464 37 463
+466 and 1 25 113
+467 ite 3 466 37 465
+468 and 1 23 148
+469 ite 3 468 37 467
+470 and 1 28 129
+471 ite 3 470 37 469
+472 and 1 23 147
+473 ite 3 472 37 471
+474 and 1 23 144
+475 ite 3 474 37 473
+476 and 1 26 103
+477 ite 3 476 37 475
+478 and 1 23 146
+479 ite 3 478 37 477
+480 and 1 21 126
+481 ite 3 480 37 479
+482 next 3 37 481
+483 and 1 18 100
+484 ite 3 483 36 36
+485 and 1 28 128
+486 ite 3 485 36 484
+487 and 1 25 119
+488 ite 3 487 36 486
+489 and 1 19 132
+490 ite 3 489 70 488
+491 and 1 26 94
+492 ite 3 491 36 490
+493 and 1 27 150
+494 ite 3 493 36 492
+495 and 1 21 142
+496 ite 3 495 36 494
+497 and 1 18 84
+498 ite 3 497 37 496
+499 and 1 27 96
+500 ite 3 499 36 498
+501 and 1 28 127
+502 ite 3 501 36 500
+503 and 1 27 151
+504 ite 3 503 36 502
+505 and 1 23 145
+506 ite 3 505 36 504
+507 and 1 21 141
+508 ite 3 507 36 506
+509 and 1 21 137
+510 ite 3 509 36 508
+511 and 1 21 140
+512 ite 3 511 36 510
+513 and 1 25 120
+514 ite 3 513 36 512
+515 and 1 28 122
+516 ite 3 515 36 514
+517 and 1 23 133
+518 ite 3 517 36 516
+519 and 1 20 30
+520 ite 3 519 36 518
+521 and 1 25 113
+522 ite 3 521 36 520
+523 and 1 23 148
+524 ite 3 523 36 522
+525 and 1 28 129
+526 ite 3 525 36 524
+527 and 1 23 147
+528 ite 3 527 36 526
+529 and 1 23 144
+530 ite 3 529 36 528
+531 and 1 26 103
+532 ite 3 531 36 530
+533 and 1 23 146
+534 ite 3 533 36 532
+535 and 1 21 126
+536 ite 3 535 36 534
+537 next 3 36 536
+538 and 1 18 100
+539 ite 3 538 40 40
+540 and 1 28 128
+541 ite 3 540 40 539
+542 and 1 25 119
+543 ite 3 542 40 541
+544 and 1 19 132
+545 ite 3 544 49 543
+546 and 1 26 94
+547 ite 3 546 67 545
+548 and 1 27 150
+549 ite 3 548 40 547
+550 and 1 21 142
+551 ite 3 550 40 549
+552 and 1 18 84
+553 ite 3 552 40 551
+554 and 1 27 96
+555 ite 3 554 32 553
+556 and 1 28 127
+557 ite 3 556 67 555
+558 and 1 27 151
+559 ite 3 558 40 557
+560 and 1 23 145
+561 ite 3 560 40 559
+562 and 1 21 141
+563 ite 3 562 67 561
+564 and 1 21 137
+565 ite 3 564 40 563
+566 and 1 21 140
+567 ite 3 566 40 565
+568 and 1 25 120
+569 ite 3 568 67 567
+570 and 1 28 122
+571 ite 3 570 40 569
+572 and 1 23 133
+573 ite 3 572 40 571
+574 and 1 20 30
+575 ite 3 574 40 573
+576 and 1 25 113
+577 ite 3 576 40 575
+578 and 1 23 148
+579 ite 3 578 40 577
+580 and 1 28 129
+581 ite 3 580 40 579
+582 and 1 23 147
+583 ite 3 582 40 581
+584 and 1 23 144
+585 ite 3 584 67 583
+586 and 1 26 103
+587 ite 3 586 40 585
+588 and 1 23 146
+589 ite 3 588 40 587
+590 and 1 21 126
+591 ite 3 590 40 589
+592 next 3 40 591
+593 and 1 18 100
+594 ite 3 593 43 43
+595 and 1 28 128
+596 ite 3 595 43 594
+597 and 1 25 119
+598 ite 3 597 43 596
+599 and 1 19 132
+600 ite 3 599 32 598
+601 and 1 26 94
+602 ite 3 601 43 600
+603 and 1 27 150
+604 ite 3 603 43 602
+605 and 1 21 142
+606 ite 3 605 43 604
+607 and 1 18 84
+608 ite 3 607 44 606
+609 and 1 27 96
+610 ite 3 609 43 608
+611 and 1 28 127
+612 ite 3 611 43 610
+613 and 1 27 151
+614 ite 3 613 43 612
+615 and 1 23 145
+616 ite 3 615 43 614
+617 and 1 21 141
+618 ite 3 617 43 616
+619 and 1 21 137
+620 ite 3 619 43 618
+621 and 1 21 140
+622 ite 3 621 43 620
+623 and 1 25 120
+624 ite 3 623 43 622
+625 and 1 28 122
+626 ite 3 625 43 624
+627 and 1 23 133
+628 ite 3 627 43 626
+629 and 1 20 30
+630 ite 3 629 43 628
+631 and 1 25 113
+632 ite 3 631 43 630
+633 and 1 23 148
+634 ite 3 633 43 632
+635 and 1 28 129
+636 ite 3 635 43 634
+637 and 1 23 147
+638 ite 3 637 43 636
+639 and 1 23 144
+640 ite 3 639 43 638
+641 and 1 26 103
+642 ite 3 641 43 640
+643 and 1 23 146
+644 ite 3 643 43 642
+645 and 1 21 126
+646 ite 3 645 43 644
+647 next 3 43 646
+648 and 1 18 100
+649 ite 3 648 41 41
+650 and 1 28 128
+651 ite 3 650 41 649
+652 and 1 25 119
+653 ite 3 652 41 651
+654 and 1 19 132
+655 ite 3 654 31 653
+656 and 1 26 94
+657 ite 3 656 41 655
+658 and 1 27 150
+659 ite 3 658 41 657
+660 and 1 21 142
+661 ite 3 660 41 659
+662 and 1 18 84
+663 ite 3 662 42 661
+664 and 1 27 96
+665 ite 3 664 41 663
+666 and 1 28 127
+667 ite 3 666 41 665
+668 and 1 27 151
+669 ite 3 668 41 667
+670 and 1 23 145
+671 ite 3 670 41 669
+672 and 1 21 141
+673 ite 3 672 41 671
+674 and 1 21 137
+675 ite 3 674 41 673
+676 and 1 21 140
+677 ite 3 676 41 675
+678 and 1 25 120
+679 ite 3 678 41 677
+680 and 1 28 122
+681 ite 3 680 41 679
+682 and 1 23 133
+683 ite 3 682 41 681
+684 and 1 20 30
+685 ite 3 684 41 683
+686 and 1 25 113
+687 ite 3 686 41 685
+688 and 1 23 148
+689 ite 3 688 41 687
+690 and 1 28 129
+691 ite 3 690 41 689
+692 and 1 23 147
+693 ite 3 692 41 691
+694 and 1 23 144
+695 ite 3 694 41 693
+696 and 1 26 103
+697 ite 3 696 41 695
+698 and 1 23 146
+699 ite 3 698 41 697
+700 and 1 21 126
+701 ite 3 700 41 699
+702 next 3 41 701
+703 and 1 18 100
+704 ite 3 703 42 42
+705 and 1 28 128
+706 ite 3 705 42 704
+707 and 1 25 119
+708 ite 3 707 42 706
+709 and 1 19 132
+710 ite 3 709 32 708
+711 and 1 26 94
+712 ite 3 711 42 710
+713 and 1 27 150
+714 ite 3 713 42 712
+715 and 1 21 142
+716 ite 3 715 42 714
+717 and 1 18 84
+718 ite 3 717 88 716
+719 and 1 27 96
+720 ite 3 719 42 718
+721 and 1 28 127
+722 ite 3 721 42 720
+723 and 1 27 151
+724 ite 3 723 42 722
+725 and 1 23 145
+726 ite 3 725 42 724
+727 and 1 21 141
+728 ite 3 727 42 726
+729 and 1 21 137
+730 ite 3 729 42 728
+731 and 1 21 140
+732 ite 3 731 42 730
+733 and 1 25 120
+734 ite 3 733 42 732
+735 and 1 28 122
+736 ite 3 735 42 734
+737 and 1 23 133
+738 ite 3 737 42 736
+739 and 1 20 30
+740 ite 3 739 42 738
+741 and 1 25 113
+742 ite 3 741 42 740
+743 and 1 23 148
+744 ite 3 743 42 742
+745 and 1 28 129
+746 ite 3 745 42 744
+747 and 1 23 147
+748 ite 3 747 42 746
+749 and 1 23 144
+750 ite 3 749 42 748
+751 and 1 26 103
+752 ite 3 751 42 750
+753 and 1 23 146
+754 ite 3 753 42 752
+755 and 1 21 126
+756 ite 3 755 42 754
+757 next 3 42 756
+758 and 1 18 100
+759 ite 3 758 44 44
+760 and 1 28 128
+761 ite 3 760 44 759
+762 and 1 25 119
+763 ite 3 762 44 761
+764 and 1 19 132
+765 ite 3 764 31 763
+766 and 1 26 94
+767 ite 3 766 44 765
+768 and 1 27 150
+769 ite 3 768 44 767
+770 and 1 21 142
+771 ite 3 770 44 769
+772 and 1 18 84
+773 ite 3 772 87 771
+774 and 1 27 96
+775 ite 3 774 44 773
+776 and 1 28 127
+777 ite 3 776 44 775
+778 and 1 27 151
+779 ite 3 778 44 777
+780 and 1 23 145
+781 ite 3 780 44 779
+782 and 1 21 141
+783 ite 3 782 44 781
+784 and 1 21 137
+785 ite 3 784 44 783
+786 and 1 21 140
+787 ite 3 786 44 785
+788 and 1 25 120
+789 ite 3 788 44 787
+790 and 1 28 122
+791 ite 3 790 44 789
+792 and 1 23 133
+793 ite 3 792 44 791
+794 and 1 20 30
+795 ite 3 794 44 793
+796 and 1 25 113
+797 ite 3 796 44 795
+798 and 1 23 148
+799 ite 3 798 44 797
+800 and 1 28 129
+801 ite 3 800 44 799
+802 and 1 23 147
+803 ite 3 802 44 801
+804 and 1 23 144
+805 ite 3 804 44 803
+806 and 1 26 103
+807 ite 3 806 44 805
+808 and 1 23 146
+809 ite 3 808 44 807
+810 and 1 21 126
+811 ite 3 810 44 809
+812 next 3 44 811
+814 and 1 18 100
+815 ite 2 814 11 10
+816 and 1 28 128
+817 ite 2 816 14 815
+818 and 1 25 119
+819 ite 2 818 11 817
+820 and 1 19 132
+821 ite 2 820 15 819
+822 and 1 26 94
+823 ite 2 822 6 821
+824 and 1 27 150
+825 ite 2 824 8 823
+826 and 1 21 142
+827 ite 2 826 13 825
+828 and 1 18 84
+829 ite 2 828 15 827
+830 and 1 27 96
+831 ite 2 830 6 829
+832 and 1 28 127
+833 ite 2 832 6 831
+834 and 1 27 151
+835 ite 2 834 12 833
+836 and 1 23 145
+837 ite 2 836 11 835
+838 and 1 21 141
+839 ite 2 838 6 837
+840 and 1 21 137
+841 ite 2 840 14 839
+842 and 1 21 140
+843 ite 2 842 11 841
+844 and 1 25 120
+845 ite 2 844 6 843
+846 and 1 28 122
+847 ite 2 846 13 845
+848 and 1 23 133
+849 ite 2 848 9 847
+850 and 1 20 30
+851 ite 2 850 12 849
+852 and 1 25 113
+853 ite 2 852 14 851
+854 and 1 23 148
+855 ite 2 854 16 853
+856 and 1 28 129
+857 ite 2 856 11 855
+858 and 1 23 147
+859 ite 2 858 13 857
+860 and 1 23 144
+861 ite 2 860 6 859
+862 and 1 26 103
+863 ite 2 862 11 861
+864 and 1 23 146
+865 ite 2 864 14 863
+866 and 1 21 126
+867 ite 2 866 16 865
+868 next 2 17 867
+870 init 2 17 7
+872 init 3 36 32
+873 init 3 37 32
+874 init 3 38 32
+875 init 3 39 32
+876 init 3 40 32
+877 init 3 41 32
+878 init 3 42 32
+879 init 3 43 32
+880 init 3 44 32
+881 init 3 45 32
+882 init 4 46 34
+883 init 4 47 34
+885 constraint -22
+887 or 1 20 21
+888 or 1 887 25
+889 or 1 888 26
+890 or 1 889 28
+891 bad 890
+
+--- COMMON FORMAL ROUTE CONTRACT ---
+TASK: Choose a small invariant-synthesis grammar. Do not output an invariant,
+proof, coefficient value, or assertion. The formal backend expands every route,
+runs Houdini, and checks the original BTOR2. Your output is untrusted routing
+advice only.
+
+MACHINE SEMANTICS:
+- All state arithmetic is fixed-width bit-vector arithmetic modulo 2^width.
+- Comparisons must state signed or unsigned semantics.
+- A route may use only variables from the catalog below.
+- Phase guards are applied by the formal experiment, not selected by you.
+
+VARIABLE_CATALOG_JSON:
+[
+  {
+    "init": "0",
+    "name": "a",
+    "ref": "state36",
+    "width": 64
+  },
+  {
+    "init": "0",
+    "name": "b",
+    "ref": "state37",
+    "width": 64
+  },
+  {
+    "init": "0",
+    "name": "c",
+    "ref": "state38",
+    "width": 64
+  },
+  {
+    "init": "0",
+    "name": "d",
+    "ref": "state39",
+    "width": 64
+  },
+  {
+    "init": "0",
+    "name": "k",
+    "ref": "state40",
+    "width": 64
+  },
+  {
+    "init": "0",
+    "name": "p",
+    "ref": "state41",
+    "width": 64
+  },
+  {
+    "init": "0",
+    "name": "q",
+    "ref": "state42",
+    "width": 64
+  },
+  {
+    "init": "0",
+    "name": "r",
+    "ref": "state43",
+    "width": 64
+  },
+  {
+    "init": "0",
+    "name": "s",
+    "ref": "state44",
+    "width": 64
+  },
+  {
+    "init": "0",
+    "name": "v",
+    "ref": "state45",
+    "width": 64
+  },
+  {
+    "init": "0",
+    "name": "x",
+    "ref": "state46",
+    "width": 32
+  },
+  {
+    "init": "0",
+    "name": "y",
+    "ref": "state47",
+    "width": 32
+  }
+]
+
+PHASE_CATALOG_JSON:
+[
+  {
+    "guard": "state17 == 1",
+    "phase_id": "pc_state17_w11_v1",
+    "width": 11
+  },
+  {
+    "guard": "state17 == 2",
+    "phase_id": "pc_state17_w11_v2",
+    "width": 11
+  },
+  {
+    "guard": "state17 == 4",
+    "phase_id": "pc_state17_w11_v4",
+    "width": 11
+  },
+  {
+    "guard": "state17 == 8",
+    "phase_id": "pc_state17_w11_v8",
+    "width": 11
+  },
+  {
+    "guard": "state17 == 16",
+    "phase_id": "pc_state17_w11_v16",
+    "width": 11
+  },
+  {
+    "guard": "state17 == 32",
+    "phase_id": "pc_state17_w11_v32",
+    "width": 11
+  },
+  {
+    "guard": "state17 == 64",
+    "phase_id": "pc_state17_w11_v64",
+    "width": 11
+  },
+  {
+    "guard": "state17 == 128",
+    "phase_id": "pc_state17_w11_v128",
+    "width": 11
+  },
+  {
+    "guard": "state17 == 256",
+    "phase_id": "pc_state17_w11_v256",
+    "width": 11
+  },
+  {
+    "guard": "state17 == 512",
+    "phase_id": "pc_state17_w11_v512",
+    "width": 11
+  },
+  {
+    "guard": "state17 == 1024",
+    "phase_id": "pc_state17_w11_v1024",
+    "width": 11
+  }
+]
+
+OUTPUT CONTRACT:
+- Output exactly one JSON object and no Markdown.
+- Top-level fields: "schema" and "routes" only.
+- schema must be "pono-llm-grammar-route-v1".
+- routes must contain 1 to 8 route objects.
+- Every route has exactly variables, family, relations, signedness, plus only
+  the family field listed below.
+- family="unary": one variable; optional constants integer list [-16,16].
+- family="pairwise_offset": two same-width variables; optional offsets integer
+  list [-16,16].
+- family="affine": two or three same-width variables; optional
+  coefficient_bound integer [1,8].
+- family="sum_equality": three same-width variables ordered as result, addend1,
+  addend2; no family-specific field.
+- family="quadratic_recurrence": two same-width variables ordered as accumulator,
+  counter; optional scales [1,8] and counter_shifts [-4,4].
+- relations is a non-empty subset of ["eq","le","ge"].
+- signedness is exactly "signed" or "unsigned".
+- No explanation and no extra fields.

@@ -1,0 +1,60 @@
+{
+  "schema": "pono-llm-grammar-route-v1",
+  "routes": [
+    {
+      "variables": ["cnt"],
+      "family": "unary",
+      "relations": ["eq", "le", "ge"],
+      "signedness": "signed",
+      "constants": [-16, 16]
+    },
+    {
+      "variables": ["res"],
+      "family": "unary",
+      "relations": ["eq", "le", "ge"],
+      "signedness": "signed",
+      "constants": [-16, 16]
+    },
+    {
+      "variables": ["cnt", "res"],
+      "family": "pairwise_offset",
+      "relations": ["eq", "le", "ge"],
+      "signedness": "signed",
+      "offsets": [-16, 16]
+    },
+    {
+      "variables": ["cnt", "res", "a"],
+      "family": "affine",
+      "relations": ["eq", "le", "ge"],
+      "signedness": "signed",
+      "coefficient_bound": 8
+    },
+    {
+      "variables": ["cnt", "res", "b"],
+      "family": "affine",
+      "relations": ["eq", "le", "ge"],
+      "signedness": "signed",
+      "coefficient_bound": 8
+    },
+    {
+      "variables": ["res", "cnt", "a"],
+      "family": "sum_equality",
+      "relations": ["eq"],
+      "signedness": "signed"
+    },
+    {
+      "variables": ["res", "cnt", "b"],
+      "family": "sum_equality",
+      "relations": ["eq"],
+      "signedness": "signed"
+    },
+    {
+      "variables": ["res", "cnt"],
+      "family": "quadratic_recurrence",
+      "relations": ["eq", "le", "ge"],
+      "signedness": "signed",
+      "scales": [1, 8],
+      "counter_shifts": [-4, 4]
+    }
+  ]
+}

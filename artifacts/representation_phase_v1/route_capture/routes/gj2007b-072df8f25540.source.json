@@ -1,0 +1,101 @@
+{
+  "routes": [
+    {
+      "constants": [
+        0
+      ],
+      "family": "unary",
+      "relations": [
+        "ge"
+      ],
+      "requested_variables": [
+        "m"
+      ],
+      "route_id": "4a9bd703c502ee480517fdc37404e0b08a31664a30f361e9a5e5cbcd694a599d",
+      "signedness": "signed",
+      "variables": [
+        "state22"
+      ],
+      "width": 32
+    },
+    {
+      "constants": [
+        0
+      ],
+      "family": "unary",
+      "relations": [
+        "le"
+      ],
+      "requested_variables": [
+        "n"
+      ],
+      "route_id": "029dcc20f181f6ff387eb6b862cdc01b9a97fff9bbe0fbe206db072ddd62cd44",
+      "signedness": "signed",
+      "variables": [
+        "state23"
+      ],
+      "width": 32
+    },
+    {
+      "family": "pairwise_offset",
+      "offsets": [
+        0
+      ],
+      "relations": [
+        "le"
+      ],
+      "requested_variables": [
+        "m",
+        "n"
+      ],
+      "route_id": "19edca5619437ab142c734e179d003f3e6023ac1de45c099ceafbf37b068e598",
+      "signedness": "signed",
+      "variables": [
+        "state22",
+        "state23"
+      ],
+      "width": 32
+    },
+    {
+      "family": "pairwise_offset",
+      "offsets": [
+        0
+      ],
+      "relations": [
+        "le"
+      ],
+      "requested_variables": [
+        "x",
+        "n"
+      ],
+      "route_id": "354819062b9d1af84789db0cd085c4fab4e86ce6740bbdfbf55364f03188d600",
+      "signedness": "signed",
+      "variables": [
+        "state24",
+        "state23"
+      ],
+      "width": 32
+    },
+    {
+      "family": "pairwise_offset",
+      "offsets": [
+        0
+      ],
+      "relations": [
+        "le"
+      ],
+      "requested_variables": [
+        "m",
+        "x"
+      ],
+      "route_id": "d3d9fc78d4a9c087bf4a53f4b2c303572cfa087201b57e44bfee73724447d32c",
+      "signedness": "signed",
+      "variables": [
+        "state22",
+        "state24"
+      ],
+      "width": 32
+    }
+  ],
+  "schema": "pono-llm-grammar-route-v1"
+}

@@ -1,0 +1,24 @@
+{
+  "routes": [
+    {
+      "family": "sum_equality",
+      "relations": [
+        "eq"
+      ],
+      "requested_variables": [
+        "k",
+        "i",
+        "j"
+      ],
+      "route_id": "229c0312e322e334780bda834ee8e874ff0b4238be6a365435c74e3e583a3669",
+      "signedness": "unsigned",
+      "variables": [
+        "state27",
+        "state25",
+        "state26"
+      ],
+      "width": 32
+    }
+  ],
+  "schema": "pono-llm-grammar-route-v1"
+}

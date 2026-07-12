@@ -1,0 +1,67 @@
+{
+  "canonical_file_sha256": {
+    "baseline_screen.csv": "db39765c5ebd22a11850278b68cf6c2972f867683c0ce4cacf1d0975e5b3c1de",
+    "exhaustive_phase_matrix/manifest.json": "55636bc2d06e6db15a5696e213820059688cb457090222a4ae58448a7310ac43",
+    "frozen_route_audit.json": "96289a6ed154d0389133c3c912d218d43caa61064ee052e5d410516e54b37205",
+    "pilot.json": "a206514a52b837f13df22d79ff65753605804d3278a2979086e56d4a2ceaee21",
+    "population.json": "01ec7bf8f0ba1c575b20b835e9431e251ace0686dcd5c388ddeee83885bc4ffe",
+    "route_capture/integrity.json": "f374289c3928f3654cb72a85cf75d7eff2ca36c2fc0add1fbee5e8256bbb8e52",
+    "route_capture/manifest.json": "d5158a19ccf511bffc4336c72011a0e07a9b9d024ec61274550f9bd8c198e618",
+    "routed_phase_matrix/manifest.json": "2b600f984adc3b99ae6ccb4e0c5f9e53100b987c8fec4c59dcab46f26c07e107",
+    "routed_unsat_audit/manifest.json": "fa04fe45e23a0f67fae3bc6f1f81285bd0b60b4f76892d91ec61905ad1663941",
+    "views/manifest.json": "552e1c651f3fba2e839de2c198fd8963f6797e154195b3aa6d301ef8155fddc2"
+  },
+  "environment": {
+    "ASAN_OPTIONS": "detect_leaks=0",
+    "pono_build": "AddressSanitizer-instrumented local build",
+    "reason": "existing btor2 parser leak reports otherwise alter process exit status; model/solver semantics unchanged"
+  },
+  "experiment_contract": {
+    "baseline_fast_engine_timeout_sec": 10.0,
+    "baseline_ic3ia_timeout_sec": 10.0,
+    "certificate_timeout_ms": 20000,
+    "exhaustive_candidate_cap": 50000,
+    "formal_candidate_cap": 20000,
+    "ic3ia_max_refinements": 2,
+    "lexical_token_budget": 6000,
+    "max_llm_routes": 8,
+    "pono_timeout_sec": 10.0,
+    "reasoning_effort": "none",
+    "route_capture_model": "deepseek/deepseek-v4-flash",
+    "temperature": 0.0
+  },
+  "external_revisions": {
+    "cpv": "2b20529bf4cd49922a14e0514631a148ce69236f",
+    "sv_benchmarks": "1e5856db49f3a4766f416cc60382aa92012b2939",
+    "svcomp25_to_btor2": "d9838013ea48568a21a106a7fc94f11c13ac5ad6"
+  },
+  "git_head": "4bb1908ec1030b55e98333397ad4658cea73aae1",
+  "git_tracked_worktree_dirty": true,
+  "recorded_at": "2026-07-12T16:22:39.541040+00:00",
+  "reproduction_notes": {
+    "reason": "original FMPA2 source checkout disappeared after capture",
+    "source_checkout_recreated": true,
+    "validation": "population.json and views/ regenerated from the same pinned commit were byte-identical"
+  },
+  "schema": "pono-llm-representation-phase-provenance-v1",
+  "source_sha256": {
+    "scripts/audit_frozen_routes.py": "f864862a39021f0a11773573df2264a8ea0a760d9549c9709c4066b5f6871b36",
+    "scripts/audit_routed_unsat.py": "045463fed42a122ad594695c658e8ee233f039f23f6642378237796ee4218a4a",
+    "scripts/build_paired_corpus.py": "6f9af46a2c8bf5b360fd0d8307c5cf7e2941bcb9beea01a68a382333341a24bf",
+    "scripts/capture_grammar_routes.py": "51070bfa470b5293b7871fb64566ccc0f0e894f0fd2f6ed2654ad1f4b38bbe38",
+    "scripts/grammar_routes.py": "c1765cd57e652b7e579daf6a573934b22b570bda31998d64d5f73f72ad56aaca",
+    "scripts/representation_views.py": "e3e56f5dca6f4b96b5e0e6981ed0adea6a918a4c70c72452dc416b1a32f518f4",
+    "scripts/run_paired_phase_matrix.py": "f5779be980bb1824cda4b04bebe1ec44254b7393be3136d6abb102c8d1090e0e",
+    "scripts/run_phase_grammar.py": "9f7681f03d9bcbb3a3e6076aa02dcdc1bd0f66949994e0d43a17295c67d6888b",
+    "scripts/run_routed_phase_matrix.py": "5326202c801578fd27a2fb1aceb681b62a2255913d873d69d9d08bc5d63c4227",
+    "scripts/screen_paired_baseline.py": "4aace7eda197758154f4974cc464969813dfb5d3e12fc748ddeb84c2cb859f1c",
+    "scripts/select_paired_pilot.py": "d5bee18c56f8131cfe0d243ee015b7d709ba6074fa26ef3ab5d063ca56040ac3",
+    "scripts/summarize_representation_phase.py": "3177c999667391e31cd1b27e4f42458fad3b45dc50ac2482401235eae8be965b",
+    "scripts/tests/test_representation_phase_gate.py": "ad3fa6c29bfb0196a8bb8ca7333c8f389c3b23ea9077537adc00188311dac476"
+  },
+  "superseded_exploration": {
+    "included_in_canonical_result": false,
+    "reason": "first exploratory bounded grammar omitted signed inequalities",
+    "replacement": "canonical exhaustive/routed matrices include signed and unsigned bounded comparisons"
+  }
+}

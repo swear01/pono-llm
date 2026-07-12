@@ -1,0 +1,593 @@
+{
+  "arm": "lifted",
+  "benchmark": "/tmp/svcomp25-sparse/translated/safety-func/loops/count_up_down-1.btor2",
+  "benchmark_id": "loops/count_up_down-1.btor2",
+  "benchmark_sha256": "ffd2ca2e4bf9f5c2d0948aefeb6d18ff3ad11c442acd91e54dec6cc1dbb35e25",
+  "candidate_generation_sec": 0.005686599761247635,
+  "candidate_sha256": "94401194057a5993e7238821f88a4d630d3595f7e41c0abe8187df5416e1d2a7",
+  "certificate": {
+    "checks": [
+      {
+        "name": "C1 Init=>H",
+        "result": "unsat"
+      },
+      {
+        "name": "C2 inductive",
+        "result": "unsat"
+      },
+      {
+        "name": "C3 H=>notBAD",
+        "result": "unsat"
+      }
+    ],
+    "init_queries": 2,
+    "ok": true,
+    "removed_initial_indices": [
+      9,
+      14,
+      19,
+      24,
+      29,
+      34,
+      39,
+      44,
+      54,
+      59,
+      64,
+      69,
+      74,
+      79,
+      84,
+      89,
+      99,
+      104,
+      109,
+      114,
+      119,
+      124,
+      129,
+      134
+    ],
+    "removed_step_indices": [
+      0,
+      10,
+      15,
+      20,
+      25,
+      30,
+      35,
+      40,
+      50,
+      55,
+      60,
+      65,
+      70,
+      75,
+      80,
+      85,
+      90,
+      100,
+      105,
+      110,
+      115,
+      120,
+      125,
+      130,
+      135,
+      140,
+      145,
+      150,
+      155,
+      160,
+      165,
+      170,
+      175,
+      180,
+      185,
+      5,
+      45,
+      95,
+      6,
+      11,
+      16,
+      21,
+      26,
+      31,
+      36,
+      41,
+      46,
+      51,
+      56,
+      61,
+      66,
+      71,
+      76,
+      81,
+      86,
+      91,
+      96,
+      101,
+      106,
+      111,
+      116,
+      121,
+      126,
+      131,
+      136,
+      141,
+      146,
+      151,
+      156,
+      161,
+      166,
+      171,
+      176,
+      181,
+      186
+    ],
+    "selected_indices": [
+      1,
+      2,
+      3,
+      4,
+      7,
+      8,
+      12,
+      13,
+      17,
+      18,
+      22,
+      23,
+      27,
+      28,
+      32,
+      33,
+      37,
+      38,
+      42,
+      43,
+      47,
+      48,
+      49,
+      52,
+      53,
+      57,
+      58,
+      62,
+      63,
+      67,
+      68,
+      72,
+      73,
+      77,
+      78,
+      82,
+      83,
+      87,
+      88,
+      92,
+      93,
+      94,
+      97,
+      98,
+      102,
+      103,
+      107,
+      108,
+      112,
+      113,
+      117,
+      118,
+      122,
+      123,
+      127,
+      128,
+      132,
+      133,
+      137,
+      138,
+      139,
+      142,
+      143,
+      144,
+      147,
+      148,
+      149,
+      152,
+      153,
+      154,
+      157,
+      158,
+      159,
+      162,
+      163,
+      164,
+      167,
+      168,
+      169,
+      172,
+      173,
+      174,
+      177,
+      178,
+      179,
+      182,
+      183,
+      184,
+      187,
+      188,
+      189,
+      190,
+      191,
+      192,
+      193,
+      194
+    ],
+    "step_queries": 4,
+    "unsupported_candidates": []
+  },
+  "certificate_time_sec": 0.35643094778060913,
+  "config": "llm-lifted",
+  "end_to_end_sec": 0.36211754754185677,
+  "end_to_end_with_generation_sec": 2.727001003921032,
+  "engine": "phase-grammar-certificate",
+  "error": "",
+  "exit": 0,
+  "expected_verdict": "safe",
+  "generation_time_sec": 2.364883456379175,
+  "matrix_schema": "pono-llm-routed-phase-matrix-v1",
+  "model_checker_time_sec": 0.0,
+  "offline_time_sec": 0.36211754754185677,
+  "phase_count": 5,
+  "phase_mode": "all",
+  "phases": [
+    {
+      "equality_node": 11,
+      "guard_ast": {
+        "args": [
+          {
+            "form": "ref",
+            "ref": "state10"
+          },
+          {
+            "const": "1",
+            "form": "const",
+            "width": 5
+          }
+        ],
+        "form": "eq"
+      },
+      "is_bad": false,
+      "is_initial": false,
+      "pc_ref": "state10",
+      "phase_id": "pc_state10_w5_v1",
+      "value": 1,
+      "width": 5
+    },
+    {
+      "equality_node": 12,
+      "guard_ast": {
+        "args": [
+          {
+            "form": "ref",
+            "ref": "state10"
+          },
+          {
+            "const": "2",
+            "form": "const",
+            "width": 5
+          }
+        ],
+        "form": "eq"
+      },
+      "is_bad": false,
+      "is_initial": false,
+      "pc_ref": "state10",
+      "phase_id": "pc_state10_w5_v2",
+      "value": 2,
+      "width": 5
+    },
+    {
+      "equality_node": 13,
+      "guard_ast": {
+        "args": [
+          {
+            "form": "ref",
+            "ref": "state10"
+          },
+          {
+            "const": "4",
+            "form": "const",
+            "width": 5
+          }
+        ],
+        "form": "eq"
+      },
+      "is_bad": true,
+      "is_initial": false,
+      "pc_ref": "state10",
+      "phase_id": "pc_state10_w5_v4",
+      "value": 4,
+      "width": 5
+    },
+    {
+      "equality_node": 14,
+      "guard_ast": {
+        "args": [
+          {
+            "form": "ref",
+            "ref": "state10"
+          },
+          {
+            "const": "8",
+            "form": "const",
+            "width": 5
+          }
+        ],
+        "form": "eq"
+      },
+      "is_bad": false,
+      "is_initial": false,
+      "pc_ref": "state10",
+      "phase_id": "pc_state10_w5_v8",
+      "value": 8,
+      "width": 5
+    },
+    {
+      "equality_node": 15,
+      "guard_ast": {
+        "args": [
+          {
+            "form": "ref",
+            "ref": "state10"
+          },
+          {
+            "const": "16",
+            "form": "const",
+            "width": 5
+          }
+        ],
+        "form": "eq"
+      },
+      "is_bad": false,
+      "is_initial": true,
+      "pc_ref": "state10",
+      "phase_id": "pc_state10_w5_v16",
+      "value": 16,
+      "width": 5
+    }
+  ],
+  "pilot_sha256": "723eb64225d2c39fb4fba8477759307d184f6b40293ac4407dd3518aa1d34d0c",
+  "pool_candidate_count": 195,
+  "proof_time_sec": 0.35643094778060913,
+  "route_count": 5,
+  "route_diagnostics": {
+    "capture_metadata": "metadata/count_up_down-1-c5bb6766011f.lifted.json"
+  },
+  "route_error": "",
+  "route_sha256": "70ce3023cf6b9d37c07081e32d7b0be6a49981a56b36bf1cef4473530becc5f2",
+  "route_valid": true,
+  "router": "llm",
+  "routes": [
+    {
+      "constants": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "family": "unary",
+      "relations": [
+        "eq"
+      ],
+      "requested_variables": [
+        "x"
+      ],
+      "route_id": "845163b72710b6322385c70d774ae63bef858a6ac1184bf55b40e20f978338ad",
+      "signedness": "unsigned",
+      "variables": [
+        "state24"
+      ],
+      "width": 32
+    },
+    {
+      "constants": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "family": "unary",
+      "relations": [
+        "eq"
+      ],
+      "requested_variables": [
+        "y"
+      ],
+      "route_id": "a3a2c0fd9dae828f0163c8619694afd1aa550873eee3d670be695609027793fd",
+      "signedness": "unsigned",
+      "variables": [
+        "state25"
+      ],
+      "width": 32
+    },
+    {
+      "family": "pairwise_offset",
+      "offsets": [
+        0,
+        1,
+        -1,
+        2,
+        -2,
+        3,
+        -3,
+        4,
+        -4
+      ],
+      "relations": [
+        "eq"
+      ],
+      "requested_variables": [
+        "x",
+        "y"
+      ],
+      "route_id": "5831e861820a875fb2875156e09e0d9c936c3f0b742729fbdfbbb9970de0cdb7",
+      "signedness": "unsigned",
+      "variables": [
+        "state24",
+        "state25"
+      ],
+      "width": 32
+    },
+    {
+      "coefficient_bound": 4,
+      "family": "affine",
+      "relations": [
+        "eq"
+      ],
+      "requested_variables": [
+        "x",
+        "y"
+      ],
+      "route_id": "001e9850dc726805a3e1a1447a54abc11f2f8d2f8b0dca551c508e80215a8a45",
+      "signedness": "unsigned",
+      "variables": [
+        "state24",
+        "state25"
+      ],
+      "width": 32
+    },
+    {
+      "family": "sum_equality",
+      "relations": [
+        "eq"
+      ],
+      "requested_variables": [
+        "n",
+        "x",
+        "y"
+      ],
+      "route_id": "9a6f8f63711a0939ae1500886ba9d846cb5f6ef6065956e838c778d7de97e3b7",
+      "signedness": "unsigned",
+      "variables": [
+        "state23",
+        "state24",
+        "state25"
+      ],
+      "width": 32
+    }
+  ],
+  "schema": "pono-llm-phase-grammar-run-v1",
+  "selected_candidate_count": 96,
+  "selected_indices": [
+    1,
+    2,
+    3,
+    4,
+    7,
+    8,
+    12,
+    13,
+    17,
+    18,
+    22,
+    23,
+    27,
+    28,
+    32,
+    33,
+    37,
+    38,
+    42,
+    43,
+    47,
+    48,
+    49,
+    52,
+    53,
+    57,
+    58,
+    62,
+    63,
+    67,
+    68,
+    72,
+    73,
+    77,
+    78,
+    82,
+    83,
+    87,
+    88,
+    92,
+    93,
+    94,
+    97,
+    98,
+    102,
+    103,
+    107,
+    108,
+    112,
+    113,
+    117,
+    118,
+    122,
+    123,
+    127,
+    128,
+    132,
+    133,
+    137,
+    138,
+    139,
+    142,
+    143,
+    144,
+    147,
+    148,
+    149,
+    152,
+    153,
+    154,
+    157,
+    158,
+    159,
+    162,
+    163,
+    164,
+    167,
+    168,
+    169,
+    172,
+    173,
+    174,
+    177,
+    178,
+    179,
+    182,
+    183,
+    184,
+    187,
+    188,
+    189,
+    190,
+    191,
+    192,
+    193,
+    194
+  ],
+  "selection_role": "safe-baseline-hard",
+  "source_family_id": "4b81287e660ca8c3ad7ed61e0556cea4f5f5ad41b16a474c5b325850c8269d86",
+  "verdict": "unsat"
+}

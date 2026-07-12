@@ -1,0 +1,1 @@
+INVAR: (and (and true (=> (= state10 #b00001) (= state23 (bvadd state24 state25)))) (not (= (bvcomp state10 #b00100) #b1)))

@@ -1,0 +1,65 @@
+{
+  "routes": [
+    {
+      "family": "pairwise_offset",
+      "offsets": [
+        0
+      ],
+      "relations": [
+        "le"
+      ],
+      "requested_variables": [
+        "x",
+        "y"
+      ],
+      "route_id": "4fa8ec3fe3f3bb60d62380a8979cc63b9635b01bdb96009d877bb65917108f88",
+      "signedness": "signed",
+      "variables": [
+        "state23",
+        "state24"
+      ],
+      "width": 32
+    },
+    {
+      "family": "pairwise_offset",
+      "offsets": [
+        0
+      ],
+      "relations": [
+        "le"
+      ],
+      "requested_variables": [
+        "x",
+        "n"
+      ],
+      "route_id": "a7078cc93fa70fac00d83376e9d4a0d098e6613132a2b5f7abd9fdb568014289",
+      "signedness": "signed",
+      "variables": [
+        "state23",
+        "state22"
+      ],
+      "width": 32
+    },
+    {
+      "family": "pairwise_offset",
+      "offsets": [
+        0
+      ],
+      "relations": [
+        "le"
+      ],
+      "requested_variables": [
+        "y",
+        "n"
+      ],
+      "route_id": "5b0594a03ded44d096bc694336c0e086e99723f0084009221a6e82140284e21d",
+      "signedness": "signed",
+      "variables": [
+        "state24",
+        "state22"
+      ],
+      "width": 32
+    }
+  ],
+  "schema": "pono-llm-grammar-route-v1"
+}

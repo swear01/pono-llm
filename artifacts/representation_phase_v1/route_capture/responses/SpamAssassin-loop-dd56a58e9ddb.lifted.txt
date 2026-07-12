@@ -1,0 +1,60 @@
+{
+  "schema": "pono-llm-grammar-route-v1",
+  "routes": [
+    {
+      "variables": ["i", "j"],
+      "family": "pairwise_offset",
+      "relations": ["le"],
+      "signedness": "signed",
+      "offsets": [0]
+    },
+    {
+      "variables": ["i", "len"],
+      "family": "pairwise_offset",
+      "relations": ["le"],
+      "signedness": "unsigned",
+      "offsets": [0]
+    },
+    {
+      "variables": ["j", "len"],
+      "family": "pairwise_offset",
+      "relations": ["le"],
+      "signedness": "unsigned",
+      "offsets": [0]
+    },
+    {
+      "variables": ["i", "bufsize"],
+      "family": "pairwise_offset",
+      "relations": ["le"],
+      "signedness": "unsigned",
+      "offsets": [0]
+    },
+    {
+      "variables": ["j", "bufsize"],
+      "family": "pairwise_offset",
+      "relations": ["le"],
+      "signedness": "unsigned",
+      "offsets": [0]
+    },
+    {
+      "variables": ["len", "limit"],
+      "family": "pairwise_offset",
+      "relations": ["le"],
+      "signedness": "unsigned",
+      "offsets": [0]
+    },
+    {
+      "variables": ["bufsize", "limit"],
+      "family": "pairwise_offset",
+      "relations": ["le"],
+      "signedness": "unsigned",
+      "offsets": [0]
+    },
+    {
+      "variables": ["i", "j", "len"],
+      "family": "sum_equality",
+      "relations": ["eq"],
+      "signedness": "unsigned"
+    }
+  ]
+}

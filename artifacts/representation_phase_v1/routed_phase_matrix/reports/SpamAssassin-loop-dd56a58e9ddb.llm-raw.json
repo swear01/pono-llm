@@ -1,0 +1,32 @@
+{
+  "arm": "raw",
+  "benchmark_id": "loop-invgen/SpamAssassin-loop.btor2",
+  "benchmark_sha256": "8766f2f99e909941ced206fdb9a1dab7205d1110e0a0c2ee85db86100df3236b",
+  "candidate_sha256": "",
+  "certificate": {
+    "checks": [],
+    "ok": false
+  },
+  "certificate_time_sec": 0.0,
+  "config": "llm-raw",
+  "end_to_end_with_generation_sec": 2.6662591733038425,
+  "engine": "",
+  "error": "",
+  "expected_verdict": "safe",
+  "generation_time_sec": 2.6662591733038425,
+  "matrix_schema": "pono-llm-routed-phase-matrix-v1",
+  "model_checker_time_sec": 0.0,
+  "offline_time_sec": 0.0,
+  "phase_count": 21,
+  "pilot_sha256": "723eb64225d2c39fb4fba8477759307d184f6b40293ac4407dd3518aa1d34d0c",
+  "pool_candidate_count": 0,
+  "route_count": 0,
+  "route_error": "route 0.offsets must not contain duplicates",
+  "route_sha256": "",
+  "route_valid": false,
+  "router": "llm",
+  "selected_candidate_count": 0,
+  "selection_role": "safe-baseline-hard",
+  "source_family_id": "68d0cd7105ca5c9fa73e412cfaf7aa09b6f04a9b26a9696fb8132e09b90da9ba",
+  "verdict": "invalid-route"
+}

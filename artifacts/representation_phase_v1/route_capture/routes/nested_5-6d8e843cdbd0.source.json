@@ -1,0 +1,135 @@
+{
+  "routes": [
+    {
+      "constants": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "family": "unary",
+      "relations": [
+        "eq"
+      ],
+      "requested_variables": [
+        "a"
+      ],
+      "route_id": "44cad18970c4cc05c5d6301720203945a5b4e7b20a18dfbec550392af0d6863f",
+      "signedness": "signed",
+      "variables": [
+        "state30"
+      ],
+      "width": 32
+    },
+    {
+      "constants": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "family": "unary",
+      "relations": [
+        "eq"
+      ],
+      "requested_variables": [
+        "b"
+      ],
+      "route_id": "5c5392db7ad79ac210af33361512f147e954b8bce78c725d93a4662e8b67d604",
+      "signedness": "signed",
+      "variables": [
+        "state31"
+      ],
+      "width": 32
+    },
+    {
+      "constants": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "family": "unary",
+      "relations": [
+        "eq"
+      ],
+      "requested_variables": [
+        "c"
+      ],
+      "route_id": "c9ba0b4b9751a7579c2c7496a6570aa8c15a03e5a4e6bc23f160ea3d26234828",
+      "signedness": "signed",
+      "variables": [
+        "state32"
+      ],
+      "width": 32
+    },
+    {
+      "constants": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "family": "unary",
+      "relations": [
+        "eq"
+      ],
+      "requested_variables": [
+        "d"
+      ],
+      "route_id": "312427ba96cab7d7f0cd890c3b13e81f5d155e0fa318d23084e48790e05896ce",
+      "signedness": "signed",
+      "variables": [
+        "state33"
+      ],
+      "width": 32
+    },
+    {
+      "constants": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "family": "unary",
+      "relations": [
+        "eq"
+      ],
+      "requested_variables": [
+        "e"
+      ],
+      "route_id": "49bd2669a8403d0417ad3a93fb21e99b7c724aa3f5067a63074249f3cc01d941",
+      "signedness": "signed",
+      "variables": [
+        "state34"
+      ],
+      "width": 32
+    }
+  ],
+  "schema": "pono-llm-grammar-route-v1"
+}

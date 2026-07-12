@@ -1,0 +1,201 @@
+REPRESENTATION: RAW BTOR2 PROPERTY/TRANSITION CONE
+ROOT_EXPRESSION_NODES: -14,11,12,13,14,15,67,76,85,94,104
+NODE_BUDGET: 1200
+SELECTED_LINES: 106
+TRUNCATED_FRONTIER_COUNT: 0
+
+1 sort bitvec 1
+2 sort bitvec 32
+3 sort bitvec 5
+5 const 3 00001
+6 const 3 00010
+7 const 3 00100
+8 const 3 01000
+9 const 3 10000
+10 state 3 !pc
+11 eq 1 10 5
+12 eq 1 10 6
+13 eq 1 10 7
+14 eq 1 10 8
+15 eq 1 10 9
+17 const 2 00000000000000000000000000000001
+18 const 1 1
+19 const 2 00000000000011110100001001000000
+20 const 1 1
+21 const 2 00000000000000000000000000000000
+22 const 2 11111111111111111111111111111111
+24 state 2 !{$(in_main#0)<b>}
+25 state 2 !{$(in_main#0)<cnt>}
+26 state 2 !{$(in_main#0)<res>}
+27 state 2 !{$(in_main#0)<a>}
+28 input 2 %{$(in_main#0)<res>}#1
+29 input 2 !{$(in_main#0)<$(in___VERIFIER_nondet_int#0)<h#<__VERIFIER_nondet_int.return>>>}
+30 input 2 !{$(in_main#0)<$(in___VERIFIER_nondet_int#1)<h#<__VERIFIER_nondet_int.return>>>}
+31 input 2 %{$(in_main#0)<cnt>}#1
+33 add 2 17 26
+34 slt 1 19 30
+35 slice 1 30 31 31
+36 slt 1 19 29
+37 slt 1 21 25
+38 add 2 24 27
+39 add 2 22 25
+40 not 1 34
+41 eq 1 35 20
+42 not 1 36
+43 not 1 37
+44 eq 1 26 38
+45 and 1 18 37
+46 and 1 18 40
+47 not 1 41
+48 and 1 18 43
+49 ite 2 44 17 21
+50 and 1 46 47
+51 and 1 47 40
+52 eq 1 49 21
+53 and 1 50 42
+54 not 1 51
+55 and 1 48 52
+56 and 1 42 54
+57 or 1 36 56
+58 and 1 18 57
+60 and 1 13 55
+61 ite 2 60 24 24
+62 and 1 11 53
+63 ite 2 62 30 61
+64 and 1 11 58
+65 ite 2 64 30 63
+66 and 1 13 45
+67 ite 2 66 24 65
+68 next 2 24 67
+69 and 1 13 55
+70 ite 2 69 25 25
+71 and 1 11 53
+72 ite 2 71 30 70
+73 and 1 11 58
+74 ite 2 73 31 72
+75 and 1 13 45
+76 ite 2 75 39 74
+77 next 2 25 76
+78 and 1 13 55
+79 ite 2 78 26 26
+80 and 1 11 53
+81 ite 2 80 29 79
+82 and 1 11 58
+83 ite 2 82 28 81
+84 and 1 13 45
+85 ite 2 84 33 83
+86 next 2 26 85
+87 and 1 13 55
+88 ite 2 87 27 27
+89 and 1 11 53
+90 ite 2 89 29 88
+91 and 1 11 58
+92 ite 2 91 29 90
+93 and 1 13 45
+94 ite 2 93 27 92
+95 next 2 27 94
+97 and 1 13 55
+98 ite 3 97 6 8
+99 and 1 11 53
+100 ite 3 99 7 98
+101 and 1 11 58
+102 ite 3 101 9 100
+103 and 1 13 45
+104 ite 3 103 7 102
+105 next 3 10 104
+107 init 3 10 5
+109 init 2 24 21
+110 init 2 25 21
+111 init 2 26 21
+112 init 2 27 21
+114 constraint -14
+116 bad 12
+
+--- COMMON FORMAL ROUTE CONTRACT ---
+TASK: Choose a small invariant-synthesis grammar. Do not output an invariant,
+proof, coefficient value, or assertion. The formal backend expands every route,
+runs Houdini, and checks the original BTOR2. Your output is untrusted routing
+advice only.
+
+MACHINE SEMANTICS:
+- All state arithmetic is fixed-width bit-vector arithmetic modulo 2^width.
+- Comparisons must state signed or unsigned semantics.
+- A route may use only variables from the catalog below.
+- Phase guards are applied by the formal experiment, not selected by you.
+
+VARIABLE_CATALOG_JSON:
+[
+  {
+    "init": "0",
+    "name": "a",
+    "ref": "state27",
+    "width": 32
+  },
+  {
+    "init": "0",
+    "name": "b",
+    "ref": "state24",
+    "width": 32
+  },
+  {
+    "init": "0",
+    "name": "cnt",
+    "ref": "state25",
+    "width": 32
+  },
+  {
+    "init": "0",
+    "name": "res",
+    "ref": "state26",
+    "width": 32
+  }
+]
+
+PHASE_CATALOG_JSON:
+[
+  {
+    "guard": "state10 == 1",
+    "phase_id": "pc_state10_w5_v1",
+    "width": 5
+  },
+  {
+    "guard": "state10 == 2",
+    "phase_id": "pc_state10_w5_v2",
+    "width": 5
+  },
+  {
+    "guard": "state10 == 4",
+    "phase_id": "pc_state10_w5_v4",
+    "width": 5
+  },
+  {
+    "guard": "state10 == 8",
+    "phase_id": "pc_state10_w5_v8",
+    "width": 5
+  },
+  {
+    "guard": "state10 == 16",
+    "phase_id": "pc_state10_w5_v16",
+    "width": 5
+  }
+]
+
+OUTPUT CONTRACT:
+- Output exactly one JSON object and no Markdown.
+- Top-level fields: "schema" and "routes" only.
+- schema must be "pono-llm-grammar-route-v1".
+- routes must contain 1 to 8 route objects.
+- Every route has exactly variables, family, relations, signedness, plus only
+  the family field listed below.
+- family="unary": one variable; optional constants integer list [-16,16].
+- family="pairwise_offset": two same-width variables; optional offsets integer
+  list [-16,16].
+- family="affine": two or three same-width variables; optional
+  coefficient_bound integer [1,8].
+- family="sum_equality": three same-width variables ordered as result, addend1,
+  addend2; no family-specific field.
+- family="quadratic_recurrence": two same-width variables ordered as accumulator,
+  counter; optional scales [1,8] and counter_shifts [-4,4].
+- relations is a non-empty subset of ["eq","le","ge"].
+- signedness is exactly "signed" or "unsigned".
+- No explanation and no extra fields.

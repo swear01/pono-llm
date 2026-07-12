@@ -1,0 +1,109 @@
+REPRESENTATION: PINNED SOURCE C
+SOURCE_FILE: count_up_down-1.c
+
+extern void abort(void);
+extern void __assert_fail(const char *, const char *, unsigned int, const char *) __attribute__ ((__nothrow__ , __leaf__)) __attribute__ ((__noreturn__));
+void reach_error() { __assert_fail("0", "count_up_down-1.c", 3, "reach_error"); }
+
+void __VERIFIER_assert(int cond) {
+  if (!(cond)) {
+    ERROR: {reach_error();abort();}
+  }
+  return;
+}
+unsigned int __VERIFIER_nondet_uint();
+
+int main()
+{
+  unsigned int n = __VERIFIER_nondet_uint();
+  unsigned int x=n, y=0;
+  while(x>0)
+  {
+    x--;
+    y++;
+  }
+  __VERIFIER_assert(y==n);
+}
+
+--- COMMON FORMAL ROUTE CONTRACT ---
+TASK: Choose a small invariant-synthesis grammar. Do not output an invariant,
+proof, coefficient value, or assertion. The formal backend expands every route,
+runs Houdini, and checks the original BTOR2. Your output is untrusted routing
+advice only.
+
+MACHINE SEMANTICS:
+- All state arithmetic is fixed-width bit-vector arithmetic modulo 2^width.
+- Comparisons must state signed or unsigned semantics.
+- A route may use only variables from the catalog below.
+- Phase guards are applied by the formal experiment, not selected by you.
+
+VARIABLE_CATALOG_JSON:
+[
+  {
+    "init": "0",
+    "name": "n",
+    "ref": "state23",
+    "width": 32
+  },
+  {
+    "init": "0",
+    "name": "x",
+    "ref": "state24",
+    "width": 32
+  },
+  {
+    "init": "0",
+    "name": "y",
+    "ref": "state25",
+    "width": 32
+  }
+]
+
+PHASE_CATALOG_JSON:
+[
+  {
+    "guard": "state10 == 1",
+    "phase_id": "pc_state10_w5_v1",
+    "width": 5
+  },
+  {
+    "guard": "state10 == 2",
+    "phase_id": "pc_state10_w5_v2",
+    "width": 5
+  },
+  {
+    "guard": "state10 == 4",
+    "phase_id": "pc_state10_w5_v4",
+    "width": 5
+  },
+  {
+    "guard": "state10 == 8",
+    "phase_id": "pc_state10_w5_v8",
+    "width": 5
+  },
+  {
+    "guard": "state10 == 16",
+    "phase_id": "pc_state10_w5_v16",
+    "width": 5
+  }
+]
+
+OUTPUT CONTRACT:
+- Output exactly one JSON object and no Markdown.
+- Top-level fields: "schema" and "routes" only.
+- schema must be "pono-llm-grammar-route-v1".
+- routes must contain 1 to 8 route objects.
+- Every route has exactly variables, family, relations, signedness, plus only
+  the family field listed below.
+- family="unary": one variable; optional constants integer list [-16,16].
+- family="pairwise_offset": two same-width variables; optional offsets integer
+  list [-16,16].
+- family="affine": two or three same-width variables; optional
+  coefficient_bound integer [1,8].
+- family="sum_equality": three same-width variables ordered as result, addend1,
+  addend2; no family-specific field.
+- family="quadratic_recurrence": two same-width variables ordered as accumulator,
+  counter; optional scales [1,8] and counter_shifts [-4,4].
+- relations is a non-empty subset of ["eq","le","ge"].
+- signedness is exactly "signed" or "unsigned".
+- No explanation and no extra fields.

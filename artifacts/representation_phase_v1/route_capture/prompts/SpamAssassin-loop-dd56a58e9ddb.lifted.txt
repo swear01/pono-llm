@@ -1,0 +1,211 @@
+REPRESENTATION: TARGET-DERIVED LIFTED RECURRENCE
+MODULE: unknown
+
+PHASES:
+- pc_state26_w21_v1: state26 == 1 (width 21)
+- pc_state26_w21_v2: state26 == 2 (width 21)
+- pc_state26_w21_v4: state26 == 4 (width 21)
+- pc_state26_w21_v8: state26 == 8 (width 21)
+- pc_state26_w21_v16: state26 == 16 (width 21)
+- pc_state26_w21_v32: state26 == 32 (width 21)
+- pc_state26_w21_v64: state26 == 64 (width 21)
+- pc_state26_w21_v128: state26 == 128 (width 21)
+- pc_state26_w21_v256: state26 == 256 (width 21)
+- pc_state26_w21_v512: state26 == 512 (width 21)
+- pc_state26_w21_v1024: state26 == 1024 (width 21)
+- pc_state26_w21_v2048: state26 == 2048 (width 21)
+- pc_state26_w21_v4096: state26 == 4096 (width 21)
+- pc_state26_w21_v8192: state26 == 8192 (width 21)
+- pc_state26_w21_v16384: state26 == 16384 (width 21)
+- pc_state26_w21_v32768: state26 == 32768 (width 21)
+- pc_state26_w21_v65536: state26 == 65536 (width 21)
+- pc_state26_w21_v131072: state26 == 131072 (width 21)
+- pc_state26_w21_v262144: state26 == 262144 (width 21)
+- pc_state26_w21_v524288: state26 == 524288 (width 21)
+- pc_state26_w21_v1048576: state26 == 1048576 (width 21)
+
+TRANSITIONS:
+- !pc' = (((!pc == 16) && (((((... && ...) && (... == ...)) && (... == 0)) && !(... == 0)) && !(((... <s ...) ? 1 : 0) == 0))) ? 16384 : (((!pc == 16) && ((((... && ...) && !(... == 0)) && !(((... <s ...) ? 1 : 0) == 0)) && !((... ? 1 : 0) == 0))) ? 2 : (((!pc == 8) && (1 && !(... == ...))) ? 32 : (((!pc == 16) && ((... && !(((... <s ...) ? 1 : 0) == 0)) && ((... ? 1 : 0) == 0))) ? 64 : (((!pc == 16) && (... && ...)) ? 16 : (((!pc == 16) && ...) ? 1048576 : (... ? 32 : ...)))))))
+- len' = ((((!pc == 16) && (((((... && ...) && (... == ...)) && (... == 0)) && !(... == 0)) && !(((... <s ...) ? 1 : 0) == 0))) || ((!pc == 16) && ((((... && ...) && !(... == 0)) && !(((... <s ...) ? 1 : 0) == 0)) && !((... ? 1 : 0) == 0)))) ? len : (((!pc == 8) && (1 && !(... == ...))) ? !{$(in_main#0)<$(in___VERIFIER_nondet_int#1)<h#<__VERIFIER_nondet_int.return>>>} : ((((!pc == 16) && ((... && !(((... <s ...) ? 1 : 0) == 0)) && ((... ? 1 : 0) == 0))) || ((!pc == 16) && (... && ...))) ? len : ((((!pc == 16) && ...) || ((!pc == 16) && ...)) ? len : ((... || ...) ? len : ...)))))
+- limit' = ((((!pc == 16) && (((((... && ...) && (... == ...)) && (... == 0)) && !(... == 0)) && !(((... <s ...) ? 1 : 0) == 0))) || ((!pc == 16) && ((((... && ...) && !(... == 0)) && !(((... <s ...) ? 1 : 0) == 0)) && !((... ? 1 : 0) == 0)))) ? limit : (((!pc == 8) && (1 && !(... == ...))) ? (4294967292 + !{$(in_main#0)<$(in___VERIFIER_nondet_int#0)<h#<__VERIFIER_nondet_int.return>>>}) : ((((!pc == 16) && ((... && !(((... <s ...) ? 1 : 0) == 0)) && ((... ? 1 : 0) == 0))) || ((!pc == 16) && (... && ...))) ? limit : ((((!pc == 16) && ...) || ((!pc == 16) && ...)) ? limit : ((... || ...) ? limit : ...)))))
+- bufsize' = ((((!pc == 16) && (((((... && ...) && (... == ...)) && (... == 0)) && !(... == 0)) && !(((... <s ...) ? 1 : 0) == 0))) || ((!pc == 16) && ((((... && ...) && !(... == 0)) && !(((... <s ...) ? 1 : 0) == 0)) && !((... ? 1 : 0) == 0)))) ? bufsize : (((!pc == 8) && (1 && !(... == ...))) ? !{$(in_main#0)<$(in___VERIFIER_nondet_int#0)<h#<__VERIFIER_nondet_int.return>>>} : ((((!pc == 16) && ((... && !(((... <s ...) ? 1 : 0) == 0)) && ((... ? 1 : 0) == 0))) || ((!pc == 16) && (... && ...))) ? bufsize : ((((!pc == 16) && ...) || ((!pc == 16) && ...)) ? bufsize : ((... || ...) ? bufsize : ...)))))
+- i' = (((!pc == 16) && (((((... && ...) && (... == ...)) && (... == 0)) && !(... == 0)) && !(((... <s ...) ? 1 : 0) == 0))) ? i : (((!pc == 16) && ((((... && ...) && !(... == 0)) && !(((... <s ...) ? 1 : 0) == 0)) && !((... ? 1 : 0) == 0))) ? (1 + i) : (((!pc == 8) && (1 && !(... == ...))) ? 0 : (((!pc == 16) && ((... && !(((... <s ...) ? 1 : 0) == 0)) && ((... ? 1 : 0) == 0))) ? (1 + i) : (((!pc == 16) && (... && ...)) ? %{$(in_main#0)<i>}#3 : (((!pc == 16) && ...) ? (1 + i) : ((... || ...) ? i : ...)))))))
+- j' = (((!pc == 16) && (((((... && ...) && (... == ...)) && (... == 0)) && !(... == 0)) && !(((... <s ...) ? 1 : 0) == 0))) ? j : (((!pc == 16) && ((((... && ...) && !(... == 0)) && !(((... <s ...) ? 1 : 0) == 0)) && !((... ? 1 : 0) == 0))) ? (1 + j) : (((!pc == 8) && (1 && !(... == ...))) ? %{$(in_main#0)<j>}#1 : (((!pc == 16) && ((... && !(((... <s ...) ? 1 : 0) == 0)) && ((... ? 1 : 0) == 0))) ? (1 + j) : (((!pc == 16) && (... && ...)) ? %{$(in_main#0)<j>}#4 : (((!pc == 16) && ...) ? (1 + j) : ((... || ...) ? j : ...)))))))
+
+BAD:
+- (((((((... || ...) || (... == ...)) || (!pc == 512)) || (!pc == 4)) || (!pc == 1048576)) || (!pc == 16384)) || (!pc == 1024))
+
+--- COMMON FORMAL ROUTE CONTRACT ---
+TASK: Choose a small invariant-synthesis grammar. Do not output an invariant,
+proof, coefficient value, or assertion. The formal backend expands every route,
+runs Houdini, and checks the original BTOR2. Your output is untrusted routing
+advice only.
+
+MACHINE SEMANTICS:
+- All state arithmetic is fixed-width bit-vector arithmetic modulo 2^width.
+- Comparisons must state signed or unsigned semantics.
+- A route may use only variables from the catalog below.
+- Phase guards are applied by the formal experiment, not selected by you.
+
+VARIABLE_CATALOG_JSON:
+[
+  {
+    "init": "0",
+    "name": "bufsize",
+    "ref": "state59",
+    "width": 32
+  },
+  {
+    "init": "0",
+    "name": "i",
+    "ref": "state60",
+    "width": 32
+  },
+  {
+    "init": "0",
+    "name": "j",
+    "ref": "state61",
+    "width": 32
+  },
+  {
+    "init": "0",
+    "name": "len",
+    "ref": "state57",
+    "width": 32
+  },
+  {
+    "init": "0",
+    "name": "limit",
+    "ref": "state58",
+    "width": 32
+  }
+]
+
+PHASE_CATALOG_JSON:
+[
+  {
+    "guard": "state26 == 1",
+    "phase_id": "pc_state26_w21_v1",
+    "width": 21
+  },
+  {
+    "guard": "state26 == 2",
+    "phase_id": "pc_state26_w21_v2",
+    "width": 21
+  },
+  {
+    "guard": "state26 == 4",
+    "phase_id": "pc_state26_w21_v4",
+    "width": 21
+  },
+  {
+    "guard": "state26 == 8",
+    "phase_id": "pc_state26_w21_v8",
+    "width": 21
+  },
+  {
+    "guard": "state26 == 16",
+    "phase_id": "pc_state26_w21_v16",
+    "width": 21
+  },
+  {
+    "guard": "state26 == 32",
+    "phase_id": "pc_state26_w21_v32",
+    "width": 21
+  },
+  {
+    "guard": "state26 == 64",
+    "phase_id": "pc_state26_w21_v64",
+    "width": 21
+  },
+  {
+    "guard": "state26 == 128",
+    "phase_id": "pc_state26_w21_v128",
+    "width": 21
+  },
+  {
+    "guard": "state26 == 256",
+    "phase_id": "pc_state26_w21_v256",
+    "width": 21
+  },
+  {
+    "guard": "state26 == 512",
+    "phase_id": "pc_state26_w21_v512",
+    "width": 21
+  },
+  {
+    "guard": "state26 == 1024",
+    "phase_id": "pc_state26_w21_v1024",
+    "width": 21
+  },
+  {
+    "guard": "state26 == 2048",
+    "phase_id": "pc_state26_w21_v2048",
+    "width": 21
+  },
+  {
+    "guard": "state26 == 4096",
+    "phase_id": "pc_state26_w21_v4096",
+    "width": 21
+  },
+  {
+    "guard": "state26 == 8192",
+    "phase_id": "pc_state26_w21_v8192",
+    "width": 21
+  },
+  {
+    "guard": "state26 == 16384",
+    "phase_id": "pc_state26_w21_v16384",
+    "width": 21
+  },
+  {
+    "guard": "state26 == 32768",
+    "phase_id": "pc_state26_w21_v32768",
+    "width": 21
+  },
+  {
+    "guard": "state26 == 65536",
+    "phase_id": "pc_state26_w21_v65536",
+    "width": 21
+  },
+  {
+    "guard": "state26 == 131072",
+    "phase_id": "pc_state26_w21_v131072",
+    "width": 21
+  },
+  {
+    "guard": "state26 == 262144",
+    "phase_id": "pc_state26_w21_v262144",
+    "width": 21
+  },
+  {
+    "guard": "state26 == 524288",
+    "phase_id": "pc_state26_w21_v524288",
+    "width": 21
+  },
+  {
+    "guard": "state26 == 1048576",
+    "phase_id": "pc_state26_w21_v1048576",
+    "width": 21
+  }
+]
+
+OUTPUT CONTRACT:
+- Output exactly one JSON object and no Markdown.
+- Top-level fields: "schema" and "routes" only.
+- schema must be "pono-llm-grammar-route-v1".
+- routes must contain 1 to 8 route objects.
+- Every route has exactly variables, family, relations, signedness, plus only
+  the family field listed below.
+- family="unary": one variable; optional constants integer list [-16,16].
+- family="pairwise_offset": two same-width variables; optional offsets integer
+  list [-16,16].
+- family="affine": two or three same-width variables; optional
+  coefficient_bound integer [1,8].
+- family="sum_equality": three same-width variables ordered as result, addend1,
+  addend2; no family-specific field.
+- family="quadratic_recurrence": two same-width variables ordered as accumulator,
+  counter; optional scales [1,8] and counter_shifts [-4,4].
+- relations is a non-empty subset of ["eq","le","ge"].
+- signedness is exactly "signed" or "unsigned".
+- No explanation and no extra fields.

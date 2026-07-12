@@ -1,0 +1,67 @@
+{
+  "all_phase_candidate_count": 0,
+  "api_latency_ms": 2819.472074508667,
+  "arm": "raw",
+  "benchmark_id": "loop-invariants/linear-inequality-inv-a.btor2",
+  "client_stats": {
+    "completion_tokens": 318,
+    "content_chars": 1026,
+    "json_mode": "json_object",
+    "latency_ms": 2819.472074508667,
+    "openrouter_routing": {
+      "allow_fallbacks": true,
+      "ignore": [
+        "deepinfra",
+        "venice",
+        "gmicloud",
+        "digitalocean",
+        "cloudflare",
+        "morph",
+        "akashml",
+        "siliconflow"
+      ],
+      "only": [
+        "novita",
+        "deepseek",
+        "baidu",
+        "parasail",
+        "alibaba",
+        "streamlake",
+        "atlas-cloud"
+      ],
+      "quantizations": [
+        "fp8",
+        "fp16",
+        "bf16",
+        "fp32",
+        "unknown"
+      ],
+      "sort": "throughput"
+    },
+    "prompt_tokens": 2220,
+    "provider": "openrouter",
+    "reasoning_chars": 0,
+    "thinking_mode": "disabled",
+    "total_tokens": 2538
+  },
+  "content_sha256": "7f4a50ea019dab779692e9efb0cc24f7defdb886e224a7c58193a012a852dc16",
+  "global_candidate_count": 0,
+  "model": "deepseek/deepseek-v4-flash",
+  "phase_count": 6,
+  "prompt_lexical_tokens": 1455,
+  "prompt_path": "prompts/linear-inequality-inv-a-480c579a4c34.raw.txt",
+  "prompt_sha256": "f2cdb0b2b9a6297f9e98f54538285394846c61caca84b32a05da4595fd7e5689",
+  "provider": "openrouter",
+  "response_path": "responses/linear-inequality-inv-a-480c579a4c34.raw.txt",
+  "response_sha256": "eda8c4474e9486a7048b75389ce10a2fa501d9c13ca8144dd92d81bbee9008ea",
+  "route_count": 0,
+  "route_error": "route 5.variables must have one common width",
+  "route_path": null,
+  "route_sha256": null,
+  "route_valid": false,
+  "schema": "pono-llm-grammar-route-meta-v1",
+  "selection_role": "safe-baseline-hard",
+  "source_family_id": "eeb7732635d3ae625ec7cbcbb76224da18092fae5c89bf7ab8d68b51e54f4815",
+  "tokens": 2538,
+  "wall_latency_sec": 2.819488573819399
+}

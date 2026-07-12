@@ -1,0 +1,61 @@
+{
+  "schema": "pono-llm-grammar-route-v1",
+  "routes": [
+    {
+      "variables": ["i", "j"],
+      "family": "pairwise_offset",
+      "relations": ["le"],
+      "signedness": "signed",
+      "offsets": [0]
+    },
+    {
+      "variables": ["i", "n"],
+      "family": "pairwise_offset",
+      "relations": ["le"],
+      "signedness": "signed",
+      "offsets": [0]
+    },
+    {
+      "variables": ["j", "n"],
+      "family": "pairwise_offset",
+      "relations": ["le"],
+      "signedness": "signed",
+      "offsets": [0]
+    },
+    {
+      "variables": ["l", "r"],
+      "family": "pairwise_offset",
+      "relations": ["le"],
+      "signedness": "signed",
+      "offsets": [0]
+    },
+    {
+      "variables": ["i", "j", "n"],
+      "family": "affine",
+      "relations": ["le"],
+      "signedness": "signed",
+      "coefficient_bound": 2
+    },
+    {
+      "variables": ["i", "l", "r"],
+      "family": "affine",
+      "relations": ["le"],
+      "signedness": "signed",
+      "coefficient_bound": 2
+    },
+    {
+      "variables": ["j", "l", "r"],
+      "family": "affine",
+      "relations": ["le"],
+      "signedness": "signed",
+      "coefficient_bound": 2
+    },
+    {
+      "variables": ["i", "j", "l", "r"],
+      "family": "affine",
+      "relations": ["le"],
+      "signedness": "signed",
+      "coefficient_bound": 2
+    }
+  ]
+}

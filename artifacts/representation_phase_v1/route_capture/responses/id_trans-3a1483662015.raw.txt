@@ -1,0 +1,40 @@
+{
+  "schema": "pono-llm-grammar-route-v1",
+  "routes": [
+    {
+      "variables": ["j", "nlen"],
+      "family": "pairwise_offset",
+      "relations": ["le"],
+      "signedness": "signed",
+      "offsets": [-16, 16]
+    },
+    {
+      "variables": ["j", "idBitLength"],
+      "family": "pairwise_offset",
+      "relations": ["le"],
+      "signedness": "signed",
+      "offsets": [-16, 16]
+    },
+    {
+      "variables": ["j"],
+      "family": "unary",
+      "relations": ["ge"],
+      "signedness": "signed",
+      "constants": [0, 16]
+    },
+    {
+      "variables": ["nlen"],
+      "family": "unary",
+      "relations": ["ge"],
+      "signedness": "signed",
+      "constants": [0, 16]
+    },
+    {
+      "variables": ["idBitLength"],
+      "family": "unary",
+      "relations": ["ge"],
+      "signedness": "signed",
+      "constants": [0, 16]
+    }
+  ]
+}

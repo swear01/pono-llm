@@ -1,0 +1,67 @@
+{
+  "all_phase_candidate_count": 0,
+  "api_latency_ms": 2696.319341659546,
+  "arm": "raw",
+  "benchmark_id": "loop-invariants/linear-inequality-inv-b.btor2",
+  "client_stats": {
+    "completion_tokens": 302,
+    "content_chars": 975,
+    "json_mode": "json_object",
+    "latency_ms": 2696.319341659546,
+    "openrouter_routing": {
+      "allow_fallbacks": true,
+      "ignore": [
+        "deepinfra",
+        "venice",
+        "gmicloud",
+        "digitalocean",
+        "cloudflare",
+        "morph",
+        "akashml",
+        "siliconflow"
+      ],
+      "only": [
+        "novita",
+        "deepseek",
+        "baidu",
+        "parasail",
+        "alibaba",
+        "streamlake",
+        "atlas-cloud"
+      ],
+      "quantizations": [
+        "fp8",
+        "fp16",
+        "bf16",
+        "fp32",
+        "unknown"
+      ],
+      "sort": "throughput"
+    },
+    "prompt_tokens": 2222,
+    "provider": "openrouter",
+    "reasoning_chars": 0,
+    "thinking_mode": "disabled",
+    "total_tokens": 2524
+  },
+  "content_sha256": "25e9281249a4d8672c62e280c95e1bf5825f9d806caeb7722f5ca3934598544e",
+  "global_candidate_count": 0,
+  "model": "deepseek/deepseek-v4-flash",
+  "phase_count": 6,
+  "prompt_lexical_tokens": 1455,
+  "prompt_path": "prompts/linear-inequality-inv-b-41df5663cfe1.raw.txt",
+  "prompt_sha256": "afd1eb933efdbb204bab3a7c0e7bb7db3f7ef728c967d87665a53062898f6613",
+  "provider": "openrouter",
+  "response_path": "responses/linear-inequality-inv-b-41df5663cfe1.raw.txt",
+  "response_sha256": "1c0e47dcab3146af2f999ee777c50bc56a8f9491fa66e05e7405c5108dcb82e5",
+  "route_count": 0,
+  "route_error": "route 0.variables must have one common width",
+  "route_path": null,
+  "route_sha256": null,
+  "route_valid": false,
+  "schema": "pono-llm-grammar-route-meta-v1",
+  "selection_role": "unsafe-soundness-control",
+  "source_family_id": "0f55e4302edb0a37ff86342391f10b4bccef988db9bdfaf948e856d980098b5e",
+  "tokens": 2524,
+  "wall_latency_sec": 2.6963355652987957
+}

@@ -1,0 +1,1 @@
+INVAR: (let ((_let0 (= state10 #b00010))) (and (and (and true (=> _let0 (bvsle state23 (bvadd state24 #b00000000000000000000000000000000)))) (=> _let0 (bvsle state24 (bvadd state22 #b00000000000000000000000000000000)))) (not (= (bvcomp state10 #b00001) #b1))))

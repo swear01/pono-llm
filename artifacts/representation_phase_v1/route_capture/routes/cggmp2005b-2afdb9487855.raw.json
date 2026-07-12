@@ -1,0 +1,93 @@
+{
+  "routes": [
+    {
+      "coefficient_bound": 4,
+      "family": "affine",
+      "relations": [
+        "eq",
+        "le",
+        "ge"
+      ],
+      "requested_variables": [
+        "i",
+        "j",
+        "k"
+      ],
+      "route_id": "f984ef2b18159539c5b40240d5a74653403244dfb4e39c9c96e127f80cb95fa3",
+      "signedness": "signed",
+      "variables": [
+        "state31",
+        "state32",
+        "state33"
+      ],
+      "width": 32
+    },
+    {
+      "family": "pairwise_offset",
+      "offsets": [
+        -16,
+        16
+      ],
+      "relations": [
+        "le",
+        "ge"
+      ],
+      "requested_variables": [
+        "i",
+        "j"
+      ],
+      "route_id": "e03f0d5a1b2022bc5d718e5cb13d71969428eee7af7ed441c40b286289c7395e",
+      "signedness": "signed",
+      "variables": [
+        "state31",
+        "state32"
+      ],
+      "width": 32
+    },
+    {
+      "family": "pairwise_offset",
+      "offsets": [
+        -16,
+        16
+      ],
+      "relations": [
+        "le",
+        "ge"
+      ],
+      "requested_variables": [
+        "i",
+        "k"
+      ],
+      "route_id": "3f263e1cd01da7ca21e7f39857a064551e3ede8baea836bd1bcd962a6f02920d",
+      "signedness": "signed",
+      "variables": [
+        "state31",
+        "state33"
+      ],
+      "width": 32
+    },
+    {
+      "family": "pairwise_offset",
+      "offsets": [
+        -16,
+        16
+      ],
+      "relations": [
+        "le",
+        "ge"
+      ],
+      "requested_variables": [
+        "j",
+        "k"
+      ],
+      "route_id": "71e47f3638d1068a55ebbc5b6ac6a34946a83492956bf551f16219c1dfe92c0a",
+      "signedness": "signed",
+      "variables": [
+        "state32",
+        "state33"
+      ],
+      "width": 32
+    }
+  ],
+  "schema": "pono-llm-grammar-route-v1"
+}

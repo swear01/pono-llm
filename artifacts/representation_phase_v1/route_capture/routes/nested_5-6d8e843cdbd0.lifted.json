@@ -1,0 +1,86 @@
+{
+  "routes": [
+    {
+      "family": "pairwise_offset",
+      "offsets": [
+        0,
+        1
+      ],
+      "relations": [
+        "le"
+      ],
+      "requested_variables": [
+        "c",
+        "d"
+      ],
+      "route_id": "b10b4eb0f7c1c36e9abb781d0c33601f7bc3c9cd64bd83c33eaca5b0253bddf0",
+      "signedness": "unsigned",
+      "variables": [
+        "state32",
+        "state33"
+      ],
+      "width": 32
+    },
+    {
+      "coefficient_bound": 2,
+      "family": "affine",
+      "relations": [
+        "le"
+      ],
+      "requested_variables": [
+        "c",
+        "d"
+      ],
+      "route_id": "1c8e08d1c407d0791a9d85ab9fb47551a8559277fb2be92ba8bf821011015181",
+      "signedness": "unsigned",
+      "variables": [
+        "state32",
+        "state33"
+      ],
+      "width": 32
+    },
+    {
+      "family": "sum_equality",
+      "relations": [
+        "eq"
+      ],
+      "requested_variables": [
+        "c",
+        "d",
+        "e"
+      ],
+      "route_id": "323e717b7c86b04e21aa6cad88ae949a534906310190492857bf4c2a17870be2",
+      "signedness": "unsigned",
+      "variables": [
+        "state32",
+        "state33",
+        "state34"
+      ],
+      "width": 32
+    },
+    {
+      "counter_shifts": [
+        0
+      ],
+      "family": "quadratic_recurrence",
+      "relations": [
+        "le"
+      ],
+      "requested_variables": [
+        "c",
+        "d"
+      ],
+      "route_id": "c2047ea4f5c9b528d4b31d86c349035561da783137479f8c5aafbea08c60567b",
+      "scales": [
+        1
+      ],
+      "signedness": "unsigned",
+      "variables": [
+        "state32",
+        "state33"
+      ],
+      "width": 32
+    }
+  ],
+  "schema": "pono-llm-grammar-route-v1"
+}

@@ -1,0 +1,67 @@
+{
+  "all_phase_candidate_count": 575,
+  "api_latency_ms": 4206.242084503174,
+  "arm": "raw",
+  "benchmark_id": "loop-crafted/simple_vardep_1.btor2",
+  "client_stats": {
+    "completion_tokens": 509,
+    "content_chars": 1334,
+    "json_mode": "json_object",
+    "latency_ms": 4206.242084503174,
+    "openrouter_routing": {
+      "allow_fallbacks": true,
+      "ignore": [
+        "deepinfra",
+        "venice",
+        "gmicloud",
+        "digitalocean",
+        "cloudflare",
+        "morph",
+        "akashml",
+        "siliconflow"
+      ],
+      "only": [
+        "novita",
+        "deepseek",
+        "baidu",
+        "parasail",
+        "alibaba",
+        "streamlake",
+        "atlas-cloud"
+      ],
+      "quantizations": [
+        "fp8",
+        "fp16",
+        "bf16",
+        "fp32",
+        "unknown"
+      ],
+      "sort": "throughput"
+    },
+    "prompt_tokens": 1632,
+    "provider": "openrouter",
+    "reasoning_chars": 0,
+    "thinking_mode": "disabled",
+    "total_tokens": 2141
+  },
+  "content_sha256": "3150ef2f78a175ae28043995f25c3925e942962edbc67d3e82abe3b359dcf831",
+  "global_candidate_count": 115,
+  "model": "deepseek/deepseek-v4-flash",
+  "phase_count": 5,
+  "prompt_lexical_tokens": 1065,
+  "prompt_path": "prompts/simple_vardep_1-ea882a8d4015.raw.txt",
+  "prompt_sha256": "fe0efd5966e547be385bc578626304af854aec21062cb35eb1675a6f2d0dbccd",
+  "provider": "openrouter",
+  "response_path": "responses/simple_vardep_1-ea882a8d4015.raw.txt",
+  "response_sha256": "02040583cc24b2b0f7c11f53bc8c53cc06a82d9807c8d43f47053d74e00ef9e0",
+  "route_count": 7,
+  "route_error": "",
+  "route_path": "routes/simple_vardep_1-ea882a8d4015.raw.json",
+  "route_sha256": "87d096746c14853f3e0c9cbc18b2ceb3c02074a50ddede4841ae5ee8fed724c0",
+  "route_valid": true,
+  "schema": "pono-llm-grammar-route-meta-v1",
+  "selection_role": "safe-baseline-control",
+  "source_family_id": "8985f07c344b3a56534b126a46c6ed75559902a8cb2dd0cba9021d276ab0b277",
+  "tokens": 2141,
+  "wall_latency_sec": 4.206260371953249
+}

@@ -1,0 +1,32 @@
+{
+  "arm": "source",
+  "benchmark_id": "loop-invgen/id_trans.btor2",
+  "benchmark_sha256": "fdc57df44a2884ecdbcc8a341de2a349398ebb4cd44326fc6b6ee4e62e99af1f",
+  "candidate_sha256": "",
+  "certificate": {
+    "checks": [],
+    "ok": false
+  },
+  "certificate_time_sec": 0.0,
+  "config": "llm-source",
+  "end_to_end_with_generation_sec": 2.091514181345701,
+  "engine": "",
+  "error": "",
+  "expected_verdict": "unsafe",
+  "generation_time_sec": 2.091514181345701,
+  "matrix_schema": "pono-llm-routed-phase-matrix-v1",
+  "model_checker_time_sec": 0.0,
+  "offline_time_sec": 0.0,
+  "phase_count": 8,
+  "pilot_sha256": "723eb64225d2c39fb4fba8477759307d184f6b40293ac4407dd3518aa1d34d0c",
+  "pool_candidate_count": 0,
+  "route_count": 0,
+  "route_error": "route 1.offsets must not contain duplicates",
+  "route_sha256": "",
+  "route_valid": false,
+  "router": "llm",
+  "selected_candidate_count": 0,
+  "selection_role": "unsafe-soundness-control",
+  "source_family_id": "57db45734209707f4e901d2380266222d2fcca8a26597b1f268f6a9ae1519c5b",
+  "verdict": "invalid-route"
+}

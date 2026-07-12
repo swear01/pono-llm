@@ -2,6 +2,58 @@
 
 > Tacit knowledge an agent can't infer from reading code.
 
+## Representation/phase/grammar gate (2026-07-12)
+
+- The official paired census is pinned to translation `d983801...`, source
+  `1e5856d...`, and CPV `2b20529...`. Eligibility is deliberately narrow:
+  scalar states, one BAD, exactly one multi-bit state named `!pc`, constant PC
+  initialization/equality phases, and at least two uniquely named states whose
+  identifiers occur in the pinned source. Every exclusion is recorded.
+- The first exploratory bounded grammar accidentally emitted only unsigned
+  inequalities. It is superseded and excluded from the canonical artifact.
+  The final bounded grammar contains both signed and unsigned inequality routes;
+  the fixed structural router uses signed C-like comparisons. Never compare an
+  LLM signed route against the superseded unsigned-only pool.
+- Phase-local candidates are literal target predicates
+  `(statePC == value) => I`. Source locations are not trusted or inferred. v1
+  deliberately applies every base candidate to every extracted phase; automatic
+  source-location mapping is not implemented.
+- `canonical_route_document()` stores compiled diagnostics including requested
+  names, resolved `stateN` refs, width, and route ID. The original frozen JSON
+  response is the replay input; do not feed the compiled diagnostic document
+  back to the strict user-schema parser without removing diagnostic fields.
+- The three representation prompts share one route contract and variable/phase
+  catalog. The 6,000 limit is a documented lexical-token cap, not the DeepSeek
+  tokenizer. Exact provider prompt/completion/total tokens are in each capture
+  metadata file. Only one raw prompt was truncated; full prompts are frozen.
+- Strict route errors are experimental outcomes, not infrastructure errors.
+  24/60 responses fail width, arity, variable uniqueness, list uniqueness,
+  parameter range, or all-phase candidate-cap checks. They remain invalid; no
+  parser repair, retry, or alternate-model fallback is allowed.
+- Fixed-budget exhaustive routing can time out because phase expansion multiplies
+  the base pool by the phase count. An empty exhaustive solved set does not imply
+  an oracle ceiling and gives no defined preservation fraction. Use the non-empty
+  deterministic structural set as the practical reference and report exhaustive
+  preservation as null, never 100%.
+- Final baseline-hard all-phase sets: source LLM 1, lifted LLM 1, raw LLM 2,
+  structural deterministic 3. Structural global solves two; all-phase adds only
+  `count_up_down-1`. This is one valid phase-local case, below the frozen H1
+  threshold of three.
+- A Pono UNSAT row is sound by architecture, but this gate audits it again.
+  `audit_routed_unsat.py` reconstructs the exact candidate hash, reruns with
+  `--show-invar`, and checks the returned invariant on the original BTOR2. Final
+  result: 4 direct candidate certificates + 8 returned-invariant certificates,
+  all C1/C2/C3 UNSAT.
+- The local Pono binary is ASan-instrumented. Its existing btor2 parser leak
+  report can change SAT/UNSAT process exit status. Canonical runs set only
+  `ASAN_OPTIONS=detect_leaks=0`; this is an experiment-environment workaround,
+  not a solver/model fallback.
+- The original `/home/swear01/FMPA2/part2/sv-benchmarks` checkout disappeared
+  after the capture. Reproduction re-cloned the exact pinned source commit into
+  `/tmp`; regenerated population and view bundles are byte-identical to the
+  originals. Canonical identities depend on Git revisions and file hashes, not
+  the vanished local path.
+
 ## Corrected Phase 2 baseline audit (2026-07-11)
 
 - The first `static-linear` result was not a valid affine baseline. Candidate generation emitted all unary constant predicates before pairwise/affine templates, and `run_matrix.py --cap 20` returned during the first variable. The reported `1/21` result therefore tested unary bounds, not the advertised affine language.
@@ -115,12 +167,14 @@
   1138.15s. Static quadratic is faster in aggregate without API use;
   the LLM's only measured advantage here is lower proof-only checker effort.
 
-## Research Strategy — Phase 1 + 2 before paper/BVMul (2026-07-11)
+## Historical Phase 1+2 strategy (complete; followed by Gate 3)
 
 - **Not paper-ready as an improvement claim**: corrected affine/quadratic and
   ranked static baselines remove all current LLM-only wins and the remaining
   compactness signal. Gate 2 exhausts the 86 currently eligible HWMCC models;
-  do not continue broad HWMCC mining without changing the representation.
+  do not continue broad HWMCC mining. Gate 3 subsequently tested the paired
+  source/lifted/raw representation pivot and also failed its utility thresholds;
+  see the current section at the top of this file.
 - **Phase 1 + 2 and Gate 2 experiments completed (2026-07-12)**:
   1. IC3IA fail-fast / refinement cap (`--ic3ia-max-refinements`, implemented 2026-07-11; optionally later `--ic3ia-max-predicates`) so misses return `unknown` instead of burning the full timeout.
   2. Frozen LLM candidate capture (`scripts/capture_candidates.py`) and replay harness (`scripts/run_matrix.py`): report both offline proof time and end-to-end time including LLM latency.

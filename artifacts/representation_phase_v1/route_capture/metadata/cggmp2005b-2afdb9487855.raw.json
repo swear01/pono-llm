@@ -1,0 +1,67 @@
+{
+  "all_phase_candidate_count": 3549,
+  "api_latency_ms": 2737.837314605713,
+  "arm": "raw",
+  "benchmark_id": "loop-lit/cggmp2005b.btor2",
+  "client_stats": {
+    "completion_tokens": 247,
+    "content_chars": 741,
+    "json_mode": "json_object",
+    "latency_ms": 2737.837314605713,
+    "openrouter_routing": {
+      "allow_fallbacks": true,
+      "ignore": [
+        "deepinfra",
+        "venice",
+        "gmicloud",
+        "digitalocean",
+        "cloudflare",
+        "morph",
+        "akashml",
+        "siliconflow"
+      ],
+      "only": [
+        "novita",
+        "deepseek",
+        "baidu",
+        "parasail",
+        "alibaba",
+        "streamlake",
+        "atlas-cloud"
+      ],
+      "quantizations": [
+        "fp8",
+        "fp16",
+        "bf16",
+        "fp32",
+        "unknown"
+      ],
+      "sort": "throughput"
+    },
+    "prompt_tokens": 2198,
+    "provider": "openrouter",
+    "reasoning_chars": 0,
+    "thinking_mode": "disabled",
+    "total_tokens": 2445
+  },
+  "content_sha256": "3d96ce42eec87679ee0e7a37251eace15b910774c5551f9cbe6ac27333a743a8",
+  "global_candidate_count": 507,
+  "model": "deepseek/deepseek-v4-flash",
+  "phase_count": 7,
+  "prompt_lexical_tokens": 1362,
+  "prompt_path": "prompts/cggmp2005b-2afdb9487855.raw.txt",
+  "prompt_sha256": "84def4554dfea4c9006dc6b8aacbf2a99b79f9f4c654daa670992c1c83138ecb",
+  "provider": "openrouter",
+  "response_path": "responses/cggmp2005b-2afdb9487855.raw.txt",
+  "response_sha256": "a3b953227a34d6caf00520414dc5a660f8220ca44cd1f2849fd4e7374aa7b68c",
+  "route_count": 4,
+  "route_error": "",
+  "route_path": "routes/cggmp2005b-2afdb9487855.raw.json",
+  "route_sha256": "75fca807dfaf8f740e128fc86f23f44dfc30fcceed66a40aad69862da798ca6b",
+  "route_valid": true,
+  "schema": "pono-llm-grammar-route-meta-v1",
+  "selection_role": "safe-baseline-control",
+  "source_family_id": "1041257ee565fc306f7aa52359d391f90360af38959a03b968225ad0c6d969a3",
+  "tokens": 2445,
+  "wall_latency_sec": 2.737861640751362
+}

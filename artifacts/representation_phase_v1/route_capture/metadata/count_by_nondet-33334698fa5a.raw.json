@@ -1,0 +1,67 @@
+{
+  "all_phase_candidate_count": 30,
+  "api_latency_ms": 2112.315893173218,
+  "arm": "raw",
+  "benchmark_id": "loop-new/count_by_nondet.btor2",
+  "client_stats": {
+    "completion_tokens": 210,
+    "content_chars": 662,
+    "json_mode": "json_object",
+    "latency_ms": 2112.315893173218,
+    "openrouter_routing": {
+      "allow_fallbacks": true,
+      "ignore": [
+        "deepinfra",
+        "venice",
+        "gmicloud",
+        "digitalocean",
+        "cloudflare",
+        "morph",
+        "akashml",
+        "siliconflow"
+      ],
+      "only": [
+        "novita",
+        "deepseek",
+        "baidu",
+        "parasail",
+        "alibaba",
+        "streamlake",
+        "atlas-cloud"
+      ],
+      "quantizations": [
+        "fp8",
+        "fp16",
+        "bf16",
+        "fp32",
+        "unknown"
+      ],
+      "sort": "throughput"
+    },
+    "prompt_tokens": 1556,
+    "provider": "openrouter",
+    "reasoning_chars": 0,
+    "thinking_mode": "disabled",
+    "total_tokens": 1766
+  },
+  "content_sha256": "5ccf184ba14a1f0befce843f36915c82833b3a8b52fbcb4647a1d96afe3b5a50",
+  "global_candidate_count": 6,
+  "model": "deepseek/deepseek-v4-flash",
+  "phase_count": 5,
+  "prompt_lexical_tokens": 1020,
+  "prompt_path": "prompts/count_by_nondet-33334698fa5a.raw.txt",
+  "prompt_sha256": "2b5ab3c6fe385acd758402fa9761fd21d355a17b03b2d9edbf318d6fa18c5309",
+  "provider": "openrouter",
+  "response_path": "responses/count_by_nondet-33334698fa5a.raw.txt",
+  "response_sha256": "c14caf38337ae4cebfbc35ff9b2bb3aee15fe84e2f82a9284b738e5932f752b8",
+  "route_count": 4,
+  "route_error": "",
+  "route_path": "routes/count_by_nondet-33334698fa5a.raw.json",
+  "route_sha256": "479104aab2c86bc6219c5266d4f9d77577cef08a4045b671a107cd7fd1a04ad8",
+  "route_valid": true,
+  "schema": "pono-llm-grammar-route-meta-v1",
+  "selection_role": "safe-baseline-hard",
+  "source_family_id": "187627b620b9091b4a27dba65b9a632624823c1b7551271fd61af769b1ef0483",
+  "tokens": 1766,
+  "wall_latency_sec": 2.1123342998325825
+}

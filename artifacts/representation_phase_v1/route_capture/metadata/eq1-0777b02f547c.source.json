@@ -1,0 +1,67 @@
+{
+  "all_phase_candidate_count": 10,
+  "api_latency_ms": 1578.321933746338,
+  "arm": "source",
+  "benchmark_id": "loop-invariants/eq1.btor2",
+  "client_stats": {
+    "completion_tokens": 122,
+    "content_chars": 379,
+    "json_mode": "json_object",
+    "latency_ms": 1578.321933746338,
+    "openrouter_routing": {
+      "allow_fallbacks": true,
+      "ignore": [
+        "deepinfra",
+        "venice",
+        "gmicloud",
+        "digitalocean",
+        "cloudflare",
+        "morph",
+        "akashml",
+        "siliconflow"
+      ],
+      "only": [
+        "novita",
+        "deepseek",
+        "baidu",
+        "parasail",
+        "alibaba",
+        "streamlake",
+        "atlas-cloud"
+      ],
+      "quantizations": [
+        "fp8",
+        "fp16",
+        "bf16",
+        "fp32",
+        "unknown"
+      ],
+      "sort": "throughput"
+    },
+    "prompt_tokens": 1111,
+    "provider": "openrouter",
+    "reasoning_chars": 0,
+    "thinking_mode": "disabled",
+    "total_tokens": 1233
+  },
+  "content_sha256": "cb1ee0cb290f3b407f412cad8495f70614967ce23f3fdb0495a7964a7d891297",
+  "global_candidate_count": 2,
+  "model": "deepseek/deepseek-v4-flash",
+  "phase_count": 5,
+  "prompt_lexical_tokens": 894,
+  "prompt_path": "prompts/eq1-0777b02f547c.source.txt",
+  "prompt_sha256": "2cd924c9922d22cf7b6d01ab192850a762fcf0a5720fdd083c626a7ba7569778",
+  "provider": "openrouter",
+  "response_path": "responses/eq1-0777b02f547c.source.txt",
+  "response_sha256": "30422396a17b29d1d52e7b54b163e1f89eed8486ec8486069505083f97f8af7f",
+  "route_count": 2,
+  "route_error": "",
+  "route_path": "routes/eq1-0777b02f547c.source.json",
+  "route_sha256": "8ae2425ac882014dfcc3e075b2cdf5ff5856c5e73441a74c0529f72543fa0709",
+  "route_valid": true,
+  "schema": "pono-llm-grammar-route-meta-v1",
+  "selection_role": "safe-baseline-control",
+  "source_family_id": "25968452e79f255f77f7ddf56686e96de1f39b0fe2c3e9fe8a7d7769999fc63d",
+  "tokens": 1233,
+  "wall_latency_sec": 1.5783383883535862
+}

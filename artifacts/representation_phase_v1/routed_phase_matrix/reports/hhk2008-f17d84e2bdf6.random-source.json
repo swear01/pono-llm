@@ -1,0 +1,269 @@
+{
+  "arm": "source",
+  "benchmark": "/tmp/svcomp25-sparse/translated/safety-func/loop-lit/hhk2008.btor2",
+  "benchmark_id": "loop-lit/hhk2008.btor2",
+  "benchmark_sha256": "34e4943a3fcb6f5422966b9d638da22c4bfae4658a90d8cedfb52e53958e0a1a",
+  "candidate_generation_sec": 0.0013165920972824097,
+  "candidate_sha256": "32449a80657e727d4b73e733a25e033d164489cd5c2d671ace2eebec5eff2206",
+  "certificate": {
+    "checks": [
+      {
+        "name": "C1 Init=>H",
+        "result": "unsat"
+      },
+      {
+        "name": "C2 inductive",
+        "result": "unsat"
+      },
+      {
+        "name": "C3 H=>notBAD",
+        "result": "sat"
+      }
+    ],
+    "init_queries": 1,
+    "ok": false,
+    "removed_initial_indices": [],
+    "removed_step_indices": [
+      4,
+      9,
+      14,
+      2,
+      7,
+      12,
+      1,
+      6,
+      11
+    ],
+    "selected_indices": [
+      0,
+      3,
+      5,
+      8,
+      10,
+      13
+    ],
+    "step_queries": 4,
+    "unsupported_candidates": []
+  },
+  "certificate_time_sec": 0.11540103331208229,
+  "config": "random-source",
+  "end_to_end_sec": 1.5664310194551945,
+  "end_to_end_with_generation_sec": 1.5664310194551945,
+  "engine": "phase-grammar-ic3ia",
+  "error": "",
+  "exit": 255,
+  "expected_verdict": "safe",
+  "generation_time_sec": 0.0,
+  "matrix_schema": "pono-llm-routed-phase-matrix-v1",
+  "model_checker_time_sec": 1.4497133940458298,
+  "offline_time_sec": 1.5664310194551945,
+  "phase_count": 5,
+  "phase_mode": "all",
+  "phases": [
+    {
+      "equality_node": 11,
+      "guard_ast": {
+        "args": [
+          {
+            "form": "ref",
+            "ref": "state10"
+          },
+          {
+            "const": "1",
+            "form": "const",
+            "width": 5
+          }
+        ],
+        "form": "eq"
+      },
+      "is_bad": false,
+      "is_initial": true,
+      "pc_ref": "state10",
+      "phase_id": "pc_state10_w5_v1",
+      "value": 1,
+      "width": 5
+    },
+    {
+      "equality_node": 12,
+      "guard_ast": {
+        "args": [
+          {
+            "form": "ref",
+            "ref": "state10"
+          },
+          {
+            "const": "2",
+            "form": "const",
+            "width": 5
+          }
+        ],
+        "form": "eq"
+      },
+      "is_bad": true,
+      "is_initial": false,
+      "pc_ref": "state10",
+      "phase_id": "pc_state10_w5_v2",
+      "value": 2,
+      "width": 5
+    },
+    {
+      "equality_node": 13,
+      "guard_ast": {
+        "args": [
+          {
+            "form": "ref",
+            "ref": "state10"
+          },
+          {
+            "const": "4",
+            "form": "const",
+            "width": 5
+          }
+        ],
+        "form": "eq"
+      },
+      "is_bad": false,
+      "is_initial": false,
+      "pc_ref": "state10",
+      "phase_id": "pc_state10_w5_v4",
+      "value": 4,
+      "width": 5
+    },
+    {
+      "equality_node": 14,
+      "guard_ast": {
+        "args": [
+          {
+            "form": "ref",
+            "ref": "state10"
+          },
+          {
+            "const": "8",
+            "form": "const",
+            "width": 5
+          }
+        ],
+        "form": "eq"
+      },
+      "is_bad": false,
+      "is_initial": false,
+      "pc_ref": "state10",
+      "phase_id": "pc_state10_w5_v8",
+      "value": 8,
+      "width": 5
+    },
+    {
+      "equality_node": 15,
+      "guard_ast": {
+        "args": [
+          {
+            "form": "ref",
+            "ref": "state10"
+          },
+          {
+            "const": "16",
+            "form": "const",
+            "width": 5
+          }
+        ],
+        "form": "eq"
+      },
+      "is_bad": false,
+      "is_initial": false,
+      "pc_ref": "state10",
+      "phase_id": "pc_state10_w5_v16",
+      "value": 16,
+      "width": 5
+    }
+  ],
+  "pilot_sha256": "723eb64225d2c39fb4fba8477759307d184f6b40293ac4407dd3518aa1d34d0c",
+  "pool_candidate_count": 15,
+  "proof_time_sec": 1.565114427357912,
+  "route_count": 3,
+  "route_diagnostics": {
+    "seed": "pono-llm-budget-matched-random-route-v1",
+    "selected_global_candidates": 3,
+    "selected_route_ids": [
+      "c652fe4e25f485d210fda7b4ab1abf769ba692bba476ca14336ae2a8ee93d9ed",
+      "2d1643d215a0541eea8c693610d38f60c4090a19157e95f99f45ae866b3b4ec2",
+      "1a5cec6760a3f6329a4a831c4505d4dd6b903e5e132f543ec1eb6ecf7d997434"
+    ],
+    "target_candidates": 3
+  },
+  "route_error": "",
+  "route_sha256": "4817e08b17653c30ebbd145a775859a2c787583263ef68f017f4b20145ffb550",
+  "route_valid": true,
+  "router": "random",
+  "routes": [
+    {
+      "family": "sum_equality",
+      "relations": [
+        "eq"
+      ],
+      "requested_variables": [
+        "state26",
+        "state24",
+        "state27"
+      ],
+      "route_id": "c652fe4e25f485d210fda7b4ab1abf769ba692bba476ca14336ae2a8ee93d9ed",
+      "signedness": "unsigned",
+      "variables": [
+        "state26",
+        "state24",
+        "state27"
+      ],
+      "width": 32
+    },
+    {
+      "family": "sum_equality",
+      "relations": [
+        "eq"
+      ],
+      "requested_variables": [
+        "state26",
+        "state25",
+        "state27"
+      ],
+      "route_id": "2d1643d215a0541eea8c693610d38f60c4090a19157e95f99f45ae866b3b4ec2",
+      "signedness": "unsigned",
+      "variables": [
+        "state26",
+        "state25",
+        "state27"
+      ],
+      "width": 32
+    },
+    {
+      "family": "sum_equality",
+      "relations": [
+        "eq"
+      ],
+      "requested_variables": [
+        "state25",
+        "state24",
+        "state26"
+      ],
+      "route_id": "1a5cec6760a3f6329a4a831c4505d4dd6b903e5e132f543ec1eb6ecf7d997434",
+      "signedness": "unsigned",
+      "variables": [
+        "state25",
+        "state24",
+        "state26"
+      ],
+      "width": 32
+    }
+  ],
+  "schema": "pono-llm-phase-grammar-run-v1",
+  "selected_candidate_count": 6,
+  "selected_indices": [
+    0,
+    3,
+    5,
+    8,
+    10,
+    13
+  ],
+  "selection_role": "safe-baseline-hard",
+  "source_family_id": "0c95403bb44cb0ea36c25cdc127898e79935815c3c45d3b02160c653981812e2",
+  "verdict": "unknown"
+}

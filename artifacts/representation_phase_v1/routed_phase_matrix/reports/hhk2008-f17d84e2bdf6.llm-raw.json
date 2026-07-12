@@ -1,0 +1,329 @@
+{
+  "arm": "raw",
+  "benchmark": "/tmp/svcomp25-sparse/translated/safety-func/loop-lit/hhk2008.btor2",
+  "benchmark_id": "loop-lit/hhk2008.btor2",
+  "benchmark_sha256": "34e4943a3fcb6f5422966b9d638da22c4bfae4658a90d8cedfb52e53958e0a1a",
+  "candidate_generation_sec": 0.001753583550453186,
+  "candidate_sha256": "d8af3bfc91c22861e6660cff8779e3b192d795ad941e8886275bfc14218ee9ba",
+  "certificate": {
+    "checks": [
+      {
+        "name": "C1 Init=>H",
+        "result": "unsat"
+      },
+      {
+        "name": "C2 inductive",
+        "result": "unsat"
+      },
+      {
+        "name": "C3 H=>notBAD",
+        "result": "sat"
+      }
+    ],
+    "init_queries": 2,
+    "ok": false,
+    "removed_initial_indices": [
+      20
+    ],
+    "removed_step_indices": [
+      2,
+      7,
+      17,
+      27,
+      32,
+      37,
+      42,
+      1,
+      6,
+      16,
+      26,
+      31,
+      36,
+      41,
+      22,
+      4,
+      9,
+      19,
+      29,
+      34,
+      39,
+      44,
+      24,
+      21
+    ],
+    "selected_indices": [
+      0,
+      3,
+      5,
+      8,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      18,
+      23,
+      25,
+      28,
+      30,
+      33,
+      35,
+      38,
+      40,
+      43
+    ],
+    "step_queries": 7,
+    "unsupported_candidates": []
+  },
+  "certificate_time_sec": 0.14547386020421982,
+  "config": "llm-raw",
+  "end_to_end_sec": 1.1298965364694595,
+  "end_to_end_with_generation_sec": 3.3998784236609936,
+  "engine": "phase-grammar-ic3ia",
+  "error": "",
+  "exit": 255,
+  "expected_verdict": "safe",
+  "generation_time_sec": 2.269981887191534,
+  "matrix_schema": "pono-llm-routed-phase-matrix-v1",
+  "model_checker_time_sec": 0.9826690927147865,
+  "offline_time_sec": 1.1298965364694595,
+  "phase_count": 5,
+  "phase_mode": "all",
+  "phases": [
+    {
+      "equality_node": 11,
+      "guard_ast": {
+        "args": [
+          {
+            "form": "ref",
+            "ref": "state10"
+          },
+          {
+            "const": "1",
+            "form": "const",
+            "width": 5
+          }
+        ],
+        "form": "eq"
+      },
+      "is_bad": false,
+      "is_initial": true,
+      "pc_ref": "state10",
+      "phase_id": "pc_state10_w5_v1",
+      "value": 1,
+      "width": 5
+    },
+    {
+      "equality_node": 12,
+      "guard_ast": {
+        "args": [
+          {
+            "form": "ref",
+            "ref": "state10"
+          },
+          {
+            "const": "2",
+            "form": "const",
+            "width": 5
+          }
+        ],
+        "form": "eq"
+      },
+      "is_bad": true,
+      "is_initial": false,
+      "pc_ref": "state10",
+      "phase_id": "pc_state10_w5_v2",
+      "value": 2,
+      "width": 5
+    },
+    {
+      "equality_node": 13,
+      "guard_ast": {
+        "args": [
+          {
+            "form": "ref",
+            "ref": "state10"
+          },
+          {
+            "const": "4",
+            "form": "const",
+            "width": 5
+          }
+        ],
+        "form": "eq"
+      },
+      "is_bad": false,
+      "is_initial": false,
+      "pc_ref": "state10",
+      "phase_id": "pc_state10_w5_v4",
+      "value": 4,
+      "width": 5
+    },
+    {
+      "equality_node": 14,
+      "guard_ast": {
+        "args": [
+          {
+            "form": "ref",
+            "ref": "state10"
+          },
+          {
+            "const": "8",
+            "form": "const",
+            "width": 5
+          }
+        ],
+        "form": "eq"
+      },
+      "is_bad": false,
+      "is_initial": false,
+      "pc_ref": "state10",
+      "phase_id": "pc_state10_w5_v8",
+      "value": 8,
+      "width": 5
+    },
+    {
+      "equality_node": 15,
+      "guard_ast": {
+        "args": [
+          {
+            "form": "ref",
+            "ref": "state10"
+          },
+          {
+            "const": "16",
+            "form": "const",
+            "width": 5
+          }
+        ],
+        "form": "eq"
+      },
+      "is_bad": false,
+      "is_initial": false,
+      "pc_ref": "state10",
+      "phase_id": "pc_state10_w5_v16",
+      "value": 16,
+      "width": 5
+    }
+  ],
+  "pilot_sha256": "723eb64225d2c39fb4fba8477759307d184f6b40293ac4407dd3518aa1d34d0c",
+  "pool_candidate_count": 45,
+  "proof_time_sec": 1.1281429529190063,
+  "route_count": 4,
+  "route_diagnostics": {
+    "capture_metadata": "metadata/hhk2008-f17d84e2bdf6.raw.json"
+  },
+  "route_error": "",
+  "route_sha256": "35b0d6c8d3dd50ad02a55166394c9067bba65868b0f2401e60ae7e08668a25a0",
+  "route_valid": true,
+  "router": "llm",
+  "routes": [
+    {
+      "family": "sum_equality",
+      "relations": [
+        "eq"
+      ],
+      "requested_variables": [
+        "res",
+        "a",
+        "b"
+      ],
+      "route_id": "366e2fba6880ca1613023d475acf60ee1f636a569cd08e7c22f9ad945111f12d",
+      "signedness": "unsigned",
+      "variables": [
+        "state26",
+        "state27",
+        "state24"
+      ],
+      "width": 32
+    },
+    {
+      "constants": [
+        0,
+        16
+      ],
+      "family": "unary",
+      "relations": [
+        "le",
+        "ge"
+      ],
+      "requested_variables": [
+        "cnt"
+      ],
+      "route_id": "23fb0cb46aa7eacee6a6e7ac1875ea2973b75cb5f39989edb811ab6bc8514025",
+      "signedness": "unsigned",
+      "variables": [
+        "state25"
+      ],
+      "width": 32
+    },
+    {
+      "family": "pairwise_offset",
+      "offsets": [
+        0
+      ],
+      "relations": [
+        "eq"
+      ],
+      "requested_variables": [
+        "res",
+        "cnt"
+      ],
+      "route_id": "38f5094a06a5da51b4dd3aa7029e1ba22918bdcdfbf9e199d22705d286a84b3e",
+      "signedness": "unsigned",
+      "variables": [
+        "state26",
+        "state25"
+      ],
+      "width": 32
+    },
+    {
+      "coefficient_bound": 1,
+      "family": "affine",
+      "relations": [
+        "eq"
+      ],
+      "requested_variables": [
+        "a",
+        "b",
+        "res"
+      ],
+      "route_id": "ece555e8dbed3adcbdb2aa90864e40c1bca66861828cf469bad0aa97bc6afcf8",
+      "signedness": "unsigned",
+      "variables": [
+        "state27",
+        "state24",
+        "state26"
+      ],
+      "width": 32
+    }
+  ],
+  "schema": "pono-llm-phase-grammar-run-v1",
+  "selected_candidate_count": 20,
+  "selected_indices": [
+    0,
+    3,
+    5,
+    8,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    18,
+    23,
+    25,
+    28,
+    30,
+    33,
+    35,
+    38,
+    40,
+    43
+  ],
+  "selection_role": "safe-baseline-hard",
+  "source_family_id": "0c95403bb44cb0ea36c25cdc127898e79935815c3c45d3b02160c653981812e2",
+  "verdict": "unknown"
+}

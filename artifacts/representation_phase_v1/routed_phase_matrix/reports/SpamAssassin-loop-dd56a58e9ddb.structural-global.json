@@ -1,0 +1,489 @@
+{
+  "arm": "target",
+  "benchmark": "/tmp/svcomp25-sparse/translated/safety-func/loop-invgen/SpamAssassin-loop.btor2",
+  "benchmark_id": "loop-invgen/SpamAssassin-loop.btor2",
+  "benchmark_sha256": "8766f2f99e909941ced206fdb9a1dab7205d1110e0a0c2ee85db86100df3236b",
+  "candidate_generation_sec": 0.003492482006549835,
+  "candidate_sha256": "b522b7a33d239b1d4eb9304f508cad0a6a51819cb4f0d10bdf4f24a5344fba34",
+  "certificate": {
+    "checks": [
+      {
+        "name": "C1 Init=>H",
+        "result": "unsat"
+      },
+      {
+        "name": "C2 inductive",
+        "result": "unsat"
+      },
+      {
+        "name": "C3 H=>notBAD",
+        "result": "sat"
+      }
+    ],
+    "init_queries": 2,
+    "ok": false,
+    "removed_initial_indices": [
+      3,
+      5,
+      9,
+      11,
+      15,
+      17,
+      21,
+      23,
+      24,
+      25,
+      27,
+      29,
+      30,
+      31,
+      36,
+      38,
+      39,
+      40,
+      42,
+      44,
+      45,
+      46,
+      51,
+      53,
+      54,
+      55,
+      57,
+      59,
+      60,
+      61
+    ],
+    "removed_step_indices": [
+      0,
+      2,
+      6,
+      8,
+      12,
+      14,
+      33,
+      35,
+      48,
+      50,
+      63,
+      64,
+      65,
+      66,
+      67,
+      68,
+      69,
+      70,
+      71,
+      72,
+      73,
+      74,
+      75,
+      77,
+      78,
+      79,
+      81,
+      82,
+      83,
+      1,
+      4,
+      18,
+      19,
+      22,
+      28,
+      34,
+      37,
+      43,
+      49,
+      52,
+      58,
+      76,
+      80,
+      7,
+      10,
+      13,
+      16,
+      20,
+      26,
+      32,
+      41,
+      47,
+      56,
+      62
+    ],
+    "selected_indices": [],
+    "step_queries": 4,
+    "unsupported_candidates": []
+  },
+  "certificate_time_sec": 0.1489626243710518,
+  "config": "structural-global",
+  "end_to_end_sec": 9.64236218854785,
+  "end_to_end_with_generation_sec": 9.64236218854785,
+  "engine": "phase-grammar-ic3ia",
+  "error": "",
+  "exit": 255,
+  "expected_verdict": "safe",
+  "generation_time_sec": 0.0,
+  "matrix_schema": "pono-llm-routed-phase-matrix-v1",
+  "model_checker_time_sec": 9.489907082170248,
+  "offline_time_sec": 9.64236218854785,
+  "phase_count": 0,
+  "phase_mode": "global",
+  "phases": [],
+  "pilot_sha256": "723eb64225d2c39fb4fba8477759307d184f6b40293ac4407dd3518aa1d34d0c",
+  "pool_candidate_count": 84,
+  "proof_time_sec": 9.6388697065413,
+  "route_count": 8,
+  "route_diagnostics": {
+    "dependency_edges": [
+      [
+        "state57",
+        "state58"
+      ],
+      [
+        "state57",
+        "state59"
+      ],
+      [
+        "state57",
+        "state60"
+      ],
+      [
+        "state57",
+        "state61"
+      ],
+      [
+        "state58",
+        "state57"
+      ],
+      [
+        "state58",
+        "state59"
+      ],
+      [
+        "state58",
+        "state60"
+      ],
+      [
+        "state58",
+        "state61"
+      ],
+      [
+        "state59",
+        "state57"
+      ],
+      [
+        "state59",
+        "state58"
+      ],
+      [
+        "state59",
+        "state60"
+      ],
+      [
+        "state59",
+        "state61"
+      ],
+      [
+        "state60",
+        "state57"
+      ],
+      [
+        "state60",
+        "state58"
+      ],
+      [
+        "state60",
+        "state59"
+      ],
+      [
+        "state60",
+        "state61"
+      ],
+      [
+        "state61",
+        "state57"
+      ],
+      [
+        "state61",
+        "state58"
+      ],
+      [
+        "state61",
+        "state59"
+      ],
+      [
+        "state61",
+        "state60"
+      ]
+    ],
+    "hot_variables": [
+      "state26",
+      "state57",
+      "state58",
+      "state60",
+      "state61"
+    ],
+    "max_routes": 8,
+    "ranked_variables": [
+      "state57",
+      "state58",
+      "state60"
+    ],
+    "scores": {
+      "state57": 145,
+      "state58": 145,
+      "state59": 45,
+      "state60": 145,
+      "state61": 145
+    },
+    "update_ops": {
+      "state57": [
+        "add",
+        "and",
+        "const",
+        "eq",
+        "ite",
+        "not",
+        "or",
+        "slice",
+        "slt"
+      ],
+      "state58": [
+        "add",
+        "and",
+        "const",
+        "eq",
+        "ite",
+        "not",
+        "or",
+        "slice",
+        "slt"
+      ],
+      "state59": [
+        "add",
+        "and",
+        "const",
+        "eq",
+        "ite",
+        "not",
+        "or",
+        "slice",
+        "slt"
+      ],
+      "state60": [
+        "add",
+        "and",
+        "const",
+        "eq",
+        "ite",
+        "not",
+        "or",
+        "slice",
+        "slt"
+      ],
+      "state61": [
+        "add",
+        "and",
+        "const",
+        "eq",
+        "ite",
+        "not",
+        "or",
+        "slice",
+        "slt"
+      ]
+    }
+  },
+  "route_error": "",
+  "route_sha256": "0bf4df1bd8c73273de20fdb9ad0d2c2136824cee3f1932dc5e305b24e1d3b7e9",
+  "route_valid": true,
+  "router": "structural",
+  "routes": [
+    {
+      "constants": [
+        0,
+        1
+      ],
+      "family": "unary",
+      "relations": [
+        "eq",
+        "le",
+        "ge"
+      ],
+      "requested_variables": [
+        "state57"
+      ],
+      "route_id": "cdbc35bc9b5efe18117cf4489519406be8ebffe9eb7ffdfb4e523b2e11dcf947",
+      "signedness": "signed",
+      "variables": [
+        "state57"
+      ],
+      "width": 32
+    },
+    {
+      "constants": [
+        0,
+        1
+      ],
+      "family": "unary",
+      "relations": [
+        "eq",
+        "le",
+        "ge"
+      ],
+      "requested_variables": [
+        "state58"
+      ],
+      "route_id": "f7b3a5818b2688a37102d94f7243658250f06b551d0e203f697685eabe1c3fe2",
+      "signedness": "signed",
+      "variables": [
+        "state58"
+      ],
+      "width": 32
+    },
+    {
+      "constants": [
+        0,
+        1
+      ],
+      "family": "unary",
+      "relations": [
+        "eq",
+        "le",
+        "ge"
+      ],
+      "requested_variables": [
+        "state60"
+      ],
+      "route_id": "ddec69305372f9d142b1d6fdb80a34cefe99dbceb3aee9016eaea156af7028e2",
+      "signedness": "signed",
+      "variables": [
+        "state60"
+      ],
+      "width": 32
+    },
+    {
+      "family": "pairwise_offset",
+      "offsets": [
+        0,
+        1,
+        -1,
+        2,
+        -2
+      ],
+      "relations": [
+        "eq",
+        "le",
+        "ge"
+      ],
+      "requested_variables": [
+        "state57",
+        "state58"
+      ],
+      "route_id": "b89458bd323df452272f53318a55b724f5f5f507878c800d934b634c449c2d86",
+      "signedness": "signed",
+      "variables": [
+        "state57",
+        "state58"
+      ],
+      "width": 32
+    },
+    {
+      "family": "pairwise_offset",
+      "offsets": [
+        0,
+        1,
+        -1,
+        2,
+        -2
+      ],
+      "relations": [
+        "eq",
+        "le",
+        "ge"
+      ],
+      "requested_variables": [
+        "state57",
+        "state60"
+      ],
+      "route_id": "830101d88ce83b1c28d5c4c73c279bab6692ca742e6c0acb31a11fccc1992dec",
+      "signedness": "signed",
+      "variables": [
+        "state57",
+        "state60"
+      ],
+      "width": 32
+    },
+    {
+      "family": "pairwise_offset",
+      "offsets": [
+        0,
+        1,
+        -1,
+        2,
+        -2
+      ],
+      "relations": [
+        "eq",
+        "le",
+        "ge"
+      ],
+      "requested_variables": [
+        "state58",
+        "state60"
+      ],
+      "route_id": "5602531171d38f72d585a19a9ad2ae97fd844e2d7cf448cedee9a89e27ca2ba7",
+      "signedness": "signed",
+      "variables": [
+        "state58",
+        "state60"
+      ],
+      "width": 32
+    },
+    {
+      "coefficient_bound": 2,
+      "family": "affine",
+      "relations": [
+        "eq"
+      ],
+      "requested_variables": [
+        "state57",
+        "state58",
+        "state60"
+      ],
+      "route_id": "88001962e1215fe85c777e8de5fe5ea1af061c0bb30667e16cd25c8cb1f306a8",
+      "signedness": "unsigned",
+      "variables": [
+        "state57",
+        "state58",
+        "state60"
+      ],
+      "width": 32
+    },
+    {
+      "family": "sum_equality",
+      "relations": [
+        "eq"
+      ],
+      "requested_variables": [
+        "state57",
+        "state58",
+        "state60"
+      ],
+      "route_id": "78e96e783b2d1d053f19246c7179044ace605f815e825d810769ed7b212744bd",
+      "signedness": "unsigned",
+      "variables": [
+        "state57",
+        "state58",
+        "state60"
+      ],
+      "width": 32
+    }
+  ],
+  "schema": "pono-llm-phase-grammar-run-v1",
+  "selected_candidate_count": 0,
+  "selected_indices": [],
+  "selection_role": "safe-baseline-hard",
+  "source_family_id": "68d0cd7105ca5c9fa73e412cfaf7aa09b6f04a9b26a9696fb8132e09b90da9ba",
+  "verdict": "unknown"
+}

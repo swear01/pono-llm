@@ -1,0 +1,120 @@
+{
+  "routes": [
+    {
+      "family": "pairwise_offset",
+      "offsets": [
+        0
+      ],
+      "relations": [
+        "le"
+      ],
+      "requested_variables": [
+        "i",
+        "len"
+      ],
+      "route_id": "9899cc44bfa3f0230294b6c3a5d4e158f702a536a33592ed29f13c30ad70dc38",
+      "signedness": "signed",
+      "variables": [
+        "state60",
+        "state57"
+      ],
+      "width": 32
+    },
+    {
+      "family": "pairwise_offset",
+      "offsets": [
+        0
+      ],
+      "relations": [
+        "le"
+      ],
+      "requested_variables": [
+        "j",
+        "bufsize"
+      ],
+      "route_id": "2c36d99c51d93d0f6ca03c0d277d0e3155955a5d60caa961daa2eceef9705661",
+      "signedness": "signed",
+      "variables": [
+        "state61",
+        "state59"
+      ],
+      "width": 32
+    },
+    {
+      "family": "sum_equality",
+      "relations": [
+        "le"
+      ],
+      "requested_variables": [
+        "i",
+        "j",
+        "limit"
+      ],
+      "route_id": "d66c8f3d72fea3edd7d0b9b01f0ae2d36dc9a8f32f126b806abdaeef6f2c651c",
+      "signedness": "signed",
+      "variables": [
+        "state60",
+        "state61",
+        "state58"
+      ],
+      "width": 32
+    },
+    {
+      "constants": [
+        0
+      ],
+      "family": "unary",
+      "relations": [
+        "ge"
+      ],
+      "requested_variables": [
+        "i"
+      ],
+      "route_id": "bd5da1710114d0daefd8ac0a5aefcfa609d229914b5ac3c4eb67e94ab8161a45",
+      "signedness": "signed",
+      "variables": [
+        "state60"
+      ],
+      "width": 32
+    },
+    {
+      "constants": [
+        0
+      ],
+      "family": "unary",
+      "relations": [
+        "ge"
+      ],
+      "requested_variables": [
+        "j"
+      ],
+      "route_id": "970e773d099dfcf038ce64c0b84d0bfc229dbf01aa2b44931616e775215304a9",
+      "signedness": "signed",
+      "variables": [
+        "state61"
+      ],
+      "width": 32
+    },
+    {
+      "family": "pairwise_offset",
+      "offsets": [
+        -1
+      ],
+      "relations": [
+        "le"
+      ],
+      "requested_variables": [
+        "i",
+        "len"
+      ],
+      "route_id": "070ed011c250d7afec278a9bdf93b585d947ab62c1dbf1010c07c8aedcfecdd5",
+      "signedness": "signed",
+      "variables": [
+        "state60",
+        "state57"
+      ],
+      "width": 32
+    }
+  ],
+  "schema": "pono-llm-grammar-route-v1"
+}

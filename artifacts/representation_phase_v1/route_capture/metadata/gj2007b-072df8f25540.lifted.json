@@ -1,0 +1,67 @@
+{
+  "all_phase_candidate_count": 120,
+  "api_latency_ms": 2142.9340839385986,
+  "arm": "lifted",
+  "benchmark_id": "loop-lit/gj2007b.btor2",
+  "client_stats": {
+    "completion_tokens": 213,
+    "content_chars": 667,
+    "json_mode": "json_object",
+    "latency_ms": 2142.9340839385986,
+    "openrouter_routing": {
+      "allow_fallbacks": true,
+      "ignore": [
+        "deepinfra",
+        "venice",
+        "gmicloud",
+        "digitalocean",
+        "cloudflare",
+        "morph",
+        "akashml",
+        "siliconflow"
+      ],
+      "only": [
+        "novita",
+        "deepseek",
+        "baidu",
+        "parasail",
+        "alibaba",
+        "streamlake",
+        "atlas-cloud"
+      ],
+      "quantizations": [
+        "fp8",
+        "fp16",
+        "bf16",
+        "fp32",
+        "unknown"
+      ],
+      "sort": "throughput"
+    },
+    "prompt_tokens": 1417,
+    "provider": "openrouter",
+    "reasoning_chars": 0,
+    "thinking_mode": "disabled",
+    "total_tokens": 1630
+  },
+  "content_sha256": "fc08e6eb13be10ad1e5bce28b33cd91902045c026dbe81f6393c1e76a879978c",
+  "global_candidate_count": 24,
+  "model": "deepseek/deepseek-v4-flash",
+  "phase_count": 5,
+  "prompt_lexical_tokens": 1342,
+  "prompt_path": "prompts/gj2007b-072df8f25540.lifted.txt",
+  "prompt_sha256": "1fae158dd28ef1adc574cd12f70366b5419a94dd43adfc22c789790e9fb84dbb",
+  "provider": "openrouter",
+  "response_path": "responses/gj2007b-072df8f25540.lifted.txt",
+  "response_sha256": "eee25c087841e5c703c3126c5e48b8ee1355f0ac8b3324cda197fe3a719c0d44",
+  "route_count": 4,
+  "route_error": "",
+  "route_path": "routes/gj2007b-072df8f25540.lifted.json",
+  "route_sha256": "78d07d815b966538ec4787322ef705a70ea6c8578ff6bb8f0b0d1ec9b40e625d",
+  "route_valid": true,
+  "schema": "pono-llm-grammar-route-meta-v1",
+  "selection_role": "safe-baseline-hard",
+  "source_family_id": "10ecc8f124fe27235e8a482b96c33b6e4d36ee4c6a008626524a42cd3a1c73fa",
+  "tokens": 1630,
+  "wall_latency_sec": 2.1429509297013283
+}

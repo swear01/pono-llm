@@ -1,0 +1,140 @@
+{
+  "routes": [
+    {
+      "family": "pairwise_offset",
+      "offsets": [
+        -1,
+        0,
+        1
+      ],
+      "relations": [
+        "eq"
+      ],
+      "requested_variables": [
+        "c",
+        "v"
+      ],
+      "route_id": "71fe0d1c120b73855cdb1afd5ad0b11820118ea18023eb7fd6c79ff43eff6b81",
+      "signedness": "signed",
+      "variables": [
+        "state38",
+        "state45"
+      ],
+      "width": 64
+    },
+    {
+      "family": "pairwise_offset",
+      "offsets": [
+        -1,
+        0,
+        1
+      ],
+      "relations": [
+        "eq"
+      ],
+      "requested_variables": [
+        "d",
+        "v"
+      ],
+      "route_id": "7addc00b08170500e8ca42341f0fc200d69b45ad083da569cc25b05245925a85",
+      "signedness": "signed",
+      "variables": [
+        "state39",
+        "state45"
+      ],
+      "width": 64
+    },
+    {
+      "family": "pairwise_offset",
+      "offsets": [
+        -1,
+        0,
+        1
+      ],
+      "relations": [
+        "eq"
+      ],
+      "requested_variables": [
+        "k",
+        "d"
+      ],
+      "route_id": "fb7002d4cc5c7da83135831e5df2298a2a5bcc6dbe9cffc340ef530d3a4553cc",
+      "signedness": "signed",
+      "variables": [
+        "state40",
+        "state39"
+      ],
+      "width": 64
+    },
+    {
+      "family": "sum_equality",
+      "relations": [
+        "eq"
+      ],
+      "requested_variables": [
+        "c",
+        "k",
+        "d"
+      ],
+      "route_id": "c894c62fe8e47b417a116a889f988be0063aa1286ec58661630685073edbe94d",
+      "signedness": "signed",
+      "variables": [
+        "state38",
+        "state40",
+        "state39"
+      ],
+      "width": 64
+    },
+    {
+      "counter_shifts": [
+        0,
+        1
+      ],
+      "family": "quadratic_recurrence",
+      "relations": [
+        "eq"
+      ],
+      "requested_variables": [
+        "d",
+        "v"
+      ],
+      "route_id": "bec4745d323913794ba938ee82ab019c143e0b42952f51dbf85d60eab0599d45",
+      "scales": [
+        1,
+        2
+      ],
+      "signedness": "signed",
+      "variables": [
+        "state39",
+        "state45"
+      ],
+      "width": 64
+    },
+    {
+      "counter_shifts": [
+        0,
+        1
+      ],
+      "family": "quadratic_recurrence",
+      "relations": [
+        "eq"
+      ],
+      "requested_variables": [
+        "c",
+        "v"
+      ],
+      "route_id": "c42a8a9d689a8cdd7288df930ccfa6612e4af4d46f7205fb9383c415990f65ff",
+      "scales": [
+        1,
+        2
+      ],
+      "signedness": "signed",
+      "variables": [
+        "state38",
+        "state45"
+      ],
+      "width": 64
+    }
+  ],
+  "schema": "pono-llm-grammar-route-v1"
+}

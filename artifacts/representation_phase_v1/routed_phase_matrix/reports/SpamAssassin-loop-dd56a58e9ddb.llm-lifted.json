@@ -1,0 +1,981 @@
+{
+  "arm": "lifted",
+  "benchmark": "/tmp/svcomp25-sparse/translated/safety-func/loop-invgen/SpamAssassin-loop.btor2",
+  "benchmark_id": "loop-invgen/SpamAssassin-loop.btor2",
+  "benchmark_sha256": "8766f2f99e909941ced206fdb9a1dab7205d1110e0a0c2ee85db86100df3236b",
+  "candidate_generation_sec": 0.0059615932404994965,
+  "candidate_sha256": "ea97bf29010b1a3011862f20220ba593c627185a13fbcd25df87076955a25808",
+  "certificate": {
+    "checks": [
+      {
+        "name": "C1 Init=>H",
+        "result": "unsat"
+      },
+      {
+        "name": "C2 inductive",
+        "result": "unsat"
+      },
+      {
+        "name": "C3 H=>notBAD",
+        "result": "sat"
+      }
+    ],
+    "init_queries": 1,
+    "ok": false,
+    "removed_initial_indices": [],
+    "removed_step_indices": [
+      110,
+      131,
+      152,
+      4,
+      130,
+      151,
+      147,
+      0,
+      21,
+      42,
+      84,
+      105,
+      126,
+      63,
+      109,
+      121,
+      163,
+      47,
+      89,
+      1,
+      64,
+      106,
+      148,
+      5,
+      7,
+      112,
+      133,
+      154,
+      139,
+      160,
+      67,
+      16,
+      79,
+      13,
+      43,
+      46,
+      118,
+      71,
+      113,
+      134,
+      155,
+      2,
+      44,
+      107,
+      128,
+      149,
+      55,
+      68,
+      142,
+      81,
+      123,
+      165,
+      8,
+      18,
+      144,
+      49,
+      58,
+      76,
+      11,
+      53,
+      158,
+      60,
+      50,
+      137,
+      70,
+      116
+    ],
+    "selected_indices": [
+      3,
+      6,
+      9,
+      10,
+      12,
+      14,
+      15,
+      17,
+      19,
+      20,
+      22,
+      23,
+      24,
+      25,
+      26,
+      27,
+      28,
+      29,
+      30,
+      31,
+      32,
+      33,
+      34,
+      35,
+      36,
+      37,
+      38,
+      39,
+      40,
+      41,
+      45,
+      48,
+      51,
+      52,
+      54,
+      56,
+      57,
+      59,
+      61,
+      62,
+      65,
+      66,
+      69,
+      72,
+      73,
+      74,
+      75,
+      77,
+      78,
+      80,
+      82,
+      83,
+      85,
+      86,
+      87,
+      88,
+      90,
+      91,
+      92,
+      93,
+      94,
+      95,
+      96,
+      97,
+      98,
+      99,
+      100,
+      101,
+      102,
+      103,
+      104,
+      108,
+      111,
+      114,
+      115,
+      117,
+      119,
+      120,
+      122,
+      124,
+      125,
+      127,
+      129,
+      132,
+      135,
+      136,
+      138,
+      140,
+      141,
+      143,
+      145,
+      146,
+      150,
+      153,
+      156,
+      157,
+      159,
+      161,
+      162,
+      164,
+      166,
+      167
+    ],
+    "step_queries": 36,
+    "unsupported_candidates": []
+  },
+  "certificate_time_sec": 2.2142225615680218,
+  "config": "llm-lifted",
+  "end_to_end_sec": 12.54368207603693,
+  "end_to_end_with_generation_sec": 16.069259025156498,
+  "engine": "phase-grammar-ic3ia",
+  "error": "",
+  "exit": null,
+  "expected_verdict": "safe",
+  "generation_time_sec": 3.525576949119568,
+  "matrix_schema": "pono-llm-routed-phase-matrix-v1",
+  "model_checker_time_sec": 10.323497921228409,
+  "offline_time_sec": 12.54368207603693,
+  "phase_count": 21,
+  "phase_mode": "all",
+  "phases": [
+    {
+      "equality_node": 27,
+      "guard_ast": {
+        "args": [
+          {
+            "form": "ref",
+            "ref": "state26"
+          },
+          {
+            "const": "1",
+            "form": "const",
+            "width": 21
+          }
+        ],
+        "form": "eq"
+      },
+      "is_bad": false,
+      "is_initial": false,
+      "pc_ref": "state26",
+      "phase_id": "pc_state26_w21_v1",
+      "value": 1,
+      "width": 21
+    },
+    {
+      "equality_node": 28,
+      "guard_ast": {
+        "args": [
+          {
+            "form": "ref",
+            "ref": "state26"
+          },
+          {
+            "const": "2",
+            "form": "const",
+            "width": 21
+          }
+        ],
+        "form": "eq"
+      },
+      "is_bad": false,
+      "is_initial": false,
+      "pc_ref": "state26",
+      "phase_id": "pc_state26_w21_v2",
+      "value": 2,
+      "width": 21
+    },
+    {
+      "equality_node": 29,
+      "guard_ast": {
+        "args": [
+          {
+            "form": "ref",
+            "ref": "state26"
+          },
+          {
+            "const": "4",
+            "form": "const",
+            "width": 21
+          }
+        ],
+        "form": "eq"
+      },
+      "is_bad": false,
+      "is_initial": false,
+      "pc_ref": "state26",
+      "phase_id": "pc_state26_w21_v4",
+      "value": 4,
+      "width": 21
+    },
+    {
+      "equality_node": 30,
+      "guard_ast": {
+        "args": [
+          {
+            "form": "ref",
+            "ref": "state26"
+          },
+          {
+            "const": "8",
+            "form": "const",
+            "width": 21
+          }
+        ],
+        "form": "eq"
+      },
+      "is_bad": false,
+      "is_initial": true,
+      "pc_ref": "state26",
+      "phase_id": "pc_state26_w21_v8",
+      "value": 8,
+      "width": 21
+    },
+    {
+      "equality_node": 31,
+      "guard_ast": {
+        "args": [
+          {
+            "form": "ref",
+            "ref": "state26"
+          },
+          {
+            "const": "16",
+            "form": "const",
+            "width": 21
+          }
+        ],
+        "form": "eq"
+      },
+      "is_bad": false,
+      "is_initial": false,
+      "pc_ref": "state26",
+      "phase_id": "pc_state26_w21_v16",
+      "value": 16,
+      "width": 21
+    },
+    {
+      "equality_node": 32,
+      "guard_ast": {
+        "args": [
+          {
+            "form": "ref",
+            "ref": "state26"
+          },
+          {
+            "const": "32",
+            "form": "const",
+            "width": 21
+          }
+        ],
+        "form": "eq"
+      },
+      "is_bad": false,
+      "is_initial": false,
+      "pc_ref": "state26",
+      "phase_id": "pc_state26_w21_v32",
+      "value": 32,
+      "width": 21
+    },
+    {
+      "equality_node": 33,
+      "guard_ast": {
+        "args": [
+          {
+            "form": "ref",
+            "ref": "state26"
+          },
+          {
+            "const": "64",
+            "form": "const",
+            "width": 21
+          }
+        ],
+        "form": "eq"
+      },
+      "is_bad": false,
+      "is_initial": false,
+      "pc_ref": "state26",
+      "phase_id": "pc_state26_w21_v64",
+      "value": 64,
+      "width": 21
+    },
+    {
+      "equality_node": 34,
+      "guard_ast": {
+        "args": [
+          {
+            "form": "ref",
+            "ref": "state26"
+          },
+          {
+            "const": "128",
+            "form": "const",
+            "width": 21
+          }
+        ],
+        "form": "eq"
+      },
+      "is_bad": false,
+      "is_initial": false,
+      "pc_ref": "state26",
+      "phase_id": "pc_state26_w21_v128",
+      "value": 128,
+      "width": 21
+    },
+    {
+      "equality_node": 35,
+      "guard_ast": {
+        "args": [
+          {
+            "form": "ref",
+            "ref": "state26"
+          },
+          {
+            "const": "256",
+            "form": "const",
+            "width": 21
+          }
+        ],
+        "form": "eq"
+      },
+      "is_bad": false,
+      "is_initial": false,
+      "pc_ref": "state26",
+      "phase_id": "pc_state26_w21_v256",
+      "value": 256,
+      "width": 21
+    },
+    {
+      "equality_node": 36,
+      "guard_ast": {
+        "args": [
+          {
+            "form": "ref",
+            "ref": "state26"
+          },
+          {
+            "const": "512",
+            "form": "const",
+            "width": 21
+          }
+        ],
+        "form": "eq"
+      },
+      "is_bad": false,
+      "is_initial": false,
+      "pc_ref": "state26",
+      "phase_id": "pc_state26_w21_v512",
+      "value": 512,
+      "width": 21
+    },
+    {
+      "equality_node": 37,
+      "guard_ast": {
+        "args": [
+          {
+            "form": "ref",
+            "ref": "state26"
+          },
+          {
+            "const": "1024",
+            "form": "const",
+            "width": 21
+          }
+        ],
+        "form": "eq"
+      },
+      "is_bad": false,
+      "is_initial": false,
+      "pc_ref": "state26",
+      "phase_id": "pc_state26_w21_v1024",
+      "value": 1024,
+      "width": 21
+    },
+    {
+      "equality_node": 38,
+      "guard_ast": {
+        "args": [
+          {
+            "form": "ref",
+            "ref": "state26"
+          },
+          {
+            "const": "2048",
+            "form": "const",
+            "width": 21
+          }
+        ],
+        "form": "eq"
+      },
+      "is_bad": false,
+      "is_initial": false,
+      "pc_ref": "state26",
+      "phase_id": "pc_state26_w21_v2048",
+      "value": 2048,
+      "width": 21
+    },
+    {
+      "equality_node": 39,
+      "guard_ast": {
+        "args": [
+          {
+            "form": "ref",
+            "ref": "state26"
+          },
+          {
+            "const": "4096",
+            "form": "const",
+            "width": 21
+          }
+        ],
+        "form": "eq"
+      },
+      "is_bad": false,
+      "is_initial": false,
+      "pc_ref": "state26",
+      "phase_id": "pc_state26_w21_v4096",
+      "value": 4096,
+      "width": 21
+    },
+    {
+      "equality_node": 40,
+      "guard_ast": {
+        "args": [
+          {
+            "form": "ref",
+            "ref": "state26"
+          },
+          {
+            "const": "8192",
+            "form": "const",
+            "width": 21
+          }
+        ],
+        "form": "eq"
+      },
+      "is_bad": false,
+      "is_initial": false,
+      "pc_ref": "state26",
+      "phase_id": "pc_state26_w21_v8192",
+      "value": 8192,
+      "width": 21
+    },
+    {
+      "equality_node": 41,
+      "guard_ast": {
+        "args": [
+          {
+            "form": "ref",
+            "ref": "state26"
+          },
+          {
+            "const": "16384",
+            "form": "const",
+            "width": 21
+          }
+        ],
+        "form": "eq"
+      },
+      "is_bad": false,
+      "is_initial": false,
+      "pc_ref": "state26",
+      "phase_id": "pc_state26_w21_v16384",
+      "value": 16384,
+      "width": 21
+    },
+    {
+      "equality_node": 42,
+      "guard_ast": {
+        "args": [
+          {
+            "form": "ref",
+            "ref": "state26"
+          },
+          {
+            "const": "32768",
+            "form": "const",
+            "width": 21
+          }
+        ],
+        "form": "eq"
+      },
+      "is_bad": false,
+      "is_initial": false,
+      "pc_ref": "state26",
+      "phase_id": "pc_state26_w21_v32768",
+      "value": 32768,
+      "width": 21
+    },
+    {
+      "equality_node": 43,
+      "guard_ast": {
+        "args": [
+          {
+            "form": "ref",
+            "ref": "state26"
+          },
+          {
+            "const": "65536",
+            "form": "const",
+            "width": 21
+          }
+        ],
+        "form": "eq"
+      },
+      "is_bad": false,
+      "is_initial": false,
+      "pc_ref": "state26",
+      "phase_id": "pc_state26_w21_v65536",
+      "value": 65536,
+      "width": 21
+    },
+    {
+      "equality_node": 44,
+      "guard_ast": {
+        "args": [
+          {
+            "form": "ref",
+            "ref": "state26"
+          },
+          {
+            "const": "131072",
+            "form": "const",
+            "width": 21
+          }
+        ],
+        "form": "eq"
+      },
+      "is_bad": false,
+      "is_initial": false,
+      "pc_ref": "state26",
+      "phase_id": "pc_state26_w21_v131072",
+      "value": 131072,
+      "width": 21
+    },
+    {
+      "equality_node": 45,
+      "guard_ast": {
+        "args": [
+          {
+            "form": "ref",
+            "ref": "state26"
+          },
+          {
+            "const": "262144",
+            "form": "const",
+            "width": 21
+          }
+        ],
+        "form": "eq"
+      },
+      "is_bad": false,
+      "is_initial": false,
+      "pc_ref": "state26",
+      "phase_id": "pc_state26_w21_v262144",
+      "value": 262144,
+      "width": 21
+    },
+    {
+      "equality_node": 46,
+      "guard_ast": {
+        "args": [
+          {
+            "form": "ref",
+            "ref": "state26"
+          },
+          {
+            "const": "524288",
+            "form": "const",
+            "width": 21
+          }
+        ],
+        "form": "eq"
+      },
+      "is_bad": false,
+      "is_initial": false,
+      "pc_ref": "state26",
+      "phase_id": "pc_state26_w21_v524288",
+      "value": 524288,
+      "width": 21
+    },
+    {
+      "equality_node": 47,
+      "guard_ast": {
+        "args": [
+          {
+            "form": "ref",
+            "ref": "state26"
+          },
+          {
+            "const": "1048576",
+            "form": "const",
+            "width": 21
+          }
+        ],
+        "form": "eq"
+      },
+      "is_bad": false,
+      "is_initial": false,
+      "pc_ref": "state26",
+      "phase_id": "pc_state26_w21_v1048576",
+      "value": 1048576,
+      "width": 21
+    }
+  ],
+  "pilot_sha256": "723eb64225d2c39fb4fba8477759307d184f6b40293ac4407dd3518aa1d34d0c",
+  "pool_candidate_count": 168,
+  "proof_time_sec": 12.53772048279643,
+  "route_count": 8,
+  "route_diagnostics": {
+    "capture_metadata": "metadata/SpamAssassin-loop-dd56a58e9ddb.lifted.json"
+  },
+  "route_error": "",
+  "route_sha256": "f2e79fd23a31cd63d6c5cd301143a5cba84e7657289dcc65a2fd8e09b65e1d55",
+  "route_valid": true,
+  "router": "llm",
+  "routes": [
+    {
+      "family": "pairwise_offset",
+      "offsets": [
+        0
+      ],
+      "relations": [
+        "le"
+      ],
+      "requested_variables": [
+        "i",
+        "j"
+      ],
+      "route_id": "09cf9a15a83f583882eb3b15e94cb4f368637b8041d04fe0aa5099db935ac3bc",
+      "signedness": "signed",
+      "variables": [
+        "state60",
+        "state61"
+      ],
+      "width": 32
+    },
+    {
+      "family": "pairwise_offset",
+      "offsets": [
+        0
+      ],
+      "relations": [
+        "le"
+      ],
+      "requested_variables": [
+        "i",
+        "len"
+      ],
+      "route_id": "19bb7ae993b64a6dd218ce0a12bb10fc173b7d078f91eafea998781ff5414f55",
+      "signedness": "unsigned",
+      "variables": [
+        "state60",
+        "state57"
+      ],
+      "width": 32
+    },
+    {
+      "family": "pairwise_offset",
+      "offsets": [
+        0
+      ],
+      "relations": [
+        "le"
+      ],
+      "requested_variables": [
+        "j",
+        "len"
+      ],
+      "route_id": "f5170bd8f7be01fee0b2aa42f5a0e2aedcd93ceec51a81ab5bee5449128849b9",
+      "signedness": "unsigned",
+      "variables": [
+        "state61",
+        "state57"
+      ],
+      "width": 32
+    },
+    {
+      "family": "pairwise_offset",
+      "offsets": [
+        0
+      ],
+      "relations": [
+        "le"
+      ],
+      "requested_variables": [
+        "i",
+        "bufsize"
+      ],
+      "route_id": "ab86d807895ca0c56e3203332dbcf3c8246ac1cf100d67504d5bc032d2dda0ad",
+      "signedness": "unsigned",
+      "variables": [
+        "state60",
+        "state59"
+      ],
+      "width": 32
+    },
+    {
+      "family": "pairwise_offset",
+      "offsets": [
+        0
+      ],
+      "relations": [
+        "le"
+      ],
+      "requested_variables": [
+        "j",
+        "bufsize"
+      ],
+      "route_id": "560f85ebc67d390458a455247e91c7595b9ba5f24f39e31f9910a073aa23a0a2",
+      "signedness": "unsigned",
+      "variables": [
+        "state61",
+        "state59"
+      ],
+      "width": 32
+    },
+    {
+      "family": "pairwise_offset",
+      "offsets": [
+        0
+      ],
+      "relations": [
+        "le"
+      ],
+      "requested_variables": [
+        "len",
+        "limit"
+      ],
+      "route_id": "a3068750e9c0bc9931f3595f3c6512e9315f8cb97dbf24a9ab5d5490425eb8eb",
+      "signedness": "unsigned",
+      "variables": [
+        "state57",
+        "state58"
+      ],
+      "width": 32
+    },
+    {
+      "family": "pairwise_offset",
+      "offsets": [
+        0
+      ],
+      "relations": [
+        "le"
+      ],
+      "requested_variables": [
+        "bufsize",
+        "limit"
+      ],
+      "route_id": "15417f851c0d6ba687c3edd8f92a7e428c43a3b433ec25da6fbc2da1d5430539",
+      "signedness": "unsigned",
+      "variables": [
+        "state59",
+        "state58"
+      ],
+      "width": 32
+    },
+    {
+      "family": "sum_equality",
+      "relations": [
+        "eq"
+      ],
+      "requested_variables": [
+        "i",
+        "j",
+        "len"
+      ],
+      "route_id": "7ca7b9234f86b06fe8ea6cee44020188838dae97b57f33cf51983d1c58fa58ea",
+      "signedness": "unsigned",
+      "variables": [
+        "state60",
+        "state61",
+        "state57"
+      ],
+      "width": 32
+    }
+  ],
+  "schema": "pono-llm-phase-grammar-run-v1",
+  "selected_candidate_count": 102,
+  "selected_indices": [
+    3,
+    6,
+    9,
+    10,
+    12,
+    14,
+    15,
+    17,
+    19,
+    20,
+    22,
+    23,
+    24,
+    25,
+    26,
+    27,
+    28,
+    29,
+    30,
+    31,
+    32,
+    33,
+    34,
+    35,
+    36,
+    37,
+    38,
+    39,
+    40,
+    41,
+    45,
+    48,
+    51,
+    52,
+    54,
+    56,
+    57,
+    59,
+    61,
+    62,
+    65,
+    66,
+    69,
+    72,
+    73,
+    74,
+    75,
+    77,
+    78,
+    80,
+    82,
+    83,
+    85,
+    86,
+    87,
+    88,
+    90,
+    91,
+    92,
+    93,
+    94,
+    95,
+    96,
+    97,
+    98,
+    99,
+    100,
+    101,
+    102,
+    103,
+    104,
+    108,
+    111,
+    114,
+    115,
+    117,
+    119,
+    120,
+    122,
+    124,
+    125,
+    127,
+    129,
+    132,
+    135,
+    136,
+    138,
+    140,
+    141,
+    143,
+    145,
+    146,
+    150,
+    153,
+    156,
+    157,
+    159,
+    161,
+    162,
+    164,
+    166,
+    167
+  ],
+  "selection_role": "safe-baseline-hard",
+  "source_family_id": "68d0cd7105ca5c9fa73e412cfaf7aa09b6f04a9b26a9696fb8132e09b90da9ba",
+  "verdict": "timeout"
+}

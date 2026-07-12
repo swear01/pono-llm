@@ -1,0 +1,19 @@
+unsat
+b0
+initial-predicates: injected (=> (= state10 #b00001) (= state24 (bvadd state23 state25)))
+initial-predicates: injected (=> (= state10 #b00010) (= state24 (bvadd state23 state25)))
+initial-predicates: injected (=> (= state10 #b00100) (= state24 (bvadd state23 state25)))
+initial-predicates: injected (=> (= state10 #b01000) (= state24 (bvadd state23 state25)))
+initial-predicates: injected (=> (= state10 #b10000) (= state24 (bvadd state23 state25)))
+initial-predicates: injected (=> (= state10 #b00001) (= state25 (bvadd state23 state24)))
+initial-predicates: injected (=> (= state10 #b00010) (= state25 (bvadd state23 state24)))
+initial-predicates: injected (=> (= state10 #b00100) (= state25 (bvadd state23 state24)))
+initial-predicates: injected (=> (= state10 #b01000) (= state25 (bvadd state23 state24)))
+initial-predicates: injected (=> (= state10 #b10000) (= state25 (bvadd state23 state24)))
+initial-predicates: injected (=> (= state10 #b00001) (= state23 (bvadd state24 state25)))
+initial-predicates: injected (=> (= state10 #b00010) (= state23 (bvadd state24 state25)))
+initial-predicates: injected (=> (= state10 #b00100) (= state23 (bvadd state24 state25)))
+initial-predicates: injected (=> (= state10 #b01000) (= state23 (bvadd state24 state25)))
+initial-predicates: injected (=> (= state10 #b10000) (= state23 (bvadd state24 state25)))
+IC3IA: injected 15 external initial predicates
+INVAR: (and (and true (=> (= state10 #b00001) (= state23 (bvadd state24 state25)))) (not (= (bvcomp state10 #b00100) #b1)))

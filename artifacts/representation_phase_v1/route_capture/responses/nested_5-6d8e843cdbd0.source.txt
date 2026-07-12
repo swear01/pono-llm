@@ -1,0 +1,35 @@
+{
+  "schema": "pono-llm-grammar-route-v1",
+  "routes": [
+    {
+      "variables": ["a"],
+      "family": "unary",
+      "relations": ["eq"],
+      "signedness": "signed"
+    },
+    {
+      "variables": ["b"],
+      "family": "unary",
+      "relations": ["eq"],
+      "signedness": "signed"
+    },
+    {
+      "variables": ["c"],
+      "family": "unary",
+      "relations": ["eq"],
+      "signedness": "signed"
+    },
+    {
+      "variables": ["d"],
+      "family": "unary",
+      "relations": ["eq"],
+      "signedness": "signed"
+    },
+    {
+      "variables": ["e"],
+      "family": "unary",
+      "relations": ["eq"],
+      "signedness": "signed"
+    }
+  ]
+}

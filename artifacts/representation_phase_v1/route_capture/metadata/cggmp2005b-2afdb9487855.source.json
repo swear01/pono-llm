@@ -1,0 +1,67 @@
+{
+  "all_phase_candidate_count": 21,
+  "api_latency_ms": 1543.2491302490234,
+  "arm": "source",
+  "benchmark_id": "loop-lit/cggmp2005b.btor2",
+  "client_stats": {
+    "completion_tokens": 119,
+    "content_chars": 362,
+    "json_mode": "json_object",
+    "latency_ms": 1543.2491302490234,
+    "openrouter_routing": {
+      "allow_fallbacks": true,
+      "ignore": [
+        "deepinfra",
+        "venice",
+        "gmicloud",
+        "digitalocean",
+        "cloudflare",
+        "morph",
+        "akashml",
+        "siliconflow"
+      ],
+      "only": [
+        "novita",
+        "deepseek",
+        "baidu",
+        "parasail",
+        "alibaba",
+        "streamlake",
+        "atlas-cloud"
+      ],
+      "quantizations": [
+        "fp8",
+        "fp16",
+        "bf16",
+        "fp32",
+        "unknown"
+      ],
+      "sort": "throughput"
+    },
+    "prompt_tokens": 1243,
+    "provider": "openrouter",
+    "reasoning_chars": 0,
+    "thinking_mode": "disabled",
+    "total_tokens": 1362
+  },
+  "content_sha256": "3d96ce42eec87679ee0e7a37251eace15b910774c5551f9cbe6ac27333a743a8",
+  "global_candidate_count": 3,
+  "model": "deepseek/deepseek-v4-flash",
+  "phase_count": 7,
+  "prompt_lexical_tokens": 974,
+  "prompt_path": "prompts/cggmp2005b-2afdb9487855.source.txt",
+  "prompt_sha256": "d1c7b4d2f7249d06c07b41338d40b9d070324cf2979f75f3be4ab034239802b1",
+  "provider": "openrouter",
+  "response_path": "responses/cggmp2005b-2afdb9487855.source.txt",
+  "response_sha256": "5c3a0be7a83b6243759306c01b29847ad3141d120abbb6b1853d33cd6ab45e2c",
+  "route_count": 2,
+  "route_error": "",
+  "route_path": "routes/cggmp2005b-2afdb9487855.source.json",
+  "route_sha256": "eacda76c11389042d2fdb0b27060d35f2d9422b486da5c150e28c6b78677485b",
+  "route_valid": true,
+  "schema": "pono-llm-grammar-route-meta-v1",
+  "selection_role": "safe-baseline-control",
+  "source_family_id": "1041257ee565fc306f7aa52359d391f90360af38959a03b968225ad0c6d969a3",
+  "tokens": 1362,
+  "wall_latency_sec": 1.5432659722864628
+}

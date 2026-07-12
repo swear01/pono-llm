@@ -1,0 +1,100 @@
+{
+  "routes": [
+    {
+      "family": "pairwise_offset",
+      "offsets": [
+        0
+      ],
+      "relations": [
+        "le"
+      ],
+      "requested_variables": [
+        "i",
+        "n"
+      ],
+      "route_id": "66bf643eeada6b241f2f6910c727373f79f547a5a9b29dfb855a644b20a050e2",
+      "signedness": "signed",
+      "variables": [
+        "state33",
+        "state36"
+      ],
+      "width": 32
+    },
+    {
+      "constants": [
+        0
+      ],
+      "family": "unary",
+      "relations": [
+        "ge"
+      ],
+      "requested_variables": [
+        "j"
+      ],
+      "route_id": "d222ceb411b81b688c4ff46f52f426d12b2e0efa069590a100be1cc8d67cf9e6",
+      "signedness": "signed",
+      "variables": [
+        "state34"
+      ],
+      "width": 32
+    },
+    {
+      "constants": [
+        0
+      ],
+      "family": "unary",
+      "relations": [
+        "ge"
+      ],
+      "requested_variables": [
+        "k"
+      ],
+      "route_id": "d46580ac4f7ae2d0887328ceee3fd72946bb9f83efc6341b0546fbf9c61ef433",
+      "signedness": "signed",
+      "variables": [
+        "state35"
+      ],
+      "width": 32
+    },
+    {
+      "family": "sum_equality",
+      "relations": [
+        "eq"
+      ],
+      "requested_variables": [
+        "c1",
+        "c2",
+        "c3"
+      ],
+      "route_id": "7ae0bb5328ff20d762ac7de9a19a3ad307544412dd81d594360e415ed9fb7dde",
+      "signedness": "unsigned",
+      "variables": [
+        "state30",
+        "state31",
+        "state32"
+      ],
+      "width": 32
+    },
+    {
+      "coefficient_bound": 8,
+      "family": "affine",
+      "relations": [
+        "eq"
+      ],
+      "requested_variables": [
+        "i",
+        "j",
+        "k"
+      ],
+      "route_id": "dd198e0b2acc0b1416772194d27c22891c0653ba37540902b376ebc2de77453d",
+      "signedness": "signed",
+      "variables": [
+        "state33",
+        "state34",
+        "state35"
+      ],
+      "width": 32
+    }
+  ],
+  "schema": "pono-llm-grammar-route-v1"
+}

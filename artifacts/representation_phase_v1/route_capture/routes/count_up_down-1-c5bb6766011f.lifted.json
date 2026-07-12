@@ -1,0 +1,122 @@
+{
+  "routes": [
+    {
+      "constants": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "family": "unary",
+      "relations": [
+        "eq"
+      ],
+      "requested_variables": [
+        "x"
+      ],
+      "route_id": "845163b72710b6322385c70d774ae63bef858a6ac1184bf55b40e20f978338ad",
+      "signedness": "unsigned",
+      "variables": [
+        "state24"
+      ],
+      "width": 32
+    },
+    {
+      "constants": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "family": "unary",
+      "relations": [
+        "eq"
+      ],
+      "requested_variables": [
+        "y"
+      ],
+      "route_id": "a3a2c0fd9dae828f0163c8619694afd1aa550873eee3d670be695609027793fd",
+      "signedness": "unsigned",
+      "variables": [
+        "state25"
+      ],
+      "width": 32
+    },
+    {
+      "family": "pairwise_offset",
+      "offsets": [
+        0,
+        1,
+        -1,
+        2,
+        -2,
+        3,
+        -3,
+        4,
+        -4
+      ],
+      "relations": [
+        "eq"
+      ],
+      "requested_variables": [
+        "x",
+        "y"
+      ],
+      "route_id": "5831e861820a875fb2875156e09e0d9c936c3f0b742729fbdfbbb9970de0cdb7",
+      "signedness": "unsigned",
+      "variables": [
+        "state24",
+        "state25"
+      ],
+      "width": 32
+    },
+    {
+      "coefficient_bound": 4,
+      "family": "affine",
+      "relations": [
+        "eq"
+      ],
+      "requested_variables": [
+        "x",
+        "y"
+      ],
+      "route_id": "001e9850dc726805a3e1a1447a54abc11f2f8d2f8b0dca551c508e80215a8a45",
+      "signedness": "unsigned",
+      "variables": [
+        "state24",
+        "state25"
+      ],
+      "width": 32
+    },
+    {
+      "family": "sum_equality",
+      "relations": [
+        "eq"
+      ],
+      "requested_variables": [
+        "n",
+        "x",
+        "y"
+      ],
+      "route_id": "9a6f8f63711a0939ae1500886ba9d846cb5f6ef6065956e838c778d7de97e3b7",
+      "signedness": "unsigned",
+      "variables": [
+        "state23",
+        "state24",
+        "state25"
+      ],
+      "width": 32
+    }
+  ],
+  "schema": "pono-llm-grammar-route-v1"
+}

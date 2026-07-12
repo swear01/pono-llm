@@ -1,0 +1,139 @@
+REPRESENTATION: TARGET-DERIVED LIFTED RECURRENCE
+MODULE: unknown
+
+PHASES:
+- pc_state14_w9_v1: state14 == 1 (width 9)
+- pc_state14_w9_v2: state14 == 2 (width 9)
+- pc_state14_w9_v4: state14 == 4 (width 9)
+- pc_state14_w9_v8: state14 == 8 (width 9)
+- pc_state14_w9_v16: state14 == 16 (width 9)
+- pc_state14_w9_v32: state14 == 32 (width 9)
+- pc_state14_w9_v64: state14 == 64 (width 9)
+- pc_state14_w9_v128: state14 == 128 (width 9)
+- pc_state14_w9_v256: state14 == 256 (width 9)
+
+TRANSITIONS:
+- !pc' = (((!pc == 16) && (1 && !(e <s 6))) ? 64 : ((((!pc == 2) && (1 && (b <s 6))) || ((!pc == 64) && (1 && !(... <s 6)))) ? 32 : (((!pc == 1) && 1) ? 8 : (((!pc == ...) && (... && ...)) ? 1 : ((((!pc == ...) && ...) || (... && ...)) ? 2 : (... ? 64 : ...))))))
+- a' = ((((!pc == 16) && (1 && !(e <s 6))) || ((!pc == 2) && (1 && (b <s 6)))) ? a : ((((!pc == 64) && (1 && !(... <s 6))) || ((!pc == 1) && 1)) ? a : ((((!pc == ...) && (... && ...)) || ((!pc == ...) && ...)) ? a : ((... || ...) ? a : ...))))
+- b' = ((((!pc == 16) && (1 && !(e <s 6))) || ((!pc == 2) && (1 && (b <s 6)))) ? b : ((((!pc == 64) && (1 && !(... <s 6))) || ((!pc == 1) && 1)) ? b : (((!pc == ...) && (... && ...)) ? b : (((!pc == ...) && ...) ? 0 : ...))))
+- c' = (((!pc == 16) && (1 && !(e <s 6))) ? c : (((!pc == 2) && (1 && (b <s 6))) ? 0 : (((!pc == 64) && (1 && !(... <s 6))) ? (1 + c) : ((((!pc == 1) && 1) || ((!pc == ...) && (... && ...))) ? c : ((((!pc == ...) && ...) || (... && ...)) ? c : ((... || ...) ? c : ...))))))
+- d' = (((!pc == 16) && (1 && !(e <s 6))) ? (1 + d) : ((((!pc == 2) && (1 && (b <s 6))) || ((!pc == 64) && (1 && !(d <s 6)))) ? d : ((((!pc == 1) && 1) || ((!pc == ...) && (... && ...))) ? d : ((((!pc == ...) && ...) || (... && ...)) ? d : ...))))
+- e' = ((((!pc == 16) && (1 && !(e <s 6))) || ((!pc == 2) && (1 && (b <s 6)))) ? e : ((((!pc == 64) && (1 && !(... <s 6))) || ((!pc == 1) && 1)) ? e : ((((!pc == ...) && (... && ...)) || ((!pc == ...) && ...)) ? e : ((... || ...) ? e : ...))))
+
+BAD:
+- (!pc == 1)
+
+--- COMMON FORMAL ROUTE CONTRACT ---
+TASK: Choose a small invariant-synthesis grammar. Do not output an invariant,
+proof, coefficient value, or assertion. The formal backend expands every route,
+runs Houdini, and checks the original BTOR2. Your output is untrusted routing
+advice only.
+
+MACHINE SEMANTICS:
+- All state arithmetic is fixed-width bit-vector arithmetic modulo 2^width.
+- Comparisons must state signed or unsigned semantics.
+- A route may use only variables from the catalog below.
+- Phase guards are applied by the formal experiment, not selected by you.
+
+VARIABLE_CATALOG_JSON:
+[
+  {
+    "init": "0",
+    "name": "a",
+    "ref": "state30",
+    "width": 32
+  },
+  {
+    "init": "0",
+    "name": "b",
+    "ref": "state31",
+    "width": 32
+  },
+  {
+    "init": "0",
+    "name": "c",
+    "ref": "state32",
+    "width": 32
+  },
+  {
+    "init": "0",
+    "name": "d",
+    "ref": "state33",
+    "width": 32
+  },
+  {
+    "init": "0",
+    "name": "e",
+    "ref": "state34",
+    "width": 32
+  }
+]
+
+PHASE_CATALOG_JSON:
+[
+  {
+    "guard": "state14 == 1",
+    "phase_id": "pc_state14_w9_v1",
+    "width": 9
+  },
+  {
+    "guard": "state14 == 2",
+    "phase_id": "pc_state14_w9_v2",
+    "width": 9
+  },
+  {
+    "guard": "state14 == 4",
+    "phase_id": "pc_state14_w9_v4",
+    "width": 9
+  },
+  {
+    "guard": "state14 == 8",
+    "phase_id": "pc_state14_w9_v8",
+    "width": 9
+  },
+  {
+    "guard": "state14 == 16",
+    "phase_id": "pc_state14_w9_v16",
+    "width": 9
+  },
+  {
+    "guard": "state14 == 32",
+    "phase_id": "pc_state14_w9_v32",
+    "width": 9
+  },
+  {
+    "guard": "state14 == 64",
+    "phase_id": "pc_state14_w9_v64",
+    "width": 9
+  },
+  {
+    "guard": "state14 == 128",
+    "phase_id": "pc_state14_w9_v128",
+    "width": 9
+  },
+  {
+    "guard": "state14 == 256",
+    "phase_id": "pc_state14_w9_v256",
+    "width": 9
+  }
+]
+
+OUTPUT CONTRACT:
+- Output exactly one JSON object and no Markdown.
+- Top-level fields: "schema" and "routes" only.
+- schema must be "pono-llm-grammar-route-v1".
+- routes must contain 1 to 8 route objects.
+- Every route has exactly variables, family, relations, signedness, plus only
+  the family field listed below.
+- family="unary": one variable; optional constants integer list [-16,16].
+- family="pairwise_offset": two same-width variables; optional offsets integer
+  list [-16,16].
+- family="affine": two or three same-width variables; optional
+  coefficient_bound integer [1,8].
+- family="sum_equality": three same-width variables ordered as result, addend1,
+  addend2; no family-specific field.
+- family="quadratic_recurrence": two same-width variables ordered as accumulator,
+  counter; optional scales [1,8] and counter_shifts [-4,4].
+- relations is a non-empty subset of ["eq","le","ge"].
+- signedness is exactly "signed" or "unsigned".
+- No explanation and no extra fields.

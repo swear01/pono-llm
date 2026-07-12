@@ -1,0 +1,67 @@
+{
+  "all_phase_candidate_count": 15,
+  "api_latency_ms": 2227.461814880371,
+  "arm": "source",
+  "benchmark_id": "loop-zilu/benchmark05_conjunctive.btor2",
+  "client_stats": {
+    "completion_tokens": 172,
+    "content_chars": 532,
+    "json_mode": "json_object",
+    "latency_ms": 2227.461814880371,
+    "openrouter_routing": {
+      "allow_fallbacks": true,
+      "ignore": [
+        "deepinfra",
+        "venice",
+        "gmicloud",
+        "digitalocean",
+        "cloudflare",
+        "morph",
+        "akashml",
+        "siliconflow"
+      ],
+      "only": [
+        "novita",
+        "deepseek",
+        "baidu",
+        "parasail",
+        "alibaba",
+        "streamlake",
+        "atlas-cloud"
+      ],
+      "quantizations": [
+        "fp8",
+        "fp16",
+        "bf16",
+        "fp32",
+        "unknown"
+      ],
+      "sort": "throughput"
+    },
+    "prompt_tokens": 1145,
+    "provider": "openrouter",
+    "reasoning_chars": 0,
+    "thinking_mode": "disabled",
+    "total_tokens": 1317
+  },
+  "content_sha256": "cda483f8d8d680feb68cd20df1e25b3db9abc0c88f5ed8b9ce8c0944869603d0",
+  "global_candidate_count": 3,
+  "model": "deepseek/deepseek-v4-flash",
+  "phase_count": 5,
+  "prompt_lexical_tokens": 884,
+  "prompt_path": "prompts/benchmark05_conjunctive-be8f9ba19edd.source.txt",
+  "prompt_sha256": "7c699a96ff8a2b333e94d9847a29b8a09f1ea9be58130dd6fef89de63d835f51",
+  "provider": "openrouter",
+  "response_path": "responses/benchmark05_conjunctive-be8f9ba19edd.source.txt",
+  "response_sha256": "e477361f42f477827c550cc73ee221ca65d39841ddbde7203cee3c497f4ab954",
+  "route_count": 3,
+  "route_error": "",
+  "route_path": "routes/benchmark05_conjunctive-be8f9ba19edd.source.json",
+  "route_sha256": "a8b9a4cb4a4dbba203223af68c6539bfb0adf3bbf97ab116ea24e9c33938ec40",
+  "route_valid": true,
+  "schema": "pono-llm-grammar-route-meta-v1",
+  "selection_role": "safe-baseline-hard",
+  "source_family_id": "8ddf6b6355c50edeb4690d5041155805747b85c70a1a46526cb9005044aea173",
+  "tokens": 1317,
+  "wall_latency_sec": 2.2274783849716187
+}

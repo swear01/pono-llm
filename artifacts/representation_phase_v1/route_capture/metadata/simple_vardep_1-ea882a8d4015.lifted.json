@@ -1,0 +1,67 @@
+{
+  "all_phase_candidate_count": 20025,
+  "api_latency_ms": 66533.82205963135,
+  "arm": "lifted",
+  "benchmark_id": "loop-crafted/simple_vardep_1.btor2",
+  "client_stats": {
+    "completion_tokens": 505,
+    "content_chars": 1539,
+    "json_mode": "json_object",
+    "latency_ms": 66533.82205963135,
+    "openrouter_routing": {
+      "allow_fallbacks": true,
+      "ignore": [
+        "deepinfra",
+        "venice",
+        "gmicloud",
+        "digitalocean",
+        "cloudflare",
+        "morph",
+        "akashml",
+        "siliconflow"
+      ],
+      "only": [
+        "novita",
+        "deepseek",
+        "baidu",
+        "parasail",
+        "alibaba",
+        "streamlake",
+        "atlas-cloud"
+      ],
+      "quantizations": [
+        "fp8",
+        "fp16",
+        "bf16",
+        "fp32",
+        "unknown"
+      ],
+      "sort": "throughput"
+    },
+    "prompt_tokens": 1297,
+    "provider": "openrouter",
+    "reasoning_chars": 0,
+    "thinking_mode": "disabled",
+    "total_tokens": 1802
+  },
+  "content_sha256": "3150ef2f78a175ae28043995f25c3925e942962edbc67d3e82abe3b359dcf831",
+  "global_candidate_count": 4005,
+  "model": "deepseek/deepseek-v4-flash",
+  "phase_count": 5,
+  "prompt_lexical_tokens": 1190,
+  "prompt_path": "prompts/simple_vardep_1-ea882a8d4015.lifted.txt",
+  "prompt_sha256": "3c56e6b537f22ed5ecba9481fb6107866f4f83e8e1dad0f64078021846c690e3",
+  "provider": "openrouter",
+  "response_path": "responses/simple_vardep_1-ea882a8d4015.lifted.txt",
+  "response_sha256": "f8758b38cb7fb21e30c42d858b7606c23e2405751d0d4d3c3093777fc59c5a66",
+  "route_count": 0,
+  "route_error": "route expands to 20025 all-phase candidates, above cap 20000",
+  "route_path": null,
+  "route_sha256": null,
+  "route_valid": false,
+  "schema": "pono-llm-grammar-route-meta-v1",
+  "selection_role": "safe-baseline-control",
+  "source_family_id": "8985f07c344b3a56534b126a46c6ed75559902a8cb2dd0cba9021d276ab0b277",
+  "tokens": 1802,
+  "wall_latency_sec": 66.53384581580758
+}

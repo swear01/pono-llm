@@ -1,0 +1,450 @@
+{
+  "arm": "lifted",
+  "benchmark": "/tmp/svcomp25-sparse/translated/safety-func/loop-invgen/id_trans.btor2",
+  "benchmark_id": "loop-invgen/id_trans.btor2",
+  "benchmark_sha256": "fdc57df44a2884ecdbcc8a341de2a349398ebb4cd44326fc6b6ee4e62e99af1f",
+  "candidate_generation_sec": 0.002359360456466675,
+  "candidate_sha256": "31212649337db536c7ef9782cd4789a381f4173fe61b796683fb717d4f8b1b6c",
+  "certificate": {
+    "checks": [
+      {
+        "name": "C1 Init=>H",
+        "result": "unsat"
+      },
+      {
+        "name": "C2 inductive",
+        "result": "unsat"
+      },
+      {
+        "name": "C3 H=>notBAD",
+        "result": "sat"
+      }
+    ],
+    "init_queries": 2,
+    "ok": false,
+    "removed_initial_indices": [
+      28,
+      44
+    ],
+    "removed_step_indices": [
+      29,
+      45,
+      53,
+      61,
+      69,
+      5,
+      13,
+      37,
+      2,
+      10,
+      26,
+      34,
+      50,
+      58,
+      66,
+      6,
+      14,
+      30,
+      38,
+      54,
+      62,
+      70,
+      46,
+      42,
+      3,
+      11,
+      27,
+      35,
+      51,
+      59,
+      67,
+      43
+    ],
+    "selected_indices": [
+      0,
+      1,
+      4,
+      7,
+      8,
+      9,
+      12,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      21,
+      22,
+      23,
+      24,
+      25,
+      31,
+      32,
+      33,
+      36,
+      39,
+      40,
+      41,
+      47,
+      48,
+      49,
+      52,
+      55,
+      56,
+      57,
+      60,
+      63,
+      64,
+      65,
+      68,
+      71
+    ],
+    "step_queries": 9,
+    "unsupported_candidates": []
+  },
+  "certificate_time_sec": 0.22219990193843842,
+  "config": "random-lifted",
+  "end_to_end_sec": 1.5198321044445038,
+  "end_to_end_with_generation_sec": 1.5198321044445038,
+  "engine": "phase-grammar-ic3ia",
+  "error": "",
+  "exit": 0,
+  "expected_verdict": "unsafe",
+  "generation_time_sec": 0.0,
+  "matrix_schema": "pono-llm-routed-phase-matrix-v1",
+  "model_checker_time_sec": 1.2952728420495987,
+  "offline_time_sec": 1.5198321044445038,
+  "phase_count": 8,
+  "phase_mode": "all",
+  "phases": [
+    {
+      "equality_node": 14,
+      "guard_ast": {
+        "args": [
+          {
+            "form": "ref",
+            "ref": "state13"
+          },
+          {
+            "const": "1",
+            "form": "const",
+            "width": 8
+          }
+        ],
+        "form": "eq"
+      },
+      "is_bad": false,
+      "is_initial": false,
+      "pc_ref": "state13",
+      "phase_id": "pc_state13_w8_v1",
+      "value": 1,
+      "width": 8
+    },
+    {
+      "equality_node": 15,
+      "guard_ast": {
+        "args": [
+          {
+            "form": "ref",
+            "ref": "state13"
+          },
+          {
+            "const": "2",
+            "form": "const",
+            "width": 8
+          }
+        ],
+        "form": "eq"
+      },
+      "is_bad": false,
+      "is_initial": false,
+      "pc_ref": "state13",
+      "phase_id": "pc_state13_w8_v2",
+      "value": 2,
+      "width": 8
+    },
+    {
+      "equality_node": 16,
+      "guard_ast": {
+        "args": [
+          {
+            "form": "ref",
+            "ref": "state13"
+          },
+          {
+            "const": "4",
+            "form": "const",
+            "width": 8
+          }
+        ],
+        "form": "eq"
+      },
+      "is_bad": false,
+      "is_initial": false,
+      "pc_ref": "state13",
+      "phase_id": "pc_state13_w8_v4",
+      "value": 4,
+      "width": 8
+    },
+    {
+      "equality_node": 17,
+      "guard_ast": {
+        "args": [
+          {
+            "form": "ref",
+            "ref": "state13"
+          },
+          {
+            "const": "8",
+            "form": "const",
+            "width": 8
+          }
+        ],
+        "form": "eq"
+      },
+      "is_bad": false,
+      "is_initial": false,
+      "pc_ref": "state13",
+      "phase_id": "pc_state13_w8_v8",
+      "value": 8,
+      "width": 8
+    },
+    {
+      "equality_node": 18,
+      "guard_ast": {
+        "args": [
+          {
+            "form": "ref",
+            "ref": "state13"
+          },
+          {
+            "const": "16",
+            "form": "const",
+            "width": 8
+          }
+        ],
+        "form": "eq"
+      },
+      "is_bad": false,
+      "is_initial": true,
+      "pc_ref": "state13",
+      "phase_id": "pc_state13_w8_v16",
+      "value": 16,
+      "width": 8
+    },
+    {
+      "equality_node": 19,
+      "guard_ast": {
+        "args": [
+          {
+            "form": "ref",
+            "ref": "state13"
+          },
+          {
+            "const": "32",
+            "form": "const",
+            "width": 8
+          }
+        ],
+        "form": "eq"
+      },
+      "is_bad": false,
+      "is_initial": false,
+      "pc_ref": "state13",
+      "phase_id": "pc_state13_w8_v32",
+      "value": 32,
+      "width": 8
+    },
+    {
+      "equality_node": 20,
+      "guard_ast": {
+        "args": [
+          {
+            "form": "ref",
+            "ref": "state13"
+          },
+          {
+            "const": "64",
+            "form": "const",
+            "width": 8
+          }
+        ],
+        "form": "eq"
+      },
+      "is_bad": false,
+      "is_initial": false,
+      "pc_ref": "state13",
+      "phase_id": "pc_state13_w8_v64",
+      "value": 64,
+      "width": 8
+    },
+    {
+      "equality_node": 21,
+      "guard_ast": {
+        "args": [
+          {
+            "form": "ref",
+            "ref": "state13"
+          },
+          {
+            "const": "128",
+            "form": "const",
+            "width": 8
+          }
+        ],
+        "form": "eq"
+      },
+      "is_bad": false,
+      "is_initial": false,
+      "pc_ref": "state13",
+      "phase_id": "pc_state13_w8_v128",
+      "value": 128,
+      "width": 8
+    }
+  ],
+  "pilot_sha256": "723eb64225d2c39fb4fba8477759307d184f6b40293ac4407dd3518aa1d34d0c",
+  "pool_candidate_count": 72,
+  "proof_time_sec": 1.517472743988037,
+  "route_count": 4,
+  "route_diagnostics": {
+    "seed": "pono-llm-budget-matched-random-route-v1",
+    "selected_global_candidates": 9,
+    "selected_route_ids": [
+      "694bdc87bdc6cc1fa40f2fae2f125addd0be4f2aa3a6aa36088c460a7e48ba24",
+      "973593b7f136748f304eba2661cbdec33c6e4a6016bdd3d1c9302b5baedb75cd",
+      "2077ff4ec58ffcb5a2c3809d5e50eb9e81df84c849f98ea1aad9a61f21f5e990",
+      "b16274a01832f3d0d5801b6be1377abb05f16068db97deff66588b0b4ea186c2"
+    ],
+    "target_candidates": 9
+  },
+  "route_error": "",
+  "route_sha256": "707bc00d46f3d02e3ec933c2c7c43b73d3ad9f303050250ebd86983ff454c149",
+  "route_valid": true,
+  "router": "random",
+  "routes": [
+    {
+      "constants": [
+        0,
+        1
+      ],
+      "family": "unary",
+      "relations": [
+        "eq",
+        "le",
+        "ge"
+      ],
+      "requested_variables": [
+        "state34"
+      ],
+      "route_id": "694bdc87bdc6cc1fa40f2fae2f125addd0be4f2aa3a6aa36088c460a7e48ba24",
+      "signedness": "unsigned",
+      "variables": [
+        "state34"
+      ],
+      "width": 32
+    },
+    {
+      "family": "sum_equality",
+      "relations": [
+        "eq"
+      ],
+      "requested_variables": [
+        "state34",
+        "state31",
+        "state32"
+      ],
+      "route_id": "973593b7f136748f304eba2661cbdec33c6e4a6016bdd3d1c9302b5baedb75cd",
+      "signedness": "unsigned",
+      "variables": [
+        "state34",
+        "state31",
+        "state32"
+      ],
+      "width": 32
+    },
+    {
+      "family": "sum_equality",
+      "relations": [
+        "eq"
+      ],
+      "requested_variables": [
+        "state31",
+        "state32",
+        "state34"
+      ],
+      "route_id": "2077ff4ec58ffcb5a2c3809d5e50eb9e81df84c849f98ea1aad9a61f21f5e990",
+      "signedness": "unsigned",
+      "variables": [
+        "state31",
+        "state32",
+        "state34"
+      ],
+      "width": 32
+    },
+    {
+      "family": "sum_equality",
+      "relations": [
+        "eq"
+      ],
+      "requested_variables": [
+        "state32",
+        "state31",
+        "state34"
+      ],
+      "route_id": "b16274a01832f3d0d5801b6be1377abb05f16068db97deff66588b0b4ea186c2",
+      "signedness": "unsigned",
+      "variables": [
+        "state32",
+        "state31",
+        "state34"
+      ],
+      "width": 32
+    }
+  ],
+  "schema": "pono-llm-phase-grammar-run-v1",
+  "selected_candidate_count": 38,
+  "selected_indices": [
+    0,
+    1,
+    4,
+    7,
+    8,
+    9,
+    12,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24,
+    25,
+    31,
+    32,
+    33,
+    36,
+    39,
+    40,
+    41,
+    47,
+    48,
+    49,
+    52,
+    55,
+    56,
+    57,
+    60,
+    63,
+    64,
+    65,
+    68,
+    71
+  ],
+  "selection_role": "unsafe-soundness-control",
+  "source_family_id": "57db45734209707f4e901d2380266222d2fcca8a26597b1f268f6a9ae1519c5b",
+  "verdict": "sat"
+}

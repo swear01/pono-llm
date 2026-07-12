@@ -1,0 +1,131 @@
+{
+  "routes": [
+    {
+      "family": "pairwise_offset",
+      "offsets": [
+        0,
+        1
+      ],
+      "relations": [
+        "le"
+      ],
+      "requested_variables": [
+        "x",
+        "n"
+      ],
+      "route_id": "e86f5defd28ef19740db7ec65a777ed9f16daf41157871d8b90e54538d2aaaa1",
+      "signedness": "signed",
+      "variables": [
+        "state24",
+        "state23"
+      ],
+      "width": 32
+    },
+    {
+      "family": "pairwise_offset",
+      "offsets": [
+        0,
+        -1
+      ],
+      "relations": [
+        "ge"
+      ],
+      "requested_variables": [
+        "x",
+        "n"
+      ],
+      "route_id": "fdc9eddce8cb2e4a6a7dca27b0afe85a6a391fb8968c87669b904f3340b1dc1a",
+      "signedness": "signed",
+      "variables": [
+        "state24",
+        "state23"
+      ],
+      "width": 32
+    },
+    {
+      "family": "pairwise_offset",
+      "offsets": [
+        0,
+        1
+      ],
+      "relations": [
+        "le"
+      ],
+      "requested_variables": [
+        "x",
+        "m"
+      ],
+      "route_id": "3d77b8979531bdb5d467a747bb8d896ba9a648a2f844258b2108fcf88750238e",
+      "signedness": "signed",
+      "variables": [
+        "state24",
+        "state22"
+      ],
+      "width": 32
+    },
+    {
+      "family": "pairwise_offset",
+      "offsets": [
+        0,
+        -1
+      ],
+      "relations": [
+        "ge"
+      ],
+      "requested_variables": [
+        "x",
+        "m"
+      ],
+      "route_id": "f02570283ecb8f2c7ac5f0a898db0f30adfa98490835e55f3f7879f425c5e4b3",
+      "signedness": "signed",
+      "variables": [
+        "state24",
+        "state22"
+      ],
+      "width": 32
+    },
+    {
+      "family": "pairwise_offset",
+      "offsets": [
+        0,
+        1
+      ],
+      "relations": [
+        "le"
+      ],
+      "requested_variables": [
+        "m",
+        "n"
+      ],
+      "route_id": "04f79cabc2b0c68039f0648de90c9dfa1c0e5212f10d0cad414bb26d81e56041",
+      "signedness": "signed",
+      "variables": [
+        "state22",
+        "state23"
+      ],
+      "width": 32
+    },
+    {
+      "family": "pairwise_offset",
+      "offsets": [
+        0,
+        -1
+      ],
+      "relations": [
+        "ge"
+      ],
+      "requested_variables": [
+        "m",
+        "n"
+      ],
+      "route_id": "96899616703b8d6c86278fcaff7065bc5013226bdd6909a682762d62e313c41c",
+      "signedness": "signed",
+      "variables": [
+        "state22",
+        "state23"
+      ],
+      "width": 32
+    }
+  ],
+  "schema": "pono-llm-grammar-route-v1"
+}

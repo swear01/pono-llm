@@ -1,0 +1,119 @@
+{
+  "routes": [
+    {
+      "family": "pairwise_offset",
+      "offsets": [
+        0
+      ],
+      "relations": [
+        "le"
+      ],
+      "requested_variables": [
+        "i",
+        "j"
+      ],
+      "route_id": "a8dd1052c34d773edb6fd9bdc080ef5937e36def0bae4b608455843c6a578667",
+      "signedness": "signed",
+      "variables": [
+        "state31",
+        "state32"
+      ],
+      "width": 32
+    },
+    {
+      "family": "pairwise_offset",
+      "offsets": [
+        0
+      ],
+      "relations": [
+        "le"
+      ],
+      "requested_variables": [
+        "i",
+        "k"
+      ],
+      "route_id": "e9aa3fff186cf89015d135f0babf023e903e0de2740944bbf190c46520759087",
+      "signedness": "signed",
+      "variables": [
+        "state31",
+        "state33"
+      ],
+      "width": 32
+    },
+    {
+      "family": "pairwise_offset",
+      "offsets": [
+        0
+      ],
+      "relations": [
+        "le"
+      ],
+      "requested_variables": [
+        "j",
+        "k"
+      ],
+      "route_id": "c5385236f5bc037f58c1bea21218c4c5c15903dfa70d4247b3bb8af5ade7d787",
+      "signedness": "signed",
+      "variables": [
+        "state32",
+        "state33"
+      ],
+      "width": 32
+    },
+    {
+      "constants": [
+        0
+      ],
+      "family": "unary",
+      "relations": [
+        "ge"
+      ],
+      "requested_variables": [
+        "i"
+      ],
+      "route_id": "f0ab5d68a028866104faf254d5768628cd9a80b17f28c35947a492b4be8f7b05",
+      "signedness": "signed",
+      "variables": [
+        "state31"
+      ],
+      "width": 32
+    },
+    {
+      "constants": [
+        0
+      ],
+      "family": "unary",
+      "relations": [
+        "ge"
+      ],
+      "requested_variables": [
+        "j"
+      ],
+      "route_id": "552d18d95bed26189ceeee8db6e9e331fff7f3c82eb33fff2b6ec626012d4913",
+      "signedness": "signed",
+      "variables": [
+        "state32"
+      ],
+      "width": 32
+    },
+    {
+      "constants": [
+        0
+      ],
+      "family": "unary",
+      "relations": [
+        "ge"
+      ],
+      "requested_variables": [
+        "k"
+      ],
+      "route_id": "43d02d0b9bc0e54bff1874b0566746cd7a5a366fe317666dbabd0f7a3eb40927",
+      "signedness": "signed",
+      "variables": [
+        "state33"
+      ],
+      "width": 32
+    }
+  ],
+  "schema": "pono-llm-grammar-route-v1"
+}
