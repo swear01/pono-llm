@@ -304,6 +304,13 @@ A Pono-returned SMT-LIB invariant may enter only after canonical parsing into
 the transport AST, exact source-model recertification, and AST hashing. Raw
 invariant strings are never transported by regex substitution.
 
+The locally installed Pono executable is AddressSanitizer-instrumented. For
+`--show-invar` only, the child process raises its address-space soft limit to
+the inherited hard limit so ASan can reserve its shadow mapping; the parent
+limit, solver command, engine, and 20-second timeout are unchanged. A failure
+after that exact launch remains an exclusion and is not retried with another
+engine.
+
 Gate 5A0 requires all of:
 
 - at least **12 safe base tasks**;

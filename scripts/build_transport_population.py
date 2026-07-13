@@ -8,6 +8,7 @@ import hashlib
 import json
 import os
 import re
+import resource
 import signal
 import shutil
 import subprocess
@@ -43,6 +44,11 @@ MIN_SOURCE_FAMILIES = transport_schema.MIN_SOURCE_FAMILIES
 MIN_PER_PRIMARY_TRANSFORM = transport_schema.MIN_PER_PRIMARY_TRANSFORM
 MIN_INPUT_DRIVEN_T3_FAMILIES = transport_schema.MIN_INPUT_DRIVEN_T3_FAMILIES
 MIN_UNSAFE_CONTROLS = transport_schema.MIN_UNSAFE_CONTROLS
+
+
+def _inherit_hard_address_space_limit() -> None:
+    _, hard = resource.getrlimit(resource.RLIMIT_AS)
+    resource.setrlimit(resource.RLIMIT_AS, (hard, hard))
 
 
 def _repo_relative(path: Path) -> str:
@@ -189,8 +195,19 @@ def _phase_route_payload(report: dict) -> dict:
         family = route.get("family")
         if family not in family_fields:
             raise ValueError(f"report route {index} has unsupported family: {family}")
-        fields = {"variables", "family", "relations", "signedness"} | family_fields[family]
-        routes.append({key: route[key] for key in fields if key in route})
+        semantic_fields = {"family", "relations", "signedness"} | family_fields[family]
+        canonical_fields = semantic_fields | {
+            "requested_variables", "variables", "width", "route_id"
+        }
+        missing = sorted(canonical_fields - set(route))
+        unknown = sorted(set(route) - canonical_fields)
+        if missing:
+            raise ValueError(f"report route {index} is missing fields: {missing}")
+        if unknown:
+            raise ValueError(f"report route {index} has unknown fields: {unknown}")
+        raw = {key: route[key] for key in semantic_fields}
+        raw["variables"] = route["requested_variables"]
+        routes.append(raw)
     return {"schema": grammar_routes.ROUTE_SCHEMA, "routes": routes}
 
 
@@ -368,12 +385,17 @@ def _representation_direct_sources(
         if transport_schema.file_sha256(model_path) != report["benchmark_sha256"]:
             raise ValueError(f"phase report model hash mismatch: {benchmark_id}")
         route_payload = _phase_route_payload(report)
-        _, _, entries = run_phase_grammar.prepare_entries(
+        routes, _, entries = run_phase_grammar.prepare_entries(
             str(model_path),
             route_payload,
             phase_mode=report["phase_mode"],
             cap=report["pool_candidate_count"],
         )
+        route_document = json.loads(grammar_routes.canonical_route_document(routes))
+        if route_document["routes"] != report["routes"]:
+            raise ValueError(f"reconstructed phase route mismatch: {benchmark_id}")
+        if grammar_routes.canonical_sha256(route_document) != report["route_sha256"]:
+            raise ValueError(f"reconstructed phase route hash mismatch: {benchmark_id}")
         lines = run_phase_grammar.entry_lines(entries)
         candidate_text = "\n".join(lines) + "\n"
         if hashlib.sha256(candidate_text.encode()).hexdigest() != report["candidate_sha256"]:
@@ -477,6 +499,7 @@ def _baseline_interp_sources(
             completed = subprocess.run(
                 command,
                 capture_output=True,
+                preexec_fn=_inherit_hard_address_space_limit,
                 timeout=PONO_SHOW_INVAR_TIMEOUT_SEC,
             )
         except subprocess.TimeoutExpired:

@@ -12,6 +12,8 @@ sys.path.insert(0, str(ROOT / "scripts"))
 import transport_invariant  # noqa: E402
 import transport_schema  # noqa: E402
 import build_transport_population  # noqa: E402
+import grammar_routes  # noqa: E402
+import run_phase_grammar  # noqa: E402
 
 
 def ref(name: str) -> dict:
@@ -227,6 +229,50 @@ def test_phase_class_is_distinct_from_syntactic_conjunction():
     ]
 
 
+def test_phase_report_replay_preserves_requested_symbols(tmp_path):
+    model = tmp_path / "model.btor2"
+    write_model(model)
+    original = {
+        "schema": grammar_routes.ROUTE_SCHEMA,
+        "routes": [{
+            "variables": ["x"],
+            "family": "unary",
+            "relations": ["eq"],
+            "signedness": "unsigned",
+            "constants": [0, 1],
+        }],
+    }
+    original_routes, _, original_entries = run_phase_grammar.prepare_entries(
+        str(model), original, phase_mode="global", cap=20
+    )
+    report_routes = json.loads(
+        grammar_routes.canonical_route_document(original_routes)
+    )["routes"]
+    replay_payload = build_transport_population._phase_route_payload({
+        "routes": report_routes
+    })
+    replay_routes, _, replay_entries = run_phase_grammar.prepare_entries(
+        str(model), replay_payload, phase_mode="global", cap=20
+    )
+    assert replay_routes == original_routes
+    assert replay_entries == original_entries
+    assert replay_routes[0].requested_variables == ("x",)
+
+
+def test_phase_report_replay_rejects_incomplete_canonical_route():
+    route = {
+        "variables": ["state5"],
+        "family": "unary",
+        "relations": ["eq"],
+        "signedness": "unsigned",
+        "constants": [0],
+        "width": 8,
+        "route_id": "a" * 64,
+    }
+    with pytest.raises(ValueError, match="requested_variables"):
+        build_transport_population._phase_route_payload({"routes": [route]})
+
+
 def test_representation_integrity_requires_self_hash_and_summary_link(tmp_path):
     (tmp_path / "summary.json").write_text("{}\n")
     (tmp_path / "evidence.txt").write_text("evidence\n")
@@ -254,3 +300,21 @@ def test_representation_integrity_requires_self_hash_and_summary_link(tmp_path):
     (tmp_path / "evidence.txt").write_text("tampered\n")
     with pytest.raises(ValueError, match="integrity mismatch"):
         build_transport_population._verify_integrity(tmp_path)
+
+
+def test_show_invar_child_inherits_hard_address_space_limit(monkeypatch):
+    calls = []
+    monkeypatch.setattr(
+        build_transport_population.resource,
+        "getrlimit",
+        lambda _kind: (60_000_000, -1),
+    )
+    monkeypatch.setattr(
+        build_transport_population.resource,
+        "setrlimit",
+        lambda kind, limits: calls.append((kind, limits)),
+    )
+
+    build_transport_population._inherit_hard_address_space_limit()
+
+    assert calls == [(build_transport_population.resource.RLIMIT_AS, (-1, -1))]
