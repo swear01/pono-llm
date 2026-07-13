@@ -1,0 +1,15 @@
+{
+  "files": {
+    "README.md": "8600c1992a52f1d3fd11491133c2a1da4c6d1e389cd25088cffb1a52c5a2a166",
+    "egcd-ll_unwindbound10.json": "3eefce3a21b5a0532cf1165768b48a77b89aa20c88ce6d94318f87a4db9f0010",
+    "hard-ll_valuebound20.json": "e1a315b73af2d59843128beb104329bb22b275fd5274f87943d853e9b2366373",
+    "lcm1_unwindbound2.json": "8e909aedc91d4aa86d9a769d42e83997ccc7dc67a205f33592c2d7eb87c91b21",
+    "lcm1_valuebound100.json": "61e0a91ca8224b5990ab747959d489f69ec8ff683219441395093b1dce0bc8d0",
+    "lcm2_unwindbound50.json": "8bb8956a69ee08229d55bd3c467eee64c4509ffd938cdc29b6abc761dbeb7d1d",
+    "prodbin-ll_unwindbound10.json": "e2debd2b62ef66b26608fa4fe0950718384aa71841eb8a623308f8f73d0b600b",
+    "provenance.json": "5e31ea70182a20882100088c58846296dd59e4e871c00f9de01ec8b9c6971d77",
+    "summary.json": "f2bdeb0c638bbc19584f2b04a0ed8c6f841567a4adc9e9567fdafe1e1205a10d"
+  },
+  "integrity_sha256": "33047ef33c92d367b841975ecc5d103a0f964707d55203d7b9b877361be01732",
+  "schema": "pono-inductiveness-gap-integrity-v1"
+}

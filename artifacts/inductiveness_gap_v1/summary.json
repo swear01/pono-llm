@@ -1,0 +1,66 @@
+{
+  "case_count": 6,
+  "cases": [
+    {
+      "benchmark_id": "2024/btor2/2024/sosylab/nla-digbench-scaling/egcd-ll_unwindbound10.btor2",
+      "classification": "FALSE_CANDIDATE",
+      "family": "egcd",
+      "report": "egcd-ll_unwindbound10.json",
+      "report_file_sha256": "3eefce3a21b5a0532cf1165768b48a77b89aa20c88ce6d94318f87a4db9f0010",
+      "report_sha256": "0ed95ed4497c4ae1333aa5b9e425a558030fc006ff38d44884d841402c8df371"
+    },
+    {
+      "benchmark_id": "2024/btor2/2024/sosylab/nla-digbench-scaling/hard-ll_valuebound20.btor2",
+      "classification": "FALSE_CANDIDATE",
+      "family": "hard",
+      "report": "hard-ll_valuebound20.json",
+      "report_file_sha256": "e1a315b73af2d59843128beb104329bb22b275fd5274f87943d853e9b2366373",
+      "report_sha256": "9a8a590656aa8dd5b1e27cdc8268f98047e62e7f6360771d4044e1c50dd73499"
+    },
+    {
+      "benchmark_id": "2024/btor2/2024/sosylab/nla-digbench-scaling/lcm1_unwindbound2.btor2",
+      "classification": "FALSE_CANDIDATE",
+      "family": "lcm",
+      "report": "lcm1_unwindbound2.json",
+      "report_file_sha256": "8e909aedc91d4aa86d9a769d42e83997ccc7dc67a205f33592c2d7eb87c91b21",
+      "report_sha256": "5cab8a5ac6b7cfaaf7a3b3a411d64f9e759eb5ddc5dded1acc48268869f36a8d"
+    },
+    {
+      "benchmark_id": "2024/btor2/2024/sosylab/nla-digbench-scaling/lcm1_valuebound100.btor2",
+      "classification": "FALSE_CANDIDATE",
+      "family": "lcm",
+      "report": "lcm1_valuebound100.json",
+      "report_file_sha256": "61e0a91ca8224b5990ab747959d489f69ec8ff683219441395093b1dce0bc8d0",
+      "report_sha256": "b50bd2e4310261557a94c4457c8a5506fe40a904735cbc2babdc745b885da2d0"
+    },
+    {
+      "benchmark_id": "2024/btor2/2024/sosylab/nla-digbench-scaling/lcm2_unwindbound50.btor2",
+      "classification": "FALSE_CANDIDATE",
+      "family": "lcm",
+      "report": "lcm2_unwindbound50.json",
+      "report_file_sha256": "8bb8956a69ee08229d55bd3c467eee64c4509ffd938cdc29b6abc761dbeb7d1d",
+      "report_sha256": "d09038ea912f84aef64077b19b19684d069fb62f97501a2ce373ff80d1157a0b"
+    },
+    {
+      "benchmark_id": "2025/wordlevel/bv/2024/sosylab/nla-digbench-scaling/prodbin-ll_unwindbound10.btor2",
+      "classification": "FALSE_CANDIDATE",
+      "family": "prodbin",
+      "report": "prodbin-ll_unwindbound10.json",
+      "report_file_sha256": "e2debd2b62ef66b26608fa4fe0950718384aa71841eb8a623308f8f73d0b600b",
+      "report_sha256": "a28bb1576ad0d5474c524b04de6153d1076e75c5d24d5abce073f9e8a55dd3cd"
+    }
+  ],
+  "classification_counts": {
+    "FALSE_CANDIDATE": 6
+  },
+  "decision": "GO_CERTIFIED_PROOF_SET_TRANSPORT",
+  "false_safe": 0,
+  "gate": "Gate 5A",
+  "gate4_manifest_file_sha256": "bd821097952efbdbd74821f4b50f170efdf54f7a5931e5bb2088e8db6b64acc2",
+  "llm_authorized": false,
+  "proof_graph_authorized": false,
+  "schema": "pono-inductiveness-gap-summary-v1",
+  "stronger_induction_authorized": false,
+  "summary_sha256": "a7f7b45d3709e3911dd0f031ef4d21dcf9d435fee13b5bb4452f4bb921f76319",
+  "transport_authorized": true
+}

@@ -1,7 +1,28 @@
 # Gate 5A — Inductiveness-Gap Decomposition
 
 **Frozen:** 2026-07-13
-**Status:** preregistered; implementation and six-case run authorized
+**Status:** complete — **GO certified proof-set transport**
+
+## Official Result
+
+All six cases are `FALSE_CANDIDATE`. Each selected equality is false in an
+initial state (`first_reachable_violation_depth = 0`), C1 is SAT, and exact
+Houdini removes the sole selected candidate during initial-state filtering.
+Thus none is eligible for k-induction or the micro-repair oracle. The result is
+stronger and more precise than the earlier C2 observation: these formulas are
+not reachable invariants, regardless of induction depth or missing support.
+
+Every C2 CTI full-state cube is reachable within the first bounded check, which
+includes frame 0; candidate-support and BAD/support projections are reachable
+as well. The C2 counterexamples are therefore not merely unreachable CTIs.
+
+Classification counts are `FALSE_CANDIDATE: 6`. The preregistered threshold of
+at least 4/6 therefore selects **GO_CERTIFIED_PROOF_SET_TRANSPORT**. Proof-graph
+completion and stronger-induction integration are not authorized. Canonical
+evidence is `artifacts/inductiveness_gap_v1/`; summary SHA-256 is
+`a7f7b45d3709e3911dd0f031ef4d21dcf9d435fee13b5bb4452f4bb921f76319`
+and recursive integrity SHA-256 is
+`33047ef33c92d367b841975ecc5d103a0f964707d55203d7b9b877361be01732`.
 
 ## Question and Scope
 

@@ -1,0 +1,10 @@
+{
+  "command": "python3 scripts/run_inductiveness_gap_gate.py artifacts/algebraic_baseline_v2 artifacts/phase1_2_frozen_v2 /home/swear01/hwmcc_benchmarks artifacts/inductiveness_gap_v1 --timeout-ms 20000 --max-repair-sec 30",
+  "gate4_commit": "e45d6d1",
+  "gate4_tag": "gate4b0-v2-stop",
+  "llm_calls": 0,
+  "new_benchmarks": 0,
+  "pono_cpp_modified": false,
+  "preregistration_commit": "80cb6c1",
+  "schema": "pono-inductiveness-gap-provenance-v1"
+}
