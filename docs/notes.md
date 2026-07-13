@@ -2,6 +2,30 @@
 
 > Tacit knowledge an agent can't infer from reading code.
 
+## Modular algebraic certificate Gate 4B0 (2026-07-13)
+
+- Gate 4B0 remains deterministic until H5a passes. Do not call OpenRouter,
+  add certificate repair, widen the grammar, or change the branch cap while
+  the frozen natural-population gate is unresolved.
+- C2 acceptance is exact sparse-polynomial coefficient equality modulo `2^w`:
+  `P_i(T_b) = sum_j Q_ijb * P_j`. Never divide, cancel a factor, or assume a
+  field because `Z/(2^w)Z` has zero divisors.
+- Every syntactic `ite` branch is checker-derived. Guard identities and full
+  next-state substitutions are certificate provenance, not assumptions, and
+  are reconstructed before multiplier checking.
+- A state occurring in the invariant basis must have an explicit BTOR2 `next`.
+  A declared variable used only by a multiplier need not be substituted.
+- Parameter presence is not proof that PolySAT ran. The pinned paper commit
+  must pass a separate hard nonlinear probe with `:polysat-*` statistics before
+  its C2 matrix is accepted. The runner also verifies that the executable is
+  inside a clean checkout at the exact pinned commit. Integer blasting is an
+  explicit baseline arm, not a fallback.
+- Generic C2 solver timings and original-model Pono timings are separate
+  matrices. Pono uses explicit `bzla` and both plain and certified-basis IC3IA;
+  never rank its safety wall time as a generic C2 query.
+- `fib_23` and `fib_30` are development controls only. No speedup or proof on
+  them counts toward H5a's three-independent-natural-family threshold.
+
 ## Representation/phase/grammar gate (2026-07-12)
 
 - The official paired census is pinned to translation `d983801...`, source

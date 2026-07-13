@@ -96,6 +96,7 @@ The frozen schema identifier is
   "schema": "pono-modular-algebraic-certificate-v1",
   "benchmark_id": "portable/relative/model.btor2",
   "benchmark_content_sha256": "...",
+  "candidate_sha256": "...",
   "width": 19,
   "variables": ["state7", "state10", "state13"],
   "invariants": [
@@ -111,17 +112,25 @@ The frozen schema identifier is
   "branches": [
     {
       "id": "<checker-derived-branch-id>",
-      "multipliers": [[{"coefficient": "1", "powers": {}}]]
+      "guard_identity": "<checker-derived-guard-id>",
+      "next_state_substitution": {
+        "state7": [
+          {"coefficient": "1", "powers": {"state7": 1}}
+        ]
+      },
+      "multipliers": [[[{"coefficient": "1", "powers": {}}]]]
     }
   ]
 }
 ```
 
-Terms, invariant IDs, variable order, branch IDs, and matrix dimensions are
-strict. Duplicate terms are combined modulo `2^w`; a zero polynomial is
-rejected as an invariant. Unknown fields and missing fields are errors. The
-checker reports a canonical certificate SHA-256 but never rewrites a rejected
-document.
+`candidate_sha256` binds the ordered invariant-basis document. Terms, invariant
+IDs, variable order, branch IDs, guard identities, complete next-state
+substitutions, and matrix dimensions are strict. The checker reconstructs all
+branch data from the original BTOR2 before checking multipliers. Duplicate
+terms are combined modulo `2^w`; a zero polynomial is rejected as an invariant.
+Unknown fields and missing fields are errors. The checker reports a canonical
+certificate SHA-256 but never rewrites a rejected document.
 
 ## Gate 4B0 — Solver Reconnaissance
 
@@ -145,6 +154,11 @@ Required baseline configurations are:
    configuration;
 3. current Pono/Bitwuzla path on the original model;
 4. the modular certificate kernel.
+
+Pono is measured in a separate original-model matrix with explicit `bzla`:
+plain IC3IA and IC3IA seeded with the already-certified polynomial basis. It is
+not mixed into generic C2-query timing or used to compute a kernel C2 speedup.
+Every BAD property is invoked explicitly.
 
 The local default Z3 build is a separate arm. The experiment must not claim
 that PolySAT ran merely because a Z3 build exposes `smt.bv.solver=1` or contains
@@ -274,3 +288,12 @@ solver matrix is written, the population contract, hypotheses, thresholds, and
 kill criteria are immutable. Implementation bugs may be fixed only with a
 versioned artifact rerun; earlier results remain preserved and are never
 overwritten.
+
+### Pre-measurement implementation amendment (2026-07-13)
+
+Before the first official solver matrix, the v1 serialization was hardened to
+bind `candidate_sha256`, checker-derived guard identities, and complete
+next-state substitutions. Pono measurements were separated from C2-query
+solver timings and split into plain versus certified-basis IC3IA arms. This
+changes no population rule, hypothesis, threshold, branch cap, or kill
+criterion; it prevents provenance ambiguity and cross-obligation timing.

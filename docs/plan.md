@@ -192,6 +192,13 @@ Current execution order:
 5. authorize LLM certificate capture only after H5a passes on at least three
    independent natural families.
 
+Implementation checkpoint: the strict v1 kernel/checker, development-control
+and immutable-query builders, pinned solver runner with a mandatory PolySAT
+activation probe, separate plain/seeded Pono matrix, structural population
+selector, rejection suite, timing harness, and recursive summary validator are
+implemented under `scripts/`. The official five-trial artifact run must start
+from the implementation commit and a fresh artifact directory.
+
 `fib_23` and `fib_30` are development controls, not primary successes.
 Certified transport becomes the next oracle gate only if Gate 4B0 fails.
 Generic BVMul CEGAR, Gate 3 route repair, prompt tuning, broad HWMCC mining,

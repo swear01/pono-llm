@@ -13,7 +13,7 @@
 | `smt/` | SMT utility wrappers |
 | `utils/` | Logging, timing, misc utilities |
 | `tests/` | C++ tests (googletest) + Python tests (`tests/python/`) |
-| `scripts/` | Benchmark harnesses and research tools: Phase 1+2/Gate 2 plus the paired population, source/lifted/raw renderer, strict grammar routes, phase-local replay, route capture, routed baselines, and independent UNSAT audit. |
+| `scripts/` | Benchmark harnesses and research tools for Phase 1+2/Gate 2, paired representation/phase routing, and Gate 4B modular algebraic certificates. |
 | `benchmarks/` | Micro-benchmarks and BTOR2 test cases |
 | `bench_results/` | Experiment output (not in git) |
 | `artifacts/` | Frozen Phase 1+2/Gate 2 evidence plus `representation_phase_v1/`, whose recursive integrity manifest binds paired inputs, prompts, routes, matrices, and certificates. |
@@ -77,6 +77,24 @@
   requests Pono's invariant, and independently checks C1/C2/C3.
   `scripts/summarize_representation_phase.py` validates the complete recursive
   artifact and derives the H1--H4 decision.
+- **Modular algebraic certificate kernel:** `scripts/bv_poly_kernel.py`
+  canonicalizes sparse polynomials over `Z/(2^w)Z`, expands every syntactic
+  `ite` branch, and checks supplied multiplier identities without division or
+  cancellation. `scripts/check_algebraic_certificate.py` combines this strict
+  C2 kernel with exact original-BTOR2 C1/C3. Candidate, branch, guard, and
+  substitution provenance is hash-bound and independently reconstructed.
+- **Gate 4B0 experiment boundary:** `scripts/build_algebraic_controls.py` and
+  `scripts/build_algebraic_query_corpus.py` freeze the non-primary controls and
+  exact C2 queries. `scripts/run_algebraic_baselines.py` compares current Z3,
+  explicit integer blasting, and the pinned PolySAT paper commit; PolySAT must
+  come from a clean exact-revision checkout and pass a statistics-bearing
+  activation probe. `scripts/run_algebraic_pono_baseline.py`
+  separately measures plain and certified-basis IC3IA with explicit Bitwuzla.
+  `scripts/build_algebraic_population.py`, `scripts/run_algebraic_gate.py`,
+  `scripts/run_algebraic_negative_suite.py`, and
+  `scripts/summarize_algebraic_gate.py` enforce selection, soundness, decision,
+  and recursive-integrity contracts. No component repairs a certificate or
+  silently falls back to generic C2 solving.
 - **Gate 2 corpus control:** `scripts/extract_btor_features.py` performs a
   durable full-tree feature scan; `scripts/select_gate2_corpus.py` produces a
   portable, content-deduplicated, fixed-seed stratified manifest; and
