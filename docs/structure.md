@@ -97,6 +97,14 @@
   silently falls back to generic C2 solving. The canonical result is
   `artifacts/algebraic_certificate_v1/`: the frozen official population contains
   zero v1-eligible natural task, so H5a was not run and no LLM capture occurred.
+- **Gate 5 certified-transport boundary:**
+  `docs/certified_transport_gate.md` is the frozen preregistration for a known-
+  map upper-bound oracle. This commit intentionally adds no transport scripts
+  or artifact directory. Gate 5A0 must first establish the certified-source
+  population and strict map schema; T0 renaming is only a sanity control, while
+  T1 affine recoding, T2 split encoding, and input-latched T3 stuttering are the
+  three primary families. Map validation, target C1/C2/C3, and transformation-
+  equivalence verdicts remain separate, and no LLM is authorized in 5A0/5A.
 - **Gate 2 corpus control:** `scripts/extract_btor_features.py` performs a
   durable full-tree feature scan; `scripts/select_gate2_corpus.py` produces a
   portable, content-deduplicated, fixed-seed stratified manifest; and

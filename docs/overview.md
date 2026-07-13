@@ -102,13 +102,22 @@ their corpora, repair LLM routes, tune prompts on observed successes, widen the
 algebraic branch cap post-hoc, or replace the absent natural Gate 4B0 population
 with synthetic tasks.
 
-The next independent empirical gate is a **known-map certified-transport
-oracle**: use exact semantics-preserving maps, transport already certified
-invariants, recheck every result on the transformed original BTOR2, and compare
-against regeneration before considering any learned or LLM mapping. This is a
-new preregistration task, not an extension of Gate 4B0. Generic BVMul CEGAR,
-broad HWMCC mining, source decompilation, paid capture, and paper mode remain
-stopped.
+Gate 5 is now preregistered as a **known-map certified-transport oracle** under
+[`certified_transport_gate.md`](certified_transport_gate.md). Gate 5A0 first
+censuses already certified source invariants and validates that three
+non-trivial target families are feasible: modular affine recoding, bit-vector
+split encoding, and input-latched stuttering refinement. Alpha-renaming is only
+a sanity control and cannot count toward success.
+
+No transformation implementation or utility run is authorized until the
+population reaches 12 certified tasks, eight independent source families,
+three invariant classes, and at least eight applicable bases per primary
+family. Every concrete map must be independently proven, every transported
+candidate must pass C1/C2/C3 on the transformed original BTOR2, and map-
+validation cost is included in the primary comparison against the strongest
+current deterministic regeneration portfolio. No LLM/API call is permitted in
+Gate 5A0 or Gate 5A. Generic BVMul CEGAR, broad HWMCC mining, source
+decompilation, paid capture, and paper mode remain stopped.
 
 See [`docs/plan.md`](plan.md) for exact results/reproduction and
 [`docs/roadmap.md`](roadmap.md) for the next decision gate.

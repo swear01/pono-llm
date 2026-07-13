@@ -45,10 +45,20 @@
   `b0099cf1ea68d2ab92820e914fedf8f97a0a3b01657ac74a5f0f825db7d38056`.
   Do not edit files inside that directory without a versioned full integrity
   regeneration.
-- The next gate is a known-map certified-transport oracle. It starts with exact
-  deterministic maps and original-target C1/C2/C3 rechecking; learned or LLM
-  mapping remains blocked until known-map transport demonstrates >=90%
-  acceptance and >=5x proof-cost improvement across three transform families.
+- Gate 5 is a preregistered known-map certified-transport upper-bound oracle.
+  Gate 5A0 must first find 12 certified bases, eight source families, three
+  invariant classes, and eight applicable bases for each primary transform;
+  otherwise stop before generating variants.
+- T0 alpha-renaming is a 100% sanity control and never counts. Primary families
+  are T1 modular affine recoding, T2 split encoding, and input-latched T3
+  stuttering refinement. T3 must independently validate both target-to-source
+  stuttering simulation and bounded source-macro-step completeness.
+- Store map validity, transformation equivalence, and target C1/C2/C3 validity
+  separately. Primary timing includes map validation. Gate 5B remains blocked
+  unless every family has >=90% acceptance, overall unamortized speedup is
+  >=5x, every family is >=2x, and T3 has utility on three independent source
+  families. Deterministic map recovery precedes any separately preregistered
+  LLM proposal capture.
 
 ## Representation/phase/grammar gate (2026-07-12)
 

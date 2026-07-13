@@ -2,8 +2,9 @@
 
 **Updated:** 2026-07-13
 **Branch:** `soundness-audit`
-**Status:** Gate 4B0 complete and stopped; next gate is the known-map
-certified-transport oracle
+**Status:** Gate 5 known-map certified transport preregistered; Gate 5A0
+population/protocol feasibility is next; no transformation code or LLM is
+authorized yet
 
 ## Current Research Position
 
@@ -260,25 +261,63 @@ summary:   b0eb02c55af94cab2e232f920446edd4d98462368ee50be5183fcbeef8820ef5
 integrity: b0099cf1ea68d2ab92820e914fedf8f97a0a3b01657ac74a5f0f825db7d38056
 ```
 
-## Next Gate — Known-Map Certified Transport Oracle
+## Active Gate 5 — Known-Map Certified Transport Oracle
 
-Gate 4B0 is not to be widened post-hoc. The next independent research step is
-to preregister a deterministic transport oracle before implementation:
+The complete frozen protocol is
+[`docs/certified_transport_gate.md`](certified_transport_gate.md). Gate 5 is an
+upper-bound proof-reuse experiment, not a mapping-inference or coverage gate.
 
-1. choose at least three exact semantics-preserving transform families;
-2. generate or record the known exact state/property map;
-3. transport already certified invariants mechanically;
-4. recheck every transported invariant with C1/C2/C3 on the transformed
-   original BTOR2;
-5. compare acceptance and total proof cost against deterministic regeneration;
-6. investigate learned/LLM mapping only if known-map transport accepts at least
-   90% and improves proof cost by at least 5x across three transform families.
+### Gate 5A0 first
 
-Variable renaming, invertible affine modular state transforms, and a separately
-reported control/phase transformation are the initial candidate families.
-Synthetic/transformed and natural coverage must remain separate. No inferred
-mapping, paid API capture, manual repair, or paper claim is authorized before
-the new protocol and population are frozen.
+The immediate task is a source-certificate census and protocol feasibility
+check. Before any transformation implementation, require:
+
+- at least 12 source tasks with machine-readable invariants already certified
+  by source-original C1/C2/C3;
+- at least eight independent source families and three invariant classes;
+- at least eight applicable bases for each primary family;
+- T3 coverage of at least three input-driven families;
+- four independently selected expected-unsafe controls;
+- strict source/certificate/family hashes and no raw-string regex transport.
+
+If this population is unavailable, record `population-insufficient` and stop
+without manufacturing a large synthetic variant corpus.
+
+### Frozen transformation roles
+
+- **T0 alpha-renaming/node-ID permutation:** mandatory 100% sanity control; it
+  never counts toward a primary threshold.
+- **T1 modular affine recoding:** non-diagonal invertible same-width state
+  mixing with an explicit modular inverse.
+- **T2 bit-vector split encoding:** changes state-vector structure through
+  exact concat/extract projection.
+- **T3 input-latched four-phase refinement:** changes transition granularity;
+  every microstep must validate as projection stutter or source commit, every
+  raw input is latched once, and BAD is visible only at the observation phase.
+
+T3 is mandatory. T1/T2 success without T3 is infrastructure, not a reason to
+continue transport research.
+
+### Trust and comparison boundary
+
+For each concrete variant, independently validate source/target hashes,
+projection, inverse or stuttering simulation, constraints, all BAD properties,
+and—on T3—bounded source-macro-step completeness. Then substitute the exact map
+into the certified source AST and run target C1/C2/C3. Store target-certificate,
+map-validation, and transformation-equivalence verdicts separately.
+
+The known-map arm is compared against target engine-only and the strongest
+current deterministic regeneration portfolio: engine baseline,
+`static-ranked`, affine/static oracle, quadratic oracle, structural grammar,
+Houdini, and sound IC3IA predicate replay. The primary 70-second cost includes
+map validation, AST transport, and target certification. Five sequential trials
+are run for seeds 11/23/47 only after Gate 5A0 passes.
+
+Gate 5A requires >=90% acceptance separately for T1/T2/T3, >=5x overall
+unamortized geometric-mean speedup, >=2x per primary family, and non-isomorphic
+T3 utility on at least three independent source families. Only all frozen H6
+criteria authorize deterministic hidden-map recovery. LLM map proposals remain
+last, require a new preregistration, and are forbidden in Gate 5A0/5A.
 
 Generic BVMul CEGAR, Gate 3 route repair, prompt tuning, broad HWMCC mining,
 post-hoc Gate 4B0 language expansion, and paper mode remain stopped.

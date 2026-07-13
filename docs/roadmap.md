@@ -20,6 +20,11 @@ population, so it supplies a sound development kernel but no evaluated H5a
 claim. The project is not ready for a coverage-improvement paper, and it must
 not enter paper mode merely because another gate completed.
 
+Gate 5 is preregistered but not implemented. Its immediate decision is Gate
+5A0: either the existing certified-source population satisfies the frozen
+diversity/applicability thresholds, or transport stops before variant
+generation. No LLM is authorized.
+
 ## Gate 0 — Soundness Repair (Complete)
 
 - Constraint/assumption injection is retired as a proof method.
@@ -142,24 +147,47 @@ template oracle. It must not reuse the current three successes as the selection
 criterion. Go only if at least three independent natural phase-only families
 survive.
 
-## Gate 5 — Known-Map Certified Transport Oracle (Next)
+## Gate 5 — Known-Map Certified Transport Oracle (Preregistered)
 
-Question: can a certified invariant be transported across semantics-preserving
-program/circuit transforms more efficiently and robustly than regenerated?
+The frozen protocol is
+[`docs/certified_transport_gate.md`](certified_transport_gate.md). It treats
+known-map transport as an upper-bound proof-reuse gate, not evidence that map
+inference or LLM mapping is useful.
 
-Required controls:
+### Gate 5A0 — population/protocol feasibility (next)
 
-- exact transition-system isomorphism or independently validated translation;
-- variable renaming, phase splitting, compiler optimization, and invertible
-  affine modular state transforms reported separately from natural tasks;
-- all transported formulas rechecked on the transformed original BTOR2;
-- deterministic symbolic mapping baseline before LLM mapping.
+Before transformation code, census already certified, machine-readable source
+invariants. Continue only with at least 12 base tasks, eight independent source
+families, three invariant classes, and at least eight applicable bases for each
+primary transform. T3 must include at least three input-driven families. If the
+population is smaller, stop without padding it with synthetic or width variants.
 
-The first gate uses only known exact maps. Require at least 90% transported
-certificate acceptance and at least 5x proof-cost improvement over regeneration
-across at least three transformation families before studying deterministic or
-LLM map inference. Otherwise stop transport. Freeze transforms, source models,
-maps, regeneration baselines, hashes, and thresholds before running the oracle.
+### Gate 5A — known-map oracle (conditional)
+
+- T0 alpha-renaming/node-ID permutation is a sanity control and never counts.
+- T1 is non-trivial invertible modular affine state recoding.
+- T2 is bit-vector split encoding with exact concat/extract projection.
+- T3 is a fixed input-latched stuttering microstep refinement with observation-
+  guarded BAD and independently validated macro-step completeness.
+
+Every concrete transformation/map must pass exact independent validation;
+UNKNOWN rejects it. Every transported invariant is then rechecked with C1/C2/C3
+on the transformed original BTOR2. Map validity, transformation equivalence,
+and target-certificate validity remain separate verdicts.
+
+Primary utility includes map-validation cost and compares against target
+engine-only plus the strongest current deterministic regeneration portfolio.
+H6 requires >=90% acceptance separately for T1/T2/T3, >=5x overall
+unamortized geometric-mean speedup, >=2x per family, zero false safe, and T3
+utility on at least three independent source families. T1/T2 without T3 is an
+infrastructure result and stops the research direction.
+
+### Gate 5B — map recovery (blocked)
+
+Only all Gate 5A H6 criteria authorize hidden-map recovery, in this order:
+deterministic structure, symbolic/SMT synthesis, graph matching, compiler
+metadata, then at most one newly preregistered frozen LLM proposal capture.
+Gate 5A0 and Gate 5A make no LLM/API calls.
 
 ## Bounded Nonlinear Work
 
