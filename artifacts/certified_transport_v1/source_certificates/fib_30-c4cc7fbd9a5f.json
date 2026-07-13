@@ -1,0 +1,359 @@
+{
+  "origin": {
+    "artifacts": [
+      {
+        "path": "artifacts/phase1_2_frozen_v2/fib_30-c4cc7fbd9a5f.jsonl",
+        "sha256": "5e359cb33547fe6ae5e3c9a8bea324d04505e9dba57772eb1cc061e0ecbc62b3"
+      },
+      {
+        "path": "artifacts/phase1_2_frozen_v2/integrity.json",
+        "sha256": "3bbb517519cf3630149739361e54ba546bb192c418d8643f59ad22aca4b2ccee"
+      },
+      {
+        "path": "artifacts/phase1_2_frozen_v2/manifest.json",
+        "sha256": "a4cbe7f9c144cc3cd74c832f0a67ca66bb076642a74f4bb0c9617e071168c006"
+      },
+      {
+        "path": "artifacts/phase1_2_llm_houdini_full21.csv",
+        "sha256": "c238ef3de2847c2be3b936fa603b7907e4fc7eda1f5d693913491e0e9044d203"
+      },
+      {
+        "path": "artifacts/phase1_2_summary_v1.json",
+        "sha256": "121091999036d454119377d608a99cee8ea5d313d5479be18febfea4da620944"
+      }
+    ],
+    "kind": "frozen-candidate-houdini"
+  },
+  "predicates": [
+    {
+      "args": [
+        {
+          "form": "ref",
+          "ref": "state10"
+        },
+        {
+          "form": "ref",
+          "ref": "state14"
+        }
+      ],
+      "form": "ule"
+    },
+    {
+      "args": [
+        {
+          "form": "ref",
+          "ref": "state7"
+        },
+        {
+          "const": "0",
+          "form": "const",
+          "width": 19
+        }
+      ],
+      "form": "uge"
+    },
+    {
+      "args": [
+        {
+          "args": [
+            {
+              "const": "2",
+              "form": "const",
+              "width": 19
+            },
+            {
+              "form": "ref",
+              "ref": "state7"
+            }
+          ],
+          "form": "mul"
+        },
+        {
+          "args": [
+            {
+              "form": "ref",
+              "ref": "state10"
+            },
+            {
+              "args": [
+                {
+                  "form": "ref",
+                  "ref": "state10"
+                },
+                {
+                  "const": "1",
+                  "form": "const",
+                  "width": 19
+                }
+              ],
+              "form": "sub"
+            }
+          ],
+          "form": "mul"
+        }
+      ],
+      "form": "uge"
+    },
+    {
+      "args": [
+        {
+          "form": "ref",
+          "ref": "state14"
+        },
+        {
+          "const": "150",
+          "form": "const",
+          "width": 19
+        }
+      ],
+      "form": "eq"
+    },
+    {
+      "args": [
+        {
+          "args": [
+            {
+              "form": "ref",
+              "ref": "state10"
+            },
+            {
+              "form": "ref",
+              "ref": "state14"
+            }
+          ],
+          "form": "ult"
+        },
+        {
+          "args": [
+            {
+              "args": [
+                {
+                  "form": "ref",
+                  "ref": "state7"
+                },
+                {
+                  "form": "ref",
+                  "ref": "state10"
+                }
+              ],
+              "form": "add"
+            },
+            {
+              "args": [
+                {
+                  "form": "ref",
+                  "ref": "state7"
+                },
+                {
+                  "form": "ref",
+                  "ref": "state10"
+                }
+              ],
+              "form": "add"
+            }
+          ],
+          "form": "eq"
+        }
+      ],
+      "form": "implies"
+    },
+    {
+      "args": [
+        {
+          "form": "ref",
+          "ref": "state10"
+        },
+        {
+          "const": "0",
+          "form": "const",
+          "width": 19
+        }
+      ],
+      "form": "uge"
+    },
+    {
+      "args": [
+        {
+          "form": "ref",
+          "ref": "state7"
+        },
+        {
+          "args": [
+            {
+              "form": "ref",
+              "ref": "state10"
+            },
+            {
+              "args": [
+                {
+                  "form": "ref",
+                  "ref": "state10"
+                },
+                {
+                  "const": "1",
+                  "form": "const",
+                  "width": 19
+                }
+              ],
+              "form": "sub"
+            }
+          ],
+          "form": "mul"
+        }
+      ],
+      "form": "ule"
+    },
+    {
+      "args": [
+        {
+          "args": [
+            {
+              "form": "ref",
+              "ref": "state10"
+            },
+            {
+              "form": "ref",
+              "ref": "state14"
+            }
+          ],
+          "form": "ult"
+        },
+        {
+          "args": [
+            {
+              "form": "ref",
+              "ref": "state7"
+            },
+            {
+              "const": "0",
+              "form": "const",
+              "width": 19
+            }
+          ],
+          "form": "ugt"
+        }
+      ],
+      "form": "or"
+    },
+    {
+      "args": [
+        {
+          "args": [
+            {
+              "form": "ref",
+              "ref": "state10"
+            },
+            {
+              "form": "ref",
+              "ref": "state14"
+            }
+          ],
+          "form": "uge"
+        },
+        {
+          "args": [
+            {
+              "form": "ref",
+              "ref": "state10"
+            },
+            {
+              "form": "ref",
+              "ref": "state14"
+            }
+          ],
+          "form": "eq"
+        }
+      ],
+      "form": "implies"
+    },
+    {
+      "args": [
+        {
+          "args": [
+            {
+              "const": "2",
+              "form": "const",
+              "width": 19
+            },
+            {
+              "form": "ref",
+              "ref": "state7"
+            }
+          ],
+          "form": "mul"
+        },
+        {
+          "args": [
+            {
+              "form": "ref",
+              "ref": "state10"
+            },
+            {
+              "args": [
+                {
+                  "form": "ref",
+                  "ref": "state10"
+                },
+                {
+                  "const": "1",
+                  "form": "const",
+                  "width": 19
+                }
+              ],
+              "form": "sub"
+            }
+          ],
+          "form": "mul"
+        }
+      ],
+      "form": "eq"
+    },
+    {
+      "args": [
+        {
+          "args": [
+            {
+              "const": "2",
+              "form": "const",
+              "width": 19
+            },
+            {
+              "form": "ref",
+              "ref": "state7"
+            }
+          ],
+          "form": "mul"
+        },
+        {
+          "args": [
+            {
+              "form": "ref",
+              "ref": "state10"
+            },
+            {
+              "args": [
+                {
+                  "form": "ref",
+                  "ref": "state10"
+                },
+                {
+                  "const": "1",
+                  "form": "const",
+                  "width": 19
+                }
+              ],
+              "form": "sub"
+            }
+          ],
+          "form": "mul"
+        }
+      ],
+      "form": "ule"
+    }
+  ],
+  "schema": "pono-transport-invariant-v1",
+  "source": {
+    "benchmark_id": "2024/btor2/2024/hku/arithmetic_circuits/fib_30/fib_30.btor2",
+    "sha256": "1bb400e569c8c3147d38245dd81458261c4cc0aac565286e731dabf78fdf31d0"
+  }
+}

@@ -20,11 +20,11 @@ population, so it supplies a sound development kernel but no evaluated H5a
 claim. The project is not ready for a coverage-improvement paper, and it must
 not enter paper mode merely because another gate completed.
 
-Gate 5 is preregistered, and its strict Gate 5A0 population/schema
-implementation is complete. Its immediate decision is the canonical census:
-either the existing certified-source population satisfies the frozen
-diversity/applicability thresholds, or transport stops before variant
-generation. No LLM is authorized.
+Gate 5A0 is complete and stopped `population-insufficient`: 11/12 certified
+bases and 6/8 T1-applicable bases failed the frozen thresholds. All other
+population conditions passed. No transformed variant or LLM call exists.
+Gate 5A, proof-graph completion, stronger induction, and further mechanism
+gates are closed under their preregistered decisions.
 
 ## Gate 0 — Soundness Repair (Complete)
 
@@ -148,27 +148,29 @@ template oracle. It must not reuse the current three successes as the selection
 criterion. Go only if at least three independent natural phase-only families
 survive.
 
-## Gate 5 — Known-Map Certified Transport Oracle (Preregistered)
+## Gate 5 — Known-Map Certified Transport Oracle (Stopped)
 
 The frozen protocol is
 [`docs/certified_transport_gate.md`](certified_transport_gate.md). It treats
 known-map transport as an upper-bound proof-reuse gate, not evidence that map
 inference or LLM mapping is useful.
 
-### Gate 5A0 — population/protocol feasibility (implementation complete;
-canonical census next)
+### Gate 5A0 — population/protocol feasibility (complete: STOP)
 
 Before transformation code, census already certified, machine-readable source
 invariants. Continue only with at least 12 base tasks, eight independent source
 families, three invariant classes, and at least eight applicable bases for each
 primary transform. T3 must include at least three input-driven families. If the
 population is smaller, stop without padding it with synthetic or width variants.
-The census independently re-certifies every selected invariant for every BAD,
+The census independently re-certified every selected invariant for every BAD,
 validates upstream hashes, deduplicates source families, and reports exact
 T1/T2/T3 applicability. No transformed file may be generated before this
-decision is committed.
+decision is committed. The official result is 11 safe bases, 11 source
+families, six T1-applicable bases, 11 each for T2/T3, ten input-driven T3
+families, and four unsafe controls. The failed `safe_base_count` and
+`T1_applicable_base_count` conditions stop Gate 5 before variant generation.
 
-### Gate 5A — known-map oracle (conditional)
+### Gate 5A — known-map oracle (not authorized)
 
 - T0 alpha-renaming/node-ID permutation is a sanity control and never counts.
 - T1 is non-trivial invertible modular affine state recoding.

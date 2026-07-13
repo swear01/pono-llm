@@ -1,6 +1,6 @@
 # Documentation Index
 
-**Last updated:** 2026-07-13 (Gate 5A0 census implementation complete)
+**Last updated:** 2026-07-13 (Gate 5A0 stopped population-insufficient)
 
 Start here:
 
@@ -16,13 +16,14 @@ Start here:
 | File | Description |
 |------|-------------|
 | [`overview.md`](overview.md) | Current project scope, sound predicate-injection architecture, latest results |
-| [`plan.md`](plan.md) | Completed Gate 0--4 evidence and the implemented, pending-census Gate 5A0 decision |
+| [`plan.md`](plan.md) | Completed Gate 0--5 evidence and the final algorithm-expansion stop |
 | [`roadmap.md`](roadmap.md) | Closed prior gates plus Gate 5 census/transport sequencing and stop criteria |
 | [`notes.md`](notes.md) | Tacit knowledge, soundness gotchas, timing caveats, next-step decisions |
 | [`structure.md`](structure.md) | Directory map and module boundaries |
 | [`representation_phase_gate.md`](representation_phase_gate.md) | Completed source/lifted/raw phase-local grammar-routing contract and H1--H4 decisions |
 | [`algebraic_certificate_gate.md`](algebraic_certificate_gate.md) | Frozen Gate 4B0 contract plus official zero-eligible-population, solver, soundness, and stop decisions |
-| [`certified_transport_gate.md`](certified_transport_gate.md) | Frozen Gate 5A0/5A contract plus current strict census/schema implementation boundary |
+| [`inductiveness_gap_gate.md`](inductiveness_gap_gate.md) | Gate 5A failure decomposition and 6/6 false-candidate decision |
+| [`certified_transport_gate.md`](certified_transport_gate.md) | Frozen Gate 5A0/5A contract plus official population-insufficient stop |
 
 ## Supporting references
 
@@ -32,6 +33,7 @@ Start here:
 | [`../artifacts/README.md`](../artifacts/README.md) | Canonical Phase 1+2, Gate 2, representation/phase, and algebraic-certificate evidence |
 | [`../artifacts/representation_phase_v1/README.md`](../artifacts/representation_phase_v1/README.md) | Paired population, prompts, capture, matrices, certificates, and recursive integrity manifest |
 | [`../artifacts/algebraic_certificate_v1/README.md`](../artifacts/algebraic_certificate_v1/README.md) | Gate 4B0 solver reconnaissance, strict certificates, population decision, negative suite, and recursive integrity manifest |
+| [`../artifacts/certified_transport_v1/README.md`](../artifacts/certified_transport_v1/README.md) | Gate 5A0 source-certificate census, explicit runtime exclusions, and population-insufficient stop |
 
 ## Archived in this update
 

@@ -1,0 +1,149 @@
+{
+  "origin": {
+    "artifacts": [
+      {
+        "path": "artifacts/representation_phase_v1/routed_unsat_audit/invariants/benchmark05_conjunctive-be8f9ba19edd.llm-source.txt",
+        "sha256": "3dc8ef49d5049ad1e4663739a77ddb4c118ccf59e57b3fc0be3dca3bdb76c98e"
+      },
+      {
+        "path": "artifacts/representation_phase_v1/routed_unsat_audit/manifest.json",
+        "sha256": "fa04fe45e23a0f67fae3bc6f1f81285bd0b60b4f76892d91ec61905ad1663941"
+      },
+      {
+        "path": "artifacts/representation_phase_v1/summary.json",
+        "sha256": "0c177a3cfc780d43b8c4bc37b2d1d13ac85b7fb964a4088856fa829cdfd4c856"
+      }
+    ],
+    "kind": "pono-returned-invariant"
+  },
+  "predicates": [
+    {
+      "args": [
+        {
+          "const": "true",
+          "form": "const",
+          "width": 0
+        },
+        {
+          "args": [
+            {
+              "args": [
+                {
+                  "form": "ref",
+                  "ref": "state10"
+                },
+                {
+                  "const": "2",
+                  "form": "const",
+                  "width": 5
+                }
+              ],
+              "form": "eq"
+            },
+            {
+              "args": [
+                {
+                  "form": "ref",
+                  "ref": "state23"
+                },
+                {
+                  "args": [
+                    {
+                      "form": "ref",
+                      "ref": "state24"
+                    },
+                    {
+                      "const": "0",
+                      "form": "const",
+                      "width": 32
+                    }
+                  ],
+                  "form": "add"
+                }
+              ],
+              "form": "sle"
+            }
+          ],
+          "form": "implies"
+        },
+        {
+          "args": [
+            {
+              "args": [
+                {
+                  "form": "ref",
+                  "ref": "state10"
+                },
+                {
+                  "const": "2",
+                  "form": "const",
+                  "width": 5
+                }
+              ],
+              "form": "eq"
+            },
+            {
+              "args": [
+                {
+                  "form": "ref",
+                  "ref": "state24"
+                },
+                {
+                  "args": [
+                    {
+                      "form": "ref",
+                      "ref": "state22"
+                    },
+                    {
+                      "const": "0",
+                      "form": "const",
+                      "width": 32
+                    }
+                  ],
+                  "form": "add"
+                }
+              ],
+              "form": "sle"
+            }
+          ],
+          "form": "implies"
+        },
+        {
+          "args": [
+            {
+              "args": [
+                {
+                  "args": [
+                    {
+                      "form": "ref",
+                      "ref": "state10"
+                    },
+                    {
+                      "const": "1",
+                      "form": "const",
+                      "width": 5
+                    }
+                  ],
+                  "form": "bvcomp"
+                },
+                {
+                  "const": "1",
+                  "form": "const",
+                  "width": 1
+                }
+              ],
+              "form": "eq"
+            }
+          ],
+          "form": "not"
+        }
+      ],
+      "form": "and"
+    }
+  ],
+  "schema": "pono-transport-invariant-v1",
+  "source": {
+    "benchmark_id": "loop-zilu/benchmark05_conjunctive.btor2",
+    "sha256": "cda483f8d8d680feb68cd20df1e25b3db9abc0c88f5ed8b9ce8c0944869603d0"
+  }
+}

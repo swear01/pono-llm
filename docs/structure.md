@@ -105,9 +105,9 @@
   exact every-BAD source certification; and
   `scripts/build_transport_population.py` implements the no-LLM Gate 5A0 census
   with artifact validation, deterministic source-invariant recovery,
-  source-family deduplication, and transform applicability. No Gate 5 artifact
-  or transformed variant exists until the canonical census is run. T0 renaming
-  is only a sanity control, while
+  source-family deduplication, and transform applicability. The canonical
+  `artifacts/certified_transport_v1/` census is `population-insufficient`, so
+  no transformed variant exists. T0 renaming is only a sanity control, while
   T1 affine recoding, T2 split encoding, and input-latched T3 stuttering are the
   three primary families. Map validation, target C1/C2/C3, and transformation-
   equivalence verdicts remain separate, and no LLM is authorized in 5A0/5A.

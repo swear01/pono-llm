@@ -1,0 +1,106 @@
+{
+  "origin": {
+    "artifacts": [
+      {
+        "path": "artifacts/representation_phase_v1/routed_unsat_audit/invariants/count_up_down-1-c5bb6766011f.random-source.txt",
+        "sha256": "f4d41b9e55b7c872ae4109c2c5880dfb6c4c880966adc3a0d689ceb881b2f36d"
+      },
+      {
+        "path": "artifacts/representation_phase_v1/routed_unsat_audit/manifest.json",
+        "sha256": "fa04fe45e23a0f67fae3bc6f1f81285bd0b60b4f76892d91ec61905ad1663941"
+      },
+      {
+        "path": "artifacts/representation_phase_v1/summary.json",
+        "sha256": "0c177a3cfc780d43b8c4bc37b2d1d13ac85b7fb964a4088856fa829cdfd4c856"
+      }
+    ],
+    "kind": "pono-returned-invariant"
+  },
+  "predicates": [
+    {
+      "args": [
+        {
+          "const": "true",
+          "form": "const",
+          "width": 0
+        },
+        {
+          "args": [
+            {
+              "args": [
+                {
+                  "form": "ref",
+                  "ref": "state10"
+                },
+                {
+                  "const": "1",
+                  "form": "const",
+                  "width": 5
+                }
+              ],
+              "form": "eq"
+            },
+            {
+              "args": [
+                {
+                  "form": "ref",
+                  "ref": "state23"
+                },
+                {
+                  "args": [
+                    {
+                      "form": "ref",
+                      "ref": "state24"
+                    },
+                    {
+                      "form": "ref",
+                      "ref": "state25"
+                    }
+                  ],
+                  "form": "add"
+                }
+              ],
+              "form": "eq"
+            }
+          ],
+          "form": "implies"
+        },
+        {
+          "args": [
+            {
+              "args": [
+                {
+                  "args": [
+                    {
+                      "form": "ref",
+                      "ref": "state10"
+                    },
+                    {
+                      "const": "4",
+                      "form": "const",
+                      "width": 5
+                    }
+                  ],
+                  "form": "bvcomp"
+                },
+                {
+                  "const": "1",
+                  "form": "const",
+                  "width": 1
+                }
+              ],
+              "form": "eq"
+            }
+          ],
+          "form": "not"
+        }
+      ],
+      "form": "and"
+    }
+  ],
+  "schema": "pono-transport-invariant-v1",
+  "source": {
+    "benchmark_id": "loops/count_up_down-1.btor2",
+    "sha256": "ffd2ca2e4bf9f5c2d0948aefeb6d18ff3ad11c442acd91e54dec6cc1dbb35e25"
+  }
+}

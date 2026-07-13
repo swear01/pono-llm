@@ -1,0 +1,1059 @@
+{
+  "conditions": {
+    "T1_applicable_base_count": {
+      "actual": 6,
+      "pass": false,
+      "required": 8
+    },
+    "T2_applicable_base_count": {
+      "actual": 11,
+      "pass": true,
+      "required": 8
+    },
+    "T3_applicable_base_count": {
+      "actual": 11,
+      "pass": true,
+      "required": 8
+    },
+    "T3_input_driven_source_family_count": {
+      "actual": 10,
+      "pass": true,
+      "required": 3
+    },
+    "affine_relational_class": {
+      "actual": 8,
+      "pass": true,
+      "required": 1
+    },
+    "phase_guarded_or_genuinely_conjunctive_class": {
+      "actual": 7,
+      "implementation_note": "v1 counts only the stricter phase-guarded disjunct; syntactic multi-predicate conjunctions are reported but do not pass this condition",
+      "pass": true,
+      "required": 1
+    },
+    "quadratic_polynomial_class": {
+      "actual": 3,
+      "pass": true,
+      "required": 1
+    },
+    "safe_base_count": {
+      "actual": 11,
+      "pass": false,
+      "required": 12
+    },
+    "source_family_count": {
+      "actual": 11,
+      "pass": true,
+      "required": 8
+    },
+    "unsafe_control_count": {
+      "actual": 4,
+      "pass": true,
+      "required": 4
+    }
+  },
+  "counts": {
+    "T3_input_driven_source_family_count": 10,
+    "applicability_counts": {
+      "T1": 6,
+      "T2": 11,
+      "T3": 11
+    },
+    "discovered_record_count": 23,
+    "eligible_before_dedup_count": 15,
+    "exclusion_reason_counts": {
+      "exact-content-duplicate": 4,
+      "show-invar-runtime-incompatible": 8
+    },
+    "invariant_class_counts": {
+      "affine-relational": 8,
+      "conjunctive": 8,
+      "phase-guarded": 7,
+      "quadratic-polynomial": 3
+    },
+    "safe_base_count": 11,
+    "source_family_count": 11,
+    "source_origin_counts": {
+      "frozen-candidate-houdini": 7,
+      "phase-grammar-houdini": 1,
+      "pono-returned-invariant": 3
+    },
+    "unsafe_control_count": 4
+  },
+  "decision": "population-insufficient",
+  "exclusions": [
+    {
+      "benchmark_id": "loop-invariants/eq1.btor2",
+      "eligible": false,
+      "error": "==PID==ERROR: AddressSanitizer failed to allocate 0xdfff0001000 (15392894357504) bytes at address 2008fff7000 (errno: 12)\n==PID==ReserveShadowMemoryRange failed while trying to map 0xdfff0001000 bytes. Perhaps you're using ulimit -v\n",
+      "exclusion_reason": "show-invar-runtime-incompatible",
+      "prior_evidence": "representation_baseline_screen/interp",
+      "source_family_id": "25968452e79f255f77f7ddf56686e96de1f39b0fe2c3e9fe8a7d7769999fc63d",
+      "source_family_key": "svcomp/25968452e79f255f77f7ddf56686e96de1f39b0fe2c3e9fe8a7d7769999fc63d"
+    },
+    {
+      "benchmark_id": "loop-invariants/eq2.btor2",
+      "eligible": false,
+      "error": "==PID==ERROR: AddressSanitizer failed to allocate 0xdfff0001000 (15392894357504) bytes at address 2008fff7000 (errno: 12)\n==PID==ReserveShadowMemoryRange failed while trying to map 0xdfff0001000 bytes. Perhaps you're using ulimit -v\n",
+      "exclusion_reason": "show-invar-runtime-incompatible",
+      "prior_evidence": "representation_baseline_screen/interp",
+      "source_family_id": "2b884f568049abacc2302384cebfad7057c0047d91d1498fe79f643c2743cc69",
+      "source_family_key": "svcomp/2b884f568049abacc2302384cebfad7057c0047d91d1498fe79f643c2743cc69"
+    },
+    {
+      "benchmark_id": "loop-invgen/apache-escape-absolute.btor2",
+      "eligible": false,
+      "error": "==PID==ERROR: AddressSanitizer failed to allocate 0xdfff0001000 (15392894357504) bytes at address 2008fff7000 (errno: 12)\n==PID==ReserveShadowMemoryRange failed while trying to map 0xdfff0001000 bytes. Perhaps you're using ulimit -v\n",
+      "exclusion_reason": "show-invar-runtime-incompatible",
+      "prior_evidence": "representation_baseline_screen/interp",
+      "source_family_id": "a9d0e09285ed105b29946d8da538f9627baac00fa7c12393fc4b3cae6a405c5e",
+      "source_family_key": "svcomp/a9d0e09285ed105b29946d8da538f9627baac00fa7c12393fc4b3cae6a405c5e"
+    },
+    {
+      "benchmark_id": "loop-simple/nested_2.btor2",
+      "eligible": false,
+      "error": "==PID==ERROR: AddressSanitizer failed to allocate 0xdfff0001000 (15392894357504) bytes at address 2008fff7000 (errno: 12)\n==PID==ReserveShadowMemoryRange failed while trying to map 0xdfff0001000 bytes. Perhaps you're using ulimit -v\n",
+      "exclusion_reason": "show-invar-runtime-incompatible",
+      "prior_evidence": "representation_baseline_screen/interp",
+      "source_family_id": "bfca5655a9e8280e4cfeaa49ccda5dcd56c3a8300a9c3dfe01cc204422cba811",
+      "source_family_key": "svcomp/bfca5655a9e8280e4cfeaa49ccda5dcd56c3a8300a9c3dfe01cc204422cba811"
+    },
+    {
+      "benchmark_id": "loop-zilu/benchmark02_linear.btor2",
+      "eligible": false,
+      "error": "==PID==ERROR: AddressSanitizer failed to allocate 0xdfff0001000 (15392894357504) bytes at address 2008fff7000 (errno: 12)\n==PID==ReserveShadowMemoryRange failed while trying to map 0xdfff0001000 bytes. Perhaps you're using ulimit -v\n",
+      "exclusion_reason": "show-invar-runtime-incompatible",
+      "prior_evidence": "representation_baseline_screen/interp",
+      "source_family_id": "760996ea8e060422efe86fb5eb85baadf91fccd11922629680df0caeb06b273d",
+      "source_family_key": "svcomp/760996ea8e060422efe86fb5eb85baadf91fccd11922629680df0caeb06b273d"
+    },
+    {
+      "benchmark_id": "loop-zilu/benchmark05_conjunctive.btor2",
+      "duplicate_of": "loop-zilu/benchmark05_conjunctive.btor2",
+      "eligible": false,
+      "exclusion_reason": "exact-content-duplicate"
+    },
+    {
+      "benchmark_id": "loops-crafted-1/loopv2.btor2",
+      "eligible": false,
+      "error": "==PID==ERROR: AddressSanitizer failed to allocate 0xdfff0001000 (15392894357504) bytes at address 2008fff7000 (errno: 12)\n==PID==ReserveShadowMemoryRange failed while trying to map 0xdfff0001000 bytes. Perhaps you're using ulimit -v\n",
+      "exclusion_reason": "show-invar-runtime-incompatible",
+      "prior_evidence": "representation_baseline_screen/interp",
+      "source_family_id": "72e1316705b43ffc9a472554a3d41123ed1b3ddc5d2bb4ea44cac63c801881db",
+      "source_family_key": "svcomp/72e1316705b43ffc9a472554a3d41123ed1b3ddc5d2bb4ea44cac63c801881db"
+    },
+    {
+      "benchmark_id": "loops-crafted-1/mono-crafted_12.btor2",
+      "eligible": false,
+      "error": "==PID==ERROR: AddressSanitizer failed to allocate 0xdfff0001000 (15392894357504) bytes at address 2008fff7000 (errno: 12)\n==PID==ReserveShadowMemoryRange failed while trying to map 0xdfff0001000 bytes. Perhaps you're using ulimit -v\n",
+      "exclusion_reason": "show-invar-runtime-incompatible",
+      "prior_evidence": "representation_baseline_screen/interp",
+      "source_family_id": "dbff55ac793ebc578c5529d5fc70e290dd224e501543a674136a44586ab89e6a",
+      "source_family_key": "svcomp/dbff55ac793ebc578c5529d5fc70e290dd224e501543a674136a44586ab89e6a"
+    },
+    {
+      "benchmark_id": "loops/count_up_down-1.btor2",
+      "duplicate_of": "loops/count_up_down-1.btor2",
+      "eligible": false,
+      "exclusion_reason": "exact-content-duplicate"
+    },
+    {
+      "benchmark_id": "loops/count_up_down-1.btor2",
+      "duplicate_of": "loops/count_up_down-1.btor2",
+      "eligible": false,
+      "exclusion_reason": "exact-content-duplicate"
+    },
+    {
+      "benchmark_id": "loops/count_up_down-1.btor2",
+      "duplicate_of": "loops/count_up_down-1.btor2",
+      "eligible": false,
+      "exclusion_reason": "exact-content-duplicate"
+    },
+    {
+      "benchmark_id": "loops/trex04.btor2",
+      "eligible": false,
+      "error": "==PID==ERROR: AddressSanitizer failed to allocate 0xdfff0001000 (15392894357504) bytes at address 2008fff7000 (errno: 12)\n==PID==ReserveShadowMemoryRange failed while trying to map 0xdfff0001000 bytes. Perhaps you're using ulimit -v\n",
+      "exclusion_reason": "show-invar-runtime-incompatible",
+      "prior_evidence": "representation_baseline_screen/interp",
+      "source_family_id": "79b38fc21b5d47e45b61b6adacf1c9a548fdfd9642ee7a0b63998a733c8b4d40",
+      "source_family_key": "svcomp/79b38fc21b5d47e45b61b6adacf1c9a548fdfd9642ee7a0b63998a733c8b4d40"
+    }
+  ],
+  "failed_conditions": [
+    "T1_applicable_base_count",
+    "safe_base_count"
+  ],
+  "population_sha256": "3de42161c17a90bf12e2639f1d8d15a676d7fbbfe2c747efd0966e670a659e7b",
+  "provenance": {
+    "generator_commit": "28563fa68b1f15943919decb181a0b7b82f997eb",
+    "invariant_normalization_timeout_sec": 20.0,
+    "llm_api_calls": 0,
+    "max_invariant_output_bytes": 5242880,
+    "max_normalized_ast_nodes": 50000,
+    "phase1_summary_path": "artifacts/phase1_2_summary_v1.json",
+    "phase1_summary_sha256": "121091999036d454119377d608a99cee8ea5d313d5479be18febfea4da620944",
+    "pilot_path": "artifacts/representation_phase_v1/pilot.json",
+    "pilot_sha256": "a206514a52b837f13df22d79ff65753605804d3278a2979086e56d4a2ceaee21",
+    "pono_sha256": "0c23b9b60b1462a8e1b1a24f30ca268fdd9cb104e52070737b49a88b89cf593d",
+    "representation_integrity_path": "artifacts/representation_phase_v1/integrity.json",
+    "representation_integrity_sha256": "f84a3a2a33f34b67143946f1f6f6654b9ecf0f2177117fa75b61f491ec38da1c",
+    "representation_population_path": "artifacts/representation_phase_v1/population.json",
+    "representation_population_sha256": "01ec7bf8f0ba1c575b20b835e9431e251ace0686dcd5c388ddeee83885bc4ffe",
+    "representation_summary_path": "artifacts/representation_phase_v1/summary.json",
+    "representation_summary_sha256": "0c177a3cfc780d43b8c4bc37b2d1d13ac85b7fb964a4088856fa829cdfd4c856",
+    "show_invar_timeout_sec": 20.0,
+    "source_certificate_timeout_ms": 20000
+  },
+  "safe_bases": [
+    {
+      "applicability": {
+        "T1": {
+          "applicable": true,
+          "candidate_groups": [
+            {
+              "state_refs": [
+                "state5",
+                "state7"
+              ],
+              "width": 8
+            }
+          ],
+          "reason": ""
+        },
+        "T2": {
+          "applicable": true,
+          "candidate_state_refs": [
+            "state5",
+            "state7"
+          ],
+          "reason": ""
+        },
+        "T3": {
+          "applicable": true,
+          "input_driven": false,
+          "input_driven_state_refs": [],
+          "reason": "",
+          "state_update_count": 2
+        }
+      },
+      "ast_node_count": 90,
+      "benchmark_id": "2020/hwmcc20/btor2/bv/2019/goel/crafted/paper_v3/paper_v3.btor2",
+      "benchmark_sha256": "5f4bea23079862d10f28b221780ba084438de5d814b1091ae8bf7f745bdcb964",
+      "certificate": {
+        "ast_node_count": 90,
+        "bad_count": 1,
+        "checks": [
+          {
+            "name": "C1 Init=>H",
+            "result": "unsat",
+            "time_sec": 0.0006288669537752867,
+            "unknown_reason": ""
+          },
+          {
+            "name": "C2 inductive",
+            "result": "unsat",
+            "time_sec": 0.0007401590701192617,
+            "unknown_reason": ""
+          },
+          {
+            "name": "C3[0] H=>notBAD",
+            "result": "unsat",
+            "time_sec": 0.00042264896910637617,
+            "unknown_reason": ""
+          }
+        ],
+        "ok": true,
+        "predicate_count": 16
+      },
+      "invariant_classes": [
+        "affine-relational",
+        "phase-guarded",
+        "conjunctive"
+      ],
+      "predicate_count": 16,
+      "prior_evidence": "phase1_2_llm_houdini_full21",
+      "source_certificate_file_sha256": "886f74524b801061017d4d9f20f11d74b62770da53454c106362696ed15c7fb6",
+      "source_certificate_origin": "frozen-candidate-houdini",
+      "source_certificate_path": "artifacts/certified_transport_v1/source_certificates/paper_v3-5e5e409d7cad.json",
+      "source_certificate_sha256": "864c728794828d628deffa1e579ac58fb9c3603e12eb1d5e1ab222647c391a8b",
+      "source_family_id": "353d155b6a4ee0307d2d57e4d9022c942c142912c0c5b5964c561725204726c2",
+      "source_family_key": "hwmcc/crafted/paper_v3/paper_v3"
+    },
+    {
+      "applicability": {
+        "T1": {
+          "applicable": false,
+          "candidate_groups": [],
+          "reason": "no-invariant-relevant-same-width-multi-state-scc"
+        },
+        "T2": {
+          "applicable": true,
+          "candidate_state_refs": [
+            "state7",
+            "state10",
+            "state20",
+            "state23"
+          ],
+          "reason": ""
+        },
+        "T3": {
+          "applicable": true,
+          "input_driven": true,
+          "input_driven_state_refs": [
+            "state7",
+            "state10",
+            "state20",
+            "state23"
+          ],
+          "reason": "",
+          "state_update_count": 4
+        }
+      },
+      "ast_node_count": 53,
+      "benchmark_id": "2024/btor2/2024/hku/arithmetic_circuits/93.c/93.c.btor2",
+      "benchmark_sha256": "47163e14a1fe4780f9383bb98be91fcde5ba0c166eb70f4353c269b129173666",
+      "certificate": {
+        "ast_node_count": 53,
+        "bad_count": 1,
+        "checks": [
+          {
+            "name": "C1 Init=>H",
+            "result": "unsat",
+            "time_sec": 0.0005827840650454164,
+            "unknown_reason": ""
+          },
+          {
+            "name": "C2 inductive",
+            "result": "unsat",
+            "time_sec": 0.020141921937465668,
+            "unknown_reason": ""
+          },
+          {
+            "name": "C3[0] H=>notBAD",
+            "result": "unsat",
+            "time_sec": 0.001102125970646739,
+            "unknown_reason": ""
+          }
+        ],
+        "ok": true,
+        "predicate_count": 7
+      },
+      "invariant_classes": [
+        "affine-relational",
+        "phase-guarded",
+        "conjunctive"
+      ],
+      "predicate_count": 7,
+      "prior_evidence": "phase1_2_llm_houdini_full21",
+      "source_certificate_file_sha256": "85a6d984b0a1997dbc3619745a15983557651613fd67acaee771bb82b162e440",
+      "source_certificate_origin": "frozen-candidate-houdini",
+      "source_certificate_path": "artifacts/certified_transport_v1/source_certificates/93.c-f23b8847fd23.json",
+      "source_certificate_sha256": "67da53cca2c365cd9cde57e66765bbd22ad464f8d914483596c0757c1a20b090",
+      "source_family_id": "d6e64d4256594dbfca64e8d513fd81adfcbcc58fa71eb3fb87af904524678f14",
+      "source_family_key": "hwmcc/arithmetic_circuits/93.c/93.c"
+    },
+    {
+      "applicability": {
+        "T1": {
+          "applicable": false,
+          "candidate_groups": [],
+          "reason": "no-invariant-relevant-same-width-multi-state-scc"
+        },
+        "T2": {
+          "applicable": true,
+          "candidate_state_refs": [
+            "state7",
+            "state10",
+            "state14"
+          ],
+          "reason": ""
+        },
+        "T3": {
+          "applicable": true,
+          "input_driven": true,
+          "input_driven_state_refs": [
+            "state7",
+            "state10",
+            "state14"
+          ],
+          "reason": "",
+          "state_update_count": 3
+        }
+      },
+      "ast_node_count": 71,
+      "benchmark_id": "2024/btor2/2024/hku/arithmetic_circuits/fib_30/fib_30.btor2",
+      "benchmark_sha256": "1bb400e569c8c3147d38245dd81458261c4cc0aac565286e731dabf78fdf31d0",
+      "certificate": {
+        "ast_node_count": 71,
+        "bad_count": 1,
+        "checks": [
+          {
+            "name": "C1 Init=>H",
+            "result": "unsat",
+            "time_sec": 0.0005883050616830587,
+            "unknown_reason": ""
+          },
+          {
+            "name": "C2 inductive",
+            "result": "unsat",
+            "time_sec": 0.027839586953632534,
+            "unknown_reason": ""
+          },
+          {
+            "name": "C3[0] H=>notBAD",
+            "result": "unsat",
+            "time_sec": 0.0007214799989014864,
+            "unknown_reason": ""
+          }
+        ],
+        "ok": true,
+        "predicate_count": 11
+      },
+      "invariant_classes": [
+        "quadratic-polynomial",
+        "affine-relational",
+        "phase-guarded",
+        "conjunctive"
+      ],
+      "predicate_count": 11,
+      "prior_evidence": "phase1_2_llm_houdini_full21",
+      "source_certificate_file_sha256": "8cffe471a4b4033b48d3fed128190d318622b4faf6129f764553353c01c1a567",
+      "source_certificate_origin": "frozen-candidate-houdini",
+      "source_certificate_path": "artifacts/certified_transport_v1/source_certificates/fib_30-c4cc7fbd9a5f.json",
+      "source_certificate_sha256": "470addbe716801fa84815bc7eed4d3ad3ae0305922a6d65df2493bf28129c891",
+      "source_family_id": "8e5364e62472ed3611abdbf03dc376ad598220a93be34592311acc33a334f1b4",
+      "source_family_key": "hwmcc/arithmetic_circuits/fib_30/fib_30"
+    },
+    {
+      "applicability": {
+        "T1": {
+          "applicable": false,
+          "candidate_groups": [],
+          "reason": "no-invariant-relevant-same-width-multi-state-scc"
+        },
+        "T2": {
+          "applicable": true,
+          "candidate_state_refs": [
+            "state7",
+            "state11",
+            "state14"
+          ],
+          "reason": ""
+        },
+        "T3": {
+          "applicable": true,
+          "input_driven": true,
+          "input_driven_state_refs": [
+            "state7",
+            "state11",
+            "state14"
+          ],
+          "reason": "",
+          "state_update_count": 3
+        }
+      },
+      "ast_node_count": 52,
+      "benchmark_id": "2024/btor2/2024/hku/arithmetic_circuits/fib_37/fib_37.btor2",
+      "benchmark_sha256": "bc94066b5bdaade1ec8c162f91b9745224020425bf60ae251b0814b99b2d2c89",
+      "certificate": {
+        "ast_node_count": 52,
+        "bad_count": 1,
+        "checks": [
+          {
+            "name": "C1 Init=>H",
+            "result": "unsat",
+            "time_sec": 0.0005166810005903244,
+            "unknown_reason": ""
+          },
+          {
+            "name": "C2 inductive",
+            "result": "unsat",
+            "time_sec": 0.00546185695566237,
+            "unknown_reason": ""
+          },
+          {
+            "name": "C3[0] H=>notBAD",
+            "result": "unsat",
+            "time_sec": 0.0009147889213636518,
+            "unknown_reason": ""
+          }
+        ],
+        "ok": true,
+        "predicate_count": 10
+      },
+      "invariant_classes": [
+        "affine-relational",
+        "conjunctive"
+      ],
+      "predicate_count": 10,
+      "prior_evidence": "phase1_2_llm_houdini_full21",
+      "source_certificate_file_sha256": "b91fe734f1bf434221ada3eef3c9308ff114462d00f0a306c4492f285504303b",
+      "source_certificate_origin": "frozen-candidate-houdini",
+      "source_certificate_path": "artifacts/certified_transport_v1/source_certificates/fib_37-d6b7388b9f62.json",
+      "source_certificate_sha256": "2b00ba5863f65749fb1260c52855940be97ee45166a112a1f5d20c3177434c98",
+      "source_family_id": "43c88192c1fb396164538482d5d5e9c56678f782025805c5b3f1ce984263a2fa",
+      "source_family_key": "hwmcc/arithmetic_circuits/fib_37/fib_37"
+    },
+    {
+      "applicability": {
+        "T1": {
+          "applicable": false,
+          "candidate_groups": [],
+          "reason": "no-invariant-relevant-same-width-multi-state-scc"
+        },
+        "T2": {
+          "applicable": true,
+          "candidate_state_refs": [
+            "state7",
+            "state10",
+            "state14"
+          ],
+          "reason": ""
+        },
+        "T3": {
+          "applicable": true,
+          "input_driven": true,
+          "input_driven_state_refs": [
+            "state7",
+            "state10",
+            "state14"
+          ],
+          "reason": "",
+          "state_update_count": 3
+        }
+      },
+      "ast_node_count": 29,
+      "benchmark_id": "2025/wordlevel/bv/2024/hkust/arithmetic_circuits/77.c/77.c.btor2",
+      "benchmark_sha256": "68db6f77de82363380616dd08b12d0f58064ab1d6d34197c80beb1235f5d1889",
+      "certificate": {
+        "ast_node_count": 29,
+        "bad_count": 1,
+        "checks": [
+          {
+            "name": "C1 Init=>H",
+            "result": "unsat",
+            "time_sec": 0.0004687780747190118,
+            "unknown_reason": ""
+          },
+          {
+            "name": "C2 inductive",
+            "result": "unsat",
+            "time_sec": 0.010201808996498585,
+            "unknown_reason": ""
+          },
+          {
+            "name": "C3[0] H=>notBAD",
+            "result": "unsat",
+            "time_sec": 0.0005442699184641242,
+            "unknown_reason": ""
+          }
+        ],
+        "ok": true,
+        "predicate_count": 8
+      },
+      "invariant_classes": [
+        "affine-relational",
+        "conjunctive"
+      ],
+      "predicate_count": 8,
+      "prior_evidence": "phase1_2_llm_houdini_full21",
+      "source_certificate_file_sha256": "2e4dd851af39d803a01bf8db10af9060cf36066bb758771101a8da21094df445",
+      "source_certificate_origin": "frozen-candidate-houdini",
+      "source_certificate_path": "artifacts/certified_transport_v1/source_certificates/77.c-439ad901732e.json",
+      "source_certificate_sha256": "3f95ec4044a47a30a2c321d335d2be996ab9dc2aaed482be5ca08927f416c002",
+      "source_family_id": "f467219955136606990f4cf8c6671542ad08970070b3184e8721eed8fe7fc8c5",
+      "source_family_key": "hwmcc/arithmetic_circuits/77.c/77.c"
+    },
+    {
+      "applicability": {
+        "T1": {
+          "applicable": true,
+          "candidate_groups": [
+            {
+              "state_refs": [
+                "state7",
+                "state17"
+              ],
+              "width": 16
+            }
+          ],
+          "reason": ""
+        },
+        "T2": {
+          "applicable": true,
+          "candidate_state_refs": [
+            "state7",
+            "state9",
+            "state15",
+            "state17"
+          ],
+          "reason": ""
+        },
+        "T3": {
+          "applicable": true,
+          "input_driven": true,
+          "input_driven_state_refs": [
+            "state7",
+            "state9",
+            "state15",
+            "state17"
+          ],
+          "reason": "",
+          "state_update_count": 4
+        }
+      },
+      "ast_node_count": 34,
+      "benchmark_id": "2025/wordlevel/bv/2024/hkust/arithmetic_circuits/fib_05/fib_05.btor2",
+      "benchmark_sha256": "723e2cb4d2ef7e62a20a5fe340c2907e6a2988a8d590c744ed5bfcfa0ec36f35",
+      "certificate": {
+        "ast_node_count": 34,
+        "bad_count": 1,
+        "checks": [
+          {
+            "name": "C1 Init=>H",
+            "result": "unsat",
+            "time_sec": 0.0005423739785328507,
+            "unknown_reason": ""
+          },
+          {
+            "name": "C2 inductive",
+            "result": "unsat",
+            "time_sec": 0.09953017998486757,
+            "unknown_reason": ""
+          },
+          {
+            "name": "C3[0] H=>notBAD",
+            "result": "unsat",
+            "time_sec": 0.0005785520188510418,
+            "unknown_reason": ""
+          }
+        ],
+        "ok": true,
+        "predicate_count": 10
+      },
+      "invariant_classes": [
+        "affine-relational",
+        "conjunctive"
+      ],
+      "predicate_count": 10,
+      "prior_evidence": "phase1_2_llm_houdini_full21",
+      "source_certificate_file_sha256": "c34c5afcf3a3e2b64274c86399c07fed65ec9d3745c822f92a652eb9e5980cfc",
+      "source_certificate_origin": "frozen-candidate-houdini",
+      "source_certificate_path": "artifacts/certified_transport_v1/source_certificates/fib_05-795cdbc45bc7.json",
+      "source_certificate_sha256": "93011b26e0ebc7edac8cfcb57634909f27fa65a50687b2d094e7d8629fac2549",
+      "source_family_id": "5a81b6cf1b4aae22c62105057da2446e285cad1c71e16ec086060f9261b906e9",
+      "source_family_key": "hwmcc/arithmetic_circuits/fib_05/fib_05"
+    },
+    {
+      "applicability": {
+        "T1": {
+          "applicable": false,
+          "candidate_groups": [],
+          "reason": "no-invariant-relevant-same-width-multi-state-scc"
+        },
+        "T2": {
+          "applicable": true,
+          "candidate_state_refs": [
+            "state7",
+            "state10",
+            "state13"
+          ],
+          "reason": ""
+        },
+        "T3": {
+          "applicable": true,
+          "input_driven": true,
+          "input_driven_state_refs": [
+            "state7",
+            "state10",
+            "state13"
+          ],
+          "reason": "",
+          "state_update_count": 3
+        }
+      },
+      "ast_node_count": 79,
+      "benchmark_id": "2025/wordlevel/bv/2024/hkust/arithmetic_circuits/fib_23/fib_23.btor2",
+      "benchmark_sha256": "a078bbffe6dc000ce0a24a4d11c45efade0c613ca55ca40db83dbb7b013338d6",
+      "certificate": {
+        "ast_node_count": 79,
+        "bad_count": 1,
+        "checks": [
+          {
+            "name": "C1 Init=>H",
+            "result": "unsat",
+            "time_sec": 0.0005841709207743406,
+            "unknown_reason": ""
+          },
+          {
+            "name": "C2 inductive",
+            "result": "unsat",
+            "time_sec": 0.027796908048912883,
+            "unknown_reason": ""
+          },
+          {
+            "name": "C3[0] H=>notBAD",
+            "result": "unsat",
+            "time_sec": 0.0008500450057908893,
+            "unknown_reason": ""
+          }
+        ],
+        "ok": true,
+        "predicate_count": 13
+      },
+      "invariant_classes": [
+        "quadratic-polynomial",
+        "affine-relational",
+        "conjunctive"
+      ],
+      "predicate_count": 13,
+      "prior_evidence": "phase1_2_llm_houdini_full21",
+      "source_certificate_file_sha256": "0a72ab2f1aabd752c7722fec1e4871b3091a7f1c14146f9cb57fac94058fe4dd",
+      "source_certificate_origin": "frozen-candidate-houdini",
+      "source_certificate_path": "artifacts/certified_transport_v1/source_certificates/fib_23-e5be72fc613f.json",
+      "source_certificate_sha256": "525d4ecd796fa0a457557ff5200f92f56e0aba7c51f55a6412303cd750087194",
+      "source_family_id": "497ecfd00913b33ed71ccdf3b2f3b03ef70ce249866ece41438381b33d6351c7",
+      "source_family_key": "hwmcc/arithmetic_circuits/fib_23/fib_23"
+    },
+    {
+      "applicability": {
+        "T1": {
+          "applicable": true,
+          "candidate_groups": [
+            {
+              "state_refs": [
+                "state25",
+                "state26",
+                "state27"
+              ],
+              "width": 32
+            }
+          ],
+          "reason": ""
+        },
+        "T2": {
+          "applicable": true,
+          "candidate_state_refs": [
+            "state10",
+            "state25",
+            "state26",
+            "state27"
+          ],
+          "reason": ""
+        },
+        "T3": {
+          "applicable": true,
+          "input_driven": true,
+          "input_driven_state_refs": [
+            "state24"
+          ],
+          "reason": "",
+          "state_update_count": 5
+        }
+      },
+      "ast_node_count": 7738,
+      "benchmark_id": "loop-crafted/simple_vardep_1.btor2",
+      "benchmark_sha256": "3150ef2f78a175ae28043995f25c3925e942962edbc67d3e82abe3b359dcf831",
+      "certificate": {
+        "ast_node_count": 7738,
+        "bad_count": 1,
+        "checks": [
+          {
+            "name": "C1 Init=>H",
+            "result": "unsat",
+            "time_sec": 0.0017867200076580048,
+            "unknown_reason": ""
+          },
+          {
+            "name": "C2 inductive",
+            "result": "unsat",
+            "time_sec": 3.1353084499714896,
+            "unknown_reason": ""
+          },
+          {
+            "name": "C3[0] H=>notBAD",
+            "result": "unsat",
+            "time_sec": 0.0019924528896808624,
+            "unknown_reason": ""
+          }
+        ],
+        "ok": true,
+        "predicate_count": 808
+      },
+      "invariant_classes": [
+        "quadratic-polynomial",
+        "affine-relational",
+        "phase-guarded",
+        "conjunctive"
+      ],
+      "predicate_count": 808,
+      "prior_evidence": "exhaustive_phase_matrix/all-phase-exhaustive",
+      "source_certificate_file_sha256": "3a5491823594a14ec04f1a6a38fdb3cb423b852924d281960c127232c6012ecb",
+      "source_certificate_origin": "phase-grammar-houdini",
+      "source_certificate_path": "artifacts/certified_transport_v1/source_certificates/simple_vardep_1-ea882a8d4015.json",
+      "source_certificate_sha256": "0de9bce09bcefb29ba985dd632bc1e1244ec904ffd7c4b3683a1c52700b8cd28",
+      "source_family_id": "8985f07c344b3a56534b126a46c6ed75559902a8cb2dd0cba9021d276ab0b277",
+      "source_family_key": "svcomp/8985f07c344b3a56534b126a46c6ed75559902a8cb2dd0cba9021d276ab0b277"
+    },
+    {
+      "applicability": {
+        "T1": {
+          "applicable": true,
+          "candidate_groups": [
+            {
+              "state_refs": [
+                "state22",
+                "state23",
+                "state24"
+              ],
+              "width": 32
+            }
+          ],
+          "reason": ""
+        },
+        "T2": {
+          "applicable": true,
+          "candidate_state_refs": [
+            "state10",
+            "state22",
+            "state23",
+            "state24"
+          ],
+          "reason": ""
+        },
+        "T3": {
+          "applicable": true,
+          "input_driven": true,
+          "input_driven_state_refs": [
+            "state22",
+            "state23"
+          ],
+          "reason": "",
+          "state_update_count": 4
+        }
+      },
+      "ast_node_count": 51,
+      "benchmark_id": "loop-lit/gj2007b.btor2",
+      "benchmark_sha256": "fc08e6eb13be10ad1e5bce28b33cd91902045c026dbe81f6393c1e76a879978c",
+      "certificate": {
+        "ast_node_count": 51,
+        "bad_count": 1,
+        "checks": [
+          {
+            "name": "C1 Init=>H",
+            "result": "unsat",
+            "time_sec": 0.0007034310838207603,
+            "unknown_reason": ""
+          },
+          {
+            "name": "C2 inductive",
+            "result": "unsat",
+            "time_sec": 0.01515662798192352,
+            "unknown_reason": ""
+          },
+          {
+            "name": "C3[0] H=>notBAD",
+            "result": "unsat",
+            "time_sec": 0.0008478880627080798,
+            "unknown_reason": ""
+          }
+        ],
+        "ok": true,
+        "predicate_count": 1
+      },
+      "invariant_classes": [
+        "phase-guarded"
+      ],
+      "predicate_count": 1,
+      "prior_evidence": "routed_unsat_audit/random-raw",
+      "source_certificate_file_sha256": "bdfe3cf123fd2d085aa4c99821b278b8860f695e088e4dfb45ce6bd64d9307aa",
+      "source_certificate_origin": "pono-returned-invariant",
+      "source_certificate_path": "artifacts/certified_transport_v1/source_certificates/gj2007b-072df8f25540.json",
+      "source_certificate_sha256": "ecb374957afd5165dd7dd968a439c81604ed8c65895ab7cc877faa635735a354",
+      "source_family_id": "10ecc8f124fe27235e8a482b96c33b6e4d36ee4c6a008626524a42cd3a1c73fa",
+      "source_family_key": "svcomp/10ecc8f124fe27235e8a482b96c33b6e4d36ee4c6a008626524a42cd3a1c73fa"
+    },
+    {
+      "applicability": {
+        "T1": {
+          "applicable": true,
+          "candidate_groups": [
+            {
+              "state_refs": [
+                "state22",
+                "state23",
+                "state24"
+              ],
+              "width": 32
+            }
+          ],
+          "reason": ""
+        },
+        "T2": {
+          "applicable": true,
+          "candidate_state_refs": [
+            "state10",
+            "state22",
+            "state23",
+            "state24"
+          ],
+          "reason": ""
+        },
+        "T3": {
+          "applicable": true,
+          "input_driven": true,
+          "input_driven_state_refs": [
+            "state10",
+            "state22",
+            "state23",
+            "state24"
+          ],
+          "reason": "",
+          "state_update_count": 4
+        }
+      },
+      "ast_node_count": 26,
+      "benchmark_id": "loop-zilu/benchmark05_conjunctive.btor2",
+      "benchmark_sha256": "cda483f8d8d680feb68cd20df1e25b3db9abc0c88f5ed8b9ce8c0944869603d0",
+      "certificate": {
+        "ast_node_count": 26,
+        "bad_count": 1,
+        "checks": [
+          {
+            "name": "C1 Init=>H",
+            "result": "unsat",
+            "time_sec": 0.0006582740461453795,
+            "unknown_reason": ""
+          },
+          {
+            "name": "C2 inductive",
+            "result": "unsat",
+            "time_sec": 0.03713730501476675,
+            "unknown_reason": ""
+          },
+          {
+            "name": "C3[0] H=>notBAD",
+            "result": "unsat",
+            "time_sec": 0.0005966529715806246,
+            "unknown_reason": ""
+          }
+        ],
+        "ok": true,
+        "predicate_count": 1
+      },
+      "invariant_classes": [
+        "phase-guarded"
+      ],
+      "predicate_count": 1,
+      "prior_evidence": "routed_unsat_audit/llm-source",
+      "source_certificate_file_sha256": "85832a6dc34cd5339bddb0212434f4e7ca91e9f96d18229fd57e5cc0f1d70b51",
+      "source_certificate_origin": "pono-returned-invariant",
+      "source_certificate_path": "artifacts/certified_transport_v1/source_certificates/benchmark05_conjunctive-be8f9ba19edd.json",
+      "source_certificate_sha256": "fdab2a268fbddb11c897913c57867c690981ceca4243f8bc1a08ebf11c295cfa",
+      "source_family_id": "8ddf6b6355c50edeb4690d5041155805747b85c70a1a46526cb9005044aea173",
+      "source_family_key": "svcomp/8ddf6b6355c50edeb4690d5041155805747b85c70a1a46526cb9005044aea173"
+    },
+    {
+      "applicability": {
+        "T1": {
+          "applicable": true,
+          "candidate_groups": [
+            {
+              "state_refs": [
+                "state23",
+                "state24",
+                "state25"
+              ],
+              "width": 32
+            }
+          ],
+          "reason": ""
+        },
+        "T2": {
+          "applicable": true,
+          "candidate_state_refs": [
+            "state10",
+            "state23",
+            "state24",
+            "state25"
+          ],
+          "reason": ""
+        },
+        "T3": {
+          "applicable": true,
+          "input_driven": true,
+          "input_driven_state_refs": [
+            "state22",
+            "state23",
+            "state24"
+          ],
+          "reason": "",
+          "state_update_count": 5
+        }
+      },
+      "ast_node_count": 17,
+      "benchmark_id": "loops/count_up_down-1.btor2",
+      "benchmark_sha256": "ffd2ca2e4bf9f5c2d0948aefeb6d18ff3ad11c442acd91e54dec6cc1dbb35e25",
+      "certificate": {
+        "ast_node_count": 17,
+        "bad_count": 1,
+        "checks": [
+          {
+            "name": "C1 Init=>H",
+            "result": "unsat",
+            "time_sec": 0.0006378990365192294,
+            "unknown_reason": ""
+          },
+          {
+            "name": "C2 inductive",
+            "result": "unsat",
+            "time_sec": 0.025464446051046252,
+            "unknown_reason": ""
+          },
+          {
+            "name": "C3[0] H=>notBAD",
+            "result": "unsat",
+            "time_sec": 0.0005985210882499814,
+            "unknown_reason": ""
+          }
+        ],
+        "ok": true,
+        "predicate_count": 1
+      },
+      "invariant_classes": [
+        "phase-guarded"
+      ],
+      "predicate_count": 1,
+      "prior_evidence": "routed_unsat_audit/random-source",
+      "source_certificate_file_sha256": "eca72f782a344f1cdf74906c9d36205e71806133759be9d1a1e12961b58798e7",
+      "source_certificate_origin": "pono-returned-invariant",
+      "source_certificate_path": "artifacts/certified_transport_v1/source_certificates/count_up_down-1-c5bb6766011f.json",
+      "source_certificate_sha256": "24042d93796bfb611aa1f3f572b7b8b3b2fbb01218cf298ae0b9f5e57d70c125",
+      "source_family_id": "4b81287e660ca8c3ad7ed61e0556cea4f5f5ad41b16a474c5b325850c8269d86",
+      "source_family_key": "svcomp/4b81287e660ca8c3ad7ed61e0556cea4f5f5ad41b16a474c5b325850c8269d86"
+    }
+  ],
+  "schema": "pono-certified-transport-population-v1",
+  "unsafe_controls": [
+    {
+      "benchmark_id": "loop-invariants/linear-inequality-inv-b.btor2",
+      "benchmark_sha256": "25e9281249a4d8672c62e280c95e1bf5825f9d806caeb7722f5ca3934598544e",
+      "source_family_id": "0f55e4302edb0a37ff86342391f10b4bccef988db9bdfaf948e856d980098b5e"
+    },
+    {
+      "benchmark_id": "loop-invgen/id_trans.btor2",
+      "benchmark_sha256": "fdc57df44a2884ecdbcc8a341de2a349398ebb4cd44326fc6b6ee4e62e99af1f",
+      "source_family_id": "57db45734209707f4e901d2380266222d2fcca8a26597b1f268f6a9ae1519c5b"
+    },
+    {
+      "benchmark_id": "loops-crafted-1/nested3-2_abstracted.btor2",
+      "benchmark_sha256": "28fa096eb1709c2a6215f7028153410bf5caeb7c9375da0aabe3a784b4ed7fcd",
+      "source_family_id": "c09cb7c581286218f6d3a556de44c3c501e0f45f8e4d681dcc16faa2c3d7bb95"
+    },
+    {
+      "benchmark_id": "loops/sum04-1.btor2",
+      "benchmark_sha256": "a639d02fe419a440cfb716f5a0cdd5348193144d7117cd83acd5830807c7aa31",
+      "source_family_id": "d38cd40ac0fe4efe013008e5b86e7584cade32d9260a4f76243ae529936dacae"
+    }
+  ]
+}

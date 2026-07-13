@@ -1,0 +1,269 @@
+{
+  "origin": {
+    "artifacts": [
+      {
+        "path": "artifacts/representation_phase_v1/routed_unsat_audit/invariants/gj2007b-072df8f25540.random-raw.txt",
+        "sha256": "888c317ecb95d7ad40f3f776b58a6c3ba061d35305ec82d70a5da21f712f7d4f"
+      },
+      {
+        "path": "artifacts/representation_phase_v1/routed_unsat_audit/manifest.json",
+        "sha256": "fa04fe45e23a0f67fae3bc6f1f81285bd0b60b4f76892d91ec61905ad1663941"
+      },
+      {
+        "path": "artifacts/representation_phase_v1/summary.json",
+        "sha256": "0c177a3cfc780d43b8c4bc37b2d1d13ac85b7fb964a4088856fa829cdfd4c856"
+      }
+    ],
+    "kind": "pono-returned-invariant"
+  },
+  "predicates": [
+    {
+      "args": [
+        {
+          "const": "true",
+          "form": "const",
+          "width": 0
+        },
+        {
+          "args": [
+            {
+              "args": [
+                {
+                  "form": "ref",
+                  "ref": "state24"
+                },
+                {
+                  "const": "0",
+                  "form": "const",
+                  "width": 32
+                }
+              ],
+              "form": "eq"
+            },
+            {
+              "args": [
+                {
+                  "args": [
+                    {
+                      "form": "ref",
+                      "ref": "state10"
+                    },
+                    {
+                      "const": "2",
+                      "form": "const",
+                      "width": 5
+                    }
+                  ],
+                  "form": "eq"
+                },
+                {
+                  "args": [
+                    {
+                      "form": "ref",
+                      "ref": "state22"
+                    },
+                    {
+                      "form": "ref",
+                      "ref": "state23"
+                    }
+                  ],
+                  "form": "sle"
+                }
+              ],
+              "form": "implies"
+            }
+          ],
+          "form": "or"
+        },
+        {
+          "args": [
+            {
+              "args": [
+                {
+                  "args": [
+                    {
+                      "args": [
+                        {
+                          "form": "ref",
+                          "ref": "state10"
+                        },
+                        {
+                          "const": "2",
+                          "form": "const",
+                          "width": 5
+                        }
+                      ],
+                      "form": "eq"
+                    },
+                    {
+                      "args": [
+                        {
+                          "form": "ref",
+                          "ref": "state22"
+                        },
+                        {
+                          "form": "ref",
+                          "ref": "state23"
+                        }
+                      ],
+                      "form": "sge"
+                    }
+                  ],
+                  "form": "implies"
+                }
+              ],
+              "form": "not"
+            },
+            {
+              "args": [
+                {
+                  "args": [
+                    {
+                      "form": "ref",
+                      "ref": "state10"
+                    },
+                    {
+                      "const": "2",
+                      "form": "const",
+                      "width": 5
+                    }
+                  ],
+                  "form": "eq"
+                },
+                {
+                  "args": [
+                    {
+                      "form": "ref",
+                      "ref": "state22"
+                    },
+                    {
+                      "const": "0",
+                      "form": "const",
+                      "width": 32
+                    }
+                  ],
+                  "form": "sle"
+                }
+              ],
+              "form": "implies"
+            }
+          ],
+          "form": "or"
+        },
+        {
+          "args": [
+            {
+              "args": [
+                {
+                  "const": "1",
+                  "form": "const",
+                  "width": 1
+                },
+                {
+                  "args": [
+                    {
+                      "form": "ref",
+                      "ref": "state24"
+                    }
+                  ],
+                  "form": "extract",
+                  "hi": 31,
+                  "lo": 31
+                }
+              ],
+              "form": "eq"
+            }
+          ],
+          "form": "not"
+        },
+        {
+          "args": [
+            {
+              "args": [
+                {
+                  "form": "ref",
+                  "ref": "state10"
+                },
+                {
+                  "const": "2",
+                  "form": "const",
+                  "width": 5
+                }
+              ],
+              "form": "eq"
+            },
+            {
+              "args": [
+                {
+                  "form": "ref",
+                  "ref": "state22"
+                },
+                {
+                  "const": "0",
+                  "form": "const",
+                  "width": 32
+                }
+              ],
+              "form": "sge"
+            }
+          ],
+          "form": "implies"
+        },
+        {
+          "args": [
+            {
+              "args": [
+                {
+                  "args": [
+                    {
+                      "args": [
+                        {
+                          "form": "ref",
+                          "ref": "state10"
+                        },
+                        {
+                          "const": "1",
+                          "form": "const",
+                          "width": 5
+                        }
+                      ],
+                      "form": "bvcomp"
+                    },
+                    {
+                      "args": [
+                        {
+                          "form": "ref",
+                          "ref": "state10"
+                        },
+                        {
+                          "const": "16",
+                          "form": "const",
+                          "width": 5
+                        }
+                      ],
+                      "form": "bvcomp"
+                    }
+                  ],
+                  "form": "bvor"
+                },
+                {
+                  "const": "1",
+                  "form": "const",
+                  "width": 1
+                }
+              ],
+              "form": "eq"
+            }
+          ],
+          "form": "not"
+        }
+      ],
+      "form": "and"
+    }
+  ],
+  "schema": "pono-transport-invariant-v1",
+  "source": {
+    "benchmark_id": "loop-lit/gj2007b.btor2",
+    "sha256": "fc08e6eb13be10ad1e5bce28b33cd91902045c026dbe81f6393c1e76a879978c"
+  }
+}

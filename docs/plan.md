@@ -2,15 +2,15 @@
 
 **Updated:** 2026-07-13
 **Branch:** `soundness-audit`
-**Status:** Gate 5A0 population/schema implementation complete and tested;
-canonical census is next; no transformation code or LLM is authorized yet
+**Status:** Gate 5A0 stopped `population-insufficient`; algorithm expansion is
+closed; no transformation code, new mechanism gate, or LLM is authorized
 
 ## Current Research Position
 
 The project has a sound trust boundary but still has no defensible
 LLM-specific solve or search-efficiency claim.
 
-Completed evidence now has four layers:
+Completed evidence now has six layers:
 
 1. **Soundness repair:** LLM/static formulas are untrusted IC3IA abstraction
    predicates, never BTOR2 assumptions. Direct C1/C2/C3 certificates and
@@ -26,6 +26,11 @@ Completed evidence now has four layers:
    kernel is sound on development controls, but the frozen official corpus has
    zero task inside its preregistered v1 language. H5a is not run and no LLM
    certificate capture is authorized.
+5. **Inductiveness-gap decomposition:** all six frozen Gate 4B0-v2 candidates
+   are `FALSE_CANDIDATE` at depth 0 and exact Houdini removes each during C1;
+   proof-graph and stronger-induction work therefore do not apply.
+6. **Certified-transport census:** 11 certified bases and six T1-applicable
+   bases miss the frozen 12/8 thresholds. Gate 5 stops before variants.
 
 This is not a coverage-improvement paper result, and the project must not enter
 paper mode by weakening the baseline or moving a failed threshold.
@@ -266,7 +271,7 @@ The complete frozen protocol is
 [`docs/certified_transport_gate.md`](certified_transport_gate.md). Gate 5 is an
 upper-bound proof-reuse experiment, not a mapping-inference or coverage gate.
 
-### Gate 5A0 first
+### Gate 5A0 result — STOP
 
 The strict census implementation is now present in
 `scripts/build_transport_population.py`, `scripts/transport_schema.py`, and
@@ -276,8 +281,8 @@ candidate against every BAD, applies exact-content/source-family deduplication,
 and records structural T1/T2/T3 applicability. It never calls an LLM/API and
 does not generate transformed models.
 
-The immediate task is to run its canonical source-certificate census from the
-committed implementation. Before any transformation implementation, require:
+The canonical source-certificate census was run from the committed
+implementation. Before any transformation implementation, it required:
 
 - at least 12 source tasks with machine-readable invariants already certified
   by source-original C1/C2/C3;
@@ -287,15 +292,21 @@ committed implementation. Before any transformation implementation, require:
 - four independently selected expected-unsafe controls;
 - strict source/certificate/family hashes and no raw-string regex transport.
 
-If this population is unavailable, record `population-insufficient` and stop
-without manufacturing a large synthetic variant corpus.
+The result is `population-insufficient`: 11/12 safe bases and 6/8 T1-applicable
+bases. Source families (11/8), invariant classes, T2 (11/8), T3 (11/8),
+input-driven T3 families (10/3), and unsafe controls (4/4) passed. Eight
+`interp --show-invar` recovery attempts were explicitly runtime-incompatible
+with the installed ASan Pono and the inherited finite hard address-space limit;
+no alternate build was used. Transport stops without synthetic padding or
+transformed models.
 
-The canonical command writes a self-hashed population plus sibling
-`source_certificates/` and `source_invariants/` evidence. It refuses overwrite,
-records local Pono `interp --show-invar` recovery as no-LLM provenance, and
-deletes fresh partial output on failure rather than emitting a best-effort
-population. Syntactic multi-predicate sets are not counted as genuinely
-conjunctive; v1 uses the stricter phase-guarded disjunct for that class gate.
+The canonical command writes a self-hashed population plus source-certificate
+evidence; successful `--show-invar` recovery would additionally retain raw
+transcripts. It refuses overwrite, records local Pono recovery as no-LLM
+provenance, and deletes fresh partial output on failure rather than emitting a
+best-effort population. Syntactic multi-predicate sets are not counted as
+genuinely conjunctive; v1 uses the stricter phase-guarded disjunct for that
+class gate.
 
 ### Frozen transformation roles
 

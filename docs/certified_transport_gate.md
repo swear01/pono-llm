@@ -2,14 +2,21 @@
 
 **Frozen:** 2026-07-13
 **Branch:** `soundness-audit`
-**Status:** preregistered; Gate 5A0 population/protocol feasibility is next;
-no transformation implementation, utility experiment, map inference, or LLM
-capture is authorized by this commit
+**Status:** complete — **STOP (`population-insufficient`)**; no transformation
+implementation, utility experiment, map inference, or LLM capture is authorized
 
-**Execution status (2026-07-13; not a protocol amendment):** the Gate 5A0
-population/schema implementation now exists and passes its focused tests. The
-canonical census has not yet been run, no transformed variant exists, and all
-frozen thresholds below remain unchanged.
+**Execution result (2026-07-13; not a protocol amendment):** the hash-bound
+canonical census found 11 certified bases and only six T1-applicable bases,
+below the frozen requirements of 12 and eight. All other population conditions
+passed. Eight otherwise eligible baseline-interpolation rows were explicit
+`show-invar-runtime-incompatible` exclusions because the installed ASan Pono
+cannot reserve shadow memory under the inherited 60,000,000 KiB hard virtual-
+memory limit. No alternative binary, rebuild, or solver was substituted. The
+canonical population SHA-256 is
+`3de42161c17a90bf12e2639f1d8d15a676d7fbbfe2c747efd0966e670a659e7b`.
+The recursive artifact integrity SHA-256 is
+`6a1d9d80e9646cd1b289dea37e658970534bda08529f8351fe007ab08c42382e`.
+Per the frozen rule, transport stops before any transformed variant.
 
 ## Research Question
 
@@ -638,20 +645,21 @@ LLM-over-structural routing result prevents assuming an LLM mapping advantage.
 | Deterministic map recovery matches the oracle | Do not call an LLM |
 | Deterministic recovery fails on >=3 oracle-useful families | Permit one frozen LLM proposal capture under a new preregistration |
 
-## Planned Artifact and Reproduction Boundary
+## Artifact and Reproduction Boundary
 
-No Gate 5 artifact is created by this preregistration commit. A successful
-Gate 5A0 implementation will later write a fresh canonical directory:
+The preregistration commit created no artifact. The completed Gate 5A0 census
+now occupies the canonical directory:
 
 ```text
 artifacts/certified_transport_v1/
 ```
 
-It must contain source population/certificates, transformed BTOR2 files, exact
-maps and parameters, independent validation reports, transported ASTs, target
-certificates, B0--B3 matrices, all negative cases, commands, tool revisions,
-provenance, summary, and a recursive integrity manifest. Partial/smoke runs
-cannot be summarized as the official gate.
+Because the population gate stopped, it contains only the self-hashed source
+population, source certificates, README, and recursive integrity manifest. Had
+Gate 5A0 passed, the later artifact would also have required transformed BTOR2
+files, exact maps and parameters, independent validation reports, transported
+ASTs, target certificates, B0--B3 matrices, and all negative cases. None may be
+backfilled after the official stop.
 
 ## Gate 5A0 Implementation Boundary
 

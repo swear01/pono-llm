@@ -45,10 +45,9 @@
   `b0099cf1ea68d2ab92820e914fedf8f97a0a3b01657ac74a5f0f825db7d38056`.
   Do not edit files inside that directory without a versioned full integrity
   regeneration.
-- Gate 5 is a preregistered known-map certified-transport upper-bound oracle.
-  Gate 5A0 must first find 12 certified bases, eight source families, three
-  invariant classes, and eight applicable bases for each primary transform;
-  otherwise stop before generating variants.
+- Gate 5A0 stopped `population-insufficient`: 11/12 certified bases and 6/8
+  T1-applicable bases; all other frozen conditions passed. Do not pad the
+  census, generate variants, or open Gate 5A.
 - Gate 5A0's implementation is strict and no-LLM: it verifies both upstream
   evidence bundles, freshly re-certifies all selected source ASTs for every
   BAD, and refuses output/path overwrite. A failed run removes only its newly
@@ -59,6 +58,11 @@
   documented AST subset and independently re-certified. Unsupported, oversized
   (>5 MiB raw or >50,000 AST nodes), execution/normalization timeout, and
   UNKNOWN rows are explicit exclusions.
+- The installed `build/pono` links `libasan.so.6`, while the execution context
+  has a 60,000,000 KiB hard virtual-memory limit. ASan shadow reservation fails
+  before Pono starts, so eight recovery rows are deterministically marked
+  `show-invar-runtime-incompatible`. No release rebuild or alternate solver was
+  silently substituted; this is a remaining population-capacity uncertainty.
 - Do not count a syntactically multi-predicate set as a genuinely conjunctive
   invariant class. Gate 5A0 v1 conservatively satisfies that disjunction only
   through an actual `implies`/phase-guarded AST.

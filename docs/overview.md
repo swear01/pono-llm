@@ -102,20 +102,21 @@ their corpora, repair LLM routes, tune prompts on observed successes, widen the
 algebraic branch cap post-hoc, or replace the absent natural Gate 4B0 population
 with synthetic tasks.
 
-Gate 5 is preregistered as a **known-map certified-transport oracle** under
-[`certified_transport_gate.md`](certified_transport_gate.md). Gate 5A0 first
-censuses already certified source invariants and validates that three
+Gate 5 was preregistered as a **known-map certified-transport oracle** under
+[`certified_transport_gate.md`](certified_transport_gate.md). Gate 5A0
+censused already certified source invariants and tested whether three
 non-trivial target families are feasible: modular affine recoding, bit-vector
 split encoding, and input-latched stuttering refinement. Alpha-renaming is only
 a sanity control and cannot count toward success.
 
-The strict Gate 5A0 population/schema/certification implementation is complete;
-the canonical census is the next command. It performs structural AST
-transport, exact source C1/C2/C3 for every BAD, immutable artifact validation,
-source-family deduplication, and T1/T2/T3 applicability accounting. It makes no
-LLM/API call and no transformed variant exists yet.
+The strict Gate 5A0 census is complete and stopped `population-insufficient`.
+It found 11 certified bases (12 required) and six T1-applicable bases (eight
+required); every other frozen population condition passed. Eight source-
+recovery rows were excluded because the installed ASan Pono cannot start under
+the inherited finite hard address-space limit. No fallback binary was used,
+no transformed variant was generated, and no LLM/API call occurred.
 
-No transformation implementation or utility run is authorized unless the
+No transformation implementation or utility run is authorized because the
 population reaches 12 certified tasks, eight independent source families,
 three invariant classes, and at least eight applicable bases per primary
 family. Every concrete map must be independently proven, every transported

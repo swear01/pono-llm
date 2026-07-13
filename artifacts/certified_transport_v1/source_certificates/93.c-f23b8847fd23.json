@@ -1,0 +1,276 @@
+{
+  "origin": {
+    "artifacts": [
+      {
+        "path": "artifacts/phase1_2_frozen_v2/93.c-f23b8847fd23.jsonl",
+        "sha256": "cff14543ec34fd55d522a4e5c8c5b44874558955eda536c59b3316e162edbec3"
+      },
+      {
+        "path": "artifacts/phase1_2_frozen_v2/integrity.json",
+        "sha256": "3bbb517519cf3630149739361e54ba546bb192c418d8643f59ad22aca4b2ccee"
+      },
+      {
+        "path": "artifacts/phase1_2_frozen_v2/manifest.json",
+        "sha256": "a4cbe7f9c144cc3cd74c832f0a67ca66bb076642a74f4bb0c9617e071168c006"
+      },
+      {
+        "path": "artifacts/phase1_2_llm_houdini_full21.csv",
+        "sha256": "c238ef3de2847c2be3b936fa603b7907e4fc7eda1f5d693913491e0e9044d203"
+      },
+      {
+        "path": "artifacts/phase1_2_summary_v1.json",
+        "sha256": "121091999036d454119377d608a99cee8ea5d313d5479be18febfea4da620944"
+      }
+    ],
+    "kind": "frozen-candidate-houdini"
+  },
+  "predicates": [
+    {
+      "args": [
+        {
+          "form": "ref",
+          "ref": "state7"
+        },
+        {
+          "form": "ref",
+          "ref": "state10"
+        }
+      ],
+      "form": "ule"
+    },
+    {
+      "args": [
+        {
+          "args": [
+            {
+              "form": "ref",
+              "ref": "state20"
+            },
+            {
+              "form": "ref",
+              "ref": "state23"
+            }
+          ],
+          "form": "add"
+        },
+        {
+          "args": [
+            {
+              "const": "3",
+              "form": "const",
+              "width": 11
+            },
+            {
+              "form": "ref",
+              "ref": "state7"
+            }
+          ],
+          "form": "mul"
+        }
+      ],
+      "form": "eq"
+    },
+    {
+      "args": [
+        {
+          "form": "ref",
+          "ref": "state20"
+        },
+        {
+          "args": [
+            {
+              "const": "3",
+              "form": "const",
+              "width": 11
+            },
+            {
+              "form": "ref",
+              "ref": "state7"
+            }
+          ],
+          "form": "mul"
+        }
+      ],
+      "form": "ule"
+    },
+    {
+      "args": [
+        {
+          "form": "ref",
+          "ref": "state23"
+        },
+        {
+          "args": [
+            {
+              "const": "3",
+              "form": "const",
+              "width": 11
+            },
+            {
+              "form": "ref",
+              "ref": "state7"
+            }
+          ],
+          "form": "mul"
+        }
+      ],
+      "form": "ule"
+    },
+    {
+      "args": [
+        {
+          "form": "ref",
+          "ref": "state10"
+        },
+        {
+          "const": "40",
+          "form": "const",
+          "width": 11
+        }
+      ],
+      "form": "eq"
+    },
+    {
+      "args": [
+        {
+          "args": [
+            {
+              "form": "ref",
+              "ref": "state7"
+            },
+            {
+              "form": "ref",
+              "ref": "state10"
+            }
+          ],
+          "form": "uge"
+        },
+        {
+          "args": [
+            {
+              "args": [
+                {
+                  "form": "ref",
+                  "ref": "state20"
+                },
+                {
+                  "form": "ref",
+                  "ref": "state23"
+                }
+              ],
+              "form": "add"
+            },
+            {
+              "args": [
+                {
+                  "const": "3",
+                  "form": "const",
+                  "width": 11
+                },
+                {
+                  "form": "ref",
+                  "ref": "state10"
+                }
+              ],
+              "form": "mul"
+            }
+          ],
+          "form": "eq"
+        }
+      ],
+      "form": "implies"
+    },
+    {
+      "args": [
+        {
+          "args": [
+            {
+              "args": [
+                {
+                  "form": "ref",
+                  "ref": "state20"
+                },
+                {
+                  "form": "ref",
+                  "ref": "state23"
+                }
+              ],
+              "form": "add"
+            },
+            {
+              "args": [
+                {
+                  "const": "3",
+                  "form": "const",
+                  "width": 11
+                },
+                {
+                  "form": "ref",
+                  "ref": "state7"
+                }
+              ],
+              "form": "mul"
+            }
+          ],
+          "form": "eq"
+        },
+        {
+          "args": [
+            {
+              "args": [
+                {
+                  "form": "ref",
+                  "ref": "state7"
+                },
+                {
+                  "form": "ref",
+                  "ref": "state10"
+                }
+              ],
+              "form": "uge"
+            },
+            {
+              "args": [
+                {
+                  "args": [
+                    {
+                      "const": "3",
+                      "form": "const",
+                      "width": 11
+                    },
+                    {
+                      "form": "ref",
+                      "ref": "state10"
+                    }
+                  ],
+                  "form": "mul"
+                },
+                {
+                  "args": [
+                    {
+                      "form": "ref",
+                      "ref": "state20"
+                    },
+                    {
+                      "form": "ref",
+                      "ref": "state23"
+                    }
+                  ],
+                  "form": "add"
+                }
+              ],
+              "form": "eq"
+            }
+          ],
+          "form": "implies"
+        }
+      ],
+      "form": "implies"
+    }
+  ],
+  "schema": "pono-transport-invariant-v1",
+  "source": {
+    "benchmark_id": "2024/btor2/2024/hku/arithmetic_circuits/93.c/93.c.btor2",
+    "sha256": "47163e14a1fe4780f9383bb98be91fcde5ba0c166eb70f4353c269b129173666"
+  }
+}

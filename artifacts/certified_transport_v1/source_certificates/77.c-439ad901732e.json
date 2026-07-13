@@ -1,0 +1,162 @@
+{
+  "origin": {
+    "artifacts": [
+      {
+        "path": "artifacts/phase1_2_frozen_v2/77.c-439ad901732e.jsonl",
+        "sha256": "3d1611ededafd0c3cd086224c49e882ae6d1ad9b8e681ae45e8b81179c27aaf3"
+      },
+      {
+        "path": "artifacts/phase1_2_frozen_v2/integrity.json",
+        "sha256": "3bbb517519cf3630149739361e54ba546bb192c418d8643f59ad22aca4b2ccee"
+      },
+      {
+        "path": "artifacts/phase1_2_frozen_v2/manifest.json",
+        "sha256": "a4cbe7f9c144cc3cd74c832f0a67ca66bb076642a74f4bb0c9617e071168c006"
+      },
+      {
+        "path": "artifacts/phase1_2_llm_houdini_full21.csv",
+        "sha256": "c238ef3de2847c2be3b936fa603b7907e4fc7eda1f5d693913491e0e9044d203"
+      },
+      {
+        "path": "artifacts/phase1_2_summary_v1.json",
+        "sha256": "121091999036d454119377d608a99cee8ea5d313d5479be18febfea4da620944"
+      }
+    ],
+    "kind": "frozen-candidate-houdini"
+  },
+  "predicates": [
+    {
+      "args": [
+        {
+          "form": "ref",
+          "ref": "state7"
+        },
+        {
+          "form": "ref",
+          "ref": "state10"
+        }
+      ],
+      "form": "ule"
+    },
+    {
+      "args": [
+        {
+          "form": "ref",
+          "ref": "state7"
+        },
+        {
+          "form": "ref",
+          "ref": "state14"
+        }
+      ],
+      "form": "ule"
+    },
+    {
+      "args": [
+        {
+          "form": "ref",
+          "ref": "state14"
+        },
+        {
+          "form": "ref",
+          "ref": "state10"
+        }
+      ],
+      "form": "ugt"
+    },
+    {
+      "args": [
+        {
+          "form": "ref",
+          "ref": "state7"
+        },
+        {
+          "form": "ref",
+          "ref": "state14"
+        }
+      ],
+      "form": "ult"
+    },
+    {
+      "args": [
+        {
+          "form": "ref",
+          "ref": "state14"
+        },
+        {
+          "form": "ref",
+          "ref": "state10"
+        }
+      ],
+      "form": "uge"
+    },
+    {
+      "args": [
+        {
+          "form": "ref",
+          "ref": "state7"
+        },
+        {
+          "const": "0",
+          "form": "const",
+          "width": 15
+        }
+      ],
+      "form": "uge"
+    },
+    {
+      "args": [
+        {
+          "args": [
+            {
+              "args": [
+                {
+                  "form": "ref",
+                  "ref": "state7"
+                },
+                {
+                  "form": "ref",
+                  "ref": "state10"
+                }
+              ],
+              "form": "ult"
+            },
+            {
+              "args": [
+                {
+                  "form": "ref",
+                  "ref": "state7"
+                },
+                {
+                  "form": "ref",
+                  "ref": "state14"
+                }
+              ],
+              "form": "uge"
+            }
+          ],
+          "form": "and"
+        }
+      ],
+      "form": "not"
+    },
+    {
+      "args": [
+        {
+          "form": "ref",
+          "ref": "state10"
+        },
+        {
+          "form": "ref",
+          "ref": "state14"
+        }
+      ],
+      "form": "ult"
+    }
+  ],
+  "schema": "pono-transport-invariant-v1",
+  "source": {
+    "benchmark_id": "2025/wordlevel/bv/2024/hkust/arithmetic_circuits/77.c/77.c.btor2",
+    "sha256": "68db6f77de82363380616dd08b12d0f58064ab1d6d34197c80beb1235f5d1889"
+  }
+}
