@@ -304,12 +304,11 @@ A Pono-returned SMT-LIB invariant may enter only after canonical parsing into
 the transport AST, exact source-model recertification, and AST hashing. Raw
 invariant strings are never transported by regex substitution.
 
-The locally installed Pono executable is AddressSanitizer-instrumented. For
-`--show-invar` only, the child process raises its address-space soft limit to
-the inherited hard limit so ASan can reserve its shadow mapping; the parent
-limit, solver command, engine, and 20-second timeout are unchanged. A failure
-after that exact launch remains an exclusion and is not retried with another
-engine.
+The locally installed Pono executable is AddressSanitizer-instrumented. If its
+`--show-invar` child cannot reserve the ASan shadow mapping under the inherited
+hard address-space limit, the census records the deterministic exclusion
+`show-invar-runtime-incompatible`; it does not retry with another engine or
+silently rebuild Pono.
 
 Gate 5A0 requires all of:
 

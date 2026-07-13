@@ -302,19 +302,12 @@ def test_representation_integrity_requires_self_hash_and_summary_link(tmp_path):
         build_transport_population._verify_integrity(tmp_path)
 
 
-def test_show_invar_child_inherits_hard_address_space_limit(monkeypatch):
-    calls = []
-    monkeypatch.setattr(
-        build_transport_population.resource,
-        "getrlimit",
-        lambda _kind: (60_000_000, -1),
-    )
-    monkeypatch.setattr(
-        build_transport_population.resource,
-        "setrlimit",
-        lambda kind, limits: calls.append((kind, limits)),
+def test_show_invar_asan_address_limit_failure_is_deterministic():
+    reason, error = build_transport_population._classify_show_invar_failure(
+        b"==1371347==ERROR: AddressSanitizer failed to allocate shadow\n"
+        b"==1371347==ReserveShadowMemoryRange failed\n"
     )
 
-    build_transport_population._inherit_hard_address_space_limit()
-
-    assert calls == [(build_transport_population.resource.RLIMIT_AS, (-1, -1))]
+    assert reason == "show-invar-runtime-incompatible"
+    assert "1371347" not in error
+    assert error.count("==PID==") == 2

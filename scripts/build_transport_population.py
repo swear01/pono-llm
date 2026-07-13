@@ -8,7 +8,6 @@ import hashlib
 import json
 import os
 import re
-import resource
 import signal
 import shutil
 import subprocess
@@ -44,11 +43,6 @@ MIN_SOURCE_FAMILIES = transport_schema.MIN_SOURCE_FAMILIES
 MIN_PER_PRIMARY_TRANSFORM = transport_schema.MIN_PER_PRIMARY_TRANSFORM
 MIN_INPUT_DRIVEN_T3_FAMILIES = transport_schema.MIN_INPUT_DRIVEN_T3_FAMILIES
 MIN_UNSAFE_CONTROLS = transport_schema.MIN_UNSAFE_CONTROLS
-
-
-def _inherit_hard_address_space_limit() -> None:
-    _, hard = resource.getrlimit(resource.RLIMIT_AS)
-    resource.setrlimit(resource.RLIMIT_AS, (hard, hard))
 
 
 def _repo_relative(path: Path) -> str:
@@ -473,6 +467,19 @@ def _representation_returned_sources(
     return results
 
 
+def _classify_show_invar_failure(raw: bytes) -> tuple[str, str]:
+    error = raw.decode(errors="replace")[-500:]
+    if (
+        "AddressSanitizer failed to allocate" in error
+        and "ReserveShadowMemoryRange failed" in error
+    ):
+        return (
+            "show-invar-runtime-incompatible",
+            re.sub(r"==\d+==", "==PID==", error),
+        )
+    return "show-invar-not-unsat", error
+
+
 def _baseline_interp_sources(
     summary_path: Path,
     root: Path,
@@ -499,7 +506,6 @@ def _baseline_interp_sources(
             completed = subprocess.run(
                 command,
                 capture_output=True,
-                preexec_fn=_inherit_hard_address_space_limit,
                 timeout=PONO_SHOW_INVAR_TIMEOUT_SEC,
             )
         except subprocess.TimeoutExpired:
@@ -516,13 +522,14 @@ def _baseline_interp_sources(
         transcript_name = experiment_manifest.stable_slug(benchmark_id) + ".interp.log"
         transcript_path = transcript_dir / transcript_name
         if completed.returncode != 1:
+            reason, error = _classify_show_invar_failure(raw)
             results.append({
                 "eligible": False,
                 "benchmark_id": benchmark_id,
                 "source_family_key": f"svcomp/{task['source_family_id']}",
                 "source_family_id": task["source_family_id"],
-                "exclusion_reason": "show-invar-not-unsat",
-                "error": raw.decode(errors="replace")[-500:],
+                "exclusion_reason": reason,
+                "error": error,
                 "prior_evidence": "representation_baseline_screen/interp",
             })
             continue
