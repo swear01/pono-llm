@@ -48,6 +48,11 @@
 - Gate 5A0 stopped `population-insufficient`: 11/12 certified bases and 6/8
   T1-applicable bases; all other frozen conditions passed. Do not pad the
   census, generate variants, or open Gate 5A.
+- Gate 5A's repair oracle is implemented but was inapplicable to all six
+  official cases: each candidate is already false at depth 0. Its fixed search
+  may replace one candidate by `guard => candidate`, or add at most two frozen
+  literals/negations or direct one-bit BTOR2-`ite` control equalities. Every
+  accepted result must independently pass exact C1/C2/C3 within 30 seconds.
 - Gate 5A0's implementation is strict and no-LLM: it verifies both upstream
   evidence bundles, freshly re-certifies all selected source ASTs for every
   BAD, and refuses output/path overwrite. A failed run removes only its newly

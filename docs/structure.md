@@ -111,6 +111,12 @@
   T1 affine recoding, T2 split encoding, and input-latched T3 stuttering are the
   three primary families. Map validation, target C1/C2/C3, and transformation-
   equivalence verdicts remain separate, and no LLM is authorized in 5A0/5A.
+- **Gate 5A inductiveness-gap diagnostics:**
+  `scripts/diagnose_inductiveness_gap.py` implements bounded correctness,
+  individual/conjunction C2, exact Houdini, k-induction, CTI reachability, and
+  the fixed at-most-two-helper/one-guard repair oracle.
+  `scripts/run_inductiveness_gap_gate.py` binds those checks to the six frozen
+  Gate 4B0-v2 hashes and writes `artifacts/inductiveness_gap_v1/`.
 - **Gate 2 corpus control:** `scripts/extract_btor_features.py` performs a
   durable full-tree feature scan; `scripts/select_gate2_corpus.py` produces a
   portable, content-deduplicated, fixed-seed stratified manifest; and

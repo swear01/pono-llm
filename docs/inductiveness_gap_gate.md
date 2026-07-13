@@ -85,6 +85,13 @@ The immutable grammar is:
 Search is deterministic lexical order, at most 30 seconds per case. It cannot
 inspect a model and manufacture a new polynomial, extend degree, call an LLM,
 or repair syntax. Every accepted repair must pass exact original-model C1/C2/C3.
+In v1, a control state is identified only when that one-bit state is used
+directly as a BTOR2 `ite` condition; arbitrary one-bit data states are not
+silently promoted to controls. Existing frozen candidate predicates and their
+negations form the helper pool. Guard replacement and one-/two-helper search
+are both implemented and covered by positive tests, while all six official
+cases correctly record the oracle as skipped because they fail bounded
+correctness at depth 0.
 
 ## Exclusive Primary Taxonomy
 
