@@ -1,0 +1,255 @@
+{
+  "corpus_version": "gate-4b0-v2-natural-c2-1",
+  "independent_family_count": 4,
+  "manifest_sha256": "82d1b122afa2097679bb025c73388500f99daa151dea6905c34ab867b984b67e",
+  "queries": [
+    {
+      "benchmark_id": "2024/btor2/2024/sosylab/nla-digbench-scaling/egcd-ll_unwindbound10.btor2",
+      "benchmark_sha256": "e4c403715215037126383eb0b64039f5aa8842700bc68690b3966ef529ffa865",
+      "bit_width": 64,
+      "candidate_entry_sha256": "9bba8f42a6ddba4a14c33fb0aa22b86a682b7e6b72439c64bb12800e8e211576",
+      "candidate_row_index": 1,
+      "candidate_sha256": "7137ac76ab97d68deebac5ab0800a452188cbf4218224c624eaa7e58126afba9",
+      "candidate_source_file": "egcd-ll_unwindbound10-8befbcbebbb9.jsonl",
+      "candidate_source_file_sha256": "df6308895f8f4cf87bc11d770fa958f4f4497e2c8e50b6de3322642d37d03428",
+      "counts_toward_h5a": true,
+      "expected_safe_or_unsafe": "safe",
+      "expected_verdict": true,
+      "expected_verdict_source": {
+        "property": "unreach-call.prp",
+        "repository": "sosy-lab/benchmarking/sv-benchmarks",
+        "revision": "1e5856db",
+        "task": "c/nla-digbench/egcd-ll.yml"
+      },
+      "inclusion_reason": "lowest structurally eligible JSONL row",
+      "query": "egcd-ll_unwindbound10.row1.c2.smt2",
+      "query_sha256": "ab97d1fe3c411c4746a9e76e6d17c3d0ec21661c058787f71f42151c54262cbf",
+      "recurrence_family": "egcd",
+      "role": "natural-primary",
+      "structure": {
+        "bad_count": 1,
+        "constraint_count": 0,
+        "input_count": 21,
+        "next_operators": [
+          "input"
+        ],
+        "state_count": 15,
+        "state_refs": [
+          "state27",
+          "state28",
+          "state30",
+          "state31"
+        ],
+        "width": 64
+      },
+      "timeout_seconds": 20
+    },
+    {
+      "benchmark_id": "2024/btor2/2024/sosylab/nla-digbench-scaling/hard-ll_valuebound20.btor2",
+      "benchmark_sha256": "6db2488767df2a27d060c36e19917239dd8b673bc15b35e4a28f8ee636a8daeb",
+      "bit_width": 64,
+      "candidate_entry_sha256": "9208e3c66f01535a6bdbed8537b9c8f5901b3c9598daa3b3c8be05e882fc21c8",
+      "candidate_row_index": 0,
+      "candidate_sha256": "50ecf0ff8887c7c1ed4ac84d4b25a67a7077a45b45a6de48526e0c87cb093843",
+      "candidate_source_file": "hard-ll_valuebound20-747ddcb9567d.jsonl",
+      "candidate_source_file_sha256": "ccba70caec5e6055b79d868503f1d4610d44f45d50c6fb53b654ed36d7eae3a7",
+      "counts_toward_h5a": true,
+      "expected_safe_or_unsafe": "safe",
+      "expected_verdict": true,
+      "expected_verdict_source": {
+        "property": "unreach-call.prp",
+        "repository": "sosy-lab/benchmarking/sv-benchmarks",
+        "revision": "1e5856db",
+        "task": "c/nla-digbench/hard-ll.yml"
+      },
+      "inclusion_reason": "lowest structurally eligible JSONL row",
+      "query": "hard-ll_valuebound20.row0.c2.smt2",
+      "query_sha256": "5329d3939b2ce8a84d9845d1e0605ef984a868ca786f197043331f6cd4ba5d3f",
+      "recurrence_family": "hard",
+      "role": "natural-primary",
+      "structure": {
+        "bad_count": 1,
+        "constraint_count": 0,
+        "input_count": 14,
+        "next_operators": [
+          "input"
+        ],
+        "state_count": 12,
+        "state_refs": [
+          "state22",
+          "state23",
+          "state24"
+        ],
+        "width": 64
+      },
+      "timeout_seconds": 20
+    },
+    {
+      "benchmark_id": "2024/btor2/2024/sosylab/nla-digbench-scaling/lcm1_unwindbound2.btor2",
+      "benchmark_sha256": "927372e149dafc1119ce5ee8aa99eea94acd22912610f86d7c9b3225fbcfe796",
+      "bit_width": 32,
+      "candidate_entry_sha256": "b4dc018a53ecad06abbe64142f180f32bce9784f033c7961e4111e3741a76b53",
+      "candidate_row_index": 0,
+      "candidate_sha256": "e9f007cebaab1bc323e79d91fb3111c360ae586e20c57720cd269e67e705bf68",
+      "candidate_source_file": "lcm1_unwindbound2-b147f6cde698.jsonl",
+      "candidate_source_file_sha256": "092ae14500f395055829a0ad2a7531dd9888eabfcfb9c8d4150ade915f73b2ef",
+      "counts_toward_h5a": true,
+      "expected_safe_or_unsafe": "safe",
+      "expected_verdict": true,
+      "expected_verdict_source": {
+        "property": "unreach-call.prp",
+        "repository": "sosy-lab/benchmarking/sv-benchmarks",
+        "revision": "1e5856db",
+        "task": "c/nla-digbench/lcm1.yml"
+      },
+      "inclusion_reason": "lowest structurally eligible JSONL row",
+      "query": "lcm1_unwindbound2.row0.c2.smt2",
+      "query_sha256": "ef7bbea89a861f65e345e1440d84a186b3f869dcddcdfa8349de0f097d0a070e",
+      "recurrence_family": "lcm",
+      "role": "natural-primary",
+      "structure": {
+        "bad_count": 1,
+        "constraint_count": 0,
+        "input_count": 13,
+        "next_operators": [
+          "input"
+        ],
+        "state_count": 13,
+        "state_refs": [
+          "state18",
+          "state21",
+          "state23"
+        ],
+        "width": 32
+      },
+      "timeout_seconds": 20
+    },
+    {
+      "benchmark_id": "2024/btor2/2024/sosylab/nla-digbench-scaling/lcm1_valuebound100.btor2",
+      "benchmark_sha256": "f5154c1438162009e2930f3ca057ad6cd527933679870654342ca2394c921e29",
+      "bit_width": 32,
+      "candidate_entry_sha256": "991990b50b3f65c06ae5f2576a6a88f57b2a951d0da4f8d3f879fdb40497af7b",
+      "candidate_row_index": 4,
+      "candidate_sha256": "938e978e0664d6008c54f4da92fe71f6ae5f8c9ebba2882a8a76784ff171c2e1",
+      "candidate_source_file": "lcm1_valuebound100-f2f4ac7de038.jsonl",
+      "candidate_source_file_sha256": "51df16e78c98151c6f886f3e37f90ee5b879928606be981e2fbe74f2cf6a07e5",
+      "counts_toward_h5a": true,
+      "expected_safe_or_unsafe": "safe",
+      "expected_verdict": true,
+      "expected_verdict_source": {
+        "property": "unreach-call.prp",
+        "repository": "sosy-lab/benchmarking/sv-benchmarks",
+        "revision": "1e5856db",
+        "task": "c/nla-digbench/lcm1.yml"
+      },
+      "inclusion_reason": "lowest structurally eligible JSONL row",
+      "query": "lcm1_valuebound100.row4.c2.smt2",
+      "query_sha256": "09ffa964dfca276cbd4792bcf3962d8891aa3e3b36cf2478f2e6b380e6d0826a",
+      "recurrence_family": "lcm",
+      "role": "natural-primary",
+      "structure": {
+        "bad_count": 1,
+        "constraint_count": 0,
+        "input_count": 12,
+        "next_operators": [
+          "input"
+        ],
+        "state_count": 12,
+        "state_refs": [
+          "state19",
+          "state20",
+          "state21",
+          "state22"
+        ],
+        "width": 32
+      },
+      "timeout_seconds": 20
+    },
+    {
+      "benchmark_id": "2024/btor2/2024/sosylab/nla-digbench-scaling/lcm2_unwindbound50.btor2",
+      "benchmark_sha256": "8775da9895644886e7703addec69591f5afbc4bd520346801e1f4337979dc41c",
+      "bit_width": 32,
+      "candidate_entry_sha256": "722d4a6a0e3c189b570db20c306f34965c1bb2e1ea9f5feee1a7b239f0160e0e",
+      "candidate_row_index": 0,
+      "candidate_sha256": "4c0bded5d3ec8e9c2d40f83fc4c81cc06b7bc346d63b1fb89ede0ca0c445cc6f",
+      "candidate_source_file": "lcm2_unwindbound50-77f0c136907a.jsonl",
+      "candidate_source_file_sha256": "8da85466044c53d3806ac70662c4e678607ce0da53dec8949ab2c9be8f8cdab7",
+      "counts_toward_h5a": true,
+      "expected_safe_or_unsafe": "safe",
+      "expected_verdict": true,
+      "expected_verdict_source": {
+        "property": "unreach-call.prp",
+        "repository": "sosy-lab/benchmarking/sv-benchmarks",
+        "revision": "1e5856db",
+        "task": "c/nla-digbench/lcm2.yml"
+      },
+      "inclusion_reason": "lowest structurally eligible JSONL row",
+      "query": "lcm2_unwindbound50.row0.c2.smt2",
+      "query_sha256": "1a33312f7090d7391d35fe960a958428bf6a1c14aee5059239ff72d0882ec434",
+      "recurrence_family": "lcm",
+      "role": "natural-primary",
+      "structure": {
+        "bad_count": 1,
+        "constraint_count": 0,
+        "input_count": 16,
+        "next_operators": [
+          "input"
+        ],
+        "state_count": 12,
+        "state_refs": [
+          "state21",
+          "state23",
+          "state25"
+        ],
+        "width": 32
+      },
+      "timeout_seconds": 20
+    },
+    {
+      "benchmark_id": "2025/wordlevel/bv/2024/sosylab/nla-digbench-scaling/prodbin-ll_unwindbound10.btor2",
+      "benchmark_sha256": "90e3250e379178f0ca7135de996be479a57f0196e6742bebff52cd4fc1f68ef1",
+      "bit_width": 64,
+      "candidate_entry_sha256": "633e0041384e985aa3142fc0e9946058eb00b963b6a509ac4a31290a44244104",
+      "candidate_row_index": 0,
+      "candidate_sha256": "37fa359c25baf9d5daf977a21971ac4ea554b912c9e61ea61427bc964e486ac0",
+      "candidate_source_file": "prodbin-ll_unwindbound10-af1b669300cd.jsonl",
+      "candidate_source_file_sha256": "8dbc10b4805255d480538782ae70351a42ee89612e0e98a2641d74288dc907a1",
+      "counts_toward_h5a": true,
+      "expected_safe_or_unsafe": "safe",
+      "expected_verdict": true,
+      "expected_verdict_source": {
+        "property": "unreach-call.prp",
+        "repository": "sosy-lab/benchmarking/sv-benchmarks",
+        "revision": "1e5856db",
+        "task": "c/nla-digbench/prodbin-ll.yml"
+      },
+      "inclusion_reason": "lowest structurally eligible JSONL row",
+      "query": "prodbin-ll_unwindbound10.row0.c2.smt2",
+      "query_sha256": "f8840393bb1d74d0cfaa5149c6e8f58b7ee8fec5ec2cd67a63e0364cce385575",
+      "recurrence_family": "prodbin",
+      "role": "natural-primary",
+      "structure": {
+        "bad_count": 1,
+        "constraint_count": 0,
+        "input_count": 13,
+        "next_operators": [
+          "input"
+        ],
+        "state_count": 11,
+        "state_refs": [
+          "state21",
+          "state23",
+          "state24"
+        ],
+        "width": 64
+      },
+      "timeout_seconds": 20
+    }
+  ],
+  "query_count": 6,
+  "schema": "pono-algebraic-baseline-c2-corpus-v2",
+  "selection_result_blind": true,
+  "source_manifest": "artifacts/phase1_2_frozen_v2/manifest.json",
+  "source_manifest_sha256": "a4cbe7f9c144cc3cd74c832f0a67ca66bb076642a74f4bb0c9617e071168c006",
+  "uses_v1_kernel_or_results": false
+}

@@ -1,0 +1,20 @@
+{
+  "candidate-cert-check": {
+    "sat": 30
+  },
+  "local-z3-default": {
+    "sat": 30
+  },
+  "local-z3-intblast": {
+    "sat": 30
+  },
+  "pinned-z3-default": {
+    "unavailable": 30
+  },
+  "pinned-z3-intblast": {
+    "unavailable": 30
+  },
+  "pinned-z3-polysat": {
+    "unavailable": 30
+  }
+}

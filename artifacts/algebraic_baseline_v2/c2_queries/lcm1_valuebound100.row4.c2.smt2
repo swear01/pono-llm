@@ -1,0 +1,15 @@
+(set-logic QF_BV)
+; benchmark generated from python API
+(set-info :status unknown)
+(declare-fun input11 () (_ BitVec 32))
+(declare-fun input10 () (_ BitVec 32))
+(declare-fun input12 () (_ BitVec 32))
+(declare-fun input9 () (_ BitVec 32))
+(declare-fun state21 () (_ BitVec 32))
+(declare-fun state20 () (_ BitVec 32))
+(declare-fun state22 () (_ BitVec 32))
+(declare-fun state19 () (_ BitVec 32))
+(assert
+ (let (($x424 (not (= (bvmul input9 input12) (bvmul input10 input11)))))
+(and (= (bvmul state19 state22) (bvmul state20 state21)) true true $x424)))
+(check-sat)

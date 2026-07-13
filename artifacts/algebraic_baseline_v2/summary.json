@@ -1,0 +1,131 @@
+{
+  "cases": [
+    {
+      "benchmark_id": "2024/btor2/2024/sosylab/nla-digbench-scaling/egcd-ll_unwindbound10.btor2",
+      "family": "egcd",
+      "median_sec": {
+        "candidate-cert-check": 0.0013500340282917023,
+        "local-z3-default": 0.012772860936820507,
+        "local-z3-intblast": 0.012778372038155794
+      },
+      "results": {
+        "candidate-cert-check": [
+          "sat"
+        ],
+        "local-z3-default": [
+          "sat"
+        ],
+        "local-z3-intblast": [
+          "sat"
+        ]
+      }
+    },
+    {
+      "benchmark_id": "2024/btor2/2024/sosylab/nla-digbench-scaling/hard-ll_valuebound20.btor2",
+      "family": "hard",
+      "median_sec": {
+        "candidate-cert-check": 0.0012551279505714774,
+        "local-z3-default": 0.013278182013891637,
+        "local-z3-intblast": 0.012763309990987182
+      },
+      "results": {
+        "candidate-cert-check": [
+          "sat"
+        ],
+        "local-z3-default": [
+          "sat"
+        ],
+        "local-z3-intblast": [
+          "sat"
+        ]
+      }
+    },
+    {
+      "benchmark_id": "2024/btor2/2024/sosylab/nla-digbench-scaling/lcm1_unwindbound2.btor2",
+      "family": "lcm",
+      "median_sec": {
+        "candidate-cert-check": 0.0012174999574199319,
+        "local-z3-default": 0.013020520098507404,
+        "local-z3-intblast": 0.01293706998694688
+      },
+      "results": {
+        "candidate-cert-check": [
+          "sat"
+        ],
+        "local-z3-default": [
+          "sat"
+        ],
+        "local-z3-intblast": [
+          "sat"
+        ]
+      }
+    },
+    {
+      "benchmark_id": "2024/btor2/2024/sosylab/nla-digbench-scaling/lcm1_valuebound100.btor2",
+      "family": "lcm",
+      "median_sec": {
+        "candidate-cert-check": 0.0012918530264869332,
+        "local-z3-default": 0.013100226991809905,
+        "local-z3-intblast": 0.012834770022891462
+      },
+      "results": {
+        "candidate-cert-check": [
+          "sat"
+        ],
+        "local-z3-default": [
+          "sat"
+        ],
+        "local-z3-intblast": [
+          "sat"
+        ]
+      }
+    },
+    {
+      "benchmark_id": "2024/btor2/2024/sosylab/nla-digbench-scaling/lcm2_unwindbound50.btor2",
+      "family": "lcm",
+      "median_sec": {
+        "candidate-cert-check": 0.001299981027841568,
+        "local-z3-default": 0.01250328600872308,
+        "local-z3-intblast": 0.012740498990751803
+      },
+      "results": {
+        "candidate-cert-check": [
+          "sat"
+        ],
+        "local-z3-default": [
+          "sat"
+        ],
+        "local-z3-intblast": [
+          "sat"
+        ]
+      }
+    },
+    {
+      "benchmark_id": "2025/wordlevel/bv/2024/sosylab/nla-digbench-scaling/prodbin-ll_unwindbound10.btor2",
+      "family": "prodbin",
+      "median_sec": {
+        "candidate-cert-check": 0.001221021986566484,
+        "local-z3-default": 0.013395376969128847,
+        "local-z3-intblast": 0.012633564998395741
+      },
+      "results": {
+        "candidate-cert-check": [
+          "sat"
+        ],
+        "local-z3-default": [
+          "sat"
+        ],
+        "local-z3-intblast": [
+          "sat"
+        ]
+      }
+    }
+  ],
+  "corpus_manifest_file_sha256": "bd821097952efbdbd74821f4b50f170efdf54f7a5931e5bb2088e8db6b64acc2",
+  "decision": "STOP",
+  "interpretation": "all frozen conjunctions are non-1-inductive; root cause not yet decomposed",
+  "kernel_authorized": false,
+  "schema": "pono-algebraic-baseline-summary-v2",
+  "solver_matrix_file_sha256": "7e24e0c5f6a8295058d7109214db58c83b95ee1fe8088feed636bd4f300e2067",
+  "summary_sha256": "877890dd219ea2e5750d955b38fa5c045dfa32c0b4c0e98160ffbfcf86e1c71d"
+}

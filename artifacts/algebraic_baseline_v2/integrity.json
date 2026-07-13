@@ -1,0 +1,18 @@
+{
+  "files": {
+    "README.md": "e9cbacdee547ce65922190dca4bb35a7a0d45150d754c3476f980c69ed1f84b5",
+    "build.log": "bd821097952efbdbd74821f4b50f170efdf54f7a5931e5bb2088e8db6b64acc2",
+    "c2_queries/egcd-ll_unwindbound10.row1.c2.smt2": "ab97d1fe3c411c4746a9e76e6d17c3d0ec21661c058787f71f42151c54262cbf",
+    "c2_queries/hard-ll_valuebound20.row0.c2.smt2": "5329d3939b2ce8a84d9845d1e0605ef984a868ca786f197043331f6cd4ba5d3f",
+    "c2_queries/lcm1_unwindbound2.row0.c2.smt2": "ef7bbea89a861f65e345e1440d84a186b3f869dcddcdfa8349de0f097d0a070e",
+    "c2_queries/lcm1_valuebound100.row4.c2.smt2": "09ffa964dfca276cbd4792bcf3962d8891aa3e3b36cf2478f2e6b380e6d0826a",
+    "c2_queries/lcm2_unwindbound50.row0.c2.smt2": "1a33312f7090d7391d35fe960a958428bf6a1c14aee5059239ff72d0882ec434",
+    "c2_queries/manifest.json": "bd821097952efbdbd74821f4b50f170efdf54f7a5931e5bb2088e8db6b64acc2",
+    "c2_queries/prodbin-ll_unwindbound10.row0.c2.smt2": "f8840393bb1d74d0cfaa5149c6e8f58b7ee8fec5ec2cd67a63e0364cce385575",
+    "run.log": "375914ce9991232d6d24fbf84680974e121f5e2af1d106c8e7d8c32c04197f2e",
+    "solver_matrix.json": "7e24e0c5f6a8295058d7109214db58c83b95ee1fe8088feed636bd4f300e2067",
+    "summary.json": "0aa53f985f6376377cb439db43a4d959cf1ef59da6aa7fee265554886ce8c09d"
+  },
+  "integrity_sha256": "751c181dfcbcc69842e3b628a7300fefa4663f0797b53e4c6dd32e48d5690d7f",
+  "schema": "pono-algebraic-baseline-integrity-v2"
+}
