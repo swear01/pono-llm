@@ -13,6 +13,9 @@ def phase_model(path,guarded_bad):
  path.write_text('\n'.join(lines)+'\n')
 def x0(): return {'form':'eq','args':[{'form':'ref','ref':'state8'},{'form':'const','const':'0','width':1}]}
 def c0(): return {'form':'eq','args':[{'form':'ref','ref':'state4'},{'form':'const','const':'0','width':1}]}
+def kinduction_model(path):
+ path.write_text('\n'.join(['1 sort bitvec 1','2 zero 1','3 state 1 c','4 state 1 x','5 init 1 3 2','6 init 1 4 2','7 next 1 3 3','8 next 1 4 3','9 bad 4'])+'\n')
+def kx0(): return {'form':'eq','args':[{'form':'ref','ref':'state4'},{'form':'const','const':'0','width':1}]}
 def test_false_initial_candidate_is_classified(tmp_path):
  p=tmp_path/'m.btor2'; model(p,1); r=d.diagnose_case(p,[eq0()],timeout_ms=2000,max_repair_sec=1)
  assert r['classification']=='FALSE_CANDIDATE'
@@ -40,6 +43,15 @@ def test_bounded_repair_finds_guard_structure_after_k_induction_fails(tmp_path):
  assert r['micro_repair']['accepted'] is True
  assert r['micro_repair']['helper_count']==1
  assert r['micro_repair']['proof']=={'c1_result':'unsat','c2_result':'unsat','c3_result':'unsat'}
+
+def test_two_induction_is_classified_before_repair(tmp_path):
+ p=tmp_path/'kinduction.btor2'; kinduction_model(p)
+ r=d.diagnose_case(p,[kx0()],timeout_ms=2000,max_repair_sec=2,repair_pool=[])
+ assert r['conjunction']['c2_result']=='sat'
+ assert r['classification']=='K_INDUCTIVE'
+ assert r['k_induction'][0]['k']==2
+ assert r['k_induction'][0]['success'] is True
+ assert [r['k_induction'][0][name]['result'] for name in ('base','step','property')]==['unsat','unsat','unsat']
 
 def test_bounded_repair_finds_one_existing_helper(tmp_path):
  p=tmp_path/'helper.btor2'; phase_model(p,False)

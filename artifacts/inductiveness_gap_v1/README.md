@@ -2,8 +2,8 @@
 
 All six frozen Gate 4B0-v2 candidates are `FALSE_CANDIDATE`. Every candidate
 already fails C1 at depth 0 and is removed by exact Houdini's initial-state
-phase. Consequently k-induction, guard repair, and helper completion are not
-applicable: no proof structuring can repair a formula that excludes a reachable
+phase. Consequently k-induction, guard repair, and helper completion are implemented
+but not applicable to the official cases: no proof structuring can repair a formula that excludes a reachable
 initial state without changing its semantics.
 
 Every one-step C2 predecessor full cube is reachable within the first bounded

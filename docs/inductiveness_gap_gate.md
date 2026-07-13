@@ -20,9 +20,9 @@ Classification counts are `FALSE_CANDIDATE: 6`. The preregistered threshold of
 at least 4/6 therefore selects **GO_CERTIFIED_PROOF_SET_TRANSPORT**. Proof-graph
 completion and stronger-induction integration are not authorized. Canonical
 evidence is `artifacts/inductiveness_gap_v1/`; summary SHA-256 is
-`a7f7b45d3709e3911dd0f031ef4d21dcf9d435fee13b5bb4452f4bb921f76319`
+`e59e49c81498f0b0822f13283df92ddc5341462f2d4e3206261ae0848a73cbad`
 and recursive integrity SHA-256 is
-`33047ef33c92d367b841975ecc5d103a0f964707d55203d7b9b877361be01732`.
+`6ec82d23d7b45efcddabb7c72d24675947eb7ee4a3b55d9fae50992c19c085c0`.
 
 ## Question and Scope
 
