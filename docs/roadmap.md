@@ -5,17 +5,20 @@
 
 ## Current Decision
 
-The project has completed four empirical gates:
+The project has completed five empirical gates:
 
 1. constraint-injection soundness audit;
 2. matched affine/quadratic formula baselines;
 3. broad HWMCC residual scan and compactness falsification;
-4. paired source/lifted/raw phase-local grammar-routing study.
+4. paired source/lifted/raw phase-local grammar-routing study;
+5. proof-carrying modular algebraic certificate feasibility.
 
 The trust boundary is sound. The current LLM-specific research claim is still
 negative: no solved task or routed solved-set advantage survives the matched
-deterministic baselines. The project is not ready for a coverage-improvement
-paper, and it must not enter paper mode merely because another gate completed.
+deterministic baselines. Gate 4B0 also found no v1-eligible natural primary
+population, so it supplies a sound development kernel but no evaluated H5a
+claim. The project is not ready for a coverage-improvement paper, and it must
+not enter paper mode merely because another gate completed.
 
 ## Gate 0 — Soundness Repair (Complete)
 
@@ -92,17 +95,54 @@ Results:
 the source corpus, phase extractor, route repair, or paid captures from this
 evidence.
 
-## Gate 4 — Proof-Carrying Modular Algebraic Certificates (Active)
+## Gate 4 — Proof-Carrying Modular Algebraic Certificates (Complete; Stop)
 
 The user selected Candidate B. The complete preregistration is
 [`docs/algebraic_certificate_gate.md`](algebraic_certificate_gate.md).
 
-Gate 4B0 first asks whether a small exact `Z/(2^w)Z` polynomial-identity kernel
-can remove a real nonlinear C2 bottleneck. C1 and C3 remain exact original-model
-checks. No LLM capture is allowed until the deterministic kernel succeeds on at
-least three independent natural recurrence families.
+Gate 4B0 asked whether a small exact `Z/(2^w)Z` polynomial-identity kernel could
+remove a real nonlinear C2 bottleneck. C1 and C3 remain exact original-model
+checks. The strict kernel, solver reconnaissance, Pono matrix, rejection suite,
+population selector, and artifact validator were implemented without an LLM.
 
-### Fallback A — Certified transport/metamorphic robustness
+### Completed B — Proof-carrying algebraic certificates
+
+Question: can semantic proposals include a modular polynomial derivation that a
+small trusted kernel verifies without generic BVMul proof search?
+
+Required controls:
+
+- exact `Z/(2^w)Z` semantics and width/extension handling;
+- at least three recurrence families, not only triangular sums;
+- deterministic normalizer baseline;
+- malformed derivations rejected, never repaired silently.
+
+Gate 4B0 used `fib_23`/`fib_30` only as development controls and recorded a
+fixed Z3/PolySAT/Pono reconnaissance matrix. Both controls pass, and the
+20-case rejection suite rejects 20/20 with zero false safe. However, the frozen
+267-task official population yields 39 array exclusions, 221 tasks without a
+v1 nonlinear update SCC, seven tasks whose nonlinear SCCs all exceed the frozen
+eight-branch cap, and therefore **zero v1-eligible natural task**.
+
+H5a is **not run**, H5b is **not authorized**, development H5c passes, and
+primary H5c is not run. The branch cap and v1 language are not widened after
+the result. No LLM call was made.
+
+**Decision:** stop Gate 4B0 and proceed to the separately preregistered
+known-map certified-transport oracle. Do not relabel development controls or
+synthetic models as natural H5a evidence.
+
+### Dormant C — Independently selected local-certificate corpus
+
+Question: is the one observed phase-only task representative in a population
+selected by control-flow structure rather than current proof outcomes?
+
+This is allowed only with a new frozen population and deterministic local
+template oracle. It must not reuse the current three successes as the selection
+criterion. Go only if at least three independent natural phase-only families
+survive.
+
+## Gate 5 — Known-Map Certified Transport Oracle (Next)
 
 Question: can a certified invariant be transported across semantics-preserving
 program/circuit transforms more efficiently and robustly than regenerated?
@@ -115,35 +155,11 @@ Required controls:
 - all transported formulas rechecked on the transformed original BTOR2;
 - deterministic symbolic mapping baseline before LLM mapping.
 
-Go only if transport adds robust success over regeneration on at least three
-transformation families. Otherwise stop.
-
-### Active B — Proof-carrying algebraic certificates
-
-Question: can semantic proposals include a modular polynomial derivation that a
-small trusted kernel verifies without generic BVMul proof search?
-
-Required controls:
-
-- exact `Z/(2^w)Z` semantics and width/extension handling;
-- at least three recurrence families, not only triangular sums;
-- deterministic normalizer baseline;
-- malformed derivations rejected, never repaired silently.
-
-Gate 4B0 uses `fib_23`/`fib_30` only as development controls, records a fixed
-Z3/PolySAT/Pono reconnaissance matrix, and applies a sub-second/3x kill rule.
-The full gate passes only with three held-out natural source families and zero
-false-safe controls. Otherwise stop and run the known-map transport oracle.
-
-### Dormant C — Independently selected local-certificate corpus
-
-Question: is the one observed phase-only task representative in a population
-selected by control-flow structure rather than current proof outcomes?
-
-This is allowed only with a new frozen population and deterministic local
-template oracle. It must not reuse the current three successes as the selection
-criterion. Go only if at least three independent natural phase-only families
-survive.
+The first gate uses only known exact maps. Require at least 90% transported
+certificate acceptance and at least 5x proof-cost improvement over regeneration
+across at least three transformation families before studying deterministic or
+LLM map inference. Otherwise stop transport. Freeze transforms, source models,
+maps, regeneration baselines, hashes, and thresholds before running the oracle.
 
 ## Bounded Nonlinear Work
 
@@ -171,3 +187,6 @@ deterministic certificates already solve them.
 
 Canonical Gate 3 evidence:
 [`artifacts/representation_phase_v1/`](../artifacts/representation_phase_v1/).
+
+Canonical Gate 4B0 evidence:
+[`artifacts/algebraic_certificate_v1/`](../artifacts/algebraic_certificate_v1/).

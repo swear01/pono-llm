@@ -1,0 +1,208 @@
+{
+  "decisions": {
+    "H5a_kernel_value": "not-run",
+    "H5a_reason": "not run: preregistered official corpus contains no v1-eligible task",
+    "H5b_llm_value": "not-authorized",
+    "H5c_development_soundness": true,
+    "H5c_primary_soundness": "not-run-no-primary-population",
+    "gate_4b0": "stop",
+    "next_gate": "known-map-certified-transport-oracle",
+    "paid_llm_capture_performed": false
+  },
+  "development_controls": {
+    "b0_gate_decision_from_controls": "not-permitted",
+    "count": 2,
+    "counts_toward_h5a": 0,
+    "development_controls_only": true,
+    "kernel_medians": {
+      "2024/btor2/2024/hku/arithmetic_circuits/fib_30/fib_30.btor2": {
+        "all_full_certificates_accepted": true,
+        "all_kernel_c2_accepted": true,
+        "median_full_certificate_wall_time_sec": 0.014072105288505554,
+        "median_kernel_c2_wall_time_sec": 0.0011745207011699677
+      },
+      "2025/wordlevel/bv/2024/hkust/arithmetic_circuits/fib_23/fib_23.btor2": {
+        "all_full_certificates_accepted": true,
+        "all_kernel_c2_accepted": true,
+        "median_full_certificate_wall_time_sec": 0.011609520763158798,
+        "median_kernel_c2_wall_time_sec": 0.001175999641418457
+      }
+    },
+    "kernel_speedup_over_best_exact": {
+      "2024/btor2/2024/hku/arithmetic_circuits/fib_30/fib_30.btor2": {
+        "best_exact_arm": "pinned-z3-intblast",
+        "best_exact_median_sec": 0.022635605186223984,
+        "comparison_scope": "exploratory process-wall versus in-process kernel core; development controls only",
+        "kernel_median_sec": 0.0011745207011699677,
+        "speedup": 19.272206240108094
+      },
+      "2025/wordlevel/bv/2024/hkust/arithmetic_circuits/fib_23/fib_23.btor2": {
+        "best_exact_arm": "pinned-z3-intblast",
+        "best_exact_median_sec": 0.028682369738817215,
+        "comparison_scope": "exploratory process-wall versus in-process kernel core; development controls only",
+        "kernel_median_sec": 0.001175999641418457,
+        "speedup": 24.389777622909275
+      }
+    },
+    "pono_original_model_medians": {
+      "2024/btor2/2024/hku/arithmetic_circuits/fib_30/fib_30.btor2": {
+        "pono-ic3ia-certified-basis": {
+          "all_trials_unsat": true,
+          "median_unsat_wall_time_sec": 16.120304454118013,
+          "result_counts": {
+            "unsat": 5
+          }
+        },
+        "pono-ic3ia-plain": {
+          "all_trials_unsat": false,
+          "median_unsat_wall_time_sec": null,
+          "result_counts": {
+            "unknown": 5
+          }
+        }
+      },
+      "2025/wordlevel/bv/2024/hkust/arithmetic_circuits/fib_23/fib_23.btor2": {
+        "pono-ic3ia-certified-basis": {
+          "all_trials_unsat": true,
+          "median_unsat_wall_time_sec": 9.945589888840914,
+          "result_counts": {
+            "unsat": 5
+          }
+        },
+        "pono-ic3ia-plain": {
+          "all_trials_unsat": false,
+          "median_unsat_wall_time_sec": null,
+          "result_counts": {
+            "unknown": 5
+          }
+        }
+      }
+    },
+    "solver_medians": {
+      "2024/btor2/2024/hku/arithmetic_circuits/fib_30/fib_30.btor2": {
+        "local-z3-cli-default": {
+          "all_trials_unsat": false,
+          "median_unsat_wall_time_sec": null,
+          "result_counts": {
+            "unknown": 5
+          }
+        },
+        "local-z3-intblast": {
+          "all_trials_unsat": true,
+          "median_unsat_wall_time_sec": 0.04781694337725639,
+          "result_counts": {
+            "unsat": 5
+          }
+        },
+        "pinned-z3-default": {
+          "all_trials_unsat": false,
+          "median_unsat_wall_time_sec": null,
+          "result_counts": {
+            "unknown": 5
+          }
+        },
+        "pinned-z3-intblast": {
+          "all_trials_unsat": true,
+          "median_unsat_wall_time_sec": 0.022635605186223984,
+          "result_counts": {
+            "unsat": 5
+          }
+        },
+        "pinned-z3-polysat": {
+          "all_trials_unsat": false,
+          "median_unsat_wall_time_sec": null,
+          "result_counts": {
+            "unknown": 5
+          }
+        },
+        "python-z3-default": {
+          "all_trials_unsat": false,
+          "median_unsat_wall_time_sec": null,
+          "result_counts": {
+            "unknown": 5
+          }
+        }
+      },
+      "2025/wordlevel/bv/2024/hkust/arithmetic_circuits/fib_23/fib_23.btor2": {
+        "local-z3-cli-default": {
+          "all_trials_unsat": false,
+          "median_unsat_wall_time_sec": null,
+          "result_counts": {
+            "unknown": 5
+          }
+        },
+        "local-z3-intblast": {
+          "all_trials_unsat": true,
+          "median_unsat_wall_time_sec": 0.06379291042685509,
+          "result_counts": {
+            "unsat": 5
+          }
+        },
+        "pinned-z3-default": {
+          "all_trials_unsat": false,
+          "median_unsat_wall_time_sec": null,
+          "result_counts": {
+            "unknown": 5
+          }
+        },
+        "pinned-z3-intblast": {
+          "all_trials_unsat": true,
+          "median_unsat_wall_time_sec": 0.028682369738817215,
+          "result_counts": {
+            "unsat": 5
+          }
+        },
+        "pinned-z3-polysat": {
+          "all_trials_unsat": false,
+          "median_unsat_wall_time_sec": null,
+          "result_counts": {
+            "unknown": 5
+          }
+        },
+        "python-z3-default": {
+          "all_trials_unsat": false,
+          "median_unsat_wall_time_sec": null,
+          "result_counts": {
+            "unknown": 5
+          }
+        }
+      }
+    }
+  },
+  "negative_suite": {
+    "accepted_count": 0,
+    "all_expectations_met": true,
+    "case_count": 20,
+    "rejected_count": 20
+  },
+  "population": {
+    "eligible_after_dedup_count": 0,
+    "exclusion_counts": {
+      "array-theory": 39,
+      "no-v1-nonlinear-update": 221,
+      "nonlinear-scc-over-branch-cap": 7
+    },
+    "population_sufficient": false,
+    "safe_baseline_hard_available_count": 0,
+    "selection_status": "population-insufficient-for-h5a",
+    "structural_diagnostics": {
+      "nonlinear-scc": 9,
+      "nonlinear-scc-over-branch-cap": 9,
+      "state-nonlinear-next": 9,
+      "state-supported-next": 1045,
+      "state-unsupported-next": 67
+    },
+    "unsafe_available_count": 0
+  },
+  "schema": "pono-modular-algebraic-gate-summary-v1",
+  "source_file_sha256": {
+    "c2_queries/manifest.json": "f14696ab9f730bf749a40cec6687af5a2861078a98ca01fceaf6926eaf9f2c70",
+    "development_controls/manifest.json": "47b541ad63fdbfd0ad21f5a4b509aa0ef3757c8010bdff6bde2017971e873f42",
+    "kernel_matrix.json": "c8faf27b1ddd82fc920cc3cfc86aa3e24880aed68449d7f9ed4eb604c945620b",
+    "negative_suite/report.json": "4064b301343c7400e7ea015ad03ed3676b15b4d2104b22a46fef9f4c5a5e06ac",
+    "pono_matrix/matrix.json": "a005cd1d73c27494ac837b58c8d16c24403213f3926be5f0456fd0e564a0040f",
+    "population.json": "d4920ec6ffe1f5782ad2a26f430ec3cff63c10c446aa6cbe77d17d740cf85747",
+    "solver_matrix.json": "a3b18a81aa40e2eba826ff4fb0c32902be194eba0c6f79c2ffab3782c01dd560"
+  },
+  "summary_sha256": "b0eb02c55af94cab2e232f920446edd4d98462368ee50be5183fcbeef8820ef5"
+}

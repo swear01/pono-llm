@@ -1,0 +1,9 @@
+{
+  "eligible_after_dedup_count": 0,
+  "safe_baseline_hard_available_count": 0,
+  "selected_safe_count": 0,
+  "selected_safe_structural_classes": [],
+  "selected_unsafe_count": 0,
+  "selection_status": "population-insufficient-for-h5a",
+  "unsafe_available_count": 0
+}

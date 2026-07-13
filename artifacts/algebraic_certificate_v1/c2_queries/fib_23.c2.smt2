@@ -1,0 +1,18 @@
+(set-logic QF_BV)
+; benchmark generated from python API
+(set-info :status unknown)
+(declare-fun state10 () (_ BitVec 19))
+(declare-fun input3 () (_ BitVec 1))
+(declare-fun state7 () (_ BitVec 19))
+(declare-fun state13 () (_ BitVec 19))
+(assert
+ (let ((?x10 (bvadd (_ bv0 19) (_ bv524138 19))))
+(let (($x92 (= (_ bv0 19) (bvadd ?x10 (bvmul (_ bv1 19) (ite (= (_ bv1 1) input3) (_ bv150 19) state10))))))
+(let (($x21 (= (_ bv1 1) (ite (bvult state7 state10) (_ bv1 1) (_ bv0 1)))))
+(let (($x20 (= (_ bv1 1) input3)))
+(let ((?x25 (ite $x20 (_ bv0 19) (ite $x21 (bvadd state7 ((_ zero_extend 18) (_ bv1 1))) state7))))
+(let ((?x78 (bvmul (_ bv2 19) (ite $x20 (_ bv0 19) (ite $x21 (bvadd state13 state7) state13)))))
+(let ((?x104 (bvadd (bvadd (bvadd (_ bv0 19) ?x78) (bvmul (_ bv1 19) ?x25)) (bvmul (bvmul (_ bv524287 19) ?x25) ?x25))))
+(let ((?x8 (bvadd (bvadd (bvadd (_ bv0 19) (bvmul (_ bv2 19) state13)) (bvmul (_ bv1 19) state7)) (bvmul (bvmul (_ bv524287 19) state7) state7))))
+(and (and (= (_ bv0 19) ?x8) (= (_ bv0 19) (bvadd ?x10 (bvmul (_ bv1 19) state10)))) true true (not (and (= (_ bv0 19) ?x104) $x92))))))))))))
+(check-sat)

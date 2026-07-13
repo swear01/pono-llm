@@ -1,0 +1,53 @@
+{
+  "benchmark_content_sha256": "f2de0faa9675c6d842c7d380020aefa8519a4683250fe60349be10f0911c3b28",
+  "benchmark_id": "negative/missing-next.btor2",
+  "branches": [
+    {
+      "guard_identity": "g-0000000000000000",
+      "id": "b-0000000000000000",
+      "multipliers": [
+        [
+          [
+            {
+              "coefficient": "1",
+              "powers": {}
+            }
+          ]
+        ]
+      ],
+      "next_state_substitution": {
+        "state5": [
+          {
+            "coefficient": "1",
+            "powers": {
+              "state5": 1
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "candidate_sha256": "ad94d418b2b8c318d5e8b7c43093cc28cc75224ddca516c71a145186637d8adb",
+  "invariants": [
+    {
+      "id": "P0",
+      "terms": [
+        {
+          "coefficient": "1",
+          "powers": {
+            "state5": 1
+          }
+        },
+        {
+          "coefficient": "0",
+          "powers": {}
+        }
+      ]
+    }
+  ],
+  "schema": "pono-modular-algebraic-certificate-v1",
+  "variables": [
+    "state5"
+  ],
+  "width": 8
+}

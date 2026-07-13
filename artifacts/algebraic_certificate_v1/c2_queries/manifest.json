@@ -1,0 +1,42 @@
+{
+  "manifest_sha256": "99a65c04bc4581d445f03417751d7d43201bb53b77287ca583d5ed052bd3aaf3",
+  "queries": [
+    {
+      "basis_size": 2,
+      "benchmark_content_sha256": "a078bbffe6dc000ce0a24a4d11c45efade0c613ca55ca40db83dbb7b013338d6",
+      "benchmark_id": "2025/wordlevel/bv/2024/hkust/arithmetic_circuits/fib_23/fib_23.btor2",
+      "branch_count": 3,
+      "certificate_sha256": "1369727537d48a827c28a5b36c2dfe72668ebdd3b2a563188b462e17770148a3",
+      "counts_toward_h5a": false,
+      "input_count": 3,
+      "invariant_basis_sha256": "4b3780ea7093eaea7f63b0d98649e7e7240450e70f3918f7e4276c4add316f4c",
+      "maximum_basis_degree": 2,
+      "query": "fib_23.c2.smt2",
+      "query_sha256": "f80543cd653dabfbb64bd75d5c8b8cd3f4cb5bdc83f72192a7d1a833cca07df6",
+      "role": "development-control",
+      "state_count": 3,
+      "variable_count": 3,
+      "width": 19
+    },
+    {
+      "basis_size": 2,
+      "benchmark_content_sha256": "1bb400e569c8c3147d38245dd81458261c4cc0aac565286e731dabf78fdf31d0",
+      "benchmark_id": "2024/btor2/2024/hku/arithmetic_circuits/fib_30/fib_30.btor2",
+      "branch_count": 3,
+      "certificate_sha256": "9af2c1c685ac4c1756b4c9e9e6dda36853b3b81083b51c056c6372db5d7bff08",
+      "counts_toward_h5a": false,
+      "input_count": 3,
+      "invariant_basis_sha256": "c5e9ba5c26eb84aba8a8e2fc5d0aa2f4f59eb9f0cd6324bea120108a30a4aafa",
+      "maximum_basis_degree": 2,
+      "query": "fib_30.c2.smt2",
+      "query_sha256": "2178e6721bfa38356b2c0eb273b438e622fa2ee48fda21f2b97ecc23c5b3eba3",
+      "role": "development-control",
+      "state_count": 3,
+      "variable_count": 3,
+      "width": 19
+    }
+  ],
+  "query_count": 2,
+  "schema": "pono-modular-algebraic-c2-corpus-v1",
+  "source_manifest_sha256": "47b541ad63fdbfd0ad21f5a4b509aa0ef3757c8010bdff6bde2017971e873f42"
+}

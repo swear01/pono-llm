@@ -1,0 +1,49 @@
+{
+  "assembly_corrections": [
+    {
+      "action": "Removed only summary.json, integrity.json, and run_summary.log; preserved every measured matrix, certificate, query, population result, and negative-suite result byte-for-byte; regenerated summary/integrity without an in-directory output stream.",
+      "reason": "The first summary invocation piped stdout through tee inside the artifact directory; integrity hashed run_summary.log before tee finished writing.",
+      "superseded_integrity_sha256": "9752d7a6937d318802380c78f5b458d6273c9e219de0866810a11daaa5263238",
+      "timestamp": "2026-07-13T17:11:03.116128+08:00"
+    }
+  ],
+  "branch": "soundness-audit",
+  "commands": [
+    "python3 scripts/build_algebraic_controls.py /home/swear01/hwmcc_benchmarks artifacts/algebraic_certificate_v1/development_controls --timeout-ms 20000",
+    "python3 scripts/build_algebraic_query_corpus.py /home/swear01/hwmcc_benchmarks artifacts/algebraic_certificate_v1/development_controls artifacts/algebraic_certificate_v1/c2_queries --timeout-ms 20000",
+    "python3 scripts/build_algebraic_population.py artifacts/representation_phase_v1/population.json artifacts/representation_phase_v1/baseline_screen.csv /tmp/svcomp25-to-btor2 artifacts/algebraic_certificate_v1/population.json --safe-count 16 --unsafe-count 4 --branch-cap 8",
+    "python3 scripts/run_algebraic_gate.py /home/swear01/hwmcc_benchmarks artifacts/algebraic_certificate_v1/development_controls artifacts/algebraic_certificate_v1/kernel_matrix.json --trials 5 --timeout-ms 20000 --branch-cap 8",
+    "python3 scripts/run_algebraic_negative_suite.py /home/swear01/hwmcc_benchmarks artifacts/algebraic_certificate_v1/development_controls artifacts/algebraic_certificate_v1/negative_suite --timeout-ms 20000",
+    "python3 scripts/run_algebraic_baselines.py artifacts/algebraic_certificate_v1/c2_queries artifacts/algebraic_certificate_v1/solver_matrix.json --benchmark-root /home/swear01/hwmcc_benchmarks --local-z3 /home/swear01/.local/bin/z3 --polysat-z3 /tmp/z3-poly/build/z3 --polysat-source /tmp/z3-poly --trials 5 --timeout-sec 20",
+    "python3 scripts/run_algebraic_pono_baseline.py /home/swear01/hwmcc_benchmarks artifacts/algebraic_certificate_v1/development_controls /home/swear01/pono-llm/build/pono artifacts/algebraic_certificate_v1/pono_matrix --trials 5 --timeout-sec 70",
+    "python3 scripts/summarize_algebraic_gate.py artifacts/algebraic_certificate_v1"
+  ],
+  "execution_policy": "solver, kernel, and Pono matrices executed sequentially; no concurrent benchmark load",
+  "gate3_freeze_tag_commit": "d7701be0423c8d313104955278a00ca1e5461862",
+  "generated_at": "2026-07-13T17:09:30.924791+08:00",
+  "host": {
+    "machine": "x86_64",
+    "platform": "Linux-6.8.0-60-generic-x86_64-with-glibc2.35",
+    "processor": "x86_64",
+    "python": "3.10.12"
+  },
+  "implementation_commit": "9e7e677507ad2baf9f357bc4ace52f80a457908d",
+  "inputs": {
+    "benchmark_root": "/home/swear01/hwmcc_benchmarks",
+    "gate3_baseline_screen": {
+      "path": "artifacts/representation_phase_v1/baseline_screen.csv",
+      "sha256": "db39765c5ebd22a11850278b68cf6c2972f867683c0ce4cacf1d0975e5b3c1de"
+    },
+    "gate3_population": {
+      "path": "artifacts/representation_phase_v1/population.json",
+      "sha256": "01ec7bf8f0ba1c575b20b835e9431e251ace0686dcd5c388ddeee83885bc4ffe"
+    },
+    "translation_checkout": {
+      "commit": "d9838013ea48568a21a106a7fc94f11c13ac5ad6",
+      "path": "/tmp/svcomp25-to-btor2"
+    }
+  },
+  "paid_llm_calls": 0,
+  "preregistration_commit": "cc7df688b6eb13ef33bab0ff9cdc3badc6b39527",
+  "schema": "pono-modular-algebraic-provenance-v1"
+}

@@ -2,14 +2,15 @@
 
 **Updated:** 2026-07-13
 **Branch:** `soundness-audit`
-**Status:** Gate 4B0 proof-carrying modular algebraic feasibility active
+**Status:** Gate 4B0 complete and stopped; next gate is the known-map
+certified-transport oracle
 
 ## Current Research Position
 
 The project has a sound trust boundary but still has no defensible
 LLM-specific solve or search-efficiency claim.
 
-Completed evidence now has three layers:
+Completed evidence now has four layers:
 
 1. **Soundness repair:** LLM/static formulas are untrusted IC3IA abstraction
    predicates, never BTOR2 assumptions. Direct C1/C2/C3 certificates and
@@ -21,6 +22,10 @@ Completed evidence now has three layers:
    routes were frozen and replayed on an independently selected official
    SV-COMP 2025 paired pilot. Phase conditioning, source representation, and
    LLM routing all miss their preregistered utility thresholds.
+4. **Proof-calculus feasibility gate:** a strict modular-polynomial certificate
+   kernel is sound on development controls, but the frozen official corpus has
+   zero task inside its preregistered v1 language. H5a is not run and no LLM
+   certificate capture is authorized.
 
 This is not a coverage-improvement paper result, and the project must not enter
 paper mode by weakening the baseline or moving a failed threshold.
@@ -169,37 +174,111 @@ Close this gate. Do **not**:
 The one phase-only task and three structurally routed tasks are valid bounded
 case studies, not enough to launch a general phase-local algorithm project.
 
-## Active Gate 4B0
+## Completed Gate 4B0 — Modular Algebraic Certificates
 
-The selected independent hypothesis is **proof-carrying modular algebraic
-certificates**. The frozen protocol is
-[`docs/algebraic_certificate_gate.md`](algebraic_certificate_gate.md).
+The frozen protocol and full interpretation are in
+[`docs/algebraic_certificate_gate.md`](algebraic_certificate_gate.md). The
+canonical artifact is:
 
-Gate 4B0 changes the C2 proof calculus instead of changing who proposes an
-invariant. A small kernel checks branch-complete sparse-polynomial identities
-over `Z/(2^w)Z`; C1 and C3 remain exact checks on the original BTOR2. The first
-stage is deterministic and makes no LLM calls.
+```text
+artifacts/algebraic_certificate_v1/summary.json
+```
 
-Current execution order:
+Implementation commit:
+`9e7e677507ad2baf9f357bc4ace52f80a457908d`. Preregistration commit:
+`cc7df688b6eb13ef33bab0ff9cdc3badc6b39527`.
 
-1. record current Z3/Pono solver versions, parameters, query hashes, and fixed
-   nonlinear C2 outcomes;
-2. TDD the equal-width `add/sub/mul` sparse-polynomial kernel and strict
-   certificate schema;
-3. compare the same obligations and apply the 3x/sub-second B0 kill criterion;
-4. only if B0 survives, freeze a source-family-deduplicated natural population
-   and bounded deterministic certificate synthesizer;
-5. authorize LLM certificate capture only after H5a passes on at least three
-   independent natural families.
+### Implemented trusted boundary
 
-Implementation checkpoint: the strict v1 kernel/checker, development-control
-and immutable-query builders, pinned solver runner with a mandatory PolySAT
-activation probe, separate plain/seeded Pono matrix, structural population
-selector, rejection suite, timing harness, and recursive summary validator are
-implemented under `scripts/`. The official five-trial artifact run must start
-from the implementation commit and a fresh artifact directory.
+- strict `pono-modular-algebraic-certificate-v1` schema;
+- sparse-polynomial normalization over exact `Z/(2^w)Z` semantics;
+- complete checker-derived ITE branches, guards, and next-state substitutions;
+- exact multiplier-identity C2 with no division, cancellation, or solver
+  fallback;
+- exact original-BTOR2 C1 and C3, including every BAD property;
+- immutable query/certificate/model/tool hashes;
+- six-arm exact Z3 reconnaissance with a pinned, independently activated
+  PolySAT paper build;
+- separate plain/seeded Pono-IC3IA original-model matrix;
+- structural natural-population selector, expected-stage rejection suite, and
+  recursive artifact validator.
 
-`fib_23` and `fib_30` are development controls, not primary successes.
-Certified transport becomes the next oracle gate only if Gate 4B0 fails.
+### Official outcome
+
+The population selector scanned all 267 frozen official translated tasks:
+
+| Outcome | Count |
+|---|---:|
+| array-theory exclusion | 39 |
+| no v1-supported nonlinear update SCC | 221 |
+| nonlinear SCC over the frozen eight-branch cap | 7 |
+| v1-eligible natural primary task | **0** |
+
+The final seven tasks contain nine nonlinear SCCs and all nine exceed the cap.
+The gate therefore does not have the 12--20 safe tasks, 4--6 unsafe controls,
+or three natural recurrence families required to run H5a. The official
+decision is:
+
+| Hypothesis | Decision |
+|---|---|
+| H5a kernel value | **not run — no v1-eligible natural population** |
+| H5b LLM value | **not authorized** |
+| H5c development soundness | **pass** |
+| H5c primary soundness | **not run — no primary population** |
+| Gate 4B0 | **stop** |
+
+No paid LLM call was made. The frozen branch cap and language were not changed
+after observing the zero population.
+
+### Development controls and solver reconnaissance
+
+Five sequential trials each show that the kernel accepts `fib_23` and `fib_30`
+and that complete C1+kernel-C2+C3 certificates take median 0.0116s and 0.0141s.
+Pinned Z3 integer blasting proves the exact C2 obligations in median 0.0287s
+and 0.0226s; local integer blasting takes 0.0638s and 0.0478s. Plain IC3IA is
+UNKNOWN 5/5 on each control, while certified-basis IC3IA proves UNSAT 5/5 in
+median 9.95s and 16.12s.
+
+These are development diagnostics only. Kernel timing is in-process while Z3
+timing includes process startup, and neither task counts toward H5a. Default
+Python/local/pinned Z3 and the explicitly activated pinned PolySAT arm return
+UNKNOWN in all ten 20-second control trials.
+
+Both development certificates pass. The negative suite rejects all 20/20
+malformed, provenance-tampered, unsupported, false-initial, and unsafe cases at
+their preregistered expected stages, with zero accepted false safe.
+
+### Reproduction and integrity
+
+The exact sequential commands, environment, pinned revisions, executable
+hashes, and one documented summary-stream assembly correction are recorded in
+`artifacts/algebraic_certificate_v1/provenance.json`. The artifact's final
+summary and recursive integrity hashes are:
+
+```text
+summary:   b0eb02c55af94cab2e232f920446edd4d98462368ee50be5183fcbeef8820ef5
+integrity: b0099cf1ea68d2ab92820e914fedf8f97a0a3b01657ac74a5f0f825db7d38056
+```
+
+## Next Gate — Known-Map Certified Transport Oracle
+
+Gate 4B0 is not to be widened post-hoc. The next independent research step is
+to preregister a deterministic transport oracle before implementation:
+
+1. choose at least three exact semantics-preserving transform families;
+2. generate or record the known exact state/property map;
+3. transport already certified invariants mechanically;
+4. recheck every transported invariant with C1/C2/C3 on the transformed
+   original BTOR2;
+5. compare acceptance and total proof cost against deterministic regeneration;
+6. investigate learned/LLM mapping only if known-map transport accepts at least
+   90% and improves proof cost by at least 5x across three transform families.
+
+Variable renaming, invertible affine modular state transforms, and a separately
+reported control/phase transformation are the initial candidate families.
+Synthetic/transformed and natural coverage must remain separate. No inferred
+mapping, paid API capture, manual repair, or paper claim is authorized before
+the new protocol and population are frozen.
+
 Generic BVMul CEGAR, Gate 3 route repair, prompt tuning, broad HWMCC mining,
-and paper mode remain stopped.
+post-hoc Gate 4B0 language expansion, and paper mode remain stopped.

@@ -1,6 +1,6 @@
 # Documentation Index
 
-**Last updated:** 2026-07-13 (modular algebraic certificate Gate 4B0 active)
+**Last updated:** 2026-07-13 (Gate 4B0 complete; known-map transport next)
 
 Start here:
 
@@ -16,20 +16,21 @@ Start here:
 | File | Description |
 |------|-------------|
 | [`overview.md`](overview.md) | Current project scope, sound predicate-injection architecture, latest results |
-| [`plan.md`](plan.md) | Completed Gate 0--3 evidence, exact paired-gate result, reproduction, and stop/go decision |
-| [`roadmap.md`](roadmap.md) | Closed soundness/formula/dataset/representation gates and the next hypothesis decision |
+| [`plan.md`](plan.md) | Completed Gate 0--4 evidence, canonical artifacts, stop/go decisions, and next transport gate |
+| [`roadmap.md`](roadmap.md) | Closed soundness/formula/dataset/representation/algebraic gates and the next hypothesis decision |
 | [`notes.md`](notes.md) | Tacit knowledge, soundness gotchas, timing caveats, next-step decisions |
 | [`structure.md`](structure.md) | Directory map and module boundaries |
 | [`representation_phase_gate.md`](representation_phase_gate.md) | Completed source/lifted/raw phase-local grammar-routing contract and H1--H4 decisions |
-| [`algebraic_certificate_gate.md`](algebraic_certificate_gate.md) | Frozen Gate 4B0 trust boundary, solver reconnaissance, population contract, H5a/H5b/H5c thresholds, and kill criteria |
+| [`algebraic_certificate_gate.md`](algebraic_certificate_gate.md) | Frozen Gate 4B0 contract plus official zero-eligible-population, solver, soundness, and stop decisions |
 
 ## Supporting references
 
 | File | Description |
 |------|-------------|
 | [`plans/openrouter_provider_policy.md`](plans/openrouter_provider_policy.md) | OpenRouter provider filtering policy |
-| [`../artifacts/README.md`](../artifacts/README.md) | Canonical Phase 1+2, Gate 2, and representation/phase evidence |
+| [`../artifacts/README.md`](../artifacts/README.md) | Canonical Phase 1+2, Gate 2, representation/phase, and algebraic-certificate evidence |
 | [`../artifacts/representation_phase_v1/README.md`](../artifacts/representation_phase_v1/README.md) | Paired population, prompts, capture, matrices, certificates, and recursive integrity manifest |
+| [`../artifacts/algebraic_certificate_v1/README.md`](../artifacts/algebraic_certificate_v1/README.md) | Gate 4B0 solver reconnaissance, strict certificates, population decision, negative suite, and recursive integrity manifest |
 
 ## Archived in this update
 

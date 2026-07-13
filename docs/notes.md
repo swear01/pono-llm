@@ -4,9 +4,16 @@
 
 ## Modular algebraic certificate Gate 4B0 (2026-07-13)
 
-- Gate 4B0 remains deterministic until H5a passes. Do not call OpenRouter,
-  add certificate repair, widen the grammar, or change the branch cap while
-  the frozen natural-population gate is unresolved.
+- Gate 4B0 is complete and stopped. The frozen 267-task official population
+  has zero v1-eligible natural task: 39 arrays, 221 without a supported
+  nonlinear update SCC, and seven whose nine nonlinear SCCs all exceed the
+  frozen eight-branch cap. H5a is `not-run`, H5b is `not-authorized`,
+  development H5c passes, and primary H5c is not run. No OpenRouter/API call
+  was made.
+- Do not reopen Gate 4B0 by changing the branch cap, adding operators or mixed
+  widths, selecting the seven near misses, or substituting synthetic tasks.
+  Any wider algebraic language would require a new independent preregistration
+  and cannot retroactively change this result.
 - C2 acceptance is exact sparse-polynomial coefficient equality modulo `2^w`:
   `P_i(T_b) = sum_j Q_ijb * P_j`. Never divide, cancel a factor, or assume a
   field because `Z/(2^w)Z` has zero divisors.
@@ -25,6 +32,23 @@
   never rank its safety wall time as a generic C2 query.
 - `fib_23` and `fib_30` are development controls only. No speedup or proof on
   them counts toward H5a's three-independent-natural-family threshold.
+- On those controls, pinned integer blasting proves exact C2 in median
+  0.0287s/0.0226s, while the in-process kernel core takes
+  0.00118s/0.00117s. This is not a like-for-like speedup because process startup
+  is included only for Z3. Default Z3 and the explicitly activated pinned
+  PolySAT arm return UNKNOWN in all ten 20-second trials.
+- The 20-case rejection suite rejects 20/20 at the expected stage. In
+  particular, wrong multipliers fail C2, false-initial reaches C1 SAT, unsafe
+  reaches C3 SAT, and provenance/branch/substitution tampering fails closed.
+- The canonical bundle is `artifacts/algebraic_certificate_v1/`; its final
+  recursive integrity SHA-256 is
+  `b0099cf1ea68d2ab92820e914fedf8f97a0a3b01657ac74a5f0f825db7d38056`.
+  Do not edit files inside that directory without a versioned full integrity
+  regeneration.
+- The next gate is a known-map certified-transport oracle. It starts with exact
+  deterministic maps and original-target C1/C2/C3 rechecking; learned or LLM
+  mapping remains blocked until known-map transport demonstrates >=90%
+  acceptance and >=5x proof-cost improvement across three transform families.
 
 ## Representation/phase/grammar gate (2026-07-12)
 

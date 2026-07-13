@@ -1,6 +1,6 @@
-# Phase 1+2, Gate 2, and Representation/Phase Research Artifacts
+# Phase 1+2, Gate 2, Representation/Phase, and Algebraic Research Artifacts
 
-**Canonical bundle finalized:** 2026-07-12
+**Canonical bundles finalized through:** 2026-07-13
 
 **Phase 1+2 experiment date:** 2026-07-11
 **Benchmark root:** HWMCC (paths are stored as dataset-relative benchmark IDs)
@@ -150,3 +150,42 @@ artifact directory:
 python3 scripts/summarize_representation_phase.py \
   artifacts/representation_phase_v1
 ```
+
+## Modular algebraic certificate Gate 4B0 (complete; stopped)
+
+[`algebraic_certificate_v1/summary.json`](algebraic_certificate_v1/summary.json)
+is the machine-readable entry point. The canonical bundle contains:
+
+- strict development certificates and exact C2 query hashes for `fib_23` and
+  `fib_30`;
+- six explicit Z3 arms, including pinned integer blasting and a pinned PolySAT
+  paper build with an independent activation probe;
+- separate plain and certified-basis original-model Pono/Bitwuzla trials;
+- a structural scan of all 267 frozen official translated tasks;
+- a 20-case expected-stage malformed/unsafe rejection suite;
+- complete provenance, summary, and recursive SHA-256 integrity manifests.
+
+The gate stops because the preregistered v1 population contract yields zero
+natural primary task: 39 array exclusions, 221 tasks without a supported
+nonlinear update SCC, and seven tasks whose nonlinear SCCs all exceed the
+frozen eight-branch cap. H5a is therefore **not run**, H5b is **not
+authorized**, development H5c passes, and primary H5c is not run. No LLM/API
+call was made.
+
+Both development controls pass C1/kernel-C2/C3, and all 20 negative cases are
+rejected at the expected stage with zero false safe. Development-control timing
+does not count toward H5a and does not substitute for the absent natural
+population. See
+[`algebraic_certificate_v1/README.md`](algebraic_certificate_v1/README.md) and
+[`../docs/algebraic_certificate_gate.md`](../docs/algebraic_certificate_gate.md).
+
+The final recursive integrity-manifest SHA-256 is:
+
+```text
+b0099cf1ea68d2ab92820e914fedf8f97a0a3b01657ac74a5f0f825db7d38056
+```
+
+Do not regenerate the canonical directory in place. Reproduction commands,
+exact commits, executable hashes, and the documented summary-stream assembly
+correction are frozen in
+[`algebraic_certificate_v1/provenance.json`](algebraic_certificate_v1/provenance.json).

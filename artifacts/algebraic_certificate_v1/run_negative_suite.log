@@ -1,0 +1,217 @@
+{
+  "accepted_cases": [],
+  "accepted_count": 0,
+  "all_expectations_met": true,
+  "all_rejected": true,
+  "case_count": 20,
+  "cases": [
+    {
+      "accepted": false,
+      "checks": [
+        {
+          "name": "C1 Init=>H",
+          "result": "unsat"
+        },
+        {
+          "name": "C2 modular identities",
+          "result": "rejected"
+        },
+        {
+          "name": "C3 H=>notBAD",
+          "result": "unsat"
+        }
+      ],
+      "expectation_met": true,
+      "expected_rejection": "C2-rejected",
+      "identity_errors": [
+        "b-9cc97ca459ce762f: P0 branch identity mismatch"
+      ],
+      "name": "wrong-multiplier",
+      "rejection_kind": "C2-rejected"
+    },
+    {
+      "accepted": false,
+      "detail": "branch set mismatch: missing=['b-e4a3dd46d24b98d4'], extra=[]",
+      "expectation_met": true,
+      "expected_rejection": "schema-or-model-error",
+      "name": "missing-branch",
+      "rejection_kind": "schema-or-model-error"
+    },
+    {
+      "accepted": false,
+      "detail": "branch set mismatch: missing=[], extra=['b-ffffffffffffffff']",
+      "expectation_met": true,
+      "expected_rejection": "schema-or-model-error",
+      "name": "extra-branch",
+      "rejection_kind": "schema-or-model-error"
+    },
+    {
+      "accepted": false,
+      "detail": "state7 has width 19, certificate declares 20",
+      "expectation_met": true,
+      "expected_rejection": "schema-or-model-error",
+      "name": "wrong-width",
+      "rejection_kind": "schema-or-model-error"
+    },
+    {
+      "accepted": false,
+      "detail": "benchmark content SHA-256 mismatch: 0000000000000000000000000000000000000000000000000000000000000000 != a078bbffe6dc000ce0a24a4d11c45efade0c613ca55ca40db83dbb7b013338d6",
+      "expectation_met": true,
+      "expected_rejection": "schema-or-model-error",
+      "name": "benchmark-hash-mismatch",
+      "rejection_kind": "schema-or-model-error"
+    },
+    {
+      "accepted": false,
+      "detail": "candidate SHA-256 mismatch: 0000000000000000000000000000000000000000000000000000000000000000 != 4b3780ea7093eaea7f63b0d98649e7e7240450e70f3918f7e4276c4add316f4c",
+      "expectation_met": true,
+      "expected_rejection": "schema-or-model-error",
+      "name": "candidate-hash-mismatch",
+      "rejection_kind": "schema-or-model-error"
+    },
+    {
+      "accepted": false,
+      "detail": "certificate has unknown fields ['repair'] or missing fields []",
+      "expectation_met": true,
+      "expected_rejection": "schema-or-model-error",
+      "name": "unknown-schema-field",
+      "rejection_kind": "schema-or-model-error"
+    },
+    {
+      "accepted": false,
+      "detail": "invariant P0 is a zero polynomial",
+      "expectation_met": true,
+      "expected_rejection": "schema-or-model-error",
+      "name": "zero-invariant",
+      "rejection_kind": "schema-or-model-error"
+    },
+    {
+      "accepted": false,
+      "detail": "branch b-9cc97ca459ce762f multiplier matrix must have 2 rows",
+      "expectation_met": true,
+      "expected_rejection": "schema-or-model-error",
+      "name": "wrong-matrix-dimension",
+      "rejection_kind": "schema-or-model-error"
+    },
+    {
+      "accepted": false,
+      "detail": "branch 0 has invalid checker-derived id",
+      "expectation_met": true,
+      "expected_rejection": "schema-or-model-error",
+      "name": "invalid-branch-id",
+      "rejection_kind": "schema-or-model-error"
+    },
+    {
+      "accepted": false,
+      "detail": "duplicate branch id b-9cc97ca459ce762f",
+      "expectation_met": true,
+      "expected_rejection": "schema-or-model-error",
+      "name": "duplicate-branch-id",
+      "rejection_kind": "schema-or-model-error"
+    },
+    {
+      "accepted": false,
+      "detail": "branch b-9cc97ca459ce762f guard identity mismatch: g-0000000000000000 != g-501219f47fe37053",
+      "expectation_met": true,
+      "expected_rejection": "schema-or-model-error",
+      "name": "wrong-guard-identity",
+      "rejection_kind": "schema-or-model-error"
+    },
+    {
+      "accepted": false,
+      "detail": "branch b-9cc97ca459ce762f next-state substitution is incomplete: missing=['state10'], extra=[]",
+      "expectation_met": true,
+      "expected_rejection": "schema-or-model-error",
+      "name": "missing-next-state-substitution",
+      "rejection_kind": "schema-or-model-error"
+    },
+    {
+      "accepted": false,
+      "detail": "branch b-9cc97ca459ce762f next-state substitution mismatch",
+      "expectation_met": true,
+      "expected_rejection": "schema-or-model-error",
+      "name": "wrong-next-state-substitution",
+      "rejection_kind": "schema-or-model-error"
+    },
+    {
+      "accepted": false,
+      "detail": "state999999 does not name a BTOR2 state",
+      "expectation_met": true,
+      "expected_rejection": "schema-or-model-error",
+      "name": "unknown-variable",
+      "rejection_kind": "schema-or-model-error"
+    },
+    {
+      "accepted": false,
+      "checks": [
+        {
+          "name": "C1 Init=>H",
+          "result": "unsat"
+        },
+        {
+          "name": "C2 modular identities",
+          "result": "accepted"
+        },
+        {
+          "name": "C3 H=>notBAD",
+          "result": "sat"
+        }
+      ],
+      "expectation_met": true,
+      "expected_rejection": "C3-sat",
+      "identity_errors": [],
+      "name": "unsafe",
+      "rejection_kind": "C3-sat"
+    },
+    {
+      "accepted": false,
+      "checks": [
+        {
+          "name": "C1 Init=>H",
+          "result": "sat"
+        },
+        {
+          "name": "C2 modular identities",
+          "result": "accepted"
+        },
+        {
+          "name": "C3 H=>notBAD",
+          "result": "sat"
+        }
+      ],
+      "expectation_met": true,
+      "expected_rejection": "C1-sat",
+      "identity_errors": [],
+      "name": "false-initial",
+      "rejection_kind": "C1-sat"
+    },
+    {
+      "accepted": false,
+      "detail": "operator slice at node 7 is unsupported",
+      "expectation_met": true,
+      "expected_rejection": "schema-or-model-error",
+      "name": "unsupported-extract",
+      "rejection_kind": "schema-or-model-error"
+    },
+    {
+      "accepted": false,
+      "detail": "operator udiv at node 7 is unsupported",
+      "expectation_met": true,
+      "expected_rejection": "schema-or-model-error",
+      "name": "unsupported-division",
+      "rejection_kind": "schema-or-model-error"
+    },
+    {
+      "accepted": false,
+      "detail": "tracked state state5 has no functional next-state definition",
+      "expectation_met": true,
+      "expected_rejection": "schema-or-model-error",
+      "name": "missing-next",
+      "rejection_kind": "schema-or-model-error"
+    }
+  ],
+  "expectation_failure_count": 0,
+  "rejected_count": 20,
+  "report_sha256": "06eb6c77914fbf34253c41b6db0ba92e6ae589e81bf8e027f973c8a11e5ad4d6",
+  "schema": "pono-modular-algebraic-negative-suite-v1"
+}

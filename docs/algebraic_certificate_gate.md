@@ -2,7 +2,8 @@
 
 **Frozen:** 2026-07-13
 **Branch:** `soundness-audit`
-**Status:** Gate 4B0 feasibility gate active; no LLM capture is authorized
+**Status:** Gate 4B0 complete — **STOP**; H5a not run because the frozen
+population contains no v1-eligible natural task; H5b was not authorized
 
 ## Research Question
 
@@ -23,6 +24,82 @@ This gate separates two hypotheses:
 
 Gate 4B0 tests H5a and H5c only. It makes no paid API calls. H5b remains blocked
 until the deterministic kernel and natural population pass the gates below.
+
+## Official Gate 4B0 Result
+
+The canonical artifact is
+[`artifacts/algebraic_certificate_v1/`](../artifacts/algebraic_certificate_v1/),
+generated from implementation commit
+`9e7e677507ad2baf9f357bc4ace52f80a457908d`. Its final summary SHA-256 is
+`b0eb02c55af94cab2e232f920446edd4d98462368ee50be5183fcbeef8820ef5`, and
+the recursive integrity-manifest SHA-256 is
+`b0099cf1ea68d2ab92820e914fedf8f97a0a3b01657ac74a5f0f825db7d38056`.
+No LLM or paid API call was made.
+
+### Frozen-population outcome
+
+The structural selector evaluated all 267 tasks in the already frozen Gate 3
+official translated corpus without inspecting certificate success:
+
+| Exclusion/selection result | Tasks |
+|---|---:|
+| array theory | 39 |
+| no v1-supported nonlinear update SCC | 221 |
+| nonlinear SCC exists, but exceeds the frozen eight-branch cap | 7 |
+| eligible after source-family/content deduplication | **0** |
+| available expected-safe baseline-hard primary tasks | **0** |
+| available expected-unsafe primary controls | **0** |
+
+The seven branch-cap near misses are `egcd2-ll`, `egcd3-ll`, `prod4br-ll`, and
+`ps3-ll` through `ps6-ll`. Across them the scanner observes nine nonlinear
+SCCs, and all nine exceed the preregistered branch cap. The cap, operator set,
+width contract, and population were not widened after this observation.
+
+Consequently, **H5a is not run**, rather than passed or failed: there is no
+eligible natural primary obligation on which to evaluate the three-family
+threshold or the B0 criterion. **H5b remains not authorized.** This result does
+not show that modular certificates work on natural recurrence families, and it
+does not justify synthetic examples as replacements for the absent population.
+
+### Development-control reconnaissance
+
+`fib_23` and `fib_30` remain non-primary controls. Five sequential trials per
+task produced:
+
+| Configuration | `fib_23` | `fib_30` |
+|---|---:|---:|
+| pinned Z3 4.13.1 integer blasting, exact C2 | UNSAT 5/5; 0.0287s | UNSAT 5/5; 0.0226s |
+| local Z3 4.15.4 integer blasting, exact C2 | UNSAT 5/5; 0.0638s | UNSAT 5/5; 0.0478s |
+| modular kernel core C2 | accepted 5/5; 0.00118s | accepted 5/5; 0.00117s |
+| complete C1 + kernel C2 + C3 | accepted 5/5; 0.0116s | accepted 5/5; 0.0141s |
+| plain IC3IA/Bitwuzla on the original model | UNKNOWN 5/5; 1.07s median | UNKNOWN 5/5; 1.34s median |
+| certified-basis IC3IA/Bitwuzla | UNSAT 5/5; 9.95s | UNSAT 5/5; 16.12s |
+
+Times are median wall seconds. Kernel-core timing is in-process, whereas Z3
+timing includes a solver process, so the exploratory 24.4x/19.3x ratios are not
+paper-quality like-for-like speedups and do not count toward H5a. Python Z3
+4.16.0, local/pinned default Z3, and the explicitly activated pinned PolySAT
+configuration each returned UNKNOWN in all ten control trials at the 20-second
+solver limit. The PolySAT checkout is clean at
+`16fb86b636047fd79ad5827f768b6f26d8812948`, and its mandatory independent
+probe emitted `:polysat-*` statistics; parameter availability alone was not
+accepted as activation evidence.
+
+### Soundness and decision
+
+- both development certificates pass original-model C1/kernel-C2/C3;
+- all 20 malformed, provenance-tampered, unsupported, false-initial, and unsafe
+  controls are rejected at their expected stage;
+- wrong multipliers reach algebraic C2 rejection, the false-initial model
+  reaches C1 SAT, and the unsafe model reaches C3 SAT;
+- accepted false-safe controls: zero;
+- primary H5c is not run because there is no primary population.
+
+Gate 4B0 therefore stops without a positive or negative H5a verdict. Do not
+post-hoc raise the branch cap, widen v1, substitute synthetic tasks, or start an
+LLM capture under this gate. The next independent research gate is the
+**known-map certified-transport oracle** described in
+[`roadmap.md`](roadmap.md).
 
 ## Trusted Boundary
 

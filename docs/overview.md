@@ -54,7 +54,7 @@ source C / target-derived lifted recurrence / raw BTOR2 cone
 That flow remains available as research infrastructure, but its H1/H2/H3
 scaling gates failed and it is not the active production pipeline.
 
-## Current Results (as of 2026-07-12)
+## Current Results (as of 2026-07-13)
 
 Soundness is fixed; every tested LLM-specific utility claim has failed a
 matched deterministic baseline so far.
@@ -82,6 +82,14 @@ matched deterministic baseline so far.
 - No unsafe control becomes UNSAT. All 12 routed UNSAT rows independently pass
   original-model C1/C2/C3: four direct candidate certificates and eight
   certificates for Pono-returned invariants.
+- Gate 4B0 implements a strict equal-width modular-polynomial certificate
+  kernel and validates it on `fib_23`/`fib_30`: both development certificates
+  pass, while a 20-case negative suite rejects 20/20 at the expected stage.
+- The frozen Gate 3 corpus nevertheless contains **zero** v1-eligible natural
+  primary task: 39/267 require arrays, 221/267 have no supported nonlinear
+  update SCC, and the remaining seven all exceed the preregistered eight-branch
+  cap. H5a is therefore not run, H5b is not authorized, and no LLM call was
+  made for Gate 4B0.
 
 The project therefore has a reusable sound experimental kernel and a sequence
 of strong negative results, but not yet a positive algorithmic contribution of
@@ -89,18 +97,18 @@ the scale needed for a coverage paper.
 
 ## Current Research Plan
 
-The representation/phase/grammar gate is closed. Do not scale its corpus,
-repair its LLM routes, tune prompts on its three successes, or build a general
-recurrence lifter after H1/H2/H3 failed their frozen thresholds.
+The representation/phase/grammar gate and Gate 4B0 are closed. Do not scale
+their corpora, repair LLM routes, tune prompts on observed successes, widen the
+algebraic branch cap post-hoc, or replace the absent natural Gate 4B0 population
+with synthetic tasks.
 
-Gate 4B0 is now active under the frozen
-[`algebraic_certificate_gate.md`](algebraic_certificate_gate.md) protocol. It
-tests a deterministic, proof-carrying modular polynomial identity kernel for
-nonlinear C2 obligations while retaining exact original-BTOR2 C1 and C3 checks.
-No LLM capture is allowed until the kernel demonstrates value on at least three
-independent natural recurrence families. `fib_23` and `fib_30` are development
-controls only. Generic BVMul CEGAR, broad HWMCC mining, source decompilation,
-Gate 3 route repair, and paper mode remain stopped.
+The next independent empirical gate is a **known-map certified-transport
+oracle**: use exact semantics-preserving maps, transport already certified
+invariants, recheck every result on the transformed original BTOR2, and compare
+against regeneration before considering any learned or LLM mapping. This is a
+new preregistration task, not an extension of Gate 4B0. Generic BVMul CEGAR,
+broad HWMCC mining, source decompilation, paid capture, and paper mode remain
+stopped.
 
 See [`docs/plan.md`](plan.md) for exact results/reproduction and
 [`docs/roadmap.md`](roadmap.md) for the next decision gate.

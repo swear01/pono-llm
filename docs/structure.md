@@ -16,7 +16,7 @@
 | `scripts/` | Benchmark harnesses and research tools for Phase 1+2/Gate 2, paired representation/phase routing, and Gate 4B modular algebraic certificates. |
 | `benchmarks/` | Micro-benchmarks and BTOR2 test cases |
 | `bench_results/` | Experiment output (not in git) |
-| `artifacts/` | Frozen Phase 1+2/Gate 2 evidence plus `representation_phase_v1/`, whose recursive integrity manifest binds paired inputs, prompts, routes, matrices, and certificates. |
+| `artifacts/` | Frozen Phase 1+2/Gate 2 evidence, `representation_phase_v1/`, and `algebraic_certificate_v1/`; each canonical gate bundle has machine-readable decisions and integrity-bound inputs/results. |
 | `docs/` | Active docs; historical docs live under `archive/docs/` |
 | `diagnosis/` | Per-phase diagnosis notes |
 | `prompts/` | LLM prompt templates |
@@ -83,7 +83,7 @@
   cancellation. `scripts/check_algebraic_certificate.py` combines this strict
   C2 kernel with exact original-BTOR2 C1/C3. Candidate, branch, guard, and
   substitution provenance is hash-bound and independently reconstructed.
-- **Gate 4B0 experiment boundary:** `scripts/build_algebraic_controls.py` and
+- **Completed Gate 4B0 experiment boundary:** `scripts/build_algebraic_controls.py` and
   `scripts/build_algebraic_query_corpus.py` freeze the non-primary controls and
   exact C2 queries. `scripts/run_algebraic_baselines.py` compares current Z3,
   explicit integer blasting, and the pinned PolySAT paper commit; PolySAT must
@@ -94,7 +94,9 @@
   `scripts/run_algebraic_negative_suite.py`, and
   `scripts/summarize_algebraic_gate.py` enforce selection, soundness, decision,
   and recursive-integrity contracts. No component repairs a certificate or
-  silently falls back to generic C2 solving.
+  silently falls back to generic C2 solving. The canonical result is
+  `artifacts/algebraic_certificate_v1/`: the frozen official population contains
+  zero v1-eligible natural task, so H5a was not run and no LLM capture occurred.
 - **Gate 2 corpus control:** `scripts/extract_btor_features.py` performs a
   durable full-tree feature scan; `scripts/select_gate2_corpus.py` produces a
   portable, content-deduplicated, fixed-seed stratified manifest; and

@@ -1,0 +1,77 @@
+{
+  "benchmark_content_sha256": "a078bbffe6dc000ce0a24a4d11c45efade0c613ca55ca40db83dbb7b013338d6",
+  "benchmark_id": "2025/wordlevel/bv/2024/hkust/arithmetic_circuits/fib_23/fib_23.btor2",
+  "branch_count": 3,
+  "branches": [
+    {
+      "decisions": [
+        [
+          3,
+          false
+        ],
+        [
+          12,
+          true
+        ]
+      ],
+      "errors": [],
+      "id": "b-9cc97ca459ce762f",
+      "result": "accepted"
+    },
+    {
+      "decisions": [
+        [
+          3,
+          false
+        ],
+        [
+          12,
+          false
+        ]
+      ],
+      "errors": [],
+      "id": "b-c6de83e1e7ae86fc",
+      "result": "accepted"
+    },
+    {
+      "decisions": [
+        [
+          3,
+          true
+        ]
+      ],
+      "errors": [],
+      "id": "b-e4a3dd46d24b98d4",
+      "result": "accepted"
+    }
+  ],
+  "candidate_sha256": "4b3780ea7093eaea7f63b0d98649e7e7240450e70f3918f7e4276c4add316f4c",
+  "certificate_sha256": "1369727537d48a827c28a5b36c2dfe72668ebdd3b2a563188b462e17770148a3",
+  "checks": [
+    {
+      "name": "C1 Init=>H",
+      "result": "unsat"
+    },
+    {
+      "name": "C2 modular identities",
+      "result": "accepted"
+    },
+    {
+      "name": "C3 H=>notBAD",
+      "result": "unsat"
+    }
+  ],
+  "identity_errors": [],
+  "invariant_ids": [
+    "P0",
+    "P1"
+  ],
+  "ok": true,
+  "schema": "pono-modular-algebraic-certificate-report-v1",
+  "variables": [
+    "state7",
+    "state10",
+    "state13"
+  ],
+  "width": 19
+}

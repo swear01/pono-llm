@@ -1,0 +1,65 @@
+{
+  "branch_cap": 8,
+  "eligible_after_dedup_count": 0,
+  "eligible_before_dedup_count": 0,
+  "exclusion_counts": {
+    "array-theory": 39,
+    "no-v1-nonlinear-update": 221,
+    "nonlinear-scc-over-branch-cap": 7
+  },
+  "near_miss_examples": {
+    "no-v1-nonlinear-update": [
+      "loop-crafted/simple_vardep_1.btor2",
+      "loop-crafted/simple_vardep_2.btor2",
+      "loop-invariants/bin-suffix-5.btor2",
+      "loop-invariants/const.btor2",
+      "loop-invariants/eq1.btor2",
+      "loop-invariants/eq2.btor2",
+      "loop-invariants/even.btor2",
+      "loop-invariants/linear-inequality-inv-a.btor2",
+      "loop-invariants/linear-inequality-inv-b.btor2",
+      "loop-invariants/linear-inequality-inv-c.btor2",
+      "loop-invariants/mod4.btor2",
+      "loop-invariants/odd.btor2",
+      "loop-invgen/MADWiFi-encode_ie_ok.btor2",
+      "loop-invgen/NetBSD_loop.btor2",
+      "loop-invgen/SpamAssassin-loop.btor2",
+      "loop-invgen/SpamAssassin-loop.i.v+cfa-reducer.btor2",
+      "loop-invgen/apache-escape-absolute.btor2",
+      "loop-invgen/apache-escape-absolute.i.v+cfa-reducer.btor2",
+      "loop-invgen/apache-get-tag.btor2",
+      "loop-invgen/apache-get-tag.i.p+lhb-reducer.btor2"
+    ],
+    "nonlinear-scc-over-branch-cap": [
+      "nla-digbench/egcd2-ll.btor2",
+      "nla-digbench/egcd3-ll.btor2",
+      "nla-digbench/prod4br-ll.btor2",
+      "nla-digbench/ps3-ll.btor2",
+      "nla-digbench/ps4-ll.btor2",
+      "nla-digbench/ps5-ll.btor2",
+      "nla-digbench/ps6-ll.btor2"
+    ]
+  },
+  "population_sha256": "0a558170f51755aaa062fe81386e9677f93f8574b345b7662bd3f78cde696dd4",
+  "population_sufficient": false,
+  "requested_safe_count": 16,
+  "requested_unsafe_count": 4,
+  "safe_baseline_hard_available_count": 0,
+  "schema": "pono-modular-algebraic-population-v1",
+  "selected": [],
+  "selected_safe_count": 0,
+  "selected_safe_structural_classes": [],
+  "selected_unsafe_count": 0,
+  "selection_status": "population-insufficient-for-h5a",
+  "source_baseline_sha256": "db39765c5ebd22a11850278b68cf6c2972f867683c0ce4cacf1d0975e5b3c1de",
+  "source_population_sha256": "01ec7bf8f0ba1c575b20b835e9431e251ace0686dcd5c388ddeee83885bc4ffe",
+  "structural_diagnostics": {
+    "nonlinear-scc": 9,
+    "nonlinear-scc-over-branch-cap": 9,
+    "state-nonlinear-next": 9,
+    "state-supported-next": 1045,
+    "state-unsupported-next": 67
+  },
+  "translation_revision": "d9838013ea48568a21a106a7fc94f11c13ac5ad6",
+  "unsafe_available_count": 0
+}

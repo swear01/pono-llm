@@ -1,0 +1,238 @@
+{
+  "benchmark_content_sha256": "a078bbffe6dc000ce0a24a4d11c45efade0c613ca55ca40db83dbb7b013338d6",
+  "benchmark_id": "2025/wordlevel/bv/2024/hkust/arithmetic_circuits/fib_23/fib_23.btor2",
+  "branches": [
+    {
+      "guard_identity": "g-501219f47fe37053",
+      "id": "b-9cc97ca459ce762f",
+      "multipliers": [
+        [
+          [
+            {
+              "coefficient": "1",
+              "powers": {}
+            }
+          ],
+          [
+            {
+              "coefficient": "0",
+              "powers": {}
+            }
+          ]
+        ],
+        [
+          [
+            {
+              "coefficient": "0",
+              "powers": {}
+            }
+          ],
+          [
+            {
+              "coefficient": "1",
+              "powers": {}
+            }
+          ]
+        ]
+      ],
+      "next_state_substitution": {
+        "state10": [
+          {
+            "coefficient": "1",
+            "powers": {
+              "state10": 1
+            }
+          }
+        ],
+        "state13": [
+          {
+            "coefficient": "1",
+            "powers": {
+              "state13": 1
+            }
+          },
+          {
+            "coefficient": "1",
+            "powers": {
+              "state7": 1
+            }
+          }
+        ],
+        "state7": [
+          {
+            "coefficient": "1",
+            "powers": {}
+          },
+          {
+            "coefficient": "1",
+            "powers": {
+              "state7": 1
+            }
+          }
+        ]
+      }
+    },
+    {
+      "guard_identity": "g-7f6199da7219cbf6",
+      "id": "b-c6de83e1e7ae86fc",
+      "multipliers": [
+        [
+          [
+            {
+              "coefficient": "1",
+              "powers": {}
+            }
+          ],
+          [
+            {
+              "coefficient": "0",
+              "powers": {}
+            }
+          ]
+        ],
+        [
+          [
+            {
+              "coefficient": "0",
+              "powers": {}
+            }
+          ],
+          [
+            {
+              "coefficient": "1",
+              "powers": {}
+            }
+          ]
+        ]
+      ],
+      "next_state_substitution": {
+        "state10": [
+          {
+            "coefficient": "1",
+            "powers": {
+              "state10": 1
+            }
+          }
+        ],
+        "state13": [
+          {
+            "coefficient": "1",
+            "powers": {
+              "state13": 1
+            }
+          }
+        ],
+        "state7": [
+          {
+            "coefficient": "1",
+            "powers": {
+              "state7": 1
+            }
+          }
+        ]
+      }
+    },
+    {
+      "guard_identity": "g-fa37f652c20ae53f",
+      "id": "b-e4a3dd46d24b98d4",
+      "multipliers": [
+        [
+          [
+            {
+              "coefficient": "0",
+              "powers": {}
+            }
+          ],
+          [
+            {
+              "coefficient": "0",
+              "powers": {}
+            }
+          ]
+        ],
+        [
+          [
+            {
+              "coefficient": "0",
+              "powers": {}
+            }
+          ],
+          [
+            {
+              "coefficient": "0",
+              "powers": {}
+            }
+          ]
+        ]
+      ],
+      "next_state_substitution": {
+        "state10": [
+          {
+            "coefficient": "150",
+            "powers": {}
+          }
+        ],
+        "state13": [
+          {
+            "coefficient": "0",
+            "powers": {}
+          }
+        ],
+        "state7": [
+          {
+            "coefficient": "0",
+            "powers": {}
+          }
+        ]
+      }
+    }
+  ],
+  "candidate_sha256": "4b3780ea7093eaea7f63b0d98649e7e7240450e70f3918f7e4276c4add316f4c",
+  "invariants": [
+    {
+      "id": "P0",
+      "terms": [
+        {
+          "coefficient": "2",
+          "powers": {
+            "state13": 1
+          }
+        },
+        {
+          "coefficient": "1",
+          "powers": {
+            "state7": 1
+          }
+        },
+        {
+          "coefficient": "524287",
+          "powers": {
+            "state7": 2
+          }
+        }
+      ]
+    },
+    {
+      "id": "P1",
+      "terms": [
+        {
+          "coefficient": "524138",
+          "powers": {}
+        },
+        {
+          "coefficient": "1",
+          "powers": {
+            "state10": 1
+          }
+        }
+      ]
+    }
+  ],
+  "schema": "pono-modular-algebraic-certificate-v1",
+  "variables": [
+    "state7",
+    "state10",
+    "state13"
+  ],
+  "width": 19
+}

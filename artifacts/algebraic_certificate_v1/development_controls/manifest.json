@@ -1,0 +1,26 @@
+{
+  "controls": [
+    {
+      "accepted": true,
+      "benchmark_content_sha256": "a078bbffe6dc000ce0a24a4d11c45efade0c613ca55ca40db83dbb7b013338d6",
+      "benchmark_id": "2025/wordlevel/bv/2024/hkust/arithmetic_circuits/fib_23/fib_23.btor2",
+      "certificate": "fib_23.certificate.json",
+      "certificate_file_sha256": "43b56ec466d9a33e0b1d5c8473430b02903ca18a59714586639c63161862420c",
+      "certificate_sha256": "1369727537d48a827c28a5b36c2dfe72668ebdd3b2a563188b462e17770148a3",
+      "report": "fib_23.report.json",
+      "report_file_sha256": "4af6a08e4c01694631e6a97598cbf25534477491a1b0c223dab4c18af26bd825"
+    },
+    {
+      "accepted": true,
+      "benchmark_content_sha256": "1bb400e569c8c3147d38245dd81458261c4cc0aac565286e731dabf78fdf31d0",
+      "benchmark_id": "2024/btor2/2024/hku/arithmetic_circuits/fib_30/fib_30.btor2",
+      "certificate": "fib_30.certificate.json",
+      "certificate_file_sha256": "287f5a214f7f03aca666fd0de2ad14f53366d434bc6c9230d4351f6cc1209dd0",
+      "certificate_sha256": "9af2c1c685ac4c1756b4c9e9e6dda36853b3b81083b51c056c6372db5d7bff08",
+      "report": "fib_30.report.json",
+      "report_file_sha256": "7c031e00cf255290bcbb1c55ebe14b5086b4e1baa12456d71824d5f8c2d3c55d"
+    }
+  ],
+  "manifest_sha256": "c8f9a1d2201528bab041dc30db93f8530e932427a1a2b2d0a39dad4501bc0195",
+  "schema": "pono-modular-algebraic-development-controls-v1"
+}

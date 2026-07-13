@@ -1,0 +1,20 @@
+{
+  "local-z3-cli-default": {
+    "unknown": 10
+  },
+  "local-z3-intblast": {
+    "unsat": 10
+  },
+  "pinned-z3-default": {
+    "unknown": 10
+  },
+  "pinned-z3-intblast": {
+    "unsat": 10
+  },
+  "pinned-z3-polysat": {
+    "unknown": 10
+  },
+  "python-z3-default": {
+    "unknown": 10
+  }
+}
