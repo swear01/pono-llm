@@ -2,9 +2,8 @@
 
 **Updated:** 2026-07-13
 **Branch:** `soundness-audit`
-**Status:** Gate 5 known-map certified transport preregistered; Gate 5A0
-population/protocol feasibility is next; no transformation code or LLM is
-authorized yet
+**Status:** Gate 5A0 population/schema implementation complete and tested;
+canonical census is next; no transformation code or LLM is authorized yet
 
 ## Current Research Position
 
@@ -269,8 +268,16 @@ upper-bound proof-reuse experiment, not a mapping-inference or coverage gate.
 
 ### Gate 5A0 first
 
-The immediate task is a source-certificate census and protocol feasibility
-check. Before any transformation implementation, require:
+The strict census implementation is now present in
+`scripts/build_transport_population.py`, `scripts/transport_schema.py`, and
+`scripts/transport_invariant.py`. It revalidates upstream artifact hashes,
+normalizes transportable ASTs, independently re-certifies every source
+candidate against every BAD, applies exact-content/source-family deduplication,
+and records structural T1/T2/T3 applicability. It never calls an LLM/API and
+does not generate transformed models.
+
+The immediate task is to run its canonical source-certificate census from the
+committed implementation. Before any transformation implementation, require:
 
 - at least 12 source tasks with machine-readable invariants already certified
   by source-original C1/C2/C3;
@@ -282,6 +289,13 @@ check. Before any transformation implementation, require:
 
 If this population is unavailable, record `population-insufficient` and stop
 without manufacturing a large synthetic variant corpus.
+
+The canonical command writes a self-hashed population plus sibling
+`source_certificates/` and `source_invariants/` evidence. It refuses overwrite,
+records local Pono `interp --show-invar` recovery as no-LLM provenance, and
+deletes fresh partial output on failure rather than emitting a best-effort
+population. Syntactic multi-predicate sets are not counted as genuinely
+conjunctive; v1 uses the stricter phase-guarded disjunct for that class gate.
 
 ### Frozen transformation roles
 

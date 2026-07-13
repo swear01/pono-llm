@@ -6,6 +6,11 @@
 no transformation implementation, utility experiment, map inference, or LLM
 capture is authorized by this commit
 
+**Execution status (2026-07-13; not a protocol amendment):** the Gate 5A0
+population/schema implementation now exists and passes its focused tests. The
+canonical census has not yet been run, no transformed variant exists, and all
+frozen thresholds below remain unchanged.
+
 ## Research Question
 
 Can an invariant already certified on a source BTOR2 transition system be
@@ -342,12 +347,28 @@ shape is frozen as:
     "parameters_sha256": "..."
   },
   "projection": {
-    "state7": {"form": "sub", "args": []}
+    "state7": {
+      "form": "sub",
+      "args": [
+        {"form": "ref", "ref": "state70"},
+        {"form": "const", "const": "1", "width": 8}
+      ]
+    }
   },
   "input_map": {},
-  "inverse_embedding": {},
+  "inverse_embedding": {
+    "state70": {
+      "form": "add",
+      "args": [
+        {"form": "ref", "ref": "state7"},
+        {"form": "const", "const": "1", "width": 8}
+      ]
+    }
+  },
   "observation_predicate": null,
-  "property_map": [],
+  "property_map": [
+    {"source_bad_index": 0, "target_bad_index": 0}
+  ],
   "generated_map_invariants": [],
   "source_certificate_sha256": "...",
   "generator_commit": "...",
@@ -625,6 +646,53 @@ maps and parameters, independent validation reports, transported ASTs, target
 certificates, B0--B3 matrices, all negative cases, commands, tool revisions,
 provenance, summary, and a recursive integrity manifest. Partial/smoke runs
 cannot be summarized as the official gate.
+
+## Gate 5A0 Implementation Boundary
+
+The implemented census surface is deliberately limited to the first three
+planned modules:
+
+```text
+scripts/build_transport_population.py
+scripts/transport_schema.py
+scripts/transport_invariant.py
+```
+
+`transport_schema.py` rejects duplicate JSON keys, unknown schema fields,
+unfrozen transform seeds, non-empty v1 map assumptions, malformed hashes, and
+population reports whose decision, proof rows, counts, or self-hash disagree.
+`transport_invariant.py` performs structural AST substitution, canonicalizes a
+documented subset of Pono-returned SMT-LIB formulas, and checks C1, C2, and C3
+for every BAD on the original source model. SMT UNKNOWN is never a certificate.
+
+`build_transport_population.py` validates the Phase 1+2 and representation
+artifact identities, reconstructs previously certified deterministic phase
+candidates, freshly re-runs Houdini where needed, canonicalizes eligible Pono
+invariants, independently re-certifies every selected source invariant, applies
+exact-content and source-family deduplication, and computes T1/T2/T3 structural
+applicability. It may invoke local Pono `interp --show-invar` only to recover a
+machine-readable invariant from a previously frozen no-LLM UNSAT row. It does
+not call OpenRouter or any other LLM/API.
+
+The representation bundle's recursive manifest is itself schema-, status-,
+summary-, file-, and self-hash checked. Pono invariant recovery has independent
+20-second execution and 20-second normalization deadlines, a 5 MiB raw-output
+cap, and a 50,000-node expanded-AST cap. Exceeding any bound is an explicit
+exclusion, never a fallback.
+
+For the third invariant-class condition, v1 counts only the stricter
+`phase-guarded` disjunct. A merely multi-line candidate list is reported as
+`conjunctive` but is not treated as evidence of a genuinely conjunctive proof.
+This conservative implementation cannot make the frozen threshold easier to
+pass.
+
+The builder refuses to overwrite its output or sibling `source_certificates/`
+and `source_invariants/` directories. A failed build removes only the fresh
+partial directories created by that invocation and propagates the error. A
+successful population file records zero LLM/API calls, the exact Pono hash,
+input summary hashes, source-certificate timings, exclusions, and a canonical
+self-hash. The official census must be produced from committed code before any
+transformation module is implemented.
 
 ## Execution and Commit Boundaries
 

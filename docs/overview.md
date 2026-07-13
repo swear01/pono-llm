@@ -102,14 +102,20 @@ their corpora, repair LLM routes, tune prompts on observed successes, widen the
 algebraic branch cap post-hoc, or replace the absent natural Gate 4B0 population
 with synthetic tasks.
 
-Gate 5 is now preregistered as a **known-map certified-transport oracle** under
+Gate 5 is preregistered as a **known-map certified-transport oracle** under
 [`certified_transport_gate.md`](certified_transport_gate.md). Gate 5A0 first
 censuses already certified source invariants and validates that three
 non-trivial target families are feasible: modular affine recoding, bit-vector
 split encoding, and input-latched stuttering refinement. Alpha-renaming is only
 a sanity control and cannot count toward success.
 
-No transformation implementation or utility run is authorized until the
+The strict Gate 5A0 population/schema/certification implementation is complete;
+the canonical census is the next command. It performs structural AST
+transport, exact source C1/C2/C3 for every BAD, immutable artifact validation,
+source-family deduplication, and T1/T2/T3 applicability accounting. It makes no
+LLM/API call and no transformed variant exists yet.
+
+No transformation implementation or utility run is authorized unless the
 population reaches 12 certified tasks, eight independent source families,
 three invariant classes, and at least eight applicable bases per primary
 family. Every concrete map must be independently proven, every transported

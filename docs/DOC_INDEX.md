@@ -1,6 +1,6 @@
 # Documentation Index
 
-**Last updated:** 2026-07-13 (Gate 5 known-map transport preregistered)
+**Last updated:** 2026-07-13 (Gate 5A0 census implementation complete)
 
 Start here:
 
@@ -16,13 +16,13 @@ Start here:
 | File | Description |
 |------|-------------|
 | [`overview.md`](overview.md) | Current project scope, sound predicate-injection architecture, latest results |
-| [`plan.md`](plan.md) | Completed Gate 0--4 evidence, canonical artifacts, and active Gate 5A0 decision |
-| [`roadmap.md`](roadmap.md) | Closed prior gates plus the preregistered Gate 5 transport sequence and stop criteria |
+| [`plan.md`](plan.md) | Completed Gate 0--4 evidence and the implemented, pending-census Gate 5A0 decision |
+| [`roadmap.md`](roadmap.md) | Closed prior gates plus Gate 5 census/transport sequencing and stop criteria |
 | [`notes.md`](notes.md) | Tacit knowledge, soundness gotchas, timing caveats, next-step decisions |
 | [`structure.md`](structure.md) | Directory map and module boundaries |
 | [`representation_phase_gate.md`](representation_phase_gate.md) | Completed source/lifted/raw phase-local grammar-routing contract and H1--H4 decisions |
 | [`algebraic_certificate_gate.md`](algebraic_certificate_gate.md) | Frozen Gate 4B0 contract plus official zero-eligible-population, solver, soundness, and stop decisions |
-| [`certified_transport_gate.md`](certified_transport_gate.md) | Frozen Gate 5A0/5A known-map transport population, transform, validation, baseline, cost, H6, and no-LLM contract |
+| [`certified_transport_gate.md`](certified_transport_gate.md) | Frozen Gate 5A0/5A contract plus current strict census/schema implementation boundary |
 
 ## Supporting references
 

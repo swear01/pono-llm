@@ -20,8 +20,9 @@ population, so it supplies a sound development kernel but no evaluated H5a
 claim. The project is not ready for a coverage-improvement paper, and it must
 not enter paper mode merely because another gate completed.
 
-Gate 5 is preregistered but not implemented. Its immediate decision is Gate
-5A0: either the existing certified-source population satisfies the frozen
+Gate 5 is preregistered, and its strict Gate 5A0 population/schema
+implementation is complete. Its immediate decision is the canonical census:
+either the existing certified-source population satisfies the frozen
 diversity/applicability thresholds, or transport stops before variant
 generation. No LLM is authorized.
 
@@ -154,13 +155,18 @@ The frozen protocol is
 known-map transport as an upper-bound proof-reuse gate, not evidence that map
 inference or LLM mapping is useful.
 
-### Gate 5A0 — population/protocol feasibility (next)
+### Gate 5A0 — population/protocol feasibility (implementation complete;
+canonical census next)
 
 Before transformation code, census already certified, machine-readable source
 invariants. Continue only with at least 12 base tasks, eight independent source
 families, three invariant classes, and at least eight applicable bases for each
 primary transform. T3 must include at least three input-driven families. If the
 population is smaller, stop without padding it with synthetic or width variants.
+The census independently re-certifies every selected invariant for every BAD,
+validates upstream hashes, deduplicates source families, and reports exact
+T1/T2/T3 applicability. No transformed file may be generated before this
+decision is committed.
 
 ### Gate 5A — known-map oracle (conditional)
 

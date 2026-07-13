@@ -49,6 +49,19 @@
   Gate 5A0 must first find 12 certified bases, eight source families, three
   invariant classes, and eight applicable bases for each primary transform;
   otherwise stop before generating variants.
+- Gate 5A0's implementation is strict and no-LLM: it verifies both upstream
+  evidence bundles, freshly re-certifies all selected source ASTs for every
+  BAD, and refuses output/path overwrite. A failed run removes only its newly
+  created partial `source_certificates/` and `source_invariants/` directories
+  and re-raises the error; it never emits a partial population as valid.
+- Pono `interp --show-invar` remains a deterministic source-certificate
+  recovery mechanism, not an LLM arm. Its `INVAR:` line is parsed into the
+  documented AST subset and independently re-certified. Unsupported, oversized
+  (>5 MiB raw or >50,000 AST nodes), execution/normalization timeout, and
+  UNKNOWN rows are explicit exclusions.
+- Do not count a syntactically multi-predicate set as a genuinely conjunctive
+  invariant class. Gate 5A0 v1 conservatively satisfies that disjunction only
+  through an actual `implies`/phase-guarded AST.
 - T0 alpha-renaming is a 100% sanity control and never counts. Primary families
   are T1 modular affine recoding, T2 split encoding, and input-latched T3
   stuttering refinement. T3 must independently validate both target-to-source
