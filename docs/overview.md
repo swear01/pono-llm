@@ -93,12 +93,14 @@ The representation/phase/grammar gate is closed. Do not scale its corpus,
 repair its LLM routes, tune prompts on its three successes, or build a general
 recurrence lifter after H1/H2/H3 failed their frozen thresholds.
 
-No new implementation direction is active until the user chooses a separately
-preregistered hypothesis. The strongest remaining candidates are certified
-invariant transport/metamorphic robustness, proof-carrying modular algebraic
-certificates, or a new independently selected natural local-certificate corpus.
-Generic BVMul CEGAR, broad HWMCC mining, source decompilation, and paper mode
-remain stopped.
+Gate 4B0 is now active under the frozen
+[`algebraic_certificate_gate.md`](algebraic_certificate_gate.md) protocol. It
+tests a deterministic, proof-carrying modular polynomial identity kernel for
+nonlinear C2 obligations while retaining exact original-BTOR2 C1 and C3 checks.
+No LLM capture is allowed until the kernel demonstrates value on at least three
+independent natural recurrence families. `fib_23` and `fib_30` are development
+controls only. Generic BVMul CEGAR, broad HWMCC mining, source decompilation,
+Gate 3 route repair, and paper mode remain stopped.
 
 See [`docs/plan.md`](plan.md) for exact results/reproduction and
 [`docs/roadmap.md`](roadmap.md) for the next decision gate.

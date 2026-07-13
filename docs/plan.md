@@ -1,8 +1,8 @@
 # Active Plan
 
-**Updated:** 2026-07-12
+**Updated:** 2026-07-13
 **Branch:** `soundness-audit`
-**Status:** Representation-Aware Phase/Grammar Gate v1 complete
+**Status:** Gate 4B0 proof-carrying modular algebraic feasibility active
 
 ## Current Research Position
 
@@ -169,21 +169,30 @@ Close this gate. Do **not**:
 The one phase-only task and three structurally routed tasks are valid bounded
 case studies, not enough to launch a general phase-local algorithm project.
 
-## Next Research Decision (Not Started)
+## Active Gate 4B0
 
-Any next implementation must start with a new preregistered hypothesis that
-does not depend on rescuing H1/H2/H3. The strongest remaining candidates are:
+The selected independent hypothesis is **proof-carrying modular algebraic
+certificates**. The frozen protocol is
+[`docs/algebraic_certificate_gate.md`](algebraic_certificate_gate.md).
 
-1. **Certified invariant transport and metamorphic robustness:** preserve the
-   same target proof obligation under variable renaming, phase splitting, and
-   invertible modular state transforms; compare regeneration with formally
-   checked transport.
-2. **Proof-carrying algebraic certificates:** require a small modular-arithmetic
-   derivation checked by a tiny kernel, across multiple recurrence families.
-3. **New natural corpus with a known local-certificate gap:** only if selected
-   independently of current failures and matched against deterministic
-   synthesis before LLM calls.
+Gate 4B0 changes the C2 proof calculus instead of changing who proposes an
+invariant. A small kernel checks branch-complete sparse-polynomial identities
+over `Z/(2^w)Z`; C1 and C3 remain exact checks on the original BTOR2. The first
+stage is deterministic and makes no LLM calls.
 
-Generic BVMul CEGAR, prompt tuning, raw HWMCC mining, and source decompilation
-remain stopped. The user should choose the next hypothesis before code work
-continues.
+Current execution order:
+
+1. record current Z3/Pono solver versions, parameters, query hashes, and fixed
+   nonlinear C2 outcomes;
+2. TDD the equal-width `add/sub/mul` sparse-polynomial kernel and strict
+   certificate schema;
+3. compare the same obligations and apply the 3x/sub-second B0 kill criterion;
+4. only if B0 survives, freeze a source-family-deduplicated natural population
+   and bounded deterministic certificate synthesizer;
+5. authorize LLM certificate capture only after H5a passes on at least three
+   independent natural families.
+
+`fib_23` and `fib_30` are development controls, not primary successes.
+Certified transport becomes the next oracle gate only if Gate 4B0 fails.
+Generic BVMul CEGAR, Gate 3 route repair, prompt tuning, broad HWMCC mining,
+and paper mode remain stopped.

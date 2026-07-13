@@ -1,6 +1,6 @@
 # Documentation Index
 
-**Last updated:** 2026-07-12 (paired representation/phase/grammar Gate v1 complete)
+**Last updated:** 2026-07-13 (modular algebraic certificate Gate 4B0 active)
 
 Start here:
 
@@ -21,6 +21,7 @@ Start here:
 | [`notes.md`](notes.md) | Tacit knowledge, soundness gotchas, timing caveats, next-step decisions |
 | [`structure.md`](structure.md) | Directory map and module boundaries |
 | [`representation_phase_gate.md`](representation_phase_gate.md) | Completed source/lifted/raw phase-local grammar-routing contract and H1--H4 decisions |
+| [`algebraic_certificate_gate.md`](algebraic_certificate_gate.md) | Frozen Gate 4B0 trust boundary, solver reconnaissance, population contract, H5a/H5b/H5c thresholds, and kill criteria |
 
 ## Supporting references
 

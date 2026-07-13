@@ -1,6 +1,6 @@
 # Roadmap
 
-**Updated:** 2026-07-12
+**Updated:** 2026-07-13
 **Branch:** `soundness-audit`
 
 ## Current Decision
@@ -92,12 +92,17 @@ Results:
 the source corpus, phase extractor, route repair, or paid captures from this
 evidence.
 
-## Gate 4 — Choose a New Independent Hypothesis (Pending User Decision)
+## Gate 4 — Proof-Carrying Modular Algebraic Certificates (Active)
 
-No implementation starts until one direction has a preregistered population,
-matched deterministic baseline, metric, and kill criterion.
+The user selected Candidate B. The complete preregistration is
+[`docs/algebraic_certificate_gate.md`](algebraic_certificate_gate.md).
 
-### Candidate A — Certified transport/metamorphic robustness
+Gate 4B0 first asks whether a small exact `Z/(2^w)Z` polynomial-identity kernel
+can remove a real nonlinear C2 bottleneck. C1 and C3 remain exact original-model
+checks. No LLM capture is allowed until the deterministic kernel succeeds on at
+least three independent natural recurrence families.
+
+### Fallback A — Certified transport/metamorphic robustness
 
 Question: can a certified invariant be transported across semantics-preserving
 program/circuit transforms more efficiently and robustly than regenerated?
@@ -113,7 +118,7 @@ Required controls:
 Go only if transport adds robust success over regeneration on at least three
 transformation families. Otherwise stop.
 
-### Candidate B — Proof-carrying algebraic certificates
+### Active B — Proof-carrying algebraic certificates
 
 Question: can semantic proposals include a modular polynomial derivation that a
 small trusted kernel verifies without generic BVMul proof search?
@@ -125,9 +130,12 @@ Required controls:
 - deterministic normalizer baseline;
 - malformed derivations rejected, never repaired silently.
 
-Go only if held-out natural recurrences benefit. Otherwise keep as a case study.
+Gate 4B0 uses `fib_23`/`fib_30` only as development controls, records a fixed
+Z3/PolySAT/Pono reconnaissance matrix, and applies a sub-second/3x kill rule.
+The full gate passes only with three held-out natural source families and zero
+false-safe controls. Otherwise stop and run the known-map transport oracle.
 
-### Candidate C — Independently selected local-certificate corpus
+### Dormant C — Independently selected local-certificate corpus
 
 Question: is the one observed phase-only task representative in a population
 selected by control-flow structure rather than current proof outcomes?
