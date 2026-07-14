@@ -1,0 +1,55 @@
+{
+  "candidate_id": "autoverus",
+  "commit": "2f9aff36b4e287e41b1bc167f7888a5cddac4cdd",
+  "directory": "autoverus",
+  "inventory_sha256": "6892bf0167cf279564f24981adfac586456a83d05158fde6bae8be0822dc12c7",
+  "path_count": 27969,
+  "path_listing": {
+    "path": "inventories/autoverus.paths.txt",
+    "sha256": "7a2c6ebd1b15537107bba398cdb79f01251c2e7e99589c40e86fe6440a19c8fb"
+  },
+  "repository": "microsoft/verus-proof-synthesis",
+  "root_files": [
+    ".dockerignore",
+    ".gitignore",
+    ".pre-commit-config.yaml",
+    "Dockerfile",
+    "LICENSE",
+    "README-artifact-evaluation.md",
+    "README.md",
+    "SECURITY.md",
+    "docker-compose.yml",
+    "pyproject.toml",
+    "requirements.txt"
+  ],
+  "root_license_files": [
+    "LICENSE"
+  ],
+  "schema": "cross-tool-x0-repository-inventory-v1",
+  "top_level_counts": {
+    ".dockerignore": 1,
+    ".github": 1,
+    ".gitignore": 1,
+    ".pre-commit-config.yaml": 1,
+    "Dockerfile": 1,
+    "LICENSE": 1,
+    "README-artifact-evaluation.md": 1,
+    "README.md": 1,
+    "SECURITY.md": 1,
+    "assets": 4,
+    "autoverus": 89,
+    "benchmarks": 4577,
+    "docker-compose.yml": 1,
+    "generated": 22317,
+    "leaderboard": 13,
+    "pyproject.toml": 1,
+    "requirements.txt": 1,
+    "utils": 844,
+    "verusage": 113
+  },
+  "tree": "831c2b172230c48434b2b5391199b44cb10936ce",
+  "type_counts": {
+    "blob": 27969
+  },
+  "url": "https://github.com/microsoft/verus-proof-synthesis"
+}

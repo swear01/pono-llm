@@ -1,0 +1,369 @@
+{
+  "ambiguous_fields": [],
+  "available_count": 7,
+  "blocked_fields": [],
+  "candidate_id": "quokka",
+  "catalog_sha256": "d8dfeaa65d6a34652f0018d9ac61a587ce884c208847094ee9750b0047a13fd3",
+  "census_sha256": "c9cfab43b56ce6f144a3b5f30ae7133ba72fe8963462c167f77bf866e218ed6b",
+  "fields": {
+    "benchmark_inputs": {
+      "evidence": [
+        {
+          "byte_count": 4724,
+          "commit": "60301cb79ba594945f2049990421f5d5d4d95afc",
+          "git_object": "e2040cff366ec98afddd1ff1922c9099d77c17b9",
+          "kind": "repository-file",
+          "line_end": 100,
+          "line_start": 91,
+          "path": "README.md",
+          "repository": "Anjiang-Wei/Quokka",
+          "sha256": "cf3a15d306c1f5f7011f192880a01b4c60146f4fca43dbc71309e7e0f57c3e1c",
+          "url": "https://github.com/Anjiang-Wei/Quokka/blob/60301cb79ba594945f2049990421f5d5d4d95afc/README.md"
+        },
+        {
+          "byte_count": 659,
+          "commit": "60301cb79ba594945f2049990421f5d5d4d95afc",
+          "git_object": "be08d72221e6a3843fdc6b57f37818454cdd97cf",
+          "kind": "repository-object",
+          "path": "Dataset/evaluation_all/benchmark02_linear_1.c",
+          "repository": "Anjiang-Wei/Quokka",
+          "sha256": "f75313f81ff0fee71c4d6ed6455b9fefcd95f8ce823acfbcc4963fe89a3dd7c9",
+          "url": "https://github.com/Anjiang-Wei/Quokka/blob/60301cb79ba594945f2049990421f5d5d4d95afc/Dataset/evaluation_all/benchmark02_linear_1.c"
+        },
+        {
+          "byte_count": 53,
+          "commit": "60301cb79ba594945f2049990421f5d5d4d95afc",
+          "git_object": "7ae12e84e7ce974f842dd8fd7f6f72dfb3fb341d",
+          "kind": "repository-object",
+          "path": "Dataset/properties/unreach-call.prp",
+          "repository": "Anjiang-Wei/Quokka",
+          "sha256": "0c6a90cfc3ad4545225a0537ddc37b8a11ea5a37b906c053bb298b748f810150",
+          "url": "https://github.com/Anjiang-Wei/Quokka/blob/60301cb79ba594945f2049990421f5d5d4d95afc/Dataset/properties/unreach-call.prp"
+        }
+      ],
+      "finding": "The frozen repository includes 866 evaluation C files, the property file, and baseline verifier result tables with stable filenames.",
+      "state": "available"
+    },
+    "binding_locations": {
+      "evidence": [
+        {
+          "byte_count": 4724,
+          "commit": "60301cb79ba594945f2049990421f5d5d4d95afc",
+          "git_object": "e2040cff366ec98afddd1ff1922c9099d77c17b9",
+          "kind": "repository-file",
+          "line_end": 45,
+          "line_start": 39,
+          "path": "README.md",
+          "repository": "Anjiang-Wei/Quokka",
+          "sha256": "cf3a15d306c1f5f7011f192880a01b4c60146f4fca43dbc71309e7e0f57c3e1c",
+          "url": "https://github.com/Anjiang-Wei/Quokka/blob/60301cb79ba594945f2049990421f5d5d4d95afc/README.md"
+        },
+        {
+          "inventory_path": "inventories/quokka.json",
+          "inventory_sha256": "0e8b442cd916b1bf7dd192cc7cac441f884d4e9a3975c126c24133fe7d6d73dd",
+          "kind": "repository-inventory",
+          "path_listing_path": "inventories/quokka.paths.txt",
+          "path_listing_sha256": "c0111c235a54fa377ab047e6b1b07f3a8434ca1eb32bc761e6072f077cbb0b79",
+          "repository": "Anjiang-Wei/Quokka"
+        }
+      ],
+      "finding": "The generator is designed to emit insertion lines, but the frozen release contains no Quokka result JSONs that bind the evaluated LLM outputs to those locations.",
+      "state": "missing"
+    },
+    "expected_verdicts": {
+      "evidence": [
+        {
+          "byte_count": 4724,
+          "commit": "60301cb79ba594945f2049990421f5d5d4d95afc",
+          "git_object": "e2040cff366ec98afddd1ff1922c9099d77c17b9",
+          "kind": "repository-file",
+          "line_end": 81,
+          "line_start": 47,
+          "path": "README.md",
+          "repository": "Anjiang-Wei/Quokka",
+          "sha256": "cf3a15d306c1f5f7011f192880a01b4c60146f4fca43dbc71309e7e0f57c3e1c",
+          "url": "https://github.com/Anjiang-Wei/Quokka/blob/60301cb79ba594945f2049990421f5d5d4d95afc/README.md"
+        },
+        {
+          "inventory_path": "inventories/quokka.json",
+          "inventory_sha256": "0e8b442cd916b1bf7dd192cc7cac441f884d4e9a3975c126c24133fe7d6d73dd",
+          "kind": "repository-inventory",
+          "path_listing_path": "inventories/quokka.paths.txt",
+          "path_listing_sha256": "c0111c235a54fa377ab047e6b1b07f3a8434ca1eb32bc761e6072f077cbb0b79",
+          "repository": "Anjiang-Wei/Quokka"
+        }
+      ],
+      "finding": "The release documents the result schema and printer, but the baselines/results directory and its per-instance Quokka verdicts are absent from the frozen tree.",
+      "state": "missing"
+    },
+    "frozen_llm_outputs": {
+      "evidence": [
+        {
+          "byte_count": 4724,
+          "commit": "60301cb79ba594945f2049990421f5d5d4d95afc",
+          "git_object": "e2040cff366ec98afddd1ff1922c9099d77c17b9",
+          "kind": "repository-file",
+          "line_end": 45,
+          "line_start": 39,
+          "path": "README.md",
+          "repository": "Anjiang-Wei/Quokka",
+          "sha256": "cf3a15d306c1f5f7011f192880a01b4c60146f4fca43dbc71309e7e0f57c3e1c",
+          "url": "https://github.com/Anjiang-Wei/Quokka/blob/60301cb79ba594945f2049990421f5d5d4d95afc/README.md"
+        },
+        {
+          "inventory_path": "inventories/quokka.json",
+          "inventory_sha256": "0e8b442cd916b1bf7dd192cc7cac441f884d4e9a3975c126c24133fe7d6d73dd",
+          "kind": "repository-inventory",
+          "path_listing_path": "inventories/quokka.paths.txt",
+          "path_listing_sha256": "c0111c235a54fa377ab047e6b1b07f3a8434ca1eb32bc761e6072f077cbb0b79",
+          "repository": "Anjiang-Wei/Quokka"
+        }
+      ],
+      "finding": "The README says new JSON outputs are written under baselines/results, but no frozen generated result JSON or raw LLM output is committed.",
+      "state": "missing"
+    },
+    "generation_config": {
+      "evidence": [
+        {
+          "byte_count": 4724,
+          "commit": "60301cb79ba594945f2049990421f5d5d4d95afc",
+          "git_object": "e2040cff366ec98afddd1ff1922c9099d77c17b9",
+          "kind": "repository-file",
+          "line_end": 45,
+          "line_start": 27,
+          "path": "README.md",
+          "repository": "Anjiang-Wei/Quokka",
+          "sha256": "cf3a15d306c1f5f7011f192880a01b4c60146f4fca43dbc71309e7e0f57c3e1c",
+          "url": "https://github.com/Anjiang-Wei/Quokka/blob/60301cb79ba594945f2049990421f5d5d4d95afc/README.md"
+        },
+        {
+          "byte_count": 8453,
+          "commit": "60301cb79ba594945f2049990421f5d5d4d95afc",
+          "git_object": "8b1e98dc54528a849370744419d44baddf6e3fcc",
+          "kind": "repository-object",
+          "path": "baselines/prompt.yaml",
+          "repository": "Anjiang-Wei/Quokka",
+          "sha256": "e0b18022e9d98d05d9f26ae54e00e456851a653b87ee5913950105ac79f905e5",
+          "url": "https://github.com/Anjiang-Wei/Quokka/blob/60301cb79ba594945f2049990421f5d5d4d95afc/baselines/prompt.yaml"
+        }
+      ],
+      "finding": "The public command fixes model, client, maximum tokens, best-of-N, temperature, worker count, and the exact prompt templates.",
+      "state": "available"
+    },
+    "immutable_revision": {
+      "evidence": [
+        {
+          "commit": "60301cb79ba594945f2049990421f5d5d4d95afc",
+          "kind": "repository-commit",
+          "repository": "Anjiang-Wei/Quokka",
+          "tree": "071fead318771f8a833fb59474c3e4fc24459827",
+          "url": "https://github.com/Anjiang-Wei/Quokka/tree/60301cb79ba594945f2049990421f5d5d4d95afc"
+        }
+      ],
+      "finding": "The public artifact repository was resolved to an immutable Git commit before file inspection.",
+      "state": "available"
+    },
+    "implementation": {
+      "evidence": [
+        {
+          "byte_count": 84408,
+          "commit": "60301cb79ba594945f2049990421f5d5d4d95afc",
+          "git_object": "a807ffcf563d9cda5a3cb6afedccf607f5eb0874",
+          "kind": "repository-object",
+          "path": "baselines/batch_invariant_generation.py",
+          "repository": "Anjiang-Wei/Quokka",
+          "sha256": "7a81af22b64a33ed31b3ed7ca03a68226c8feee98e888e94b5a68787c8732f7e",
+          "url": "https://github.com/Anjiang-Wei/Quokka/blob/60301cb79ba594945f2049990421f5d5d4d95afc/baselines/batch_invariant_generation.py"
+        },
+        {
+          "byte_count": 24328,
+          "commit": "60301cb79ba594945f2049990421f5d5d4d95afc",
+          "git_object": "1596fbae974d7f5372c78819c576127ece845e07",
+          "kind": "repository-object",
+          "path": "baselines/print_results.py",
+          "repository": "Anjiang-Wei/Quokka",
+          "sha256": "55ae4b685304002909a15908fabd240c94abc82ccf5f1b5c4b7566676ef5562d",
+          "url": "https://github.com/Anjiang-Wei/Quokka/blob/60301cb79ba594945f2049990421f5d5d4d95afc/baselines/print_results.py"
+        }
+      ],
+      "finding": "The generator, verifier integration, inference clients, and result analysis implementation are present in the frozen tree.",
+      "state": "available"
+    },
+    "license": {
+      "evidence": [
+        {
+          "byte_count": 4724,
+          "commit": "60301cb79ba594945f2049990421f5d5d4d95afc",
+          "git_object": "e2040cff366ec98afddd1ff1922c9099d77c17b9",
+          "kind": "repository-file",
+          "line_end": 124,
+          "line_start": 118,
+          "path": "README.md",
+          "repository": "Anjiang-Wei/Quokka",
+          "sha256": "cf3a15d306c1f5f7011f192880a01b4c60146f4fca43dbc71309e7e0f57c3e1c",
+          "url": "https://github.com/Anjiang-Wei/Quokka/blob/60301cb79ba594945f2049990421f5d5d4d95afc/README.md"
+        }
+      ],
+      "finding": "The repository README explicitly licenses the project under Apache License 2.0 and links the license terms.",
+      "state": "available"
+    },
+    "no_manual_repair": {
+      "evidence": [
+        {
+          "inventory_path": "inventories/quokka.json",
+          "inventory_sha256": "0e8b442cd916b1bf7dd192cc7cac441f884d4e9a3975c126c24133fe7d6d73dd",
+          "kind": "repository-inventory",
+          "path_listing_path": "inventories/quokka.paths.txt",
+          "path_listing_sha256": "c0111c235a54fa377ab047e6b1b07f3a8434ca1eb32bc761e6072f077cbb0b79",
+          "repository": "Anjiang-Wei/Quokka"
+        }
+      ],
+      "finding": "No evaluated LLM output or replay trace is released, so the absence of undocumented manual edits cannot be established.",
+      "state": "missing"
+    },
+    "offline_replay": {
+      "evidence": [
+        {
+          "byte_count": 4724,
+          "commit": "60301cb79ba594945f2049990421f5d5d4d95afc",
+          "git_object": "e2040cff366ec98afddd1ff1922c9099d77c17b9",
+          "kind": "repository-file",
+          "line_end": 71,
+          "line_start": 39,
+          "path": "README.md",
+          "repository": "Anjiang-Wei/Quokka",
+          "sha256": "cf3a15d306c1f5f7011f192880a01b4c60146f4fca43dbc71309e7e0f57c3e1c",
+          "url": "https://github.com/Anjiang-Wei/Quokka/blob/60301cb79ba594945f2049990421f5d5d4d95afc/README.md"
+        },
+        {
+          "inventory_path": "inventories/quokka.json",
+          "inventory_sha256": "0e8b442cd916b1bf7dd192cc7cac441f884d4e9a3975c126c24133fe7d6d73dd",
+          "kind": "repository-inventory",
+          "path_listing_path": "inventories/quokka.paths.txt",
+          "path_listing_sha256": "c0111c235a54fa377ab047e6b1b07f3a8434ca1eb32bc761e6072f077cbb0b79",
+          "repository": "Anjiang-Wei/Quokka"
+        }
+      ],
+      "finding": "The documented experiment command performs a new model call and the print command requires absent result JSONs; there is no frozen-output verifier replay.",
+      "state": "missing"
+    },
+    "per_instance_timing": {
+      "evidence": [
+        {
+          "byte_count": 369231,
+          "commit": "60301cb79ba594945f2049990421f5d5d4d95afc",
+          "git_object": "4b6f9f070073ee80c234c824fa75684973758576",
+          "kind": "repository-object",
+          "path": "Dataset/timing_uautomizer.json",
+          "repository": "Anjiang-Wei/Quokka",
+          "sha256": "38dcc2a8fc5f52412fae03f8641abdb2e9a8c3b0d13651f2e81e8859f622fe95",
+          "url": "https://github.com/Anjiang-Wei/Quokka/blob/60301cb79ba594945f2049990421f5d5d4d95afc/Dataset/timing_uautomizer.json"
+        },
+        {
+          "inventory_path": "inventories/quokka.json",
+          "inventory_sha256": "0e8b442cd916b1bf7dd192cc7cac441f884d4e9a3975c126c24133fe7d6d73dd",
+          "kind": "repository-inventory",
+          "path_listing_path": "inventories/quokka.paths.txt",
+          "path_listing_sha256": "c0111c235a54fa377ab047e6b1b07f3a8434ca1eb32bc761e6072f077cbb0b79",
+          "repository": "Anjiang-Wei/Quokka"
+        }
+      ],
+      "finding": "Per-instance baseline verifier timings are released, but generation and verification timings for the evaluated Quokka LLM runs are absent with the result JSONs.",
+      "state": "missing"
+    },
+    "result_provenance": {
+      "evidence": [
+        {
+          "inventory_path": "inventories/quokka.json",
+          "inventory_sha256": "0e8b442cd916b1bf7dd192cc7cac441f884d4e9a3975c126c24133fe7d6d73dd",
+          "kind": "repository-inventory",
+          "path_listing_path": "inventories/quokka.paths.txt",
+          "path_listing_sha256": "c0111c235a54fa377ab047e6b1b07f3a8434ca1eb32bc761e6072f077cbb0b79",
+          "repository": "Anjiang-Wei/Quokka"
+        }
+      ],
+      "finding": "There is no result artifact, content-hash manifest, or mapping from evaluated benchmark/output bytes to reported rows.",
+      "state": "missing"
+    },
+    "verifier_build": {
+      "evidence": [
+        {
+          "byte_count": 475,
+          "commit": "60301cb79ba594945f2049990421f5d5d4d95afc",
+          "git_object": "adc63c3c424f5bb7ef56caede6b0a9ea9a652326",
+          "kind": "repository-object",
+          "path": "build.sh",
+          "repository": "Anjiang-Wei/Quokka",
+          "sha256": "f49bcc64317e66d48a5cd6b3f1540eff505261661fe36a089043a070a9ff61a2",
+          "url": "https://github.com/Anjiang-Wei/Quokka/blob/60301cb79ba594945f2049990421f5d5d4d95afc/build.sh"
+        },
+        {
+          "byte_count": 3233,
+          "commit": "60301cb79ba594945f2049990421f5d5d4d95afc",
+          "git_object": "9e3b966e4204e48f81ede5f9ba4a57df8344b3be",
+          "kind": "repository-object",
+          "path": "baselines/reqs.txt",
+          "repository": "Anjiang-Wei/Quokka",
+          "sha256": "fab66b4d01666297c6eea17e75edde235343e3f3e44fd09ff98a234cd935af5c",
+          "url": "https://github.com/Anjiang-Wei/Quokka/blob/60301cb79ba594945f2049990421f5d5d4d95afc/baselines/reqs.txt"
+        }
+      ],
+      "finding": "The build script downloads the fixed SV-COMP 2023 UAutomizer archive and the Python dependency set is version-pinned.",
+      "state": "available"
+    },
+    "verifier_identity": {
+      "evidence": [
+        {
+          "byte_count": 4724,
+          "commit": "60301cb79ba594945f2049990421f5d5d4d95afc",
+          "git_object": "e2040cff366ec98afddd1ff1922c9099d77c17b9",
+          "kind": "repository-file",
+          "line_end": 25,
+          "line_start": 7,
+          "path": "README.md",
+          "repository": "Anjiang-Wei/Quokka",
+          "sha256": "cf3a15d306c1f5f7011f192880a01b4c60146f4fca43dbc71309e7e0f57c3e1c",
+          "url": "https://github.com/Anjiang-Wei/Quokka/blob/60301cb79ba594945f2049990421f5d5d4d95afc/README.md"
+        },
+        {
+          "byte_count": 475,
+          "commit": "60301cb79ba594945f2049990421f5d5d4d95afc",
+          "git_object": "adc63c3c424f5bb7ef56caede6b0a9ea9a652326",
+          "kind": "repository-object",
+          "path": "build.sh",
+          "repository": "Anjiang-Wei/Quokka",
+          "sha256": "f49bcc64317e66d48a5cd6b3f1540eff505261661fe36a089043a070a9ff61a2",
+          "url": "https://github.com/Anjiang-Wei/Quokka/blob/60301cb79ba594945f2049990421f5d5d4d95afc/build.sh"
+        }
+      ],
+      "finding": "The verifier is identified as the archived SV-COMP 2023 UAutomizer package, with ESBMC explicitly optional.",
+      "state": "available"
+    }
+  },
+  "full_audit_eligible": false,
+  "missing_fields": [
+    "frozen_llm_outputs",
+    "binding_locations",
+    "expected_verdicts",
+    "offline_replay",
+    "per_instance_timing",
+    "result_provenance",
+    "no_manual_repair"
+  ],
+  "name": "Quokka / InvBench",
+  "report_sha256": "b830ffc94810d7bbb5ded0bcc857aac8471c3e154517812af51d495ead776e0c",
+  "repositories": [
+    {
+      "commit": "60301cb79ba594945f2049990421f5d5d4d95afc",
+      "inventory_path": "inventories/quokka.json",
+      "inventory_sha256": "0e8b442cd916b1bf7dd192cc7cac441f884d4e9a3975c126c24133fe7d6d73dd",
+      "repository": "Anjiang-Wei/Quokka",
+      "tree": "071fead318771f8a833fb59474c3e4fc24459827",
+      "url": "https://github.com/Anjiang-Wei/Quokka"
+    }
+  ],
+  "retrieval_freeze_sha256": "1c4576d67a73b0ae771c6f7e37529933e5d1c9d981778bf45b70b0c21308c804",
+  "schema": "cross-tool-x0-candidate-report-v1",
+  "setting": "c-invariant-acceleration",
+  "setting_class": "source-program-verification"
+}

@@ -207,10 +207,14 @@ Final status and claim boundaries:
 - [`docs/DOC_INDEX.md`](docs/DOC_INDEX.md)
 
 Independent follow-on work is isolated on branch `cross-tool-audit`. It does
-not reopen Pono Gate 6. Its first and only authorized step is the preregistered
-public-artifact availability census in
-[`docs/cross_tool_audit_preregistration.md`](docs/cross_tool_audit_preregistration.md);
-no verifier replay or LLM call is authorized until that gate passes.
+not reopen Pono Gate 6. Its preregistered public-artifact availability census in
+[`docs/cross_tool_audit_preregistration.md`](docs/cross_tool_audit_preregistration.md)
+is complete. None of the five frozen systems met the full 14-field contract,
+so the result is `STOP_X0_INSUFFICIENT_PUBLIC_ARTIFACTS`; no verifier replay or
+LLM call occurred, and X1--X3 are not authorized. See
+[`docs/cross_tool_x0_results.md`](docs/cross_tool_x0_results.md). This result
+measures public artifact sufficiency only and is not a claim that any evaluated
+system is unsound or ineffective.
 
 ## Documentation
 

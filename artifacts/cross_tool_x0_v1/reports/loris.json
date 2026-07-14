@@ -1,0 +1,392 @@
+{
+  "ambiguous_fields": [
+    "binding_locations",
+    "generation_config",
+    "per_instance_timing",
+    "no_manual_repair"
+  ],
+  "available_count": 7,
+  "blocked_fields": [],
+  "candidate_id": "loris",
+  "catalog_sha256": "d8dfeaa65d6a34652f0018d9ac61a587ce884c208847094ee9750b0047a13fd3",
+  "census_sha256": "c9cfab43b56ce6f144a3b5f30ae7133ba72fe8963462c167f77bf866e218ed6b",
+  "fields": {
+    "benchmark_inputs": {
+      "evidence": [
+        {
+          "byte_count": 3087,
+          "commit": "315809c0685d11206840da3944b5e6a323178663",
+          "git_object": "be5fddcf59bad172733b8b10abda256deb5ace0f",
+          "kind": "repository-file",
+          "line_end": 4,
+          "line_start": 1,
+          "path": "README.md",
+          "repository": "ltcRandomwalk/LORIS",
+          "sha256": "6041225946f9d0aeafb5e52f98e91afe93e976441d7b7e927d3b14419e3049d1",
+          "url": "https://github.com/ltcRandomwalk/LORIS/blob/315809c0685d11206840da3944b5e6a323178663/README.md"
+        },
+        {
+          "byte_count": 849873,
+          "commit": "315809c0685d11206840da3944b5e6a323178663",
+          "git_object": "563711cb30cb6a3df64154f4259aae5985622246",
+          "kind": "repository-object",
+          "path": "final_benchmarks.zip",
+          "repository": "ltcRandomwalk/LORIS",
+          "sha256": "0541650d806b12b380c9194228af9eb44e0bba258bd089428cd8bb5d7ae890d7",
+          "url": "https://github.com/ltcRandomwalk/LORIS/blob/315809c0685d11206840da3944b5e6a323178663/final_benchmarks.zip"
+        },
+        {
+          "byte_count": 14977,
+          "commit": "315809c0685d11206840da3944b5e6a323178663",
+          "git_object": "f696452135fcb37ac8f52a303402c206133b9b42",
+          "kind": "repository-object",
+          "path": "experiments/finalbenchmark.txt",
+          "repository": "ltcRandomwalk/LORIS",
+          "sha256": "7f71629194b3416e4e048af320bf4187153ec98868677cdc70d681dd7e34e238",
+          "url": "https://github.com/ltcRandomwalk/LORIS/blob/315809c0685d11206840da3944b5e6a323178663/experiments/finalbenchmark.txt"
+        }
+      ],
+      "finding": "The exact benchmark archive and the main and nonlinear benchmark lists are committed with the replication package.",
+      "state": "available"
+    },
+    "binding_locations": {
+      "evidence": [
+        {
+          "byte_count": 84618308,
+          "commit": "315809c0685d11206840da3944b5e6a323178663",
+          "git_object": "b1b10d2727a06c01f7a41f6537a258694f25c5d7",
+          "kind": "repository-object",
+          "path": "Results.zip",
+          "repository": "ltcRandomwalk/LORIS",
+          "sha256": "33323fdfb5f75a037c78476467097a00e3597ceb6b7ac56a7538a28d909a83fc",
+          "url": "https://github.com/ltcRandomwalk/LORIS/blob/315809c0685d11206840da3944b5e6a323178663/Results.zip"
+        },
+        {
+          "byte_count": 849873,
+          "commit": "315809c0685d11206840da3944b5e6a323178663",
+          "git_object": "563711cb30cb6a3df64154f4259aae5985622246",
+          "kind": "repository-object",
+          "path": "final_benchmarks.zip",
+          "repository": "ltcRandomwalk/LORIS",
+          "sha256": "0541650d806b12b380c9194228af9eb44e0bba258bd089428cd8bb5d7ae890d7",
+          "url": "https://github.com/ltcRandomwalk/LORIS/blob/315809c0685d11206840da3944b5e6a323178663/final_benchmarks.zip"
+        }
+      ],
+      "finding": "The result archive contains benchmark-named run logs and invariant blocks, but no release-level index fixes the exact insertion site for every retained output without reconstructing it from logs and source.",
+      "state": "ambiguous"
+    },
+    "expected_verdicts": {
+      "evidence": [
+        {
+          "byte_count": 3087,
+          "commit": "315809c0685d11206840da3944b5e6a323178663",
+          "git_object": "be5fddcf59bad172733b8b10abda256deb5ace0f",
+          "kind": "repository-file",
+          "line_end": 112,
+          "line_start": 98,
+          "path": "README.md",
+          "repository": "ltcRandomwalk/LORIS",
+          "sha256": "6041225946f9d0aeafb5e52f98e91afe93e976441d7b7e927d3b14419e3049d1",
+          "url": "https://github.com/ltcRandomwalk/LORIS/blob/315809c0685d11206840da3944b5e6a323178663/README.md"
+        },
+        {
+          "byte_count": 84618308,
+          "commit": "315809c0685d11206840da3944b5e6a323178663",
+          "git_object": "b1b10d2727a06c01f7a41f6537a258694f25c5d7",
+          "kind": "repository-object",
+          "path": "Results.zip",
+          "repository": "ltcRandomwalk/LORIS",
+          "sha256": "33323fdfb5f75a037c78476467097a00e3597ceb6b7ac56a7538a28d909a83fc",
+          "url": "https://github.com/ltcRandomwalk/LORIS/blob/315809c0685d11206840da3944b5e6a323178663/Results.zip"
+        }
+      ],
+      "finding": "Per-benchmark, per-run result JSON files in Results.zip record success and the accepted invariant block.",
+      "state": "available"
+    },
+    "frozen_llm_outputs": {
+      "evidence": [
+        {
+          "byte_count": 3087,
+          "commit": "315809c0685d11206840da3944b5e6a323178663",
+          "git_object": "be5fddcf59bad172733b8b10abda256deb5ace0f",
+          "kind": "repository-file",
+          "line_end": 4,
+          "line_start": 1,
+          "path": "README.md",
+          "repository": "ltcRandomwalk/LORIS",
+          "sha256": "6041225946f9d0aeafb5e52f98e91afe93e976441d7b7e927d3b14419e3049d1",
+          "url": "https://github.com/ltcRandomwalk/LORIS/blob/315809c0685d11206840da3944b5e6a323178663/README.md"
+        },
+        {
+          "byte_count": 84618308,
+          "commit": "315809c0685d11206840da3944b5e6a323178663",
+          "git_object": "b1b10d2727a06c01f7a41f6537a258694f25c5d7",
+          "kind": "repository-object",
+          "path": "Results.zip",
+          "repository": "ltcRandomwalk/LORIS",
+          "sha256": "33323fdfb5f75a037c78476467097a00e3597ceb6b7ac56a7538a28d909a83fc",
+          "url": "https://github.com/ltcRandomwalk/LORIS/blob/315809c0685d11206840da3944b5e6a323178663/Results.zip"
+        }
+      ],
+      "finding": "Results.zip retains the per-run logs, generated invariant blocks, verifier feedback, and summarized results for the released evaluation.",
+      "state": "available"
+    },
+    "generation_config": {
+      "evidence": [
+        {
+          "byte_count": 3087,
+          "commit": "315809c0685d11206840da3944b5e6a323178663",
+          "git_object": "be5fddcf59bad172733b8b10abda256deb5ace0f",
+          "kind": "repository-file",
+          "line_end": 98,
+          "line_start": 72,
+          "path": "README.md",
+          "repository": "ltcRandomwalk/LORIS",
+          "sha256": "6041225946f9d0aeafb5e52f98e91afe93e976441d7b7e927d3b14419e3049d1",
+          "url": "https://github.com/ltcRandomwalk/LORIS/blob/315809c0685d11206840da3944b5e6a323178663/README.md"
+        },
+        {
+          "byte_count": 2618,
+          "commit": "315809c0685d11206840da3944b5e6a323178663",
+          "git_object": "3f72f81caa20aace6b7b41fea510a4f804a9732d",
+          "kind": "repository-object",
+          "path": "src/StepProofVerifier/Config.py",
+          "repository": "ltcRandomwalk/LORIS",
+          "sha256": "e3216edf00c4652626dc6604f01fdc8fcc0e72a11bb911cb3a8aa5a903f3cd30",
+          "url": "https://github.com/ltcRandomwalk/LORIS/blob/315809c0685d11206840da3944b5e6a323178663/src/StepProofVerifier/Config.py"
+        },
+        {
+          "byte_count": 480,
+          "commit": "315809c0685d11206840da3944b5e6a323178663",
+          "git_object": "14324caf56875f7482ae764523ad11ce71f5458c",
+          "kind": "repository-object",
+          "path": "src/StepProofVerifier/prompts/get_init_invariants_lam4inv.txt",
+          "repository": "ltcRandomwalk/LORIS",
+          "sha256": "7ddcd510199d5a685bb2fe7c635368400f5b753b66e97b6aee948c4c188c8e2b",
+          "url": "https://github.com/ltcRandomwalk/LORIS/blob/315809c0685d11206840da3944b5e6a323178663/src/StepProofVerifier/prompts/get_init_invariants_lam4inv.txt"
+        }
+      ],
+      "finding": "Models, prompts, timeout, and token limits are public, but no immutable run manifest binds every archived result root to a complete sampling and retry configuration.",
+      "state": "ambiguous"
+    },
+    "immutable_revision": {
+      "evidence": [
+        {
+          "commit": "315809c0685d11206840da3944b5e6a323178663",
+          "kind": "repository-commit",
+          "repository": "ltcRandomwalk/LORIS",
+          "tree": "f8f5dbf7a749b976a6e428a77c6316facd9520c0",
+          "url": "https://github.com/ltcRandomwalk/LORIS/tree/315809c0685d11206840da3944b5e6a323178663"
+        }
+      ],
+      "finding": "The public replication repository was resolved to an immutable Git commit before file inspection.",
+      "state": "available"
+    },
+    "implementation": {
+      "evidence": [
+        {
+          "byte_count": 259,
+          "commit": "315809c0685d11206840da3944b5e6a323178663",
+          "git_object": "4253d5b149a128f857767a84dff9c83809967b30",
+          "kind": "repository-object",
+          "path": "src/StepProofRunner.py",
+          "repository": "ltcRandomwalk/LORIS",
+          "sha256": "97ec8e68ec542803ef8b29312afe423dce20547f2558c7f819ba8da684acbe37",
+          "url": "https://github.com/ltcRandomwalk/LORIS/blob/315809c0685d11206840da3944b5e6a323178663/src/StepProofRunner.py"
+        },
+        {
+          "byte_count": 24515,
+          "commit": "315809c0685d11206840da3944b5e6a323178663",
+          "git_object": "1a726d1772daaf70167125a941528a57c345b27c",
+          "kind": "repository-object",
+          "path": "src/StepProofVerifier/StepProofVerifier.py",
+          "repository": "ltcRandomwalk/LORIS",
+          "sha256": "d55d63cd50e7949eda1ab1eb3bb2aa719ce71dc026f7b13eb2047ff38d9dd4f2",
+          "url": "https://github.com/ltcRandomwalk/LORIS/blob/315809c0685d11206840da3944b5e6a323178663/src/StepProofVerifier/StepProofVerifier.py"
+        }
+      ],
+      "finding": "The Python generation, local-reasoning checker, and experiment drivers are present in the frozen repository.",
+      "state": "available"
+    },
+    "license": {
+      "evidence": [
+        {
+          "inventory_path": "inventories/loris.json",
+          "inventory_sha256": "d3bf5924c01654d662c05fc2deeca7edea5907fb15c6747c553382323be2f56f",
+          "kind": "repository-inventory",
+          "path_listing_path": "inventories/loris.paths.txt",
+          "path_listing_sha256": "4325b87ba90a86f60ad37415f27bc7928baf6ce94f7b6a45233a7e66b791a64b",
+          "repository": "ltcRandomwalk/LORIS"
+        }
+      ],
+      "finding": "The repository has no root LICENSE, COPYING, or equivalent terms covering the LORIS implementation and released experiment data.",
+      "state": "missing"
+    },
+    "no_manual_repair": {
+      "evidence": [
+        {
+          "byte_count": 84618308,
+          "commit": "315809c0685d11206840da3944b5e6a323178663",
+          "git_object": "b1b10d2727a06c01f7a41f6537a258694f25c5d7",
+          "kind": "repository-object",
+          "path": "Results.zip",
+          "repository": "ltcRandomwalk/LORIS",
+          "sha256": "33323fdfb5f75a037c78476467097a00e3597ceb6b7ac56a7538a28d909a83fc",
+          "url": "https://github.com/ltcRandomwalk/LORIS/blob/315809c0685d11206840da3944b5e6a323178663/Results.zip"
+        },
+        {
+          "byte_count": 3087,
+          "commit": "315809c0685d11206840da3944b5e6a323178663",
+          "git_object": "be5fddcf59bad172733b8b10abda256deb5ace0f",
+          "kind": "repository-file",
+          "line_end": 112,
+          "line_start": 85,
+          "path": "README.md",
+          "repository": "ltcRandomwalk/LORIS",
+          "sha256": "6041225946f9d0aeafb5e52f98e91afe93e976441d7b7e927d3b14419e3049d1",
+          "url": "https://github.com/ltcRandomwalk/LORIS/blob/315809c0685d11206840da3944b5e6a323178663/README.md"
+        }
+      ],
+      "finding": "The archive looks pipeline-generated, but the release does not attest that archived candidates or final result JSON files received no undocumented manual edits.",
+      "state": "ambiguous"
+    },
+    "offline_replay": {
+      "evidence": [
+        {
+          "byte_count": 3087,
+          "commit": "315809c0685d11206840da3944b5e6a323178663",
+          "git_object": "be5fddcf59bad172733b8b10abda256deb5ace0f",
+          "kind": "repository-file",
+          "line_end": 112,
+          "line_start": 85,
+          "path": "README.md",
+          "repository": "ltcRandomwalk/LORIS",
+          "sha256": "6041225946f9d0aeafb5e52f98e91afe93e976441d7b7e927d3b14419e3049d1",
+          "url": "https://github.com/ltcRandomwalk/LORIS/blob/315809c0685d11206840da3944b5e6a323178663/README.md"
+        }
+      ],
+      "finding": "The documented tool command performs fresh model generation and the analysis command only aggregates logs; no command rechecks frozen invariant outputs through the verifier offline.",
+      "state": "missing"
+    },
+    "per_instance_timing": {
+      "evidence": [
+        {
+          "byte_count": 84618308,
+          "commit": "315809c0685d11206840da3944b5e6a323178663",
+          "git_object": "b1b10d2727a06c01f7a41f6537a258694f25c5d7",
+          "kind": "repository-object",
+          "path": "Results.zip",
+          "repository": "ltcRandomwalk/LORIS",
+          "sha256": "33323fdfb5f75a037c78476467097a00e3597ceb6b7ac56a7538a28d909a83fc",
+          "url": "https://github.com/ltcRandomwalk/LORIS/blob/315809c0685d11206840da3944b5e6a323178663/Results.zip"
+        },
+        {
+          "byte_count": 3087,
+          "commit": "315809c0685d11206840da3944b5e6a323178663",
+          "git_object": "be5fddcf59bad172733b8b10abda256deb5ace0f",
+          "kind": "repository-file",
+          "line_end": 112,
+          "line_start": 100,
+          "path": "README.md",
+          "repository": "ltcRandomwalk/LORIS",
+          "sha256": "6041225946f9d0aeafb5e52f98e91afe93e976441d7b7e927d3b14419e3049d1",
+          "url": "https://github.com/ltcRandomwalk/LORIS/blob/315809c0685d11206840da3944b5e6a323178663/README.md"
+        }
+      ],
+      "finding": "Each trial records a total time and token counts and detailed logs have timestamps, but generation and final-verifier times are not exposed as separate per-trial fields.",
+      "state": "ambiguous"
+    },
+    "result_provenance": {
+      "evidence": [
+        {
+          "byte_count": 84618308,
+          "commit": "315809c0685d11206840da3944b5e6a323178663",
+          "git_object": "b1b10d2727a06c01f7a41f6537a258694f25c5d7",
+          "kind": "repository-object",
+          "path": "Results.zip",
+          "repository": "ltcRandomwalk/LORIS",
+          "sha256": "33323fdfb5f75a037c78476467097a00e3597ceb6b7ac56a7538a28d909a83fc",
+          "url": "https://github.com/ltcRandomwalk/LORIS/blob/315809c0685d11206840da3944b5e6a323178663/Results.zip"
+        },
+        {
+          "inventory_path": "inventories/loris.json",
+          "inventory_sha256": "d3bf5924c01654d662c05fc2deeca7edea5907fb15c6747c553382323be2f56f",
+          "kind": "repository-inventory",
+          "path_listing_path": "inventories/loris.paths.txt",
+          "path_listing_sha256": "4325b87ba90a86f60ad37415f27bc7928baf6ce94f7b6a45233a7e66b791a64b",
+          "repository": "ltcRandomwalk/LORIS"
+        }
+      ],
+      "finding": "The release has benchmark-named directories but no machine-readable mapping from benchmark and output hashes to reported paper rows.",
+      "state": "missing"
+    },
+    "verifier_build": {
+      "evidence": [
+        {
+          "byte_count": 3087,
+          "commit": "315809c0685d11206840da3944b5e6a323178663",
+          "git_object": "be5fddcf59bad172733b8b10abda256deb5ace0f",
+          "kind": "repository-file",
+          "line_end": 68,
+          "line_start": 5,
+          "path": "README.md",
+          "repository": "ltcRandomwalk/LORIS",
+          "sha256": "6041225946f9d0aeafb5e52f98e91afe93e976441d7b7e927d3b14419e3049d1",
+          "url": "https://github.com/ltcRandomwalk/LORIS/blob/315809c0685d11206840da3944b5e6a323178663/README.md"
+        },
+        {
+          "byte_count": 78,
+          "commit": "315809c0685d11206840da3944b5e6a323178663",
+          "git_object": "5bed3d78aae4cbde614c1cdff495ceda3d847462",
+          "kind": "repository-object",
+          "path": "src/requirements.txt",
+          "repository": "ltcRandomwalk/LORIS",
+          "sha256": "273eadcc6b25c0e3158c91492e1a908a6bf7c09efab4d0eee26384d55a777255",
+          "url": "https://github.com/ltcRandomwalk/LORIS/blob/315809c0685d11206840da3944b5e6a323178663/src/requirements.txt"
+        }
+      ],
+      "finding": "The replication README pins Frama-C, CVC4, Alt-Ergo, Z3, Python, and Python package versions and documents parser construction.",
+      "state": "available"
+    },
+    "verifier_identity": {
+      "evidence": [
+        {
+          "byte_count": 3087,
+          "commit": "315809c0685d11206840da3944b5e6a323178663",
+          "git_object": "be5fddcf59bad172733b8b10abda256deb5ace0f",
+          "kind": "repository-file",
+          "line_end": 53,
+          "line_start": 5,
+          "path": "README.md",
+          "repository": "ltcRandomwalk/LORIS",
+          "sha256": "6041225946f9d0aeafb5e52f98e91afe93e976441d7b7e927d3b14419e3049d1",
+          "url": "https://github.com/ltcRandomwalk/LORIS/blob/315809c0685d11206840da3944b5e6a323178663/README.md"
+        }
+      ],
+      "finding": "The final checking stack is named with exact published versions: Frama-C 27.1, CVC4 1.6, Alt-Ergo 2.4.3, and Z3 4.12.2.",
+      "state": "available"
+    }
+  },
+  "full_audit_eligible": false,
+  "missing_fields": [
+    "license",
+    "offline_replay",
+    "result_provenance"
+  ],
+  "name": "LORIS",
+  "report_sha256": "d4bdf939bca09315b91388cc57bc2e7a045c6fc7bb5bf5325219d23e74efe96d",
+  "repositories": [
+    {
+      "commit": "315809c0685d11206840da3944b5e6a323178663",
+      "inventory_path": "inventories/loris.json",
+      "inventory_sha256": "d3bf5924c01654d662c05fc2deeca7edea5907fb15c6747c553382323be2f56f",
+      "repository": "ltcRandomwalk/LORIS",
+      "tree": "f8f5dbf7a749b976a6e428a77c6316facd9520c0",
+      "url": "https://github.com/ltcRandomwalk/LORIS"
+    }
+  ],
+  "retrieval_freeze_sha256": "1c4576d67a73b0ae771c6f7e37529933e5d1c9d981778bf45b70b0c21308c804",
+  "schema": "cross-tool-x0-candidate-report-v1",
+  "setting": "c-loop-invariant-synthesis",
+  "setting_class": "source-program-verification"
+}

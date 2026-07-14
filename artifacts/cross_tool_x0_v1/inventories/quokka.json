@@ -1,0 +1,31 @@
+{
+  "candidate_id": "quokka",
+  "commit": "60301cb79ba594945f2049990421f5d5d4d95afc",
+  "directory": "quokka",
+  "inventory_sha256": "0e8b442cd916b1bf7dd192cc7cac441f884d4e9a3975c126c24133fe7d6d73dd",
+  "path_count": 899,
+  "path_listing": {
+    "path": "inventories/quokka.paths.txt",
+    "sha256": "c0111c235a54fa377ab047e6b1b07f3a8434ca1eb32bc761e6072f077cbb0b79"
+  },
+  "repository": "Anjiang-Wei/Quokka",
+  "root_files": [
+    ".gitignore",
+    "README.md",
+    "build.sh"
+  ],
+  "root_license_files": [],
+  "schema": "cross-tool-x0-repository-inventory-v1",
+  "top_level_counts": {
+    ".gitignore": 1,
+    "Dataset": 890,
+    "README.md": 1,
+    "baselines": 6,
+    "build.sh": 1
+  },
+  "tree": "071fead318771f8a833fb59474c3e4fc24459827",
+  "type_counts": {
+    "blob": 899
+  },
+  "url": "https://github.com/Anjiang-Wei/Quokka"
+}

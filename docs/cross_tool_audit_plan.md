@@ -2,7 +2,7 @@
 
 **Updated:** 2026-07-14
 **Branch:** `cross-tool-audit`
-**Status:** independent Gate X0 preregistered; artifact census not yet executed
+**Status:** stopped at Gate X0; X1--X3 unauthorized
 
 ## Boundary
 
@@ -13,25 +13,39 @@ that release.
 
 ## Ordered gates
 
-1. **X0 — Public artifact availability:** determine whether at least two
-   systems across two verification settings are fully replayable from frozen
-   public bytes.
-2. **X1 — Soundness-boundary replay:** independently execute frozen outputs
-   through the original verifier and classify the trust boundary.
-3. **X2 — Matched deterministic baseline:** give non-LLM methods the same
-   output language, verifier feedback, and budget.
-4. **X3 — End-to-end marginal value:** compare solved sets, error rates,
-   retries, wall time, tokens, and cost.
+1. **X0 — Public artifact availability: STOP.** No frozen candidate satisfied
+   all fourteen required fields, so the required two-candidate/two-setting
+   population does not exist under the preregistered contract.
+2. **X1 — Soundness-boundary replay: not authorized.** No verifier was built or
+   executed.
+3. **X2 — Matched deterministic baseline: not authorized.** No baseline or
+   model call was executed.
+4. **X3 — End-to-end marginal value: not authorized.** No utility claim was
+   tested.
 
 Only a preceding GO authorizes the next gate. No gate may change the systems,
 population, field contract, or threshold after observing its result.
 
-## Current work
+## Completed evidence
 
-- freeze the five-candidate catalog;
-- implement strict retrieval/census schemas and validators;
-- inspect public releases without executing models or proof systems;
-- commit the X0 decision before any verifier build or replay.
+- The five-candidate catalog and repository retrieval boundary were frozen
+  before repository-file inspection.
+- Six external repositories were resolved to immutable commits and inventoried.
+- Every candidate was classified against all fourteen required fields.
+- The canonical decision is `STOP_X0_INSUFFICIENT_PUBLIC_ARTIFACTS` with zero
+  fully eligible candidate, zero verifier execution, and zero new LLM/provider
+  API call.
+- The strict, recursively hash-bound artifact is
+  [`../artifacts/cross_tool_x0_v1/`](../artifacts/cross_tool_x0_v1/).
+- The complete interpretation and reproduction contract is
+  [`cross_tool_x0_results.md`](cross_tool_x0_results.md).
+
+## Decision boundary
+
+The X0 STOP is an artifact-sufficiency result only. It does not establish that
+any candidate system is unsound or ineffective. Later releases, author-provided
+files, fresh generation, or a weaker field contract may be studied only under
+a new preregistration; they cannot retroactively authorize X1 here.
 
 ## Explicit non-goals
 

@@ -1,13 +1,19 @@
 # Overview
 
-## Active independent project
+## Independent follow-on result
 
 Branch `cross-tool-audit` begins a new Cross-Tool Soundness and
 Matched-Baseline Audit. It does not reopen the closed Pono hypothesis tree.
-Only Gate X0 public-artifact availability is currently authorized; see
+The preregistered Gate X0 public-artifact census is complete; see
 [`cross_tool_audit_plan.md`](cross_tool_audit_plan.md) and the frozen
 [`cross_tool_audit_preregistration.md`](cross_tool_audit_preregistration.md).
-No verifier replay or LLM/API call may occur before X0 passes.
+None of the five frozen candidates met all fourteen artifact requirements, so
+the decision is `STOP_X0_INSUFFICIENT_PUBLIC_ARTIFACTS` and X1--X3 are not
+authorized. No verifier or LLM/provider API call was executed. The complete
+result is
+[`cross_tool_x0_results.md`](cross_tool_x0_results.md). This is an artifact-
+availability result, not evidence that any evaluated system is unsound or
+ineffective.
 
 ## What This Is
 

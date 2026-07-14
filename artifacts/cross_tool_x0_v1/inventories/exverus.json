@@ -1,0 +1,42 @@
+{
+  "candidate_id": "exverus",
+  "commit": "3619935559f12e4be31abb0b9ff87fab5d293b8e",
+  "directory": "exverus",
+  "inventory_sha256": "077c3e369d2bcb89c6af82e70b63a4cf0b6504d6778c1787caccb6e63c899b1e",
+  "path_count": 3266,
+  "path_listing": {
+    "path": "inventories/exverus.paths.txt",
+    "sha256": "5c724e3af18a08a5b99e92b37d57b4dc1c3aeca6439861cb7bc1c9bf0b930b1a"
+  },
+  "repository": "claudeyj/exverus",
+  "root_files": [
+    ".codex",
+    ".gitignore",
+    ".gitmodules",
+    "README.md",
+    "pyproject.toml",
+    "setup.sh",
+    "verus-proof-synthesis"
+  ],
+  "root_license_files": [],
+  "schema": "cross-tool-x0-repository-inventory-v1",
+  "top_level_counts": {
+    ".codex": 1,
+    ".gitignore": 1,
+    ".gitmodules": 1,
+    "Benchmarks": 1337,
+    "README.md": 1,
+    "cleaned-verusbench": 1770,
+    "pyproject.toml": 1,
+    "setup.sh": 1,
+    "tool": 7,
+    "verus-proof-synthesis": 1,
+    "vinv": 145
+  },
+  "tree": "06e5a778e6dcdbbe51d9d6f6171109ddd6e5fa97",
+  "type_counts": {
+    "blob": 3265,
+    "commit": 1
+  },
+  "url": "https://github.com/claudeyj/exverus"
+}

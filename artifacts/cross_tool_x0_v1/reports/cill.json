@@ -1,0 +1,394 @@
+{
+  "ambiguous_fields": [
+    "generation_config",
+    "per_instance_timing",
+    "no_manual_repair"
+  ],
+  "available_count": 8,
+  "blocked_fields": [],
+  "candidate_id": "cill",
+  "catalog_sha256": "d8dfeaa65d6a34652f0018d9ac61a587ce884c208847094ee9750b0047a13fd3",
+  "census_sha256": "c9cfab43b56ce6f144a3b5f30ae7133ba72fe8963462c167f77bf866e218ed6b",
+  "fields": {
+    "benchmark_inputs": {
+      "evidence": [
+        {
+          "byte_count": 2153,
+          "commit": "a61258b1b6abe1d2bdd6966e09485977777f901b",
+          "git_object": "2eb621ca2bdf66aa68a8b66223d55a55ebda1ade",
+          "kind": "repository-file",
+          "line_end": 23,
+          "line_start": 7,
+          "path": "README.md",
+          "repository": "gipsyh/cill-exp",
+          "sha256": "e9fd811051a48a5bc879a023a3b8df9c3895ed57625189b8d48080c99ef938f9",
+          "url": "https://github.com/gipsyh/cill-exp/blob/a61258b1b6abe1d2bdd6966e09485977777f901b/README.md"
+        },
+        {
+          "byte_count": 79734,
+          "commit": "a61258b1b6abe1d2bdd6966e09485977777f901b",
+          "git_object": "55c08350b69dfcccac439fe76139000911497f04",
+          "kind": "repository-object",
+          "path": "picorv32/picorv32.sv",
+          "repository": "gipsyh/cill-exp",
+          "sha256": "d5b1cf69e0f780509ef3e7ecced5c1c36a28b4aaa0eabef28276bbdcdc623d96",
+          "url": "https://github.com/gipsyh/cill-exp/blob/a61258b1b6abe1d2bdd6966e09485977777f901b/picorv32/picorv32.sv"
+        }
+      ],
+      "finding": "The experiment repository contains the RTL, riscv-formal checks, generated testbenches, and per-check configuration used by the released evaluation.",
+      "state": "available"
+    },
+    "binding_locations": {
+      "evidence": [
+        {
+          "byte_count": 3467,
+          "commit": "a61258b1b6abe1d2bdd6966e09485977777f901b",
+          "git_object": "6a7677e0a85a9230b2d17d1815202cc5004d04c9",
+          "kind": "repository-object",
+          "path": "res/picorv32-insn-add/tb.sv",
+          "repository": "gipsyh/cill-exp",
+          "sha256": "525321b2da924d7406397f8b2a63ec4bb8252bc4379dfb25d123f54f10b81d7c",
+          "url": "https://github.com/gipsyh/cill-exp/blob/a61258b1b6abe1d2bdd6966e09485977777f901b/res/picorv32-insn-add/tb.sv"
+        },
+        {
+          "byte_count": 6883,
+          "commit": "a61258b1b6abe1d2bdd6966e09485977777f901b",
+          "git_object": "a1867a7176eae505aae0e6e91bf9342ede282b2f",
+          "kind": "repository-object",
+          "path": "PROMPT.md",
+          "repository": "gipsyh/cill-exp",
+          "sha256": "83330c604633881f87d8870c95bde318f27a6e8b379d50152c44a79082893b3a",
+          "url": "https://github.com/gipsyh/cill-exp/blob/a61258b1b6abe1d2bdd6966e09485977777f901b/PROMPT.md"
+        }
+      ],
+      "finding": "Each released final testbench contains the helper assertions at their concrete SystemVerilog binding sites, and the editing contract limits changes to the marked helper block.",
+      "state": "available"
+    },
+    "expected_verdicts": {
+      "evidence": [
+        {
+          "byte_count": 180,
+          "commit": "a61258b1b6abe1d2bdd6966e09485977777f901b",
+          "git_object": "5cc7b1c49d30e8a3bdee1e3052c16444c4a64ad9",
+          "kind": "repository-object",
+          "path": "res/picorv32-insn-add/stdout.txt",
+          "repository": "gipsyh/cill-exp",
+          "sha256": "68d1361a88270cc4b7942057ad1113dbb16c0f73a5da71dd8df0c2cf980ac180",
+          "url": "https://github.com/gipsyh/cill-exp/blob/a61258b1b6abe1d2bdd6966e09485977777f901b/res/picorv32-insn-add/stdout.txt"
+        }
+      ],
+      "finding": "Per-check stdout files retain the released CIll proof outcome and checker statistics.",
+      "state": "available"
+    },
+    "frozen_llm_outputs": {
+      "evidence": [
+        {
+          "byte_count": 2153,
+          "commit": "a61258b1b6abe1d2bdd6966e09485977777f901b",
+          "git_object": "2eb621ca2bdf66aa68a8b66223d55a55ebda1ade",
+          "kind": "repository-file",
+          "line_end": 23,
+          "line_start": 7,
+          "path": "README.md",
+          "repository": "gipsyh/cill-exp",
+          "sha256": "e9fd811051a48a5bc879a023a3b8df9c3895ed57625189b8d48080c99ef938f9",
+          "url": "https://github.com/gipsyh/cill-exp/blob/a61258b1b6abe1d2bdd6966e09485977777f901b/README.md"
+        },
+        {
+          "byte_count": 2031562,
+          "commit": "a61258b1b6abe1d2bdd6966e09485977777f901b",
+          "git_object": "616351d6025c279e0a925081634258e55263b7ff",
+          "kind": "repository-object",
+          "path": "res/picorv32-insn-add/chat.jsonl",
+          "repository": "gipsyh/cill-exp",
+          "sha256": "6eb38d7597c83c6cc837e35e2690e6d973e3dbf0a22d310d0b7a2e474d3f874b",
+          "url": "https://github.com/gipsyh/cill-exp/blob/a61258b1b6abe1d2bdd6966e09485977777f901b/res/picorv32-insn-add/chat.jsonl"
+        }
+      ],
+      "finding": "The released res tree contains complete Codex chat logs or transcripts together with final testbenches and stdout for the reported checks.",
+      "state": "available"
+    },
+    "generation_config": {
+      "evidence": [
+        {
+          "byte_count": 2153,
+          "commit": "a61258b1b6abe1d2bdd6966e09485977777f901b",
+          "git_object": "2eb621ca2bdf66aa68a8b66223d55a55ebda1ade",
+          "kind": "repository-file",
+          "line_end": 32,
+          "line_start": 26,
+          "path": "README.md",
+          "repository": "gipsyh/cill-exp",
+          "sha256": "e9fd811051a48a5bc879a023a3b8df9c3895ed57625189b8d48080c99ef938f9",
+          "url": "https://github.com/gipsyh/cill-exp/blob/a61258b1b6abe1d2bdd6966e09485977777f901b/README.md"
+        },
+        {
+          "byte_count": 6883,
+          "commit": "a61258b1b6abe1d2bdd6966e09485977777f901b",
+          "git_object": "a1867a7176eae505aae0e6e91bf9342ede282b2f",
+          "kind": "repository-object",
+          "path": "PROMPT.md",
+          "repository": "gipsyh/cill-exp",
+          "sha256": "83330c604633881f87d8870c95bde318f27a6e8b379d50152c44a79082893b3a",
+          "url": "https://github.com/gipsyh/cill-exp/blob/a61258b1b6abe1d2bdd6966e09485977777f901b/PROMPT.md"
+        },
+        {
+          "byte_count": 2031562,
+          "commit": "a61258b1b6abe1d2bdd6966e09485977777f901b",
+          "git_object": "616351d6025c279e0a925081634258e55263b7ff",
+          "kind": "repository-object",
+          "path": "res/picorv32-insn-add/chat.jsonl",
+          "repository": "gipsyh/cill-exp",
+          "sha256": "6eb38d7597c83c6cc837e35e2690e6d973e3dbf0a22d310d0b7a2e474d3f874b",
+          "url": "https://github.com/gipsyh/cill-exp/blob/a61258b1b6abe1d2bdd6966e09485977777f901b/res/picorv32-insn-add/chat.jsonl"
+        }
+      ],
+      "finding": "The prompt, GPT-5.2 xhigh model label, and session metadata are public, but there is no immutable experiment manifest fixing the sampling, retry, tool-version, and budget policy for every run.",
+      "state": "ambiguous"
+    },
+    "immutable_revision": {
+      "evidence": [
+        {
+          "commit": "7149d568785b039134f0b2baa58358c8af63e70d",
+          "kind": "repository-commit",
+          "repository": "gipsyh/rIC3",
+          "tree": "30f92f290ba13a36f8d0c25a3cfb1dd09a1c6833",
+          "url": "https://github.com/gipsyh/rIC3/tree/7149d568785b039134f0b2baa58358c8af63e70d"
+        },
+        {
+          "commit": "a61258b1b6abe1d2bdd6966e09485977777f901b",
+          "kind": "repository-commit",
+          "repository": "gipsyh/cill-exp",
+          "tree": "a7422cac82fb971021474b1c8355d278fc88bd52",
+          "url": "https://github.com/gipsyh/cill-exp/tree/a61258b1b6abe1d2bdd6966e09485977777f901b"
+        }
+      ],
+      "finding": "Both public repositories were resolved to immutable Git commits before file inspection.",
+      "state": "available"
+    },
+    "implementation": {
+      "evidence": [
+        {
+          "byte_count": 359,
+          "commit": "a61258b1b6abe1d2bdd6966e09485977777f901b",
+          "git_object": "3d46e7f2ae27eb4b6c3b17ea0e6db2c944cc8eb1",
+          "kind": "repository-object",
+          "path": ".gitmodules",
+          "repository": "gipsyh/cill-exp",
+          "sha256": "6c33503fa50cb355557686181f0933ee2f908a19eea4e1190cf2e5ffbe022185",
+          "url": "https://github.com/gipsyh/cill-exp/blob/a61258b1b6abe1d2bdd6966e09485977777f901b/.gitmodules"
+        },
+        {
+          "byte_count": 983,
+          "commit": "7149d568785b039134f0b2baa58358c8af63e70d",
+          "git_object": "1089bce73ad45723b3f463c3a93f1448dd224ae9",
+          "kind": "repository-object",
+          "path": "src/main.rs",
+          "repository": "gipsyh/rIC3",
+          "sha256": "57c7a451ef64b855ae9c04684097005177aac34f71e4bc12511857c470b49ae7",
+          "url": "https://github.com/gipsyh/rIC3/blob/7149d568785b039134f0b2baa58358c8af63e70d/src/main.rs"
+        }
+      ],
+      "finding": "The experiment repository pins rIC3 and its toolchain dependencies as submodules, and the public rIC3 repository contains the model-checker implementation.",
+      "state": "available"
+    },
+    "license": {
+      "evidence": [
+        {
+          "byte_count": 35149,
+          "commit": "7149d568785b039134f0b2baa58358c8af63e70d",
+          "git_object": "f288702d2fa16d3cdf0035b15a9fcbc552cd88e7",
+          "kind": "repository-object",
+          "path": "LICENSE",
+          "repository": "gipsyh/rIC3",
+          "sha256": "3972dc9744f6499f0f9b2dbf76696f2ae7ad8af9b23dde66d6af86c9dfb36986",
+          "url": "https://github.com/gipsyh/rIC3/blob/7149d568785b039134f0b2baa58358c8af63e70d/LICENSE"
+        },
+        {
+          "inventory_path": "inventories/cill-exp.json",
+          "inventory_sha256": "9d86e16e8d93d34ceab1dea92e71a254b16e659affbf42f8c99ca8cf64a739bb",
+          "kind": "repository-inventory",
+          "path_listing_path": "inventories/cill-exp.paths.txt",
+          "path_listing_sha256": "6715a0d316d66c02200a9228083045593152d8eda1cff3e17b60042a82d1ca6a",
+          "repository": "gipsyh/cill-exp"
+        }
+      ],
+      "finding": "rIC3 is GPL-3.0 licensed, but the separate cill-exp experiment repository has no root license covering its prompts, result logs, and experiment glue.",
+      "state": "missing"
+    },
+    "no_manual_repair": {
+      "evidence": [
+        {
+          "byte_count": 2031562,
+          "commit": "a61258b1b6abe1d2bdd6966e09485977777f901b",
+          "git_object": "616351d6025c279e0a925081634258e55263b7ff",
+          "kind": "repository-object",
+          "path": "res/picorv32-insn-add/chat.jsonl",
+          "repository": "gipsyh/cill-exp",
+          "sha256": "6eb38d7597c83c6cc837e35e2690e6d973e3dbf0a22d310d0b7a2e474d3f874b",
+          "url": "https://github.com/gipsyh/cill-exp/blob/a61258b1b6abe1d2bdd6966e09485977777f901b/res/picorv32-insn-add/chat.jsonl"
+        },
+        {
+          "byte_count": 3467,
+          "commit": "a61258b1b6abe1d2bdd6966e09485977777f901b",
+          "git_object": "6a7677e0a85a9230b2d17d1815202cc5004d04c9",
+          "kind": "repository-object",
+          "path": "res/picorv32-insn-add/tb.sv",
+          "repository": "gipsyh/cill-exp",
+          "sha256": "525321b2da924d7406397f8b2a63ec4bb8252bc4379dfb25d123f54f10b81d7c",
+          "url": "https://github.com/gipsyh/cill-exp/blob/a61258b1b6abe1d2bdd6966e09485977777f901b/res/picorv32-insn-add/tb.sv"
+        }
+      ],
+      "finding": "Agent transcripts and final files exist, but no release manifest establishes that every retained testbench is the unedited terminal state of its transcript or excludes undocumented human changes.",
+      "state": "ambiguous"
+    },
+    "offline_replay": {
+      "evidence": [
+        {
+          "byte_count": 2153,
+          "commit": "a61258b1b6abe1d2bdd6966e09485977777f901b",
+          "git_object": "2eb621ca2bdf66aa68a8b66223d55a55ebda1ade",
+          "kind": "repository-file",
+          "line_end": 32,
+          "line_start": 26,
+          "path": "README.md",
+          "repository": "gipsyh/cill-exp",
+          "sha256": "e9fd811051a48a5bc879a023a3b8df9c3895ed57625189b8d48080c99ef938f9",
+          "url": "https://github.com/gipsyh/cill-exp/blob/a61258b1b6abe1d2bdd6966e09485977777f901b/README.md"
+        },
+        {
+          "inventory_path": "inventories/cill-exp.json",
+          "inventory_sha256": "9d86e16e8d93d34ceab1dea92e71a254b16e659affbf42f8c99ca8cf64a739bb",
+          "kind": "repository-inventory",
+          "path_listing_path": "inventories/cill-exp.paths.txt",
+          "path_listing_sha256": "6715a0d316d66c02200a9228083045593152d8eda1cff3e17b60042a82d1ca6a",
+          "repository": "gipsyh/cill-exp"
+        }
+      ],
+      "finding": "The published procedure regenerates checks and invokes Codex; it does not provide a command or manifest that rechecks the frozen final testbenches without a model call.",
+      "state": "missing"
+    },
+    "per_instance_timing": {
+      "evidence": [
+        {
+          "byte_count": 180,
+          "commit": "a61258b1b6abe1d2bdd6966e09485977777f901b",
+          "git_object": "5cc7b1c49d30e8a3bdee1e3052c16444c4a64ad9",
+          "kind": "repository-object",
+          "path": "res/picorv32-insn-add/stdout.txt",
+          "repository": "gipsyh/cill-exp",
+          "sha256": "68d1361a88270cc4b7942057ad1113dbb16c0f73a5da71dd8df0c2cf980ac180",
+          "url": "https://github.com/gipsyh/cill-exp/blob/a61258b1b6abe1d2bdd6966e09485977777f901b/res/picorv32-insn-add/stdout.txt"
+        },
+        {
+          "byte_count": 2031562,
+          "commit": "a61258b1b6abe1d2bdd6966e09485977777f901b",
+          "git_object": "616351d6025c279e0a925081634258e55263b7ff",
+          "kind": "repository-object",
+          "path": "res/picorv32-insn-add/chat.jsonl",
+          "repository": "gipsyh/cill-exp",
+          "sha256": "6eb38d7597c83c6cc837e35e2690e6d973e3dbf0a22d310d0b7a2e474d3f874b",
+          "url": "https://github.com/gipsyh/cill-exp/blob/a61258b1b6abe1d2bdd6966e09485977777f901b/res/picorv32-insn-add/chat.jsonl"
+        }
+      ],
+      "finding": "Per-check verifier totals and chat-event timestamps are retained, but no trial record cleanly separates LLM generation latency from verifier execution time.",
+      "state": "ambiguous"
+    },
+    "result_provenance": {
+      "evidence": [
+        {
+          "inventory_path": "inventories/cill-exp.json",
+          "inventory_sha256": "9d86e16e8d93d34ceab1dea92e71a254b16e659affbf42f8c99ca8cf64a739bb",
+          "kind": "repository-inventory",
+          "path_listing_path": "inventories/cill-exp.paths.txt",
+          "path_listing_sha256": "6715a0d316d66c02200a9228083045593152d8eda1cff3e17b60042a82d1ca6a",
+          "repository": "gipsyh/cill-exp"
+        }
+      ],
+      "finding": "The directory layout links names to logs informally, but there is no machine-readable manifest mapping benchmark and output hashes to the paper's reported rows.",
+      "state": "missing"
+    },
+    "verifier_build": {
+      "evidence": [
+        {
+          "byte_count": 2153,
+          "commit": "a61258b1b6abe1d2bdd6966e09485977777f901b",
+          "git_object": "2eb621ca2bdf66aa68a8b66223d55a55ebda1ade",
+          "kind": "repository-file",
+          "line_end": 31,
+          "line_start": 26,
+          "path": "README.md",
+          "repository": "gipsyh/cill-exp",
+          "sha256": "e9fd811051a48a5bc879a023a3b8df9c3895ed57625189b8d48080c99ef938f9",
+          "url": "https://github.com/gipsyh/cill-exp/blob/a61258b1b6abe1d2bdd6966e09485977777f901b/README.md"
+        },
+        {
+          "byte_count": 85021,
+          "commit": "7149d568785b039134f0b2baa58358c8af63e70d",
+          "git_object": "b4a6bd1bd45aac373947544a0a092bb3469c88b5",
+          "kind": "repository-object",
+          "path": "Cargo.lock",
+          "repository": "gipsyh/rIC3",
+          "sha256": "84e6c6c8ffbb28cf56ecccd65f38cee65b06293ea207226e56ff6e256610f96a",
+          "url": "https://github.com/gipsyh/rIC3/blob/7149d568785b039134f0b2baa58358c8af63e70d/Cargo.lock"
+        }
+      ],
+      "finding": "The artifact pins the Git submodules, documents the build sequence, and rIC3 includes a Cargo lockfile.",
+      "state": "available"
+    },
+    "verifier_identity": {
+      "evidence": [
+        {
+          "byte_count": 359,
+          "commit": "a61258b1b6abe1d2bdd6966e09485977777f901b",
+          "git_object": "3d46e7f2ae27eb4b6c3b17ea0e6db2c944cc8eb1",
+          "kind": "repository-object",
+          "path": ".gitmodules",
+          "repository": "gipsyh/cill-exp",
+          "sha256": "6c33503fa50cb355557686181f0933ee2f908a19eea4e1190cf2e5ffbe022185",
+          "url": "https://github.com/gipsyh/cill-exp/blob/a61258b1b6abe1d2bdd6966e09485977777f901b/.gitmodules"
+        },
+        {
+          "inventory_path": "inventories/cill-exp.json",
+          "inventory_sha256": "9d86e16e8d93d34ceab1dea92e71a254b16e659affbf42f8c99ca8cf64a739bb",
+          "kind": "repository-inventory",
+          "path_listing_path": "inventories/cill-exp.paths.txt",
+          "path_listing_sha256": "6715a0d316d66c02200a9228083045593152d8eda1cff3e17b60042a82d1ca6a",
+          "repository": "gipsyh/cill-exp"
+        }
+      ],
+      "finding": "The cill-exp commit records the exact rIC3, Yosys, Yosys-Slang, and riscv-formal Gitlink objects used by the artifact.",
+      "state": "available"
+    }
+  },
+  "full_audit_eligible": false,
+  "missing_fields": [
+    "license",
+    "offline_replay",
+    "result_provenance"
+  ],
+  "name": "CIll",
+  "report_sha256": "f54ce226c8da1cc28879f425c6125586f06cbaa996e160c6e6f9f2ef5ae40271",
+  "repositories": [
+    {
+      "commit": "a61258b1b6abe1d2bdd6966e09485977777f901b",
+      "inventory_path": "inventories/cill-exp.json",
+      "inventory_sha256": "9d86e16e8d93d34ceab1dea92e71a254b16e659affbf42f8c99ca8cf64a739bb",
+      "repository": "gipsyh/cill-exp",
+      "tree": "a7422cac82fb971021474b1c8355d278fc88bd52",
+      "url": "https://github.com/gipsyh/cill-exp"
+    },
+    {
+      "commit": "7149d568785b039134f0b2baa58358c8af63e70d",
+      "inventory_path": "inventories/cill-ric3.json",
+      "inventory_sha256": "fe0d482f2af7db50fc2fb598b387004a7ba7d210303c3d87517c0a831d9fcbfe",
+      "repository": "gipsyh/rIC3",
+      "tree": "30f92f290ba13a36f8d0c25a3cfb1dd09a1c6833",
+      "url": "https://github.com/gipsyh/rIC3"
+    }
+  ],
+  "retrieval_freeze_sha256": "1c4576d67a73b0ae771c6f7e37529933e5d1c9d981778bf45b70b0c21308c804",
+  "schema": "cross-tool-x0-candidate-report-v1",
+  "setting": "transition-system-model-checking",
+  "setting_class": "model-checking"
+}

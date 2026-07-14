@@ -1,0 +1,385 @@
+{
+  "ambiguous_fields": [
+    "verifier_build",
+    "generation_config"
+  ],
+  "available_count": 4,
+  "blocked_fields": [],
+  "candidate_id": "exverus",
+  "catalog_sha256": "d8dfeaa65d6a34652f0018d9ac61a587ce884c208847094ee9750b0047a13fd3",
+  "census_sha256": "c9cfab43b56ce6f144a3b5f30ae7133ba72fe8963462c167f77bf866e218ed6b",
+  "fields": {
+    "benchmark_inputs": {
+      "evidence": [
+        {
+          "byte_count": 7123,
+          "commit": "3619935559f12e4be31abb0b9ff87fab5d293b8e",
+          "git_object": "e823536c2d583dc225091615e6d3cdee84dba24e",
+          "kind": "repository-file",
+          "line_end": 29,
+          "line_start": 18,
+          "path": "README.md",
+          "repository": "claudeyj/exverus",
+          "sha256": "136d790691eb2a88004d25e17313cc660571b2487536550d031584e1b831d06c",
+          "url": "https://github.com/claudeyj/exverus/blob/3619935559f12e4be31abb0b9ff87fab5d293b8e/README.md"
+        },
+        {
+          "byte_count": 913,
+          "commit": "3619935559f12e4be31abb0b9ff87fab5d293b8e",
+          "git_object": "44ddfaa72e1fe8e9141f5bc7629134650e3e82a5",
+          "kind": "repository-object",
+          "path": "cleaned-verusbench/CloverBench/unverified/all_digits_strong.rs",
+          "repository": "claudeyj/exverus",
+          "sha256": "1b36ad78f488ed76c0507985dd6e9ae6685bc63303d303244ccc8eedcdfda522",
+          "url": "https://github.com/claudeyj/exverus/blob/3619935559f12e4be31abb0b9ff87fab5d293b8e/cleaned-verusbench/CloverBench/unverified/all_digits_strong.rs"
+        },
+        {
+          "byte_count": 402,
+          "commit": "3619935559f12e4be31abb0b9ff87fab5d293b8e",
+          "git_object": "e4094a268e472a886ac83ac286abaa8ad4cb2466",
+          "kind": "repository-object",
+          "path": "Benchmarks/Dafnybench/unverified/program_001_main.rs",
+          "repository": "claudeyj/exverus",
+          "sha256": "250e3f4bdbe7b6a4942b64efff0a6d883790db6721b7920171a988d4c0af64c4",
+          "url": "https://github.com/claudeyj/exverus/blob/3619935559f12e4be31abb0b9ff87fab5d293b8e/Benchmarks/Dafnybench/unverified/program_001_main.rs"
+        }
+      ],
+      "finding": "Cleaned VerusBench and the additional DafnyBench, HumanEval, LCBench, and obfuscation benchmark copies are present in the frozen tree.",
+      "state": "available"
+    },
+    "binding_locations": {
+      "evidence": [
+        {
+          "byte_count": 7123,
+          "commit": "3619935559f12e4be31abb0b9ff87fab5d293b8e",
+          "git_object": "e823536c2d583dc225091615e6d3cdee84dba24e",
+          "kind": "repository-file",
+          "line_end": 182,
+          "line_start": 171,
+          "path": "README.md",
+          "repository": "claudeyj/exverus",
+          "sha256": "136d790691eb2a88004d25e17313cc660571b2487536550d031584e1b831d06c",
+          "url": "https://github.com/claudeyj/exverus/blob/3619935559f12e4be31abb0b9ff87fab5d293b8e/README.md"
+        },
+        {
+          "inventory_path": "inventories/exverus.json",
+          "inventory_sha256": "077c3e369d2bcb89c6af82e70b63a4cf0b6504d6778c1787caccb6e63c899b1e",
+          "kind": "repository-inventory",
+          "path_listing_path": "inventories/exverus.paths.txt",
+          "path_listing_sha256": "5c724e3af18a08a5b99e92b37d57b4dc1c3aeca6439861cb7bc1c9bf0b930b1a",
+          "repository": "claudeyj/exverus"
+        }
+      ],
+      "finding": "The README describes where generated task artifacts would bind, but the results tree containing the evaluated proof files and repair traces is not committed.",
+      "state": "missing"
+    },
+    "expected_verdicts": {
+      "evidence": [
+        {
+          "byte_count": 7123,
+          "commit": "3619935559f12e4be31abb0b9ff87fab5d293b8e",
+          "git_object": "e823536c2d583dc225091615e6d3cdee84dba24e",
+          "kind": "repository-file",
+          "line_end": 182,
+          "line_start": 171,
+          "path": "README.md",
+          "repository": "claudeyj/exverus",
+          "sha256": "136d790691eb2a88004d25e17313cc660571b2487536550d031584e1b831d06c",
+          "url": "https://github.com/claudeyj/exverus/blob/3619935559f12e4be31abb0b9ff87fab5d293b8e/README.md"
+        },
+        {
+          "inventory_path": "inventories/exverus.json",
+          "inventory_sha256": "077c3e369d2bcb89c6af82e70b63a4cf0b6504d6778c1787caccb6e63c899b1e",
+          "kind": "repository-inventory",
+          "path_listing_path": "inventories/exverus.paths.txt",
+          "path_listing_sha256": "5c724e3af18a08a5b99e92b37d57b4dc1c3aeca6439861cb7bc1c9bf0b930b1a",
+          "repository": "claudeyj/exverus"
+        }
+      ],
+      "finding": "Per-task repair status files are documented as generated outputs but are absent from the frozen repository.",
+      "state": "missing"
+    },
+    "frozen_llm_outputs": {
+      "evidence": [
+        {
+          "byte_count": 7123,
+          "commit": "3619935559f12e4be31abb0b9ff87fab5d293b8e",
+          "git_object": "e823536c2d583dc225091615e6d3cdee84dba24e",
+          "kind": "repository-file",
+          "line_end": 29,
+          "line_start": 18,
+          "path": "README.md",
+          "repository": "claudeyj/exverus",
+          "sha256": "136d790691eb2a88004d25e17313cc660571b2487536550d031584e1b831d06c",
+          "url": "https://github.com/claudeyj/exverus/blob/3619935559f12e4be31abb0b9ff87fab5d293b8e/README.md"
+        },
+        {
+          "inventory_path": "inventories/exverus.json",
+          "inventory_sha256": "077c3e369d2bcb89c6af82e70b63a4cf0b6504d6778c1787caccb6e63c899b1e",
+          "kind": "repository-inventory",
+          "path_listing_path": "inventories/exverus.paths.txt",
+          "path_listing_sha256": "5c724e3af18a08a5b99e92b37d57b4dc1c3aeca6439861cb7bc1c9bf0b930b1a",
+          "repository": "claudeyj/exverus"
+        }
+      ],
+      "finding": "Although the README lists a results directory with generated outputs and traces, no results path or frozen paper-run output is present at the resolved commit.",
+      "state": "missing"
+    },
+    "generation_config": {
+      "evidence": [
+        {
+          "byte_count": 7123,
+          "commit": "3619935559f12e4be31abb0b9ff87fab5d293b8e",
+          "git_object": "e823536c2d583dc225091615e6d3cdee84dba24e",
+          "kind": "repository-file",
+          "line_end": 45,
+          "line_start": 30,
+          "path": "README.md",
+          "repository": "claudeyj/exverus",
+          "sha256": "136d790691eb2a88004d25e17313cc660571b2487536550d031584e1b831d06c",
+          "url": "https://github.com/claudeyj/exverus/blob/3619935559f12e4be31abb0b9ff87fab5d293b8e/README.md"
+        },
+        {
+          "byte_count": 7123,
+          "commit": "3619935559f12e4be31abb0b9ff87fab5d293b8e",
+          "git_object": "e823536c2d583dc225091615e6d3cdee84dba24e",
+          "kind": "repository-file",
+          "line_end": 199,
+          "line_start": 184,
+          "path": "README.md",
+          "repository": "claudeyj/exverus",
+          "sha256": "136d790691eb2a88004d25e17313cc660571b2487536550d031584e1b831d06c",
+          "url": "https://github.com/claudeyj/exverus/blob/3619935559f12e4be31abb0b9ff87fab5d293b8e/README.md"
+        },
+        {
+          "byte_count": 3193,
+          "commit": "3619935559f12e4be31abb0b9ff87fab5d293b8e",
+          "git_object": "b434e58954c0f84f76442e5c227010e6afc3d935",
+          "kind": "repository-object",
+          "path": "vinv/prompt/trace_repair.txt",
+          "repository": "claudeyj/exverus",
+          "sha256": "d5896c316ff0c0b805a3cce3c3c963f89e738360d6424e7f964f5def91a2d1d4",
+          "url": "https://github.com/claudeyj/exverus/blob/3619935559f12e4be31abb0b9ff87fab5d293b8e/vinv/prompt/trace_repair.txt"
+        }
+      ],
+      "finding": "Model families, main repair budgets, modes, and prompts are public, but no frozen per-paper-run manifest fixes provider model revisions, decoding parameters, retries, and exact sweep commands.",
+      "state": "ambiguous"
+    },
+    "immutable_revision": {
+      "evidence": [
+        {
+          "commit": "3619935559f12e4be31abb0b9ff87fab5d293b8e",
+          "kind": "repository-commit",
+          "repository": "claudeyj/exverus",
+          "tree": "06e5a778e6dcdbbe51d9d6f6171109ddd6e5fa97",
+          "url": "https://github.com/claudeyj/exverus/tree/3619935559f12e4be31abb0b9ff87fab5d293b8e"
+        }
+      ],
+      "finding": "The public artifact repository was resolved to an immutable Git commit before file inspection.",
+      "state": "available"
+    },
+    "implementation": {
+      "evidence": [
+        {
+          "byte_count": 28175,
+          "commit": "3619935559f12e4be31abb0b9ff87fab5d293b8e",
+          "git_object": "14246fa1d3edbd32d79a018d74911f54fb1b31d0",
+          "kind": "repository-object",
+          "path": "vinv/pipeline/main.py",
+          "repository": "claudeyj/exverus",
+          "sha256": "88f5a389149ab74fc8fb475fd7685139e7c105502a5ead0c5110cb8aa6ad7668",
+          "url": "https://github.com/claudeyj/exverus/blob/3619935559f12e4be31abb0b9ff87fab5d293b8e/vinv/pipeline/main.py"
+        },
+        {
+          "byte_count": 5705,
+          "commit": "3619935559f12e4be31abb0b9ff87fab5d293b8e",
+          "git_object": "0f7ff2063c0dd7231e79e9ee48fa08b3e82ac9c1",
+          "kind": "repository-object",
+          "path": "vinv/pipeline/counter_example.py",
+          "repository": "claudeyj/exverus",
+          "sha256": "d1bb55b276c5c06924e44cf2744859f6c94d9ae437bbe3e0e8ad63e3b8b75ffd",
+          "url": "https://github.com/claudeyj/exverus/blob/3619935559f12e4be31abb0b9ff87fab5d293b8e/vinv/pipeline/counter_example.py"
+        }
+      ],
+      "finding": "The Python repair pipeline, CEX generation and validation logic, prompts, Rust helpers, and analysis utilities are committed.",
+      "state": "available"
+    },
+    "license": {
+      "evidence": [
+        {
+          "inventory_path": "inventories/exverus.json",
+          "inventory_sha256": "077c3e369d2bcb89c6af82e70b63a4cf0b6504d6778c1787caccb6e63c899b1e",
+          "kind": "repository-inventory",
+          "path_listing_path": "inventories/exverus.paths.txt",
+          "path_listing_sha256": "5c724e3af18a08a5b99e92b37d57b4dc1c3aeca6439861cb7bc1c9bf0b930b1a",
+          "repository": "claudeyj/exverus"
+        }
+      ],
+      "finding": "The repository has no root LICENSE, COPYING, or equivalent terms covering ExVerus code, benchmarks, and prompts.",
+      "state": "missing"
+    },
+    "no_manual_repair": {
+      "evidence": [
+        {
+          "inventory_path": "inventories/exverus.json",
+          "inventory_sha256": "077c3e369d2bcb89c6af82e70b63a4cf0b6504d6778c1787caccb6e63c899b1e",
+          "kind": "repository-inventory",
+          "path_listing_path": "inventories/exverus.paths.txt",
+          "path_listing_sha256": "5c724e3af18a08a5b99e92b37d57b4dc1c3aeca6439861cb7bc1c9bf0b930b1a",
+          "repository": "claudeyj/exverus"
+        }
+      ],
+      "finding": "No paper-run outputs or repair traces are released, so undocumented human intervention cannot be excluded or audited.",
+      "state": "missing"
+    },
+    "offline_replay": {
+      "evidence": [
+        {
+          "byte_count": 7123,
+          "commit": "3619935559f12e4be31abb0b9ff87fab5d293b8e",
+          "git_object": "e823536c2d583dc225091615e6d3cdee84dba24e",
+          "kind": "repository-file",
+          "line_end": 160,
+          "line_start": 109,
+          "path": "README.md",
+          "repository": "claudeyj/exverus",
+          "sha256": "136d790691eb2a88004d25e17313cc660571b2487536550d031584e1b831d06c",
+          "url": "https://github.com/claudeyj/exverus/blob/3619935559f12e4be31abb0b9ff87fab5d293b8e/README.md"
+        },
+        {
+          "inventory_path": "inventories/exverus.json",
+          "inventory_sha256": "077c3e369d2bcb89c6af82e70b63a4cf0b6504d6778c1787caccb6e63c899b1e",
+          "kind": "repository-inventory",
+          "path_listing_path": "inventories/exverus.paths.txt",
+          "path_listing_sha256": "5c724e3af18a08a5b99e92b37d57b4dc1c3aeca6439861cb7bc1c9bf0b930b1a",
+          "repository": "claudeyj/exverus"
+        }
+      ],
+      "finding": "All documented core experiment commands perform fresh model-driven repair, and there are no frozen outputs to pass through an offline verifier replay.",
+      "state": "missing"
+    },
+    "per_instance_timing": {
+      "evidence": [
+        {
+          "byte_count": 7123,
+          "commit": "3619935559f12e4be31abb0b9ff87fab5d293b8e",
+          "git_object": "e823536c2d583dc225091615e6d3cdee84dba24e",
+          "kind": "repository-file",
+          "line_end": 182,
+          "line_start": 171,
+          "path": "README.md",
+          "repository": "claudeyj/exverus",
+          "sha256": "136d790691eb2a88004d25e17313cc660571b2487536550d031584e1b831d06c",
+          "url": "https://github.com/claudeyj/exverus/blob/3619935559f12e4be31abb0b9ff87fab5d293b8e/README.md"
+        },
+        {
+          "inventory_path": "inventories/exverus.json",
+          "inventory_sha256": "077c3e369d2bcb89c6af82e70b63a4cf0b6504d6778c1787caccb6e63c899b1e",
+          "kind": "repository-inventory",
+          "path_listing_path": "inventories/exverus.paths.txt",
+          "path_listing_sha256": "5c724e3af18a08a5b99e92b37d57b4dc1c3aeca6439861cb7bc1c9bf0b930b1a",
+          "repository": "claudeyj/exverus"
+        }
+      ],
+      "finding": "The release describes generated cost reports, but no per-instance paper-run timing or cost files are present in the frozen tree.",
+      "state": "missing"
+    },
+    "result_provenance": {
+      "evidence": [
+        {
+          "inventory_path": "inventories/exverus.json",
+          "inventory_sha256": "077c3e369d2bcb89c6af82e70b63a4cf0b6504d6778c1787caccb6e63c899b1e",
+          "kind": "repository-inventory",
+          "path_listing_path": "inventories/exverus.paths.txt",
+          "path_listing_sha256": "5c724e3af18a08a5b99e92b37d57b4dc1c3aeca6439861cb7bc1c9bf0b930b1a",
+          "repository": "claudeyj/exverus"
+        }
+      ],
+      "finding": "No result bytes or machine-readable benchmark/output hash mapping to the paper tables is released.",
+      "state": "missing"
+    },
+    "verifier_build": {
+      "evidence": [
+        {
+          "byte_count": 7123,
+          "commit": "3619935559f12e4be31abb0b9ff87fab5d293b8e",
+          "git_object": "e823536c2d583dc225091615e6d3cdee84dba24e",
+          "kind": "repository-file",
+          "line_end": 107,
+          "line_start": 47,
+          "path": "README.md",
+          "repository": "claudeyj/exverus",
+          "sha256": "136d790691eb2a88004d25e17313cc660571b2487536550d031584e1b831d06c",
+          "url": "https://github.com/claudeyj/exverus/blob/3619935559f12e4be31abb0b9ff87fab5d293b8e/README.md"
+        },
+        {
+          "byte_count": 858,
+          "commit": "3619935559f12e4be31abb0b9ff87fab5d293b8e",
+          "git_object": "719ea4268268ca17dc1084742fd94e3b8ca61a6b",
+          "kind": "repository-object",
+          "path": "pyproject.toml",
+          "repository": "claudeyj/exverus",
+          "sha256": "34d7f1a733737e282c72e1875977f8860852e498869b2e98b04db6c35fc734b4",
+          "url": "https://github.com/claudeyj/exverus/blob/3619935559f12e4be31abb0b9ff87fab5d293b8e/pyproject.toml"
+        }
+      ],
+      "finding": "The Verus release is named, but the repository has no uv.lock and pyproject.toml leaves key dependencies such as OpenAI and build tools range-unpinned, so the documented build is not deterministic.",
+      "state": "ambiguous"
+    },
+    "verifier_identity": {
+      "evidence": [
+        {
+          "byte_count": 7123,
+          "commit": "3619935559f12e4be31abb0b9ff87fab5d293b8e",
+          "git_object": "e823536c2d583dc225091615e6d3cdee84dba24e",
+          "kind": "repository-file",
+          "line_end": 71,
+          "line_start": 47,
+          "path": "README.md",
+          "repository": "claudeyj/exverus",
+          "sha256": "136d790691eb2a88004d25e17313cc660571b2487536550d031584e1b831d06c",
+          "url": "https://github.com/claudeyj/exverus/blob/3619935559f12e4be31abb0b9ff87fab5d293b8e/README.md"
+        },
+        {
+          "byte_count": 123,
+          "commit": "3619935559f12e4be31abb0b9ff87fab5d293b8e",
+          "git_object": "463d2e884598561792f0a0361cc91d887c9035a4",
+          "kind": "repository-object",
+          "path": ".gitmodules",
+          "repository": "claudeyj/exverus",
+          "sha256": "26525e281f7adf552ff3617ced3ebf126fca65a106f4568f51e683b19388008c",
+          "url": "https://github.com/claudeyj/exverus/blob/3619935559f12e4be31abb0b9ff87fab5d293b8e/.gitmodules"
+        }
+      ],
+      "finding": "The paper implementation identifies Verus release 0.2025.07.12.0b6f3cb and pins the bundled AutoVerus support repository as a Gitlink.",
+      "state": "available"
+    }
+  },
+  "full_audit_eligible": false,
+  "missing_fields": [
+    "license",
+    "frozen_llm_outputs",
+    "binding_locations",
+    "expected_verdicts",
+    "offline_replay",
+    "per_instance_timing",
+    "result_provenance",
+    "no_manual_repair"
+  ],
+  "name": "ExVerus",
+  "report_sha256": "e267d2ccc38c7d21021c1afa23c1cea295c12b896e869c3fb1b36dd9560e8254",
+  "repositories": [
+    {
+      "commit": "3619935559f12e4be31abb0b9ff87fab5d293b8e",
+      "inventory_path": "inventories/exverus.json",
+      "inventory_sha256": "077c3e369d2bcb89c6af82e70b63a4cf0b6504d6778c1787caccb6e63c899b1e",
+      "repository": "claudeyj/exverus",
+      "tree": "06e5a778e6dcdbbe51d9d6f6171109ddd6e5fa97",
+      "url": "https://github.com/claudeyj/exverus"
+    }
+  ],
+  "retrieval_freeze_sha256": "1c4576d67a73b0ae771c6f7e37529933e5d1c9d981778bf45b70b0c21308c804",
+  "schema": "cross-tool-x0-candidate-report-v1",
+  "setting": "verus-proof-repair",
+  "setting_class": "deductive-proof-synthesis"
+}

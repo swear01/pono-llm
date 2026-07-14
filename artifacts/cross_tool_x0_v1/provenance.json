@@ -1,0 +1,96 @@
+{
+  "artifact_created_at_utc": "2026-07-14T05:51:35Z",
+  "builder_parent_commit": "4d17851b746e30467b7c01e48bfce8b678a8955b",
+  "builder_sources": [
+    {
+      "path": "scripts/cross_tool_x0_schema.py",
+      "sha256": "bd209a2f385d73e6604a1c7d0f52a56c1fcf39c0615493baece4f3fabf6c4a08"
+    },
+    {
+      "path": "scripts/build_cross_tool_x0.py",
+      "sha256": "df49049106ce259bb136c22965f11a6240f8b0a70195e13b08461ffb0f7a7461"
+    },
+    {
+      "path": "scripts/validate_cross_tool_x0.py",
+      "sha256": "d56d5715813fccfd40759c634a4831890370ce8caa524dbc08e3b370ef02393d"
+    },
+    {
+      "path": "scripts/cross_tool_x0_census_v1.json",
+      "sha256": "c1692c755555f458dca15c8fd83fafda43ceaa61b3a10a188dbbc7e9870b71a1"
+    }
+  ],
+  "catalog_file_sha256": "b18a3b6e65bb642079b7ce8c9b58153936d0155a5f517562dc187bc780ede8bd",
+  "catalog_sha256": "d8dfeaa65d6a34652f0018d9ac61a587ce884c208847094ee9750b0047a13fd3",
+  "census_file_sha256": "c1692c755555f458dca15c8fd83fafda43ceaa61b3a10a188dbbc7e9870b71a1",
+  "census_sha256": "c9cfab43b56ce6f144a3b5f30ae7133ba72fe8963462c167f77bf866e218ed6b",
+  "execution": {
+    "author_contacts": 0,
+    "fresh_generated_outputs": 0,
+    "new_llm_api_calls": 0,
+    "threshold_changes": false,
+    "verifier_executions": 0
+  },
+  "external_repositories": [
+    {
+      "commit": "60301cb79ba594945f2049990421f5d5d4d95afc",
+      "inventory_sha256": "0e8b442cd916b1bf7dd192cc7cac441f884d4e9a3975c126c24133fe7d6d73dd",
+      "repository": "Anjiang-Wei/Quokka",
+      "tree": "071fead318771f8a833fb59474c3e4fc24459827",
+      "url": "https://github.com/Anjiang-Wei/Quokka"
+    },
+    {
+      "commit": "3619935559f12e4be31abb0b9ff87fab5d293b8e",
+      "inventory_sha256": "077c3e369d2bcb89c6af82e70b63a4cf0b6504d6778c1787caccb6e63c899b1e",
+      "repository": "claudeyj/exverus",
+      "tree": "06e5a778e6dcdbbe51d9d6f6171109ddd6e5fa97",
+      "url": "https://github.com/claudeyj/exverus"
+    },
+    {
+      "commit": "a61258b1b6abe1d2bdd6966e09485977777f901b",
+      "inventory_sha256": "9d86e16e8d93d34ceab1dea92e71a254b16e659affbf42f8c99ca8cf64a739bb",
+      "repository": "gipsyh/cill-exp",
+      "tree": "a7422cac82fb971021474b1c8355d278fc88bd52",
+      "url": "https://github.com/gipsyh/cill-exp"
+    },
+    {
+      "commit": "7149d568785b039134f0b2baa58358c8af63e70d",
+      "inventory_sha256": "fe0d482f2af7db50fc2fb598b387004a7ba7d210303c3d87517c0a831d9fcbfe",
+      "repository": "gipsyh/rIC3",
+      "tree": "30f92f290ba13a36f8d0c25a3cfb1dd09a1c6833",
+      "url": "https://github.com/gipsyh/rIC3"
+    },
+    {
+      "commit": "315809c0685d11206840da3944b5e6a323178663",
+      "inventory_sha256": "d3bf5924c01654d662c05fc2deeca7edea5907fb15c6747c553382323be2f56f",
+      "repository": "ltcRandomwalk/LORIS",
+      "tree": "f8f5dbf7a749b976a6e428a77c6316facd9520c0",
+      "url": "https://github.com/ltcRandomwalk/LORIS"
+    },
+    {
+      "commit": "2f9aff36b4e287e41b1bc167f7888a5cddac4cdd",
+      "inventory_sha256": "6892bf0167cf279564f24981adfac586456a83d05158fde6bae8be0822dc12c7",
+      "repository": "microsoft/verus-proof-synthesis",
+      "tree": "831c2b172230c48434b2b5391199b44cb10936ce",
+      "url": "https://github.com/microsoft/verus-proof-synthesis"
+    }
+  ],
+  "inspection_scope": [
+    "README and artifact instructions",
+    "repository manifests and immutable Git metadata",
+    "benchmark and result indexes",
+    "containers, lockfiles, and referenced configuration",
+    "frozen result objects without executing a verifier or model"
+  ],
+  "old_soundness_audit_amended": false,
+  "preregistration_commit": "4d17851b746e30467b7c01e48bfce8b678a8955b",
+  "provenance_sha256": "6e4edfcdff8b2b6a2f225070478d50b1e6c8863707041325d4160456da854baa",
+  "repository_tree_blobs_bundled": false,
+  "retrieval_api_payload_hashes_bundled": true,
+  "retrieval_api_payloads_bundled": false,
+  "retrieval_api_payloads_may_include_diff_patches": true,
+  "retrieval_api_payloads_validated_at_build": true,
+  "retrieval_file_sha256": "f819435d848b15349d2570ae88772fac9d260c76a27379daa70cf9b232655bbd",
+  "retrieval_freeze_sha256": "1c4576d67a73b0ae771c6f7e37529933e5d1c9d981778bf45b70b0c21308c804",
+  "schema": "cross-tool-x0-provenance-v1",
+  "source_files_sha256": "95ed7e6bd4caef96ca3b459f04b60b02ae1a6e1330f587dc3e6af327fb53fae3"
+}

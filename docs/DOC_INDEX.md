@@ -1,11 +1,12 @@
 # Documentation Index
 
-**Last updated:** 2026-07-14 (`soundness-audit` research program closed)
+**Last updated:** 2026-07-14 (independent cross-tool X0 stopped)
 
 Start here:
 
 - Project entry point: [`../AGENTS.md`](../AGENTS.md)
-- Active independent project: [`cross_tool_audit_plan.md`](cross_tool_audit_plan.md)
+- Independent project decision: [`cross_tool_x0_results.md`](cross_tool_x0_results.md)
+- Cross-tool plan and stop boundary: [`cross_tool_audit_plan.md`](cross_tool_audit_plan.md)
 - Gate X0 preregistration: [`cross_tool_audit_preregistration.md`](cross_tool_audit_preregistration.md)
 - Overview: [`overview.md`](overview.md)
 - Closed plan: [`plan.md`](plan.md)
@@ -17,7 +18,8 @@ Start here:
 
 | File | Description |
 |------|-------------|
-| [`cross_tool_audit_plan.md`](cross_tool_audit_plan.md) | Active independent cross-tool audit and ordered X0--X3 gates |
+| [`cross_tool_x0_results.md`](cross_tool_x0_results.md) | Canonical human-readable X0 census result, limitations, and reproduction contract |
+| [`cross_tool_audit_plan.md`](cross_tool_audit_plan.md) | Independent cross-tool plan, X0 STOP, and unauthorized X1--X3 boundary |
 | [`cross_tool_audit_preregistration.md`](cross_tool_audit_preregistration.md) | Frozen five-system X0 artifact-availability population and stop rules |
 | [`final_claim_ledger.md`](final_claim_ledger.md) | Authoritative supported/rejected/threshold-failed/not-run claim boundary |
 | [`final_research_narrative.md`](final_research_narrative.md) | Complete causal research narrative and closure decision |

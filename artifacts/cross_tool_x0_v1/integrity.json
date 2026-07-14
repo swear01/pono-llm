@@ -1,0 +1,30 @@
+{
+  "file_count": 23,
+  "files": {
+    "catalog.json": "b18a3b6e65bb642079b7ce8c9b58153936d0155a5f517562dc187bc780ede8bd",
+    "census.json": "c1692c755555f458dca15c8fd83fafda43ceaa61b3a10a188dbbc7e9870b71a1",
+    "inventories/autoverus.json": "1746a21061f3293473c47c187d3e64aaa90ca9317f1c269f1029eb54ed0b41ad",
+    "inventories/autoverus.paths.txt": "7a2c6ebd1b15537107bba398cdb79f01251c2e7e99589c40e86fe6440a19c8fb",
+    "inventories/cill-exp.json": "057bd56e9767856a32cdd14b9cd7092096c15ddcf739e00d0ae8dba8d6df07e1",
+    "inventories/cill-exp.paths.txt": "6715a0d316d66c02200a9228083045593152d8eda1cff3e17b60042a82d1ca6a",
+    "inventories/cill-ric3.json": "2940e1d24bf979b795cc757b17d214fd844e58f38ec72128218338c810caf715",
+    "inventories/cill-ric3.paths.txt": "f38a31906432286939b41ddff5095653c72a665a4b0ca6a1b05413aaf3ec9aec",
+    "inventories/exverus.json": "6bb8fd3e8d9bfe4c6ffef11f43eedde1edcbb2c3c28c20e5400ef67edf2f2070",
+    "inventories/exverus.paths.txt": "5c724e3af18a08a5b99e92b37d57b4dc1c3aeca6439861cb7bc1c9bf0b930b1a",
+    "inventories/loris.json": "40b7eb419f450a7ebe557aed5e902f10072cd806c22198c457fc461c46f274f6",
+    "inventories/loris.paths.txt": "4325b87ba90a86f60ad37415f27bc7928baf6ce94f7b6a45233a7e66b791a64b",
+    "inventories/quokka.json": "086e2e65b2dafcae06c0de55095871aceb1ed33f3cbaebccce64ca62703a18fd",
+    "inventories/quokka.paths.txt": "c0111c235a54fa377ab047e6b1b07f3a8434ca1eb32bc761e6072f077cbb0b79",
+    "provenance.json": "8d2d5110c406f7a52c2b085cad5846c641d8a838738111bef97e709a18f91acb",
+    "reports/autoverus.json": "6620ebccfee2d5fac097dcbd12676759c1e7fe065f0607102619292e7cc89adb",
+    "reports/cill.json": "9ee6b85559ebdbd61da6bd7494c944a744507c7b3919e910bedd945f59c25f95",
+    "reports/exverus.json": "e431d331a99d3c10ebbee2128a57673250a676af4d7e403107882779cc9663e2",
+    "reports/loris.json": "07e4577f12adfbd72a1c25b79cd71f1b68130542ee425940bdb37c66cfeebd51",
+    "reports/quokka.json": "fcf2b072593d7b33c8b38aad1b7b61e4ba138ccc3f802d7a370aa638935789f0",
+    "retrieval/retrieval_freeze.json": "f819435d848b15349d2570ae88772fac9d260c76a27379daa70cf9b232655bbd",
+    "source_files.json": "c839f26d4a9d848591986ea7c5db6d2212dca343d593cb569c05645de6973c31",
+    "summary.json": "2efbdb8a6c8bab62a5394a07bcb929652aba69bcdb5ea75b5ccc629ab0dd9e3f"
+  },
+  "integrity_sha256": "e11aa31b4e466c4b9c2f398ff8f0ab95590394a425b82848378c8d4f45056cee",
+  "schema": "cross-tool-x0-integrity-v1"
+}

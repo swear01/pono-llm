@@ -1,0 +1,114 @@
+{
+  "catalog_sha256": "b18a3b6e65bb642079b7ce8c9b58153936d0155a5f517562dc187bc780ede8bd",
+  "freeze_sha256": "1c4576d67a73b0ae771c6f7e37529933e5d1c9d981778bf45b70b0c21308c804",
+  "llm_api_calls": 0,
+  "repositories": {
+    "autoverus": [
+      {
+        "default_branch": "main",
+        "license_spdx": "MIT",
+        "metadata_files": {
+          "commit": "668edb507e96560f618f154910d2d78b5426fd2b6186f0fc78c78b3d0309221a",
+          "releases": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+          "repo": "c33c073f23a7a5acc92b80ba9eb41b657da2917108c3e58bb6eaa83f3b2ff227",
+          "tags": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "release_count": 0,
+        "repository": "microsoft/verus-proof-synthesis",
+        "resolved_commit": "2f9aff36b4e287e41b1bc167f7888a5cddac4cdd",
+        "tag_count": 0,
+        "url": "https://github.com/microsoft/verus-proof-synthesis"
+      }
+    ],
+    "cill": [
+      {
+        "default_branch": "master",
+        "license_spdx": "GPL-3.0",
+        "metadata_files": {
+          "commit": "6f5b75836284a9fd66494bd4459c9b8ad96b9cd33c54d6c3442619d06d5ac3e2",
+          "releases": "f0c2ca2ecd8a7dfb4fb8911eea2495517c301c73def86a884e549ade899ae846",
+          "repo": "befd990060ecd3515974d17a3f3aa1eba0a4423bebde960f4efdc47494f0fd0d",
+          "tags": "fb9504320593de8e1e79f20646fe94e9715f5bf936a73b44a88ac4995b13d0e8"
+        },
+        "release_count": 15,
+        "repository": "gipsyh/rIC3",
+        "resolved_commit": "7149d568785b039134f0b2baa58358c8af63e70d",
+        "tag_count": 18,
+        "url": "https://github.com/gipsyh/rIC3"
+      },
+      {
+        "default_branch": "master",
+        "license_spdx": null,
+        "metadata_files": {
+          "commit": "937c1563fdfc499df0fc7c3e4f062b0e4a4e997b6abbc99624b57ab2f5d40fa0",
+          "releases": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+          "repo": "739dec8aa02a07b847bc382e2ac6386f01c0c00fc4566cf95aba25a2ad4b2816",
+          "tags": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "release_count": 0,
+        "repository": "gipsyh/cill-exp",
+        "resolved_commit": "a61258b1b6abe1d2bdd6966e09485977777f901b",
+        "tag_count": 0,
+        "url": "https://github.com/gipsyh/cill-exp"
+      }
+    ],
+    "exverus": [
+      {
+        "default_branch": "master",
+        "license_spdx": null,
+        "metadata_files": {
+          "commit": "b092e65956c9628aea8b44ef207f2164efb4f38aeffb2f68fb365a272abe4555",
+          "releases": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+          "repo": "6c9ffefb5f46331544ee1868c0ef26a5ecc0a94d638cf6463f1df5ee5820eecf",
+          "tags": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "release_count": 0,
+        "repository": "claudeyj/exverus",
+        "resolved_commit": "3619935559f12e4be31abb0b9ff87fab5d293b8e",
+        "tag_count": 0,
+        "url": "https://github.com/claudeyj/exverus"
+      }
+    ],
+    "loris": [
+      {
+        "default_branch": "main",
+        "license_spdx": null,
+        "metadata_files": {
+          "commit": "6fab7cd59698e099996267db39964deaadf848b2507f76f19e990701874416ef",
+          "releases": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+          "repo": "552c710d987ba907da6ed6a84f24a40ab7d7da0798de21fdfa90d967d09c461e",
+          "tags": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "release_count": 0,
+        "repository": "ltcRandomwalk/LORIS",
+        "resolved_commit": "315809c0685d11206840da3944b5e6a323178663",
+        "tag_count": 0,
+        "url": "https://github.com/ltcRandomwalk/LORIS"
+      }
+    ],
+    "quokka": [
+      {
+        "default_branch": "main",
+        "license_spdx": null,
+        "metadata_files": {
+          "commit": "ad8679b0a176b629095f819756868cd73a542576e09f7068f5cbf6a04b3ff59f",
+          "releases": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+          "repo": "902e235a31fdc8744297e586e09f49f786dbe7259d1061fd8cd555a94784b822",
+          "tags": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "release_count": 0,
+        "repository": "Anjiang-Wei/Quokka",
+        "resolved_commit": "60301cb79ba594945f2049990421f5d5d4d95afc",
+        "tag_count": 0,
+        "url": "https://github.com/Anjiang-Wei/Quokka"
+      }
+    ]
+  },
+  "repository_files_inspected_before_freeze": 0,
+  "retrieved_at_utc": "2026-07-14T05:42:03.181490+00:00",
+  "schema": "cross-tool-x0-retrieval-freeze-v1",
+  "search_evidence": {
+    "cill": "2e594c97a8700d6e7565a8b2901fe32fb999bdbc6a95478eaace275fa7a2fefd",
+    "exverus": "fec22d65ca2bf9a8c75991d74f7fde061738d706fb81e6cfdde6fe8ef4784f74"
+  }
+}

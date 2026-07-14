@@ -1,0 +1,50 @@
+{
+  "candidate_id": "cill",
+  "commit": "7149d568785b039134f0b2baa58358c8af63e70d",
+  "directory": "cill-ric3",
+  "inventory_sha256": "fe0d482f2af7db50fc2fb598b387004a7ba7d210303c3d87517c0a831d9fcbfe",
+  "path_count": 113,
+  "path_listing": {
+    "path": "inventories/cill-ric3.paths.txt",
+    "sha256": "f38a31906432286939b41ddff5095653c72a665a4b0ca6a1b05413aaf3ec9aec"
+  },
+  "repository": "gipsyh/rIC3",
+  "root_files": [
+    ".dockerignore",
+    ".gitignore",
+    ".gitmodules",
+    "CIll_SKILL.md",
+    "Cargo.lock",
+    "Cargo.toml",
+    "Dockerfile",
+    "LICENSE",
+    "README.md"
+  ],
+  "root_license_files": [
+    "LICENSE"
+  ],
+  "schema": "cross-tool-x0-repository-inventory-v1",
+  "top_level_counts": {
+    ".cargo": 1,
+    ".dockerignore": 1,
+    ".github": 2,
+    ".gitignore": 1,
+    ".gitmodules": 1,
+    "CIll_SKILL.md": 1,
+    "Cargo.lock": 1,
+    "Cargo.toml": 1,
+    "Dockerfile": 1,
+    "LICENSE": 1,
+    "README.md": 1,
+    "deps": 7,
+    "examples": 1,
+    "images": 2,
+    "src": 91
+  },
+  "tree": "30f92f290ba13a36f8d0c25a3cfb1dd09a1c6833",
+  "type_counts": {
+    "blob": 105,
+    "commit": 8
+  },
+  "url": "https://github.com/gipsyh/rIC3"
+}

@@ -1,0 +1,1204 @@
+{
+  "candidates": [
+    {
+      "candidate_id": "cill",
+      "fields": {
+        "benchmark_inputs": {
+          "evidence": [
+            {
+              "kind": "repository-file",
+              "line_end": 23,
+              "line_start": 7,
+              "path": "README.md",
+              "repository": "gipsyh/cill-exp"
+            },
+            {
+              "kind": "repository-object",
+              "path": "picorv32/picorv32.sv",
+              "repository": "gipsyh/cill-exp"
+            }
+          ],
+          "finding": "The experiment repository contains the RTL, riscv-formal checks, generated testbenches, and per-check configuration used by the released evaluation.",
+          "state": "available"
+        },
+        "binding_locations": {
+          "evidence": [
+            {
+              "kind": "repository-object",
+              "path": "res/picorv32-insn-add/tb.sv",
+              "repository": "gipsyh/cill-exp"
+            },
+            {
+              "kind": "repository-object",
+              "path": "PROMPT.md",
+              "repository": "gipsyh/cill-exp"
+            }
+          ],
+          "finding": "Each released final testbench contains the helper assertions at their concrete SystemVerilog binding sites, and the editing contract limits changes to the marked helper block.",
+          "state": "available"
+        },
+        "expected_verdicts": {
+          "evidence": [
+            {
+              "kind": "repository-object",
+              "path": "res/picorv32-insn-add/stdout.txt",
+              "repository": "gipsyh/cill-exp"
+            }
+          ],
+          "finding": "Per-check stdout files retain the released CIll proof outcome and checker statistics.",
+          "state": "available"
+        },
+        "frozen_llm_outputs": {
+          "evidence": [
+            {
+              "kind": "repository-file",
+              "line_end": 23,
+              "line_start": 7,
+              "path": "README.md",
+              "repository": "gipsyh/cill-exp"
+            },
+            {
+              "kind": "repository-object",
+              "path": "res/picorv32-insn-add/chat.jsonl",
+              "repository": "gipsyh/cill-exp"
+            }
+          ],
+          "finding": "The released res tree contains complete Codex chat logs or transcripts together with final testbenches and stdout for the reported checks.",
+          "state": "available"
+        },
+        "generation_config": {
+          "evidence": [
+            {
+              "kind": "repository-file",
+              "line_end": 32,
+              "line_start": 26,
+              "path": "README.md",
+              "repository": "gipsyh/cill-exp"
+            },
+            {
+              "kind": "repository-object",
+              "path": "PROMPT.md",
+              "repository": "gipsyh/cill-exp"
+            },
+            {
+              "kind": "repository-object",
+              "path": "res/picorv32-insn-add/chat.jsonl",
+              "repository": "gipsyh/cill-exp"
+            }
+          ],
+          "finding": "The prompt, GPT-5.2 xhigh model label, and session metadata are public, but there is no immutable experiment manifest fixing the sampling, retry, tool-version, and budget policy for every run.",
+          "state": "ambiguous"
+        },
+        "implementation": {
+          "evidence": [
+            {
+              "kind": "repository-object",
+              "path": ".gitmodules",
+              "repository": "gipsyh/cill-exp"
+            },
+            {
+              "kind": "repository-object",
+              "path": "src/main.rs",
+              "repository": "gipsyh/rIC3"
+            }
+          ],
+          "finding": "The experiment repository pins rIC3 and its toolchain dependencies as submodules, and the public rIC3 repository contains the model-checker implementation.",
+          "state": "available"
+        },
+        "immutable_revision": {
+          "evidence": [
+            {
+              "kind": "repository-commit",
+              "repository": "gipsyh/rIC3"
+            },
+            {
+              "kind": "repository-commit",
+              "repository": "gipsyh/cill-exp"
+            }
+          ],
+          "finding": "Both public repositories were resolved to immutable Git commits before file inspection.",
+          "state": "available"
+        },
+        "license": {
+          "evidence": [
+            {
+              "kind": "repository-object",
+              "path": "LICENSE",
+              "repository": "gipsyh/rIC3"
+            },
+            {
+              "kind": "repository-inventory",
+              "repository": "gipsyh/cill-exp"
+            }
+          ],
+          "finding": "rIC3 is GPL-3.0 licensed, but the separate cill-exp experiment repository has no root license covering its prompts, result logs, and experiment glue.",
+          "state": "missing"
+        },
+        "no_manual_repair": {
+          "evidence": [
+            {
+              "kind": "repository-object",
+              "path": "res/picorv32-insn-add/chat.jsonl",
+              "repository": "gipsyh/cill-exp"
+            },
+            {
+              "kind": "repository-object",
+              "path": "res/picorv32-insn-add/tb.sv",
+              "repository": "gipsyh/cill-exp"
+            }
+          ],
+          "finding": "Agent transcripts and final files exist, but no release manifest establishes that every retained testbench is the unedited terminal state of its transcript or excludes undocumented human changes.",
+          "state": "ambiguous"
+        },
+        "offline_replay": {
+          "evidence": [
+            {
+              "kind": "repository-file",
+              "line_end": 32,
+              "line_start": 26,
+              "path": "README.md",
+              "repository": "gipsyh/cill-exp"
+            },
+            {
+              "kind": "repository-inventory",
+              "repository": "gipsyh/cill-exp"
+            }
+          ],
+          "finding": "The published procedure regenerates checks and invokes Codex; it does not provide a command or manifest that rechecks the frozen final testbenches without a model call.",
+          "state": "missing"
+        },
+        "per_instance_timing": {
+          "evidence": [
+            {
+              "kind": "repository-object",
+              "path": "res/picorv32-insn-add/stdout.txt",
+              "repository": "gipsyh/cill-exp"
+            },
+            {
+              "kind": "repository-object",
+              "path": "res/picorv32-insn-add/chat.jsonl",
+              "repository": "gipsyh/cill-exp"
+            }
+          ],
+          "finding": "Per-check verifier totals and chat-event timestamps are retained, but no trial record cleanly separates LLM generation latency from verifier execution time.",
+          "state": "ambiguous"
+        },
+        "result_provenance": {
+          "evidence": [
+            {
+              "kind": "repository-inventory",
+              "repository": "gipsyh/cill-exp"
+            }
+          ],
+          "finding": "The directory layout links names to logs informally, but there is no machine-readable manifest mapping benchmark and output hashes to the paper's reported rows.",
+          "state": "missing"
+        },
+        "verifier_build": {
+          "evidence": [
+            {
+              "kind": "repository-file",
+              "line_end": 31,
+              "line_start": 26,
+              "path": "README.md",
+              "repository": "gipsyh/cill-exp"
+            },
+            {
+              "kind": "repository-object",
+              "path": "Cargo.lock",
+              "repository": "gipsyh/rIC3"
+            }
+          ],
+          "finding": "The artifact pins the Git submodules, documents the build sequence, and rIC3 includes a Cargo lockfile.",
+          "state": "available"
+        },
+        "verifier_identity": {
+          "evidence": [
+            {
+              "kind": "repository-object",
+              "path": ".gitmodules",
+              "repository": "gipsyh/cill-exp"
+            },
+            {
+              "kind": "repository-inventory",
+              "repository": "gipsyh/cill-exp"
+            }
+          ],
+          "finding": "The cill-exp commit records the exact rIC3, Yosys, Yosys-Slang, and riscv-formal Gitlink objects used by the artifact.",
+          "state": "available"
+        }
+      }
+    },
+    {
+      "candidate_id": "loris",
+      "fields": {
+        "benchmark_inputs": {
+          "evidence": [
+            {
+              "kind": "repository-file",
+              "line_end": 4,
+              "line_start": 1,
+              "path": "README.md",
+              "repository": "ltcRandomwalk/LORIS"
+            },
+            {
+              "kind": "repository-object",
+              "path": "final_benchmarks.zip",
+              "repository": "ltcRandomwalk/LORIS"
+            },
+            {
+              "kind": "repository-object",
+              "path": "experiments/finalbenchmark.txt",
+              "repository": "ltcRandomwalk/LORIS"
+            }
+          ],
+          "finding": "The exact benchmark archive and the main and nonlinear benchmark lists are committed with the replication package.",
+          "state": "available"
+        },
+        "binding_locations": {
+          "evidence": [
+            {
+              "kind": "repository-object",
+              "path": "Results.zip",
+              "repository": "ltcRandomwalk/LORIS"
+            },
+            {
+              "kind": "repository-object",
+              "path": "final_benchmarks.zip",
+              "repository": "ltcRandomwalk/LORIS"
+            }
+          ],
+          "finding": "The result archive contains benchmark-named run logs and invariant blocks, but no release-level index fixes the exact insertion site for every retained output without reconstructing it from logs and source.",
+          "state": "ambiguous"
+        },
+        "expected_verdicts": {
+          "evidence": [
+            {
+              "kind": "repository-file",
+              "line_end": 112,
+              "line_start": 98,
+              "path": "README.md",
+              "repository": "ltcRandomwalk/LORIS"
+            },
+            {
+              "kind": "repository-object",
+              "path": "Results.zip",
+              "repository": "ltcRandomwalk/LORIS"
+            }
+          ],
+          "finding": "Per-benchmark, per-run result JSON files in Results.zip record success and the accepted invariant block.",
+          "state": "available"
+        },
+        "frozen_llm_outputs": {
+          "evidence": [
+            {
+              "kind": "repository-file",
+              "line_end": 4,
+              "line_start": 1,
+              "path": "README.md",
+              "repository": "ltcRandomwalk/LORIS"
+            },
+            {
+              "kind": "repository-object",
+              "path": "Results.zip",
+              "repository": "ltcRandomwalk/LORIS"
+            }
+          ],
+          "finding": "Results.zip retains the per-run logs, generated invariant blocks, verifier feedback, and summarized results for the released evaluation.",
+          "state": "available"
+        },
+        "generation_config": {
+          "evidence": [
+            {
+              "kind": "repository-file",
+              "line_end": 98,
+              "line_start": 72,
+              "path": "README.md",
+              "repository": "ltcRandomwalk/LORIS"
+            },
+            {
+              "kind": "repository-object",
+              "path": "src/StepProofVerifier/Config.py",
+              "repository": "ltcRandomwalk/LORIS"
+            },
+            {
+              "kind": "repository-object",
+              "path": "src/StepProofVerifier/prompts/get_init_invariants_lam4inv.txt",
+              "repository": "ltcRandomwalk/LORIS"
+            }
+          ],
+          "finding": "Models, prompts, timeout, and token limits are public, but no immutable run manifest binds every archived result root to a complete sampling and retry configuration.",
+          "state": "ambiguous"
+        },
+        "implementation": {
+          "evidence": [
+            {
+              "kind": "repository-object",
+              "path": "src/StepProofRunner.py",
+              "repository": "ltcRandomwalk/LORIS"
+            },
+            {
+              "kind": "repository-object",
+              "path": "src/StepProofVerifier/StepProofVerifier.py",
+              "repository": "ltcRandomwalk/LORIS"
+            }
+          ],
+          "finding": "The Python generation, local-reasoning checker, and experiment drivers are present in the frozen repository.",
+          "state": "available"
+        },
+        "immutable_revision": {
+          "evidence": [
+            {
+              "kind": "repository-commit",
+              "repository": "ltcRandomwalk/LORIS"
+            }
+          ],
+          "finding": "The public replication repository was resolved to an immutable Git commit before file inspection.",
+          "state": "available"
+        },
+        "license": {
+          "evidence": [
+            {
+              "kind": "repository-inventory",
+              "repository": "ltcRandomwalk/LORIS"
+            }
+          ],
+          "finding": "The repository has no root LICENSE, COPYING, or equivalent terms covering the LORIS implementation and released experiment data.",
+          "state": "missing"
+        },
+        "no_manual_repair": {
+          "evidence": [
+            {
+              "kind": "repository-object",
+              "path": "Results.zip",
+              "repository": "ltcRandomwalk/LORIS"
+            },
+            {
+              "kind": "repository-file",
+              "line_end": 112,
+              "line_start": 85,
+              "path": "README.md",
+              "repository": "ltcRandomwalk/LORIS"
+            }
+          ],
+          "finding": "The archive looks pipeline-generated, but the release does not attest that archived candidates or final result JSON files received no undocumented manual edits.",
+          "state": "ambiguous"
+        },
+        "offline_replay": {
+          "evidence": [
+            {
+              "kind": "repository-file",
+              "line_end": 112,
+              "line_start": 85,
+              "path": "README.md",
+              "repository": "ltcRandomwalk/LORIS"
+            }
+          ],
+          "finding": "The documented tool command performs fresh model generation and the analysis command only aggregates logs; no command rechecks frozen invariant outputs through the verifier offline.",
+          "state": "missing"
+        },
+        "per_instance_timing": {
+          "evidence": [
+            {
+              "kind": "repository-object",
+              "path": "Results.zip",
+              "repository": "ltcRandomwalk/LORIS"
+            },
+            {
+              "kind": "repository-file",
+              "line_end": 112,
+              "line_start": 100,
+              "path": "README.md",
+              "repository": "ltcRandomwalk/LORIS"
+            }
+          ],
+          "finding": "Each trial records a total time and token counts and detailed logs have timestamps, but generation and final-verifier times are not exposed as separate per-trial fields.",
+          "state": "ambiguous"
+        },
+        "result_provenance": {
+          "evidence": [
+            {
+              "kind": "repository-object",
+              "path": "Results.zip",
+              "repository": "ltcRandomwalk/LORIS"
+            },
+            {
+              "kind": "repository-inventory",
+              "repository": "ltcRandomwalk/LORIS"
+            }
+          ],
+          "finding": "The release has benchmark-named directories but no machine-readable mapping from benchmark and output hashes to reported paper rows.",
+          "state": "missing"
+        },
+        "verifier_build": {
+          "evidence": [
+            {
+              "kind": "repository-file",
+              "line_end": 68,
+              "line_start": 5,
+              "path": "README.md",
+              "repository": "ltcRandomwalk/LORIS"
+            },
+            {
+              "kind": "repository-object",
+              "path": "src/requirements.txt",
+              "repository": "ltcRandomwalk/LORIS"
+            }
+          ],
+          "finding": "The replication README pins Frama-C, CVC4, Alt-Ergo, Z3, Python, and Python package versions and documents parser construction.",
+          "state": "available"
+        },
+        "verifier_identity": {
+          "evidence": [
+            {
+              "kind": "repository-file",
+              "line_end": 53,
+              "line_start": 5,
+              "path": "README.md",
+              "repository": "ltcRandomwalk/LORIS"
+            }
+          ],
+          "finding": "The final checking stack is named with exact published versions: Frama-C 27.1, CVC4 1.6, Alt-Ergo 2.4.3, and Z3 4.12.2.",
+          "state": "available"
+        }
+      }
+    },
+    {
+      "candidate_id": "quokka",
+      "fields": {
+        "benchmark_inputs": {
+          "evidence": [
+            {
+              "kind": "repository-file",
+              "line_end": 100,
+              "line_start": 91,
+              "path": "README.md",
+              "repository": "Anjiang-Wei/Quokka"
+            },
+            {
+              "kind": "repository-object",
+              "path": "Dataset/evaluation_all/benchmark02_linear_1.c",
+              "repository": "Anjiang-Wei/Quokka"
+            },
+            {
+              "kind": "repository-object",
+              "path": "Dataset/properties/unreach-call.prp",
+              "repository": "Anjiang-Wei/Quokka"
+            }
+          ],
+          "finding": "The frozen repository includes 866 evaluation C files, the property file, and baseline verifier result tables with stable filenames.",
+          "state": "available"
+        },
+        "binding_locations": {
+          "evidence": [
+            {
+              "kind": "repository-file",
+              "line_end": 45,
+              "line_start": 39,
+              "path": "README.md",
+              "repository": "Anjiang-Wei/Quokka"
+            },
+            {
+              "kind": "repository-inventory",
+              "repository": "Anjiang-Wei/Quokka"
+            }
+          ],
+          "finding": "The generator is designed to emit insertion lines, but the frozen release contains no Quokka result JSONs that bind the evaluated LLM outputs to those locations.",
+          "state": "missing"
+        },
+        "expected_verdicts": {
+          "evidence": [
+            {
+              "kind": "repository-file",
+              "line_end": 81,
+              "line_start": 47,
+              "path": "README.md",
+              "repository": "Anjiang-Wei/Quokka"
+            },
+            {
+              "kind": "repository-inventory",
+              "repository": "Anjiang-Wei/Quokka"
+            }
+          ],
+          "finding": "The release documents the result schema and printer, but the baselines/results directory and its per-instance Quokka verdicts are absent from the frozen tree.",
+          "state": "missing"
+        },
+        "frozen_llm_outputs": {
+          "evidence": [
+            {
+              "kind": "repository-file",
+              "line_end": 45,
+              "line_start": 39,
+              "path": "README.md",
+              "repository": "Anjiang-Wei/Quokka"
+            },
+            {
+              "kind": "repository-inventory",
+              "repository": "Anjiang-Wei/Quokka"
+            }
+          ],
+          "finding": "The README says new JSON outputs are written under baselines/results, but no frozen generated result JSON or raw LLM output is committed.",
+          "state": "missing"
+        },
+        "generation_config": {
+          "evidence": [
+            {
+              "kind": "repository-file",
+              "line_end": 45,
+              "line_start": 27,
+              "path": "README.md",
+              "repository": "Anjiang-Wei/Quokka"
+            },
+            {
+              "kind": "repository-object",
+              "path": "baselines/prompt.yaml",
+              "repository": "Anjiang-Wei/Quokka"
+            }
+          ],
+          "finding": "The public command fixes model, client, maximum tokens, best-of-N, temperature, worker count, and the exact prompt templates.",
+          "state": "available"
+        },
+        "implementation": {
+          "evidence": [
+            {
+              "kind": "repository-object",
+              "path": "baselines/batch_invariant_generation.py",
+              "repository": "Anjiang-Wei/Quokka"
+            },
+            {
+              "kind": "repository-object",
+              "path": "baselines/print_results.py",
+              "repository": "Anjiang-Wei/Quokka"
+            }
+          ],
+          "finding": "The generator, verifier integration, inference clients, and result analysis implementation are present in the frozen tree.",
+          "state": "available"
+        },
+        "immutable_revision": {
+          "evidence": [
+            {
+              "kind": "repository-commit",
+              "repository": "Anjiang-Wei/Quokka"
+            }
+          ],
+          "finding": "The public artifact repository was resolved to an immutable Git commit before file inspection.",
+          "state": "available"
+        },
+        "license": {
+          "evidence": [
+            {
+              "kind": "repository-file",
+              "line_end": 124,
+              "line_start": 118,
+              "path": "README.md",
+              "repository": "Anjiang-Wei/Quokka"
+            }
+          ],
+          "finding": "The repository README explicitly licenses the project under Apache License 2.0 and links the license terms.",
+          "state": "available"
+        },
+        "no_manual_repair": {
+          "evidence": [
+            {
+              "kind": "repository-inventory",
+              "repository": "Anjiang-Wei/Quokka"
+            }
+          ],
+          "finding": "No evaluated LLM output or replay trace is released, so the absence of undocumented manual edits cannot be established.",
+          "state": "missing"
+        },
+        "offline_replay": {
+          "evidence": [
+            {
+              "kind": "repository-file",
+              "line_end": 71,
+              "line_start": 39,
+              "path": "README.md",
+              "repository": "Anjiang-Wei/Quokka"
+            },
+            {
+              "kind": "repository-inventory",
+              "repository": "Anjiang-Wei/Quokka"
+            }
+          ],
+          "finding": "The documented experiment command performs a new model call and the print command requires absent result JSONs; there is no frozen-output verifier replay.",
+          "state": "missing"
+        },
+        "per_instance_timing": {
+          "evidence": [
+            {
+              "kind": "repository-object",
+              "path": "Dataset/timing_uautomizer.json",
+              "repository": "Anjiang-Wei/Quokka"
+            },
+            {
+              "kind": "repository-inventory",
+              "repository": "Anjiang-Wei/Quokka"
+            }
+          ],
+          "finding": "Per-instance baseline verifier timings are released, but generation and verification timings for the evaluated Quokka LLM runs are absent with the result JSONs.",
+          "state": "missing"
+        },
+        "result_provenance": {
+          "evidence": [
+            {
+              "kind": "repository-inventory",
+              "repository": "Anjiang-Wei/Quokka"
+            }
+          ],
+          "finding": "There is no result artifact, content-hash manifest, or mapping from evaluated benchmark/output bytes to reported rows.",
+          "state": "missing"
+        },
+        "verifier_build": {
+          "evidence": [
+            {
+              "kind": "repository-object",
+              "path": "build.sh",
+              "repository": "Anjiang-Wei/Quokka"
+            },
+            {
+              "kind": "repository-object",
+              "path": "baselines/reqs.txt",
+              "repository": "Anjiang-Wei/Quokka"
+            }
+          ],
+          "finding": "The build script downloads the fixed SV-COMP 2023 UAutomizer archive and the Python dependency set is version-pinned.",
+          "state": "available"
+        },
+        "verifier_identity": {
+          "evidence": [
+            {
+              "kind": "repository-file",
+              "line_end": 25,
+              "line_start": 7,
+              "path": "README.md",
+              "repository": "Anjiang-Wei/Quokka"
+            },
+            {
+              "kind": "repository-object",
+              "path": "build.sh",
+              "repository": "Anjiang-Wei/Quokka"
+            }
+          ],
+          "finding": "The verifier is identified as the archived SV-COMP 2023 UAutomizer package, with ESBMC explicitly optional.",
+          "state": "available"
+        }
+      }
+    },
+    {
+      "candidate_id": "autoverus",
+      "fields": {
+        "benchmark_inputs": {
+          "evidence": [
+            {
+              "kind": "repository-file",
+              "line_end": 22,
+              "line_start": 7,
+              "path": "README-artifact-evaluation.md",
+              "repository": "microsoft/verus-proof-synthesis"
+            },
+            {
+              "kind": "repository-object",
+              "path": "benchmarks/Verus-Bench/tasks.jsonl",
+              "repository": "microsoft/verus-proof-synthesis"
+            }
+          ],
+          "finding": "The 150-task Verus-Bench inputs, verified references, paths, and machine-readable task index are committed with the artifact.",
+          "state": "available"
+        },
+        "binding_locations": {
+          "evidence": [
+            {
+              "kind": "repository-file",
+              "line_end": 97,
+              "line_start": 80,
+              "path": "README-artifact-evaluation.md",
+              "repository": "microsoft/verus-proof-synthesis"
+            },
+            {
+              "kind": "repository-object",
+              "path": "generated/autoverus/abalation-study/all-in-one-ab-repair-1.0/1-clover-array_concat_strong.rs",
+              "repository": "microsoft/verus-proof-synthesis"
+            }
+          ],
+          "finding": "Every generated candidate is retained as a complete Verus source file, so proof annotations are bound to exact source locations without a separate patch inference step.",
+          "state": "available"
+        },
+        "expected_verdicts": {
+          "evidence": [
+            {
+              "kind": "repository-file",
+              "line_end": 124,
+              "line_start": 99,
+              "path": "README-artifact-evaluation.md",
+              "repository": "microsoft/verus-proof-synthesis"
+            },
+            {
+              "kind": "repository-object",
+              "path": "generated/autoverus/abalation-study/all-in-one-ab-repair-1.0/1-clover-array_concat_strong.rs",
+              "repository": "microsoft/verus-proof-synthesis"
+            }
+          ],
+          "finding": "Final generated files include the Verus score and Safe status, and the artifact documents the acceptance convention for verified proofs.",
+          "state": "available"
+        },
+        "frozen_llm_outputs": {
+          "evidence": [
+            {
+              "kind": "repository-file",
+              "line_end": 97,
+              "line_start": 43,
+              "path": "README-artifact-evaluation.md",
+              "repository": "microsoft/verus-proof-synthesis"
+            },
+            {
+              "kind": "repository-inventory",
+              "repository": "microsoft/verus-proof-synthesis"
+            }
+          ],
+          "finding": "The generated tree retains final proofs and the complete intermediate candidate and repair histories for the paper's main, baseline, and ablation runs.",
+          "state": "available"
+        },
+        "generation_config": {
+          "evidence": [
+            {
+              "kind": "repository-file",
+              "line_end": 220,
+              "line_start": 125,
+              "path": "README-artifact-evaluation.md",
+              "repository": "microsoft/verus-proof-synthesis"
+            },
+            {
+              "kind": "repository-object",
+              "path": "autoverus/config-artifact-openai.json",
+              "repository": "microsoft/verus-proof-synthesis"
+            },
+            {
+              "kind": "repository-file",
+              "line_end": 78,
+              "line_start": 57,
+              "path": "autoverus/README.md",
+              "repository": "microsoft/verus-proof-synthesis"
+            }
+          ],
+          "finding": "The artifact publishes exact experiment commands, model and token/retry configuration, temperatures, candidate counts, repair limits, and prompt-bearing implementation bytes.",
+          "state": "available"
+        },
+        "implementation": {
+          "evidence": [
+            {
+              "kind": "repository-object",
+              "path": "autoverus/main.py",
+              "repository": "microsoft/verus-proof-synthesis"
+            },
+            {
+              "kind": "repository-object",
+              "path": "autoverus/verify.py",
+              "repository": "microsoft/verus-proof-synthesis"
+            }
+          ],
+          "finding": "The complete three-phase generation, ranking, Houdini, repair, and Verus integration implementation is public in the frozen repository.",
+          "state": "available"
+        },
+        "immutable_revision": {
+          "evidence": [
+            {
+              "kind": "repository-commit",
+              "repository": "microsoft/verus-proof-synthesis"
+            }
+          ],
+          "finding": "The public artifact repository was resolved to an immutable Git commit before file inspection.",
+          "state": "available"
+        },
+        "license": {
+          "evidence": [
+            {
+              "kind": "repository-object",
+              "path": "LICENSE",
+              "repository": "microsoft/verus-proof-synthesis"
+            }
+          ],
+          "finding": "The repository provides an MIT license covering the implementation and released artifact files.",
+          "state": "available"
+        },
+        "no_manual_repair": {
+          "evidence": [
+            {
+              "kind": "repository-file",
+              "line_end": 97,
+              "line_start": 80,
+              "path": "README-artifact-evaluation.md",
+              "repository": "microsoft/verus-proof-synthesis"
+            },
+            {
+              "kind": "repository-inventory",
+              "repository": "microsoft/verus-proof-synthesis"
+            }
+          ],
+          "finding": "Intermediate histories are extensive, but no hash-bound run manifest or explicit release statement excludes undocumented edits to final or intermediate proof files.",
+          "state": "ambiguous"
+        },
+        "offline_replay": {
+          "evidence": [
+            {
+              "kind": "repository-file",
+              "line_end": 124,
+              "line_start": 99,
+              "path": "README-artifact-evaluation.md",
+              "repository": "microsoft/verus-proof-synthesis"
+            },
+            {
+              "kind": "repository-file",
+              "line_end": 265,
+              "line_start": 222,
+              "path": "README-artifact-evaluation.md",
+              "repository": "microsoft/verus-proof-synthesis"
+            }
+          ],
+          "finding": "The release states that generated proofs were checked and provides Verus build instructions, but it gives no exact manifest-driven command to recheck the frozen generated tree without generation/API activity.",
+          "state": "ambiguous"
+        },
+        "per_instance_timing": {
+          "evidence": [
+            {
+              "kind": "repository-file",
+              "line_end": 97,
+              "line_start": 80,
+              "path": "README-artifact-evaluation.md",
+              "repository": "microsoft/verus-proof-synthesis"
+            },
+            {
+              "kind": "repository-object",
+              "path": "generated/autoverus/abalation-study/all-in-one-ab-repair-1.0/1-clover-array_concat_strong.time",
+              "repository": "microsoft/verus-proof-synthesis"
+            }
+          ],
+          "finding": "Per-attempt .time logs retain timestamped generation and verification events, but the release does not expose normalized separate generation and verifier durations for every trial.",
+          "state": "ambiguous"
+        },
+        "result_provenance": {
+          "evidence": [
+            {
+              "kind": "repository-file",
+              "line_end": 124,
+              "line_start": 99,
+              "path": "README-artifact-evaluation.md",
+              "repository": "microsoft/verus-proof-synthesis"
+            },
+            {
+              "kind": "repository-inventory",
+              "repository": "microsoft/verus-proof-synthesis"
+            }
+          ],
+          "finding": "Directory names describe paper sections, but no machine-readable manifest maps benchmark and output hashes to reported table rows or fixes the accepted trial set.",
+          "state": "missing"
+        },
+        "verifier_build": {
+          "evidence": [
+            {
+              "kind": "repository-object",
+              "path": "Dockerfile",
+              "repository": "microsoft/verus-proof-synthesis"
+            },
+            {
+              "kind": "repository-file",
+              "line_end": 244,
+              "line_start": 222,
+              "path": "README-artifact-evaluation.md",
+              "repository": "microsoft/verus-proof-synthesis"
+            }
+          ],
+          "finding": "The Dockerfile and artifact instructions check out Verus commit 33269ac6a0ea33a08109eefe5016c1fdd0ce9fbd and document its build.",
+          "state": "available"
+        },
+        "verifier_identity": {
+          "evidence": [
+            {
+              "kind": "repository-file",
+              "line_end": 244,
+              "line_start": 222,
+              "path": "README-artifact-evaluation.md",
+              "repository": "microsoft/verus-proof-synthesis"
+            }
+          ],
+          "finding": "The final verifier is Verus at the exact published commit 33269ac6a0ea33a08109eefe5016c1fdd0ce9fbd.",
+          "state": "available"
+        }
+      }
+    },
+    {
+      "candidate_id": "exverus",
+      "fields": {
+        "benchmark_inputs": {
+          "evidence": [
+            {
+              "kind": "repository-file",
+              "line_end": 29,
+              "line_start": 18,
+              "path": "README.md",
+              "repository": "claudeyj/exverus"
+            },
+            {
+              "kind": "repository-object",
+              "path": "cleaned-verusbench/CloverBench/unverified/all_digits_strong.rs",
+              "repository": "claudeyj/exverus"
+            },
+            {
+              "kind": "repository-object",
+              "path": "Benchmarks/Dafnybench/unverified/program_001_main.rs",
+              "repository": "claudeyj/exverus"
+            }
+          ],
+          "finding": "Cleaned VerusBench and the additional DafnyBench, HumanEval, LCBench, and obfuscation benchmark copies are present in the frozen tree.",
+          "state": "available"
+        },
+        "binding_locations": {
+          "evidence": [
+            {
+              "kind": "repository-file",
+              "line_end": 182,
+              "line_start": 171,
+              "path": "README.md",
+              "repository": "claudeyj/exverus"
+            },
+            {
+              "kind": "repository-inventory",
+              "repository": "claudeyj/exverus"
+            }
+          ],
+          "finding": "The README describes where generated task artifacts would bind, but the results tree containing the evaluated proof files and repair traces is not committed.",
+          "state": "missing"
+        },
+        "expected_verdicts": {
+          "evidence": [
+            {
+              "kind": "repository-file",
+              "line_end": 182,
+              "line_start": 171,
+              "path": "README.md",
+              "repository": "claudeyj/exverus"
+            },
+            {
+              "kind": "repository-inventory",
+              "repository": "claudeyj/exverus"
+            }
+          ],
+          "finding": "Per-task repair status files are documented as generated outputs but are absent from the frozen repository.",
+          "state": "missing"
+        },
+        "frozen_llm_outputs": {
+          "evidence": [
+            {
+              "kind": "repository-file",
+              "line_end": 29,
+              "line_start": 18,
+              "path": "README.md",
+              "repository": "claudeyj/exverus"
+            },
+            {
+              "kind": "repository-inventory",
+              "repository": "claudeyj/exverus"
+            }
+          ],
+          "finding": "Although the README lists a results directory with generated outputs and traces, no results path or frozen paper-run output is present at the resolved commit.",
+          "state": "missing"
+        },
+        "generation_config": {
+          "evidence": [
+            {
+              "kind": "repository-file",
+              "line_end": 45,
+              "line_start": 30,
+              "path": "README.md",
+              "repository": "claudeyj/exverus"
+            },
+            {
+              "kind": "repository-file",
+              "line_end": 199,
+              "line_start": 184,
+              "path": "README.md",
+              "repository": "claudeyj/exverus"
+            },
+            {
+              "kind": "repository-object",
+              "path": "vinv/prompt/trace_repair.txt",
+              "repository": "claudeyj/exverus"
+            }
+          ],
+          "finding": "Model families, main repair budgets, modes, and prompts are public, but no frozen per-paper-run manifest fixes provider model revisions, decoding parameters, retries, and exact sweep commands.",
+          "state": "ambiguous"
+        },
+        "implementation": {
+          "evidence": [
+            {
+              "kind": "repository-object",
+              "path": "vinv/pipeline/main.py",
+              "repository": "claudeyj/exverus"
+            },
+            {
+              "kind": "repository-object",
+              "path": "vinv/pipeline/counter_example.py",
+              "repository": "claudeyj/exverus"
+            }
+          ],
+          "finding": "The Python repair pipeline, CEX generation and validation logic, prompts, Rust helpers, and analysis utilities are committed.",
+          "state": "available"
+        },
+        "immutable_revision": {
+          "evidence": [
+            {
+              "kind": "repository-commit",
+              "repository": "claudeyj/exverus"
+            }
+          ],
+          "finding": "The public artifact repository was resolved to an immutable Git commit before file inspection.",
+          "state": "available"
+        },
+        "license": {
+          "evidence": [
+            {
+              "kind": "repository-inventory",
+              "repository": "claudeyj/exverus"
+            }
+          ],
+          "finding": "The repository has no root LICENSE, COPYING, or equivalent terms covering ExVerus code, benchmarks, and prompts.",
+          "state": "missing"
+        },
+        "no_manual_repair": {
+          "evidence": [
+            {
+              "kind": "repository-inventory",
+              "repository": "claudeyj/exverus"
+            }
+          ],
+          "finding": "No paper-run outputs or repair traces are released, so undocumented human intervention cannot be excluded or audited.",
+          "state": "missing"
+        },
+        "offline_replay": {
+          "evidence": [
+            {
+              "kind": "repository-file",
+              "line_end": 160,
+              "line_start": 109,
+              "path": "README.md",
+              "repository": "claudeyj/exverus"
+            },
+            {
+              "kind": "repository-inventory",
+              "repository": "claudeyj/exverus"
+            }
+          ],
+          "finding": "All documented core experiment commands perform fresh model-driven repair, and there are no frozen outputs to pass through an offline verifier replay.",
+          "state": "missing"
+        },
+        "per_instance_timing": {
+          "evidence": [
+            {
+              "kind": "repository-file",
+              "line_end": 182,
+              "line_start": 171,
+              "path": "README.md",
+              "repository": "claudeyj/exverus"
+            },
+            {
+              "kind": "repository-inventory",
+              "repository": "claudeyj/exverus"
+            }
+          ],
+          "finding": "The release describes generated cost reports, but no per-instance paper-run timing or cost files are present in the frozen tree.",
+          "state": "missing"
+        },
+        "result_provenance": {
+          "evidence": [
+            {
+              "kind": "repository-inventory",
+              "repository": "claudeyj/exverus"
+            }
+          ],
+          "finding": "No result bytes or machine-readable benchmark/output hash mapping to the paper tables is released.",
+          "state": "missing"
+        },
+        "verifier_build": {
+          "evidence": [
+            {
+              "kind": "repository-file",
+              "line_end": 107,
+              "line_start": 47,
+              "path": "README.md",
+              "repository": "claudeyj/exverus"
+            },
+            {
+              "kind": "repository-object",
+              "path": "pyproject.toml",
+              "repository": "claudeyj/exverus"
+            }
+          ],
+          "finding": "The Verus release is named, but the repository has no uv.lock and pyproject.toml leaves key dependencies such as OpenAI and build tools range-unpinned, so the documented build is not deterministic.",
+          "state": "ambiguous"
+        },
+        "verifier_identity": {
+          "evidence": [
+            {
+              "kind": "repository-file",
+              "line_end": 71,
+              "line_start": 47,
+              "path": "README.md",
+              "repository": "claudeyj/exverus"
+            },
+            {
+              "kind": "repository-object",
+              "path": ".gitmodules",
+              "repository": "claudeyj/exverus"
+            }
+          ],
+          "finding": "The paper implementation identifies Verus release 0.2025.07.12.0b6f3cb and pins the bundled AutoVerus support repository as a Gitlink.",
+          "state": "available"
+        }
+      }
+    }
+  ],
+  "catalog_sha256": "d8dfeaa65d6a34652f0018d9ac61a587ce884c208847094ee9750b0047a13fd3",
+  "census_sha256": "c9cfab43b56ce6f144a3b5f30ae7133ba72fe8963462c167f77bf866e218ed6b",
+  "execution": {
+    "author_contacts": 0,
+    "fresh_generated_outputs": 0,
+    "new_llm_api_calls": 0,
+    "threshold_changes": false,
+    "verifier_executions": 0
+  },
+  "inspection_completed_at_utc": "2026-07-14T05:51:35Z",
+  "preregistration_commit": "4d17851b746e30467b7c01e48bfce8b678a8955b",
+  "repositories": [
+    {
+      "candidate_id": "cill",
+      "directory": "cill-ric3",
+      "repository": "gipsyh/rIC3"
+    },
+    {
+      "candidate_id": "cill",
+      "directory": "cill-exp",
+      "repository": "gipsyh/cill-exp"
+    },
+    {
+      "candidate_id": "loris",
+      "directory": "loris",
+      "repository": "ltcRandomwalk/LORIS"
+    },
+    {
+      "candidate_id": "quokka",
+      "directory": "quokka",
+      "repository": "Anjiang-Wei/Quokka"
+    },
+    {
+      "candidate_id": "autoverus",
+      "directory": "autoverus",
+      "repository": "microsoft/verus-proof-synthesis"
+    },
+    {
+      "candidate_id": "exverus",
+      "directory": "exverus",
+      "repository": "claudeyj/exverus"
+    }
+  ],
+  "retrieval_freeze_sha256": "1c4576d67a73b0ae771c6f7e37529933e5d1c9d981778bf45b70b0c21308c804",
+  "schema": "cross-tool-x0-census-v1"
+}

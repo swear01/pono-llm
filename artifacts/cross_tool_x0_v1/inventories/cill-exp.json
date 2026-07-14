@@ -1,0 +1,42 @@
+{
+  "candidate_id": "cill",
+  "commit": "a61258b1b6abe1d2bdd6966e09485977777f901b",
+  "directory": "cill-exp",
+  "inventory_sha256": "9d86e16e8d93d34ceab1dea92e71a254b16e659affbf42f8c99ca8cf64a739bb",
+  "path_count": 296,
+  "path_listing": {
+    "path": "inventories/cill-exp.paths.txt",
+    "sha256": "6715a0d316d66c02200a9228083045593152d8eda1cff3e17b60042a82d1ca6a"
+  },
+  "repository": "gipsyh/cill-exp",
+  "root_files": [
+    ".gitignore",
+    ".gitmodules",
+    "PROMPT.md",
+    "README.md",
+    "rIC3"
+  ],
+  "root_license_files": [],
+  "schema": "cross-tool-x0-repository-inventory-v1",
+  "top_level_counts": {
+    ".gitignore": 1,
+    ".gitmodules": 1,
+    "PROMPT.md": 1,
+    "README.md": 1,
+    "deps": 3,
+    "nerv": 10,
+    "picorv32": 13,
+    "rIC3": 1,
+    "res": 131,
+    "res-migr": 53,
+    "riscv-formal": 26,
+    "serv": 54,
+    "tools": 1
+  },
+  "tree": "a7422cac82fb971021474b1c8355d278fc88bd52",
+  "type_counts": {
+    "blob": 292,
+    "commit": 4
+  },
+  "url": "https://github.com/gipsyh/cill-exp"
+}

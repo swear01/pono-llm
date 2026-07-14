@@ -121,6 +121,7 @@ Expected `git status` after archiving:
 
 - Cross-tool audit plan: [docs/cross_tool_audit_plan.md](docs/cross_tool_audit_plan.md)
 - Cross-tool X0 preregistration: [docs/cross_tool_audit_preregistration.md](docs/cross_tool_audit_preregistration.md)
+- Cross-tool X0 result: [docs/cross_tool_x0_results.md](docs/cross_tool_x0_results.md)
 - Final claim ledger: [docs/final_claim_ledger.md](docs/final_claim_ledger.md)
 - Final research narrative: [docs/final_research_narrative.md](docs/final_research_narrative.md)
 - Overview: [docs/overview.md](docs/overview.md)

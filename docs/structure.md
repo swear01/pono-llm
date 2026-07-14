@@ -13,10 +13,10 @@
 | `smt/` | SMT utility wrappers |
 | `utils/` | Logging, timing, misc utilities |
 | `tests/` | C++ tests (googletest) + Python tests (`tests/python/`) |
-| `scripts/` | Benchmark harnesses, gate tools, and strict closure-summary validation for the completed research program. |
+| `scripts/` | Benchmark harnesses, gate tools, strict closure-summary validation, and the independent cross-tool X0 census/validator. |
 | `benchmarks/` | Micro-benchmarks and BTOR2 test cases |
 | `bench_results/` | Experiment output (not in git) |
-| `artifacts/` | Frozen gate evidence plus `final_research_summary_v1.json`, the hash-bound machine-readable closure index. |
+| `artifacts/` | Frozen gate evidence, the old project's hash-bound closure index, and the independent `cross_tool_x0_v1/` census bundle. |
 | `docs/` | Active docs; historical docs live under `archive/docs/` |
 | `diagnosis/` | Per-phase diagnosis notes |
 | `prompts/` | LLM prompt templates |
@@ -27,11 +27,20 @@
 
 ## Current Module Boundaries
 
-- **Independent cross-tool Gate X0:**
+- **Completed independent cross-tool Gate X0:**
   `scripts/cross_tool_candidate_catalog_v1.json` freezes five external systems,
   three setting classes, fourteen artifact requirements, and a no-replacement
-  decision rule before local repository inspection. The active protocol is
-  `docs/cross_tool_audit_preregistration.md`; no old Pono gate is reopened.
+  decision rule before local repository inspection.
+  `scripts/cross_tool_x0_schema.py` validates the catalog, pre-inspection
+  retrieval freeze, census, and all strict JSON identities.
+  `scripts/build_cross_tool_x0.py` refuses dirty/wrong external revisions and
+  builds repository inventories, resolved evidence, reports, summary,
+  provenance, and recursive integrity.
+  `scripts/validate_cross_tool_x0.py` independently recomputes field states,
+  eligibility, setting coverage, the gate decision, evidence identities, and
+  every artifact hash. The canonical `artifacts/cross_tool_x0_v1/` decision is
+  `STOP_X0_INSUFFICIENT_PUBLIC_ARTIFACTS`; X1--X3 are unauthorized and no old
+  Pono gate is reopened. See `docs/cross_tool_x0_results.md`.
 - **Final proof path:** original BTOR2 + predicate JSON → `pono -e ic3ia --initial-predicates <json> <btor2>`. Predicate JSON is untrusted abstraction vocabulary, not a model assumption.
 - **Stable experiment identity:** `scripts/experiment_manifest.py` maps
   dataset-relative benchmark IDs to local paths, preserves/validates benchmark

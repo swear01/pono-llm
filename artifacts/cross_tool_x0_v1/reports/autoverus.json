@@ -1,0 +1,395 @@
+{
+  "ambiguous_fields": [
+    "offline_replay",
+    "per_instance_timing",
+    "no_manual_repair"
+  ],
+  "available_count": 10,
+  "blocked_fields": [],
+  "candidate_id": "autoverus",
+  "catalog_sha256": "d8dfeaa65d6a34652f0018d9ac61a587ce884c208847094ee9750b0047a13fd3",
+  "census_sha256": "c9cfab43b56ce6f144a3b5f30ae7133ba72fe8963462c167f77bf866e218ed6b",
+  "fields": {
+    "benchmark_inputs": {
+      "evidence": [
+        {
+          "byte_count": 11357,
+          "commit": "2f9aff36b4e287e41b1bc167f7888a5cddac4cdd",
+          "git_object": "59c1dd7b6a9a1c96b0d9a33cf42139b666e81418",
+          "kind": "repository-file",
+          "line_end": 22,
+          "line_start": 7,
+          "path": "README-artifact-evaluation.md",
+          "repository": "microsoft/verus-proof-synthesis",
+          "sha256": "80cf857dc31f5437863ded9385c9fbad7626dd4b9eec29757d56220b74d5260a",
+          "url": "https://github.com/microsoft/verus-proof-synthesis/blob/2f9aff36b4e287e41b1bc167f7888a5cddac4cdd/README-artifact-evaluation.md"
+        },
+        {
+          "byte_count": 318432,
+          "commit": "2f9aff36b4e287e41b1bc167f7888a5cddac4cdd",
+          "git_object": "b0bb9be7415beb2530e58d76c9f8858ded41c454",
+          "kind": "repository-object",
+          "path": "benchmarks/Verus-Bench/tasks.jsonl",
+          "repository": "microsoft/verus-proof-synthesis",
+          "sha256": "557a2dc7d78d5c111ea42d8facfce4bca244914a63bef74e06e4453563d1a8cd",
+          "url": "https://github.com/microsoft/verus-proof-synthesis/blob/2f9aff36b4e287e41b1bc167f7888a5cddac4cdd/benchmarks/Verus-Bench/tasks.jsonl"
+        }
+      ],
+      "finding": "The 150-task Verus-Bench inputs, verified references, paths, and machine-readable task index are committed with the artifact.",
+      "state": "available"
+    },
+    "binding_locations": {
+      "evidence": [
+        {
+          "byte_count": 11357,
+          "commit": "2f9aff36b4e287e41b1bc167f7888a5cddac4cdd",
+          "git_object": "59c1dd7b6a9a1c96b0d9a33cf42139b666e81418",
+          "kind": "repository-file",
+          "line_end": 97,
+          "line_start": 80,
+          "path": "README-artifact-evaluation.md",
+          "repository": "microsoft/verus-proof-synthesis",
+          "sha256": "80cf857dc31f5437863ded9385c9fbad7626dd4b9eec29757d56220b74d5260a",
+          "url": "https://github.com/microsoft/verus-proof-synthesis/blob/2f9aff36b4e287e41b1bc167f7888a5cddac4cdd/README-artifact-evaluation.md"
+        },
+        {
+          "byte_count": 1392,
+          "commit": "2f9aff36b4e287e41b1bc167f7888a5cddac4cdd",
+          "git_object": "9f23d1ee344972364a90367a2739dd879aa4f35c",
+          "kind": "repository-object",
+          "path": "generated/autoverus/abalation-study/all-in-one-ab-repair-1.0/1-clover-array_concat_strong.rs",
+          "repository": "microsoft/verus-proof-synthesis",
+          "sha256": "aea7589692d7dcc97e8170ab3d5b774311b8ef264fdd339178940c93005fd43c",
+          "url": "https://github.com/microsoft/verus-proof-synthesis/blob/2f9aff36b4e287e41b1bc167f7888a5cddac4cdd/generated/autoverus/abalation-study/all-in-one-ab-repair-1.0/1-clover-array_concat_strong.rs"
+        }
+      ],
+      "finding": "Every generated candidate is retained as a complete Verus source file, so proof annotations are bound to exact source locations without a separate patch inference step.",
+      "state": "available"
+    },
+    "expected_verdicts": {
+      "evidence": [
+        {
+          "byte_count": 11357,
+          "commit": "2f9aff36b4e287e41b1bc167f7888a5cddac4cdd",
+          "git_object": "59c1dd7b6a9a1c96b0d9a33cf42139b666e81418",
+          "kind": "repository-file",
+          "line_end": 124,
+          "line_start": 99,
+          "path": "README-artifact-evaluation.md",
+          "repository": "microsoft/verus-proof-synthesis",
+          "sha256": "80cf857dc31f5437863ded9385c9fbad7626dd4b9eec29757d56220b74d5260a",
+          "url": "https://github.com/microsoft/verus-proof-synthesis/blob/2f9aff36b4e287e41b1bc167f7888a5cddac4cdd/README-artifact-evaluation.md"
+        },
+        {
+          "byte_count": 1392,
+          "commit": "2f9aff36b4e287e41b1bc167f7888a5cddac4cdd",
+          "git_object": "9f23d1ee344972364a90367a2739dd879aa4f35c",
+          "kind": "repository-object",
+          "path": "generated/autoverus/abalation-study/all-in-one-ab-repair-1.0/1-clover-array_concat_strong.rs",
+          "repository": "microsoft/verus-proof-synthesis",
+          "sha256": "aea7589692d7dcc97e8170ab3d5b774311b8ef264fdd339178940c93005fd43c",
+          "url": "https://github.com/microsoft/verus-proof-synthesis/blob/2f9aff36b4e287e41b1bc167f7888a5cddac4cdd/generated/autoverus/abalation-study/all-in-one-ab-repair-1.0/1-clover-array_concat_strong.rs"
+        }
+      ],
+      "finding": "Final generated files include the Verus score and Safe status, and the artifact documents the acceptance convention for verified proofs.",
+      "state": "available"
+    },
+    "frozen_llm_outputs": {
+      "evidence": [
+        {
+          "byte_count": 11357,
+          "commit": "2f9aff36b4e287e41b1bc167f7888a5cddac4cdd",
+          "git_object": "59c1dd7b6a9a1c96b0d9a33cf42139b666e81418",
+          "kind": "repository-file",
+          "line_end": 97,
+          "line_start": 43,
+          "path": "README-artifact-evaluation.md",
+          "repository": "microsoft/verus-proof-synthesis",
+          "sha256": "80cf857dc31f5437863ded9385c9fbad7626dd4b9eec29757d56220b74d5260a",
+          "url": "https://github.com/microsoft/verus-proof-synthesis/blob/2f9aff36b4e287e41b1bc167f7888a5cddac4cdd/README-artifact-evaluation.md"
+        },
+        {
+          "inventory_path": "inventories/autoverus.json",
+          "inventory_sha256": "6892bf0167cf279564f24981adfac586456a83d05158fde6bae8be0822dc12c7",
+          "kind": "repository-inventory",
+          "path_listing_path": "inventories/autoverus.paths.txt",
+          "path_listing_sha256": "7a2c6ebd1b15537107bba398cdb79f01251c2e7e99589c40e86fe6440a19c8fb",
+          "repository": "microsoft/verus-proof-synthesis"
+        }
+      ],
+      "finding": "The generated tree retains final proofs and the complete intermediate candidate and repair histories for the paper's main, baseline, and ablation runs.",
+      "state": "available"
+    },
+    "generation_config": {
+      "evidence": [
+        {
+          "byte_count": 11357,
+          "commit": "2f9aff36b4e287e41b1bc167f7888a5cddac4cdd",
+          "git_object": "59c1dd7b6a9a1c96b0d9a33cf42139b666e81418",
+          "kind": "repository-file",
+          "line_end": 220,
+          "line_start": 125,
+          "path": "README-artifact-evaluation.md",
+          "repository": "microsoft/verus-proof-synthesis",
+          "sha256": "80cf857dc31f5437863ded9385c9fbad7626dd4b9eec29757d56220b74d5260a",
+          "url": "https://github.com/microsoft/verus-proof-synthesis/blob/2f9aff36b4e287e41b1bc167f7888a5cddac4cdd/README-artifact-evaluation.md"
+        },
+        {
+          "byte_count": 566,
+          "commit": "2f9aff36b4e287e41b1bc167f7888a5cddac4cdd",
+          "git_object": "24bc638dcb02d7a2cc8aa887748d4c88eacbf8cf",
+          "kind": "repository-object",
+          "path": "autoverus/config-artifact-openai.json",
+          "repository": "microsoft/verus-proof-synthesis",
+          "sha256": "31c9b278a4a33c4f4d4089507909bd63b1671127609050d79e26aadffe9ff701",
+          "url": "https://github.com/microsoft/verus-proof-synthesis/blob/2f9aff36b4e287e41b1bc167f7888a5cddac4cdd/autoverus/config-artifact-openai.json"
+        },
+        {
+          "byte_count": 7058,
+          "commit": "2f9aff36b4e287e41b1bc167f7888a5cddac4cdd",
+          "git_object": "77884c13833c85572f89f9079d80c4a2daa1bd9f",
+          "kind": "repository-file",
+          "line_end": 78,
+          "line_start": 57,
+          "path": "autoverus/README.md",
+          "repository": "microsoft/verus-proof-synthesis",
+          "sha256": "9b2eb033df0ea4321a378737dccbd31379c950a2f6e56663fb2538cb711414c2",
+          "url": "https://github.com/microsoft/verus-proof-synthesis/blob/2f9aff36b4e287e41b1bc167f7888a5cddac4cdd/autoverus/README.md"
+        }
+      ],
+      "finding": "The artifact publishes exact experiment commands, model and token/retry configuration, temperatures, candidate counts, repair limits, and prompt-bearing implementation bytes.",
+      "state": "available"
+    },
+    "immutable_revision": {
+      "evidence": [
+        {
+          "commit": "2f9aff36b4e287e41b1bc167f7888a5cddac4cdd",
+          "kind": "repository-commit",
+          "repository": "microsoft/verus-proof-synthesis",
+          "tree": "831c2b172230c48434b2b5391199b44cb10936ce",
+          "url": "https://github.com/microsoft/verus-proof-synthesis/tree/2f9aff36b4e287e41b1bc167f7888a5cddac4cdd"
+        }
+      ],
+      "finding": "The public artifact repository was resolved to an immutable Git commit before file inspection.",
+      "state": "available"
+    },
+    "implementation": {
+      "evidence": [
+        {
+          "byte_count": 3606,
+          "commit": "2f9aff36b4e287e41b1bc167f7888a5cddac4cdd",
+          "git_object": "68c33be63d56f8670544ac43461227d387093a8e",
+          "kind": "repository-object",
+          "path": "autoverus/main.py",
+          "repository": "microsoft/verus-proof-synthesis",
+          "sha256": "10ef0730eae61b49b5a3a4a8f484244fb0afdf44efe24d21f24815f5405e361c",
+          "url": "https://github.com/microsoft/verus-proof-synthesis/blob/2f9aff36b4e287e41b1bc167f7888a5cddac4cdd/autoverus/main.py"
+        },
+        {
+          "byte_count": 8569,
+          "commit": "2f9aff36b4e287e41b1bc167f7888a5cddac4cdd",
+          "git_object": "8b31431775c604a6e2a50d844bb8b4f3abdb493b",
+          "kind": "repository-object",
+          "path": "autoverus/verify.py",
+          "repository": "microsoft/verus-proof-synthesis",
+          "sha256": "7b11e45171b2b0a6efa00a262bc8d8d908648a4c181e5ac0e153fca15194e898",
+          "url": "https://github.com/microsoft/verus-proof-synthesis/blob/2f9aff36b4e287e41b1bc167f7888a5cddac4cdd/autoverus/verify.py"
+        }
+      ],
+      "finding": "The complete three-phase generation, ranking, Houdini, repair, and Verus integration implementation is public in the frozen repository.",
+      "state": "available"
+    },
+    "license": {
+      "evidence": [
+        {
+          "byte_count": 1066,
+          "commit": "2f9aff36b4e287e41b1bc167f7888a5cddac4cdd",
+          "git_object": "56f940ea2b8d567f6d7230a157a3a487f8e7cd31",
+          "kind": "repository-object",
+          "path": "LICENSE",
+          "repository": "microsoft/verus-proof-synthesis",
+          "sha256": "14f39536f5cbdb27e9ae843402d2f207bd2a2cd5113dbe08306b831bd839fc88",
+          "url": "https://github.com/microsoft/verus-proof-synthesis/blob/2f9aff36b4e287e41b1bc167f7888a5cddac4cdd/LICENSE"
+        }
+      ],
+      "finding": "The repository provides an MIT license covering the implementation and released artifact files.",
+      "state": "available"
+    },
+    "no_manual_repair": {
+      "evidence": [
+        {
+          "byte_count": 11357,
+          "commit": "2f9aff36b4e287e41b1bc167f7888a5cddac4cdd",
+          "git_object": "59c1dd7b6a9a1c96b0d9a33cf42139b666e81418",
+          "kind": "repository-file",
+          "line_end": 97,
+          "line_start": 80,
+          "path": "README-artifact-evaluation.md",
+          "repository": "microsoft/verus-proof-synthesis",
+          "sha256": "80cf857dc31f5437863ded9385c9fbad7626dd4b9eec29757d56220b74d5260a",
+          "url": "https://github.com/microsoft/verus-proof-synthesis/blob/2f9aff36b4e287e41b1bc167f7888a5cddac4cdd/README-artifact-evaluation.md"
+        },
+        {
+          "inventory_path": "inventories/autoverus.json",
+          "inventory_sha256": "6892bf0167cf279564f24981adfac586456a83d05158fde6bae8be0822dc12c7",
+          "kind": "repository-inventory",
+          "path_listing_path": "inventories/autoverus.paths.txt",
+          "path_listing_sha256": "7a2c6ebd1b15537107bba398cdb79f01251c2e7e99589c40e86fe6440a19c8fb",
+          "repository": "microsoft/verus-proof-synthesis"
+        }
+      ],
+      "finding": "Intermediate histories are extensive, but no hash-bound run manifest or explicit release statement excludes undocumented edits to final or intermediate proof files.",
+      "state": "ambiguous"
+    },
+    "offline_replay": {
+      "evidence": [
+        {
+          "byte_count": 11357,
+          "commit": "2f9aff36b4e287e41b1bc167f7888a5cddac4cdd",
+          "git_object": "59c1dd7b6a9a1c96b0d9a33cf42139b666e81418",
+          "kind": "repository-file",
+          "line_end": 124,
+          "line_start": 99,
+          "path": "README-artifact-evaluation.md",
+          "repository": "microsoft/verus-proof-synthesis",
+          "sha256": "80cf857dc31f5437863ded9385c9fbad7626dd4b9eec29757d56220b74d5260a",
+          "url": "https://github.com/microsoft/verus-proof-synthesis/blob/2f9aff36b4e287e41b1bc167f7888a5cddac4cdd/README-artifact-evaluation.md"
+        },
+        {
+          "byte_count": 11357,
+          "commit": "2f9aff36b4e287e41b1bc167f7888a5cddac4cdd",
+          "git_object": "59c1dd7b6a9a1c96b0d9a33cf42139b666e81418",
+          "kind": "repository-file",
+          "line_end": 265,
+          "line_start": 222,
+          "path": "README-artifact-evaluation.md",
+          "repository": "microsoft/verus-proof-synthesis",
+          "sha256": "80cf857dc31f5437863ded9385c9fbad7626dd4b9eec29757d56220b74d5260a",
+          "url": "https://github.com/microsoft/verus-proof-synthesis/blob/2f9aff36b4e287e41b1bc167f7888a5cddac4cdd/README-artifact-evaluation.md"
+        }
+      ],
+      "finding": "The release states that generated proofs were checked and provides Verus build instructions, but it gives no exact manifest-driven command to recheck the frozen generated tree without generation/API activity.",
+      "state": "ambiguous"
+    },
+    "per_instance_timing": {
+      "evidence": [
+        {
+          "byte_count": 11357,
+          "commit": "2f9aff36b4e287e41b1bc167f7888a5cddac4cdd",
+          "git_object": "59c1dd7b6a9a1c96b0d9a33cf42139b666e81418",
+          "kind": "repository-file",
+          "line_end": 97,
+          "line_start": 80,
+          "path": "README-artifact-evaluation.md",
+          "repository": "microsoft/verus-proof-synthesis",
+          "sha256": "80cf857dc31f5437863ded9385c9fbad7626dd4b9eec29757d56220b74d5260a",
+          "url": "https://github.com/microsoft/verus-proof-synthesis/blob/2f9aff36b4e287e41b1bc167f7888a5cddac4cdd/README-artifact-evaluation.md"
+        },
+        {
+          "byte_count": 958,
+          "commit": "2f9aff36b4e287e41b1bc167f7888a5cddac4cdd",
+          "git_object": "a4a32c074e196a51a8fec7df39b6bcade47d14bb",
+          "kind": "repository-object",
+          "path": "generated/autoverus/abalation-study/all-in-one-ab-repair-1.0/1-clover-array_concat_strong.time",
+          "repository": "microsoft/verus-proof-synthesis",
+          "sha256": "c9b86da16fa127902f3bb1f6fca0bf152d3cc9a7ec513293eae7808c37a4aa2f",
+          "url": "https://github.com/microsoft/verus-proof-synthesis/blob/2f9aff36b4e287e41b1bc167f7888a5cddac4cdd/generated/autoverus/abalation-study/all-in-one-ab-repair-1.0/1-clover-array_concat_strong.time"
+        }
+      ],
+      "finding": "Per-attempt .time logs retain timestamped generation and verification events, but the release does not expose normalized separate generation and verifier durations for every trial.",
+      "state": "ambiguous"
+    },
+    "result_provenance": {
+      "evidence": [
+        {
+          "byte_count": 11357,
+          "commit": "2f9aff36b4e287e41b1bc167f7888a5cddac4cdd",
+          "git_object": "59c1dd7b6a9a1c96b0d9a33cf42139b666e81418",
+          "kind": "repository-file",
+          "line_end": 124,
+          "line_start": 99,
+          "path": "README-artifact-evaluation.md",
+          "repository": "microsoft/verus-proof-synthesis",
+          "sha256": "80cf857dc31f5437863ded9385c9fbad7626dd4b9eec29757d56220b74d5260a",
+          "url": "https://github.com/microsoft/verus-proof-synthesis/blob/2f9aff36b4e287e41b1bc167f7888a5cddac4cdd/README-artifact-evaluation.md"
+        },
+        {
+          "inventory_path": "inventories/autoverus.json",
+          "inventory_sha256": "6892bf0167cf279564f24981adfac586456a83d05158fde6bae8be0822dc12c7",
+          "kind": "repository-inventory",
+          "path_listing_path": "inventories/autoverus.paths.txt",
+          "path_listing_sha256": "7a2c6ebd1b15537107bba398cdb79f01251c2e7e99589c40e86fe6440a19c8fb",
+          "repository": "microsoft/verus-proof-synthesis"
+        }
+      ],
+      "finding": "Directory names describe paper sections, but no machine-readable manifest maps benchmark and output hashes to reported table rows or fixes the accepted trial set.",
+      "state": "missing"
+    },
+    "verifier_build": {
+      "evidence": [
+        {
+          "byte_count": 2341,
+          "commit": "2f9aff36b4e287e41b1bc167f7888a5cddac4cdd",
+          "git_object": "b976af26be0de445d89e80825ec3c0c6f35e68f7",
+          "kind": "repository-object",
+          "path": "Dockerfile",
+          "repository": "microsoft/verus-proof-synthesis",
+          "sha256": "a435f6c97b9db4b83d577e24957c7118dd1a813bfecf7faf8abdfb1f556ebf4c",
+          "url": "https://github.com/microsoft/verus-proof-synthesis/blob/2f9aff36b4e287e41b1bc167f7888a5cddac4cdd/Dockerfile"
+        },
+        {
+          "byte_count": 11357,
+          "commit": "2f9aff36b4e287e41b1bc167f7888a5cddac4cdd",
+          "git_object": "59c1dd7b6a9a1c96b0d9a33cf42139b666e81418",
+          "kind": "repository-file",
+          "line_end": 244,
+          "line_start": 222,
+          "path": "README-artifact-evaluation.md",
+          "repository": "microsoft/verus-proof-synthesis",
+          "sha256": "80cf857dc31f5437863ded9385c9fbad7626dd4b9eec29757d56220b74d5260a",
+          "url": "https://github.com/microsoft/verus-proof-synthesis/blob/2f9aff36b4e287e41b1bc167f7888a5cddac4cdd/README-artifact-evaluation.md"
+        }
+      ],
+      "finding": "The Dockerfile and artifact instructions check out Verus commit 33269ac6a0ea33a08109eefe5016c1fdd0ce9fbd and document its build.",
+      "state": "available"
+    },
+    "verifier_identity": {
+      "evidence": [
+        {
+          "byte_count": 11357,
+          "commit": "2f9aff36b4e287e41b1bc167f7888a5cddac4cdd",
+          "git_object": "59c1dd7b6a9a1c96b0d9a33cf42139b666e81418",
+          "kind": "repository-file",
+          "line_end": 244,
+          "line_start": 222,
+          "path": "README-artifact-evaluation.md",
+          "repository": "microsoft/verus-proof-synthesis",
+          "sha256": "80cf857dc31f5437863ded9385c9fbad7626dd4b9eec29757d56220b74d5260a",
+          "url": "https://github.com/microsoft/verus-proof-synthesis/blob/2f9aff36b4e287e41b1bc167f7888a5cddac4cdd/README-artifact-evaluation.md"
+        }
+      ],
+      "finding": "The final verifier is Verus at the exact published commit 33269ac6a0ea33a08109eefe5016c1fdd0ce9fbd.",
+      "state": "available"
+    }
+  },
+  "full_audit_eligible": false,
+  "missing_fields": [
+    "result_provenance"
+  ],
+  "name": "AutoVerus",
+  "report_sha256": "abfa1d9252bd5d69b142b37e59acba801f233f08df0cc768bc49a79688e13e1f",
+  "repositories": [
+    {
+      "commit": "2f9aff36b4e287e41b1bc167f7888a5cddac4cdd",
+      "inventory_path": "inventories/autoverus.json",
+      "inventory_sha256": "6892bf0167cf279564f24981adfac586456a83d05158fde6bae8be0822dc12c7",
+      "repository": "microsoft/verus-proof-synthesis",
+      "tree": "831c2b172230c48434b2b5391199b44cb10936ce",
+      "url": "https://github.com/microsoft/verus-proof-synthesis"
+    }
+  ],
+  "retrieval_freeze_sha256": "1c4576d67a73b0ae771c6f7e37529933e5d1c9d981778bf45b70b0c21308c804",
+  "schema": "cross-tool-x0-candidate-report-v1",
+  "setting": "verus-proof-synthesis",
+  "setting_class": "deductive-proof-synthesis"
+}

@@ -5,6 +5,26 @@
 **Phase 1+2 experiment date:** 2026-07-11
 **Benchmark root:** HWMCC (paths are stored as dataset-relative benchmark IDs)
 
+## Independent cross-tool Gate X0
+
+[`cross_tool_x0_v1/`](cross_tool_x0_v1/) is an independent follow-on artifact,
+not an amendment to the closed `soundness-audit` evidence. It inventories five
+frozen LLM-assisted verification releases against fourteen preregistered
+artifact requirements. No candidate is 14/14 eligible, so its canonical
+decision is `STOP_X0_INSUFFICIENT_PUBLIC_ARTIFACTS`; X1--X3 are unauthorized.
+The census executed no verifier and made no LLM/provider API call.
+
+Validate the recursive bundle and recomputed decision with:
+
+```bash
+python3 scripts/validate_cross_tool_x0.py artifacts/cross_tool_x0_v1
+```
+
+See [`../docs/cross_tool_x0_results.md`](../docs/cross_tool_x0_results.md) for
+the field-level result, scientific interpretation, and reproduction boundary.
+The STOP records insufficient public replay evidence under the frozen contract;
+it is not a soundness or effectiveness finding about the evaluated systems.
+
 ## Final closure index
 
 [`final_research_summary_v1.json`](final_research_summary_v1.json) is the

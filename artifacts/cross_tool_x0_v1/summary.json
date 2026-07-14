@@ -1,0 +1,118 @@
+{
+  "blocking_fields": {
+    "autoverus": [
+      "offline_replay",
+      "per_instance_timing",
+      "result_provenance",
+      "no_manual_repair"
+    ],
+    "cill": [
+      "license",
+      "offline_replay",
+      "generation_config",
+      "per_instance_timing",
+      "result_provenance",
+      "no_manual_repair"
+    ],
+    "exverus": [
+      "license",
+      "frozen_llm_outputs",
+      "binding_locations",
+      "expected_verdicts",
+      "verifier_build",
+      "offline_replay",
+      "generation_config",
+      "per_instance_timing",
+      "result_provenance",
+      "no_manual_repair"
+    ],
+    "loris": [
+      "license",
+      "binding_locations",
+      "offline_replay",
+      "generation_config",
+      "per_instance_timing",
+      "result_provenance",
+      "no_manual_repair"
+    ],
+    "quokka": [
+      "frozen_llm_outputs",
+      "binding_locations",
+      "expected_verdicts",
+      "offline_replay",
+      "per_instance_timing",
+      "result_provenance",
+      "no_manual_repair"
+    ]
+  },
+  "candidate_count": 5,
+  "catalog_sha256": "d8dfeaa65d6a34652f0018d9ac61a587ce884c208847094ee9750b0047a13fd3",
+  "census_sha256": "c9cfab43b56ce6f144a3b5f30ae7133ba72fe8963462c167f77bf866e218ed6b",
+  "decision": "STOP_X0_INSUFFICIENT_PUBLIC_ARTIFACTS",
+  "eligible_candidate_ids": [],
+  "eligible_setting_classes": [],
+  "field_state_totals": {
+    "ambiguous": 12,
+    "available": 36,
+    "blocked": 0,
+    "missing": 22
+  },
+  "gate": "X0",
+  "interpretation": "Gate X0 measures public artifact sufficiency only; a STOP does not claim that any evaluated system is unsound or ineffective.",
+  "new_llm_api_calls": 0,
+  "reports": [
+    {
+      "available_count": 10,
+      "candidate_id": "autoverus",
+      "full_audit_eligible": false,
+      "report_path": "reports/autoverus.json",
+      "report_sha256": "abfa1d9252bd5d69b142b37e59acba801f233f08df0cc768bc49a79688e13e1f",
+      "setting_class": "deductive-proof-synthesis"
+    },
+    {
+      "available_count": 8,
+      "candidate_id": "cill",
+      "full_audit_eligible": false,
+      "report_path": "reports/cill.json",
+      "report_sha256": "f54ce226c8da1cc28879f425c6125586f06cbaa996e160c6e6f9f2ef5ae40271",
+      "setting_class": "model-checking"
+    },
+    {
+      "available_count": 4,
+      "candidate_id": "exverus",
+      "full_audit_eligible": false,
+      "report_path": "reports/exverus.json",
+      "report_sha256": "e267d2ccc38c7d21021c1afa23c1cea295c12b896e869c3fb1b36dd9560e8254",
+      "setting_class": "deductive-proof-synthesis"
+    },
+    {
+      "available_count": 7,
+      "candidate_id": "loris",
+      "full_audit_eligible": false,
+      "report_path": "reports/loris.json",
+      "report_sha256": "d4bdf939bca09315b91388cc57bc2e7a045c6fc7bb5bf5325219d23e74efe96d",
+      "setting_class": "source-program-verification"
+    },
+    {
+      "available_count": 7,
+      "candidate_id": "quokka",
+      "full_audit_eligible": false,
+      "report_path": "reports/quokka.json",
+      "report_sha256": "b830ffc94810d7bbb5ded0bcc857aac8471c3e154517812af51d495ead776e0c",
+      "setting_class": "source-program-verification"
+    }
+  ],
+  "required_field_count": 14,
+  "retrieval_freeze_sha256": "1c4576d67a73b0ae771c6f7e37529933e5d1c9d981778bf45b70b0c21308c804",
+  "schema": "cross-tool-x0-summary-v1",
+  "summary_sha256": "6cf305c043ce863e4486656235669e419e3592edf591d3cca0e9878a38490c74",
+  "threshold": {
+    "eligible_candidates": 2,
+    "eligible_settings": 2,
+    "failure_decision": "STOP_X0_INSUFFICIENT_PUBLIC_ARTIFACTS",
+    "success_decision": "GO_X1"
+  },
+  "threshold_changes": false,
+  "verifier_executions": 0,
+  "x1_authorized": false
+}

@@ -1,0 +1,33 @@
+{
+  "candidate_id": "loris",
+  "commit": "315809c0685d11206840da3944b5e6a323178663",
+  "directory": "loris",
+  "inventory_sha256": "d3bf5924c01654d662c05fc2deeca7edea5907fb15c6747c553382323be2f56f",
+  "path_count": 110,
+  "path_listing": {
+    "path": "inventories/loris.paths.txt",
+    "sha256": "4325b87ba90a86f60ad37415f27bc7928baf6ce94f7b6a45233a7e66b791a64b"
+  },
+  "repository": "ltcRandomwalk/LORIS",
+  "root_files": [
+    ".gitignore",
+    "README.md",
+    "Results.zip",
+    "final_benchmarks.zip"
+  ],
+  "root_license_files": [],
+  "schema": "cross-tool-x0-repository-inventory-v1",
+  "top_level_counts": {
+    ".gitignore": 1,
+    "README.md": 1,
+    "Results.zip": 1,
+    "experiments": 4,
+    "final_benchmarks.zip": 1,
+    "src": 102
+  },
+  "tree": "f8f5dbf7a749b976a6e428a77c6316facd9520c0",
+  "type_counts": {
+    "blob": 110
+  },
+  "url": "https://github.com/ltcRandomwalk/LORIS"
+}

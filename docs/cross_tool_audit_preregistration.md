@@ -190,3 +190,19 @@ The directory must contain the frozen catalog, retrieval manifest, one strict
 candidate report per system, a summary, provenance, and recursive integrity
 manifest. Every report must preserve missing and blocked fields; no runner may
 silently omit a candidate or field.
+
+## 9. Result addendum (contract unchanged)
+
+Gate X0 was executed on 2026-07-14 without changing the candidate population,
+required fields, or decision threshold. The canonical decision is:
+
+```text
+STOP_X0_INSUFFICIENT_PUBLIC_ARTIFACTS
+```
+
+No candidate was 14/14 eligible, so X1 is not authorized. The run made zero
+LLM/provider API calls and executed zero verifiers. GitHub API retrieval is
+separately frozen as public evidence. This addendum records the outcome; it does
+not amend the frozen protocol above. See
+[`cross_tool_x0_results.md`](cross_tool_x0_results.md) and
+[`../artifacts/cross_tool_x0_v1/summary.json`](../artifacts/cross_tool_x0_v1/summary.json).
