@@ -1,0 +1,353 @@
+{
+  "claim_ledger": {
+    "kind": "human-readable-claim-ledger",
+    "path": "docs/final_claim_ledger.md",
+    "sha256": "02ebe94ee9a2e82533724ad75c0ca625d8acdc2bcd070f36d00ff0b8812dc12f"
+  },
+  "closure_boundary": {
+    "commit": "6fdb7cfd7ddf2f50aff87a8658174bd4cfbb9b2c",
+    "tag": "soundness-audit-final-v1"
+  },
+  "closure_record": {
+    "closed_date": "2026-07-14",
+    "closure_only": true,
+    "evidence_frozen_at": "6fdb7cfd7ddf2f50aff87a8658174bd4cfbb9b2c",
+    "gate6_authorized": false,
+    "new_llm_or_api_calls": 0,
+    "new_pono_or_llm_experiment_data": false,
+    "threshold_changes": false
+  },
+  "environment_limitations": [
+    {
+      "effect": "Eight potential show-invar recovery rows were unavailable because the pinned ASan Pono executable could not reserve shadow memory under the inherited finite hard address-space limit.",
+      "limitation_id": "gate5-asan-address-space",
+      "prohibited_remediation": "Do not switch binary, machine, or memory policy and retroactively refill Gate 5A0.",
+      "status": "frozen Gate 5 exclusion"
+    },
+    {
+      "effect": "Two local C++ test executables reported LeakSanitizer-only failures; the corresponding tests passed when leak detection was disabled.",
+      "limitation_id": "cpp-leaksanitizer",
+      "prohibited_remediation": "Do not report the default sanitizer run as fully passing or hide the leak-only failures.",
+      "status": "verification environment limitation"
+    },
+    {
+      "effect": "Root Python binding tests cannot collect because the local smt_switch Python binding is unavailable.",
+      "limitation_id": "python-smt-switch-binding",
+      "prohibited_remediation": "Do not claim those binding tests ran; closure does not rebuild the toolchain.",
+      "status": "verification environment limitation"
+    },
+    {
+      "effect": "A later live OpenRouter integration test timed out; Gate 5A0 and closure make zero LLM/API calls.",
+      "limitation_id": "openrouter-live-timeout",
+      "prohibited_remediation": "Do not swap provider or model and backfill a canonical gate result.",
+      "status": "non-canonical live integration limitation"
+    }
+  ],
+  "final_scoped_conclusion": "Under original-model certification, matched deterministic expressiveness, frozen replay, end-to-end accounting, and preregistered stopping rules, the evaluated program retains zero defensible LLM-specific solved-set or search-efficiency advantage.",
+  "future_work_boundary": {
+    "current_program_extension_authorized": false,
+    "gate6_authorized": false,
+    "next_project_must_be_independent": true,
+    "requirements": [
+      "Use a new branch or repository with an independently stated research question.",
+      "Freeze a new population and preregistration before observing outcomes.",
+      "Do not select cases because they rescue a failed or not-run soundness-audit hypothesis.",
+      "Treat cross-tool audit, translation-validated proof reuse, and source-level repair as separate studies."
+    ]
+  },
+  "gates": [
+    {
+      "authorized_follow_on": [],
+      "commits": {
+        "decision": "49af3d67765ac8245cb858637f4f21e68bc2086b",
+        "implementation": [
+          "33f400709f9e9712cc1ed416743c865700fcaa3d",
+          "49af3d67765ac8245cb858637f4f21e68bc2086b"
+        ],
+        "preregistration": null
+      },
+      "decision": "rejected",
+      "evidence": [
+        {
+          "kind": "legacy-audit-implementation",
+          "path": "scripts/audit_proof_soundness.py",
+          "sha256": "dec53858722e4325daa413181173d8b53dc8213aa4eb0d14b95cab2c24bc8faa"
+        },
+        {
+          "kind": "legacy-hint-truth-implementation",
+          "path": "scripts/scan_hint_truth.py",
+          "sha256": "6f05d63802cd9223b33162030491f1af40383c6a37d78e9d591bcbaceb1e20ab"
+        },
+        {
+          "kind": "independent-certificate-checker",
+          "path": "scripts/cert_check.py",
+          "sha256": "a58b3686f40c4a166792bdf80988043fb415f3410fb0af0c8760ecaa04d97af9"
+        }
+      ],
+      "gate_id": "S0",
+      "hypothesis": "LLM-generated mutex hints inserted as BTOR2 constraints produce safety proofs of the original transition systems.",
+      "observed_result": "All 32 independently checkable old proofs were rejected; 30 of 32 tested mutex conjunctions were reachable and none was established as a true invariant.",
+      "prohibited_interpretations": [
+        "Constraint-injected UNSAT results are not proofs of the original models.",
+        "The early audit predates the unified result-artifact schema; no retroactive result bundle may be fabricated."
+      ],
+      "threshold": "Every accepted proof must independently satisfy C1, C2, and C3 on the original unconstrained BTOR2 model.",
+      "title": "Constraint-hint soundness audit"
+    },
+    {
+      "authorized_follow_on": [],
+      "commits": {
+        "decision": "8fcd99611004d596d6d06fdc14eb2d30e423d5e9",
+        "implementation": [
+          "efed866399094379e69f8dcdbb8e48cb19217a55",
+          "d07a23a9e172b31304fe78a73c378474a0f1b1ad",
+          "8fcd99611004d596d6d06fdc14eb2d30e423d5e9"
+        ],
+        "preregistration": null
+      },
+      "decision": "supported",
+      "evidence": [
+        {
+          "kind": "predicate-injection-implementation",
+          "path": "engines/ic3ia.cpp",
+          "sha256": "09f4d0400fc2877ac7c423a55f36cc23c0b1118230d947ab2f23569062d98ce8"
+        },
+        {
+          "kind": "predicate-workflow-implementation",
+          "path": "llm_worker/invariant_arith.py",
+          "sha256": "c8a8092f4d29bcc788be078d0529ae6ae777a337883fac8630ede71896370625"
+        },
+        {
+          "kind": "candidate-certificate-checker",
+          "path": "scripts/candidate_cert_check.py",
+          "sha256": "383b89533cdc051b24e1ab725cb9391352fcc4818e4187cb132fc92e19b74871"
+        }
+      ],
+      "gate_id": "S1",
+      "hypothesis": "Untrusted LLM formulas can guide IC3IA as abstraction predicates without under-approximating the concrete model.",
+      "observed_result": "The implemented initial-predicate path refines IC3IA abstraction vocabulary and preserves original-model proof semantics; false candidate formulas affect efficiency, not soundness.",
+      "prohibited_interpretations": [
+        "An abstraction predicate is not itself a certified invariant.",
+        "A false candidate may still cause runtime or memory regressions."
+      ],
+      "threshold": "Initial predicates must leave concrete init, transition, constraints, and BAD properties unchanged, and every safety verdict must remain a verdict on the original model.",
+      "title": "Sound predicate-injection boundary"
+    },
+    {
+      "authorized_follow_on": [],
+      "commits": {
+        "decision": "4bb1908ec1030b55e98333397ad4658cea73aae1",
+        "implementation": [
+          "4bb1908ec1030b55e98333397ad4658cea73aae1"
+        ],
+        "preregistration": null
+      },
+      "decision": "rejected",
+      "evidence": [
+        {
+          "kind": "canonical-phase1-2-summary",
+          "path": "artifacts/phase1_2_summary_v1.json",
+          "sha256": "121091999036d454119377d608a99cee8ea5d313d5479be18febfea4da620944"
+        }
+      ],
+      "gate_id": "S2",
+      "hypothesis": "The corrected full21 corpus contains LLM-specific affine or quadratic proof capacity after a deterministic baseline of matched expressiveness.",
+      "observed_result": "LLM Houdini and deterministic quadratic Houdini solve the same seven cases; both engine portfolios reach eight UNSAT and two SAT, leaving an empty LLM-specific UNSAT set.",
+      "prohibited_interpretations": [
+        "The three affine and two nonlinear examples cannot be called LLM-only.",
+        "Ten of ten successful nonlinear captures establish reliability only, not marginal proof value."
+      ],
+      "threshold": "An LLM-specific solve must remain outside the engine plus matched deterministic affine/quadratic portfolio and pass direct original-model certification.",
+      "title": "Matched affine and quadratic full21 baseline"
+    },
+    {
+      "authorized_follow_on": [],
+      "commits": {
+        "decision": "4bb1908ec1030b55e98333397ad4658cea73aae1",
+        "implementation": [
+          "4bb1908ec1030b55e98333397ad4658cea73aae1"
+        ],
+        "preregistration": null
+      },
+      "decision": "rejected",
+      "evidence": [
+        {
+          "kind": "canonical-gate2-summary",
+          "path": "artifacts/gate2_summary_v1.json",
+          "sha256": "736fb40833e2f61c8711edacb551aaf9e97dd2d99bd8effcad8f700d21816582"
+        }
+      ],
+      "gate_id": "S3",
+      "hypothesis": "A broader deterministic-hard HWMCC residual contains an LLM-only proof or a defensible LLM compactness advantage.",
+      "observed_result": "The 11-target gate has zero LLM-specific solve; cap-200 static seeding and a smaller, faster fixed relational ranker reproduce the apparent up.btor2 result.",
+      "prohibited_interpretations": [
+        "up.btor2 is not an LLM-specific proof or compactness win.",
+        "A helpful abstraction basis does not establish uniqueness of its provider."
+      ],
+      "threshold": "Any apparent LLM solve must survive matched deterministic static and fixed low-complexity ranked baselines under the frozen proof budget.",
+      "title": "Broader HWMCC and compactness gate"
+    },
+    {
+      "authorized_follow_on": [],
+      "commits": {
+        "decision": "d7701be0423c8d313104955278a00ca1e5461862",
+        "implementation": [
+          "d7701be0423c8d313104955278a00ca1e5461862"
+        ],
+        "preregistration": null
+      },
+      "decision": "mixed-negative",
+      "evidence": [
+        {
+          "kind": "paired-population",
+          "path": "artifacts/representation_phase_v1/population.json",
+          "sha256": "01ec7bf8f0ba1c575b20b835e9431e251ace0686dcd5c388ddeee83885bc4ffe"
+        },
+        {
+          "kind": "canonical-representation-phase-summary",
+          "path": "artifacts/representation_phase_v1/summary.json",
+          "sha256": "0c177a3cfc780d43b8c4bc37b2d1d13ac85b7fb964a4088856fa829cdfd4c856"
+        }
+      ],
+      "gate_id": "S4",
+      "hypothesis": "Source representation, phase conditioning, or LLM grammar routing provides a generalizable advantage over matched target views and deterministic structural routing.",
+      "observed_result": "Source adds no unique solve; phase conditioning adds one of the required three; structural routing covers the full three-task LLM union; H4 soundness passes with zero unsafe false-safe.",
+      "prohibited_interpretations": [
+        "The one phase-only result cannot be described as phase generalization.",
+        "Invalid routes may not be repaired or silently removed from the denominator.",
+        "The result is scoped to the frozen paired pilot and does not prove source information is universally useless."
+      ],
+      "threshold": "Source must add a unique certified solve, phase conditioning must add at least three independent natural proofs, and LLM routing must beat deterministic structural routing with sound end-to-end utility.",
+      "title": "Paired representation, phase, and grammar gate"
+    },
+    {
+      "authorized_follow_on": [],
+      "commits": {
+        "decision": "e45d6d1fef92a92e166394f6e681690b3a1993ab",
+        "implementation": [
+          "9e7e677507ad2baf9f357bc4ace52f80a457908d",
+          "4c3b40f938c1b85e20a58f334dd9780f6c9a7980",
+          "e45d6d1fef92a92e166394f6e681690b3a1993ab"
+        ],
+        "preregistration": "cc7df688b6eb13ef33bab0ff9cdc3badc6b39527"
+      },
+      "decision": "not-run",
+      "evidence": [
+        {
+          "kind": "algebraic-population",
+          "path": "artifacts/algebraic_certificate_v1/population.json",
+          "sha256": "d4920ec6ffe1f5782ad2a26f430ec3cff63c10c446aa6cbe77d17d740cf85747"
+        },
+        {
+          "kind": "canonical-algebraic-summary",
+          "path": "artifacts/algebraic_certificate_v1/summary.json",
+          "sha256": "9374bb1aa25ce00f9aa695093dfaf6563d4ee76f729f0651abb072ffd5a2c1b0"
+        }
+      ],
+      "gate_id": "S5",
+      "hypothesis": "A strict equal-width modular-polynomial certificate kernel improves proof checking on a preregistered natural nonlinear population.",
+      "observed_result": "The natural primary population is empty: 39 tasks require arrays, 221 have no supported nonlinear SCC, and the remaining seven exceed the frozen eight-branch cap. Development H5c passes; H5a is not run and H5b is not authorized.",
+      "prohibited_interpretations": [
+        "Not-run is neither evidence of kernel utility nor evidence of kernel failure.",
+        "Development controls or synthetic cases may not replace the absent natural primary population.",
+        "The branch cap or operator language may not be widened retroactively."
+      ],
+      "threshold": "At least three independent natural source families must be v1-eligible and show timeout conversion or at least tenfold gain over the best exact generic baseline with zero false-safe.",
+      "title": "Proof-carrying modular algebraic feasibility gate"
+    },
+    {
+      "authorized_follow_on": [],
+      "commits": {
+        "decision": "6fdb7cfd7ddf2f50aff87a8658174bd4cfbb9b2c",
+        "implementation": [
+          "6838cae5044c4b41d17d157cbc6452d46b9a1f8f",
+          "9bdcdb39c0466e3ed711bb922996aff54dc0f6df",
+          "6fdb7cfd7ddf2f50aff87a8658174bd4cfbb9b2c"
+        ],
+        "preregistration": "80cb6c100c8178cc1515741ae090d60748b41d7b"
+      },
+      "decision": "rejected",
+      "evidence": [
+        {
+          "kind": "canonical-inductiveness-gap-summary",
+          "path": "artifacts/inductiveness_gap_v1/summary.json",
+          "sha256": "0acf2b30f74697a8659fcf02aed9594f53a8e22ca3c3960b1c8f2b92f21d160c"
+        }
+      ],
+      "gate_id": "S6",
+      "hypothesis": "Six frozen nonlinear candidates are true invariants blocked only by helpers, deeper induction, or proof organization.",
+      "observed_result": "All six candidates violate C1 in an initial state and are removed by exact Houdini; they are false candidates rather than valid invariants with a proof-organization gap.",
+      "prohibited_interpretations": [
+        "The six candidates may not be described as valid invariants needing repair.",
+        "Replacing or repairing them after observing C1 witnesses is a different experiment."
+      ],
+      "threshold": "A candidate must first satisfy C1 and survive exact Houdini before helper, k-induction, or proof-graph work is applicable.",
+      "title": "Frozen nonlinear inductiveness-gap decomposition"
+    },
+    {
+      "authorized_follow_on": [],
+      "commits": {
+        "decision": "fa9f61fafe38607ec08ff8b009ff98bb5f37f21f",
+        "implementation": [
+          "32dcf02a276df05bed89f249909d4dfefd49ddcb",
+          "640a96e49e336dd41867d6342593ed165eb56e2f",
+          "28563fa68b1f15943919decb181a0b7b82f997eb"
+        ],
+        "preregistration": "894f0c0d2952c433c8d0f6c4a1ccb18eb792e649"
+      },
+      "decision": "not-run-population-insufficient",
+      "evidence": [
+        {
+          "kind": "canonical-transport-population",
+          "path": "artifacts/certified_transport_v1/population.json",
+          "sha256": "d3e91dbbbe09909d6dd4618ece4e2606b252b7991d6f2c4012d1a5f200e640d4"
+        }
+      ],
+      "gate_id": "S7",
+      "hypothesis": "The existing certified source-invariant population is sufficient for a non-trivial known-map transport oracle across three primary transform families.",
+      "observed_result": "The census finds 11 certified bases and six affine-recoding-applicable bases, below the frozen 12/8 requirements; it stops before variant generation, map validation, utility timing, or LLM/API calls.",
+      "prohibited_interpretations": [
+        "No transport correctness, speedup, or mapping result was measured.",
+        "The 12/8 thresholds may not be lowered to 11/6 after census inspection.",
+        "Alternate binaries, machines, repeated widths, or synthetic transforms may not retroactively refill the population."
+      ],
+      "threshold": "At least 12 certified safe bases, eight independent families, and eight applicable bases for each primary transform are required before any transformed variant or utility run.",
+      "title": "Known-map certified-transport population gate"
+    }
+  ],
+  "narrative": {
+    "kind": "research-narrative",
+    "path": "docs/final_research_narrative.md",
+    "sha256": "244d9ad1445727c5aead197db35464c1fb2d0b04d4bbf2c78ff5c12ab1e2c43a"
+  },
+  "post_boundary_addenda": [
+    {
+      "addendum_id": "A1",
+      "authorizes_follow_on": false,
+      "changes_final_claims": false,
+      "commit": "536a1753f5bb8c0be475dd5f7700045f11ab9f14",
+      "evidence": [
+        {
+          "kind": "capability-ledger",
+          "path": "artifacts/capability_gate_ledger_v1/ledger.json",
+          "sha256": "d98427ab818f5619f72b19d436341fbf02cc66c80a1f17bd7e9b7ffa5f6e22a2"
+        },
+        {
+          "kind": "external-artifact-census",
+          "path": "artifacts/capability_gate_ledger_v1/external_replication.json",
+          "sha256": "233865d0c02268e7ea31a6835d8189149f68b995e08e26b0388e67368272640b"
+        }
+      ],
+      "scope": "Oracle-First capability indexing and a public external-artifact availability census; no new Pono mechanism, transformation, proof repair, or LLM/API experiment.",
+      "status": "frozen-methodology-addendum"
+    }
+  ],
+  "program": {
+    "branch": "soundness-audit",
+    "repository": "swear01/pono-llm",
+    "scope": "Sound integration and matched-baseline evaluation of LLM-guided IC3IA on evaluated software-origin BTOR2 populations.",
+    "status": "closed"
+  },
+  "schema": "pono-llm-final-research-summary-v1",
+  "summary_sha256": "ef8b8dbd1ffdb21d90279e08470f83448b0810e63205cf584ab4f7df144b562f"
+}

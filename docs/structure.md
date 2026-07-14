@@ -13,10 +13,10 @@
 | `smt/` | SMT utility wrappers |
 | `utils/` | Logging, timing, misc utilities |
 | `tests/` | C++ tests (googletest) + Python tests (`tests/python/`) |
-| `scripts/` | Benchmark harnesses and research tools for Phase 1+2/Gate 2, paired representation/phase routing, and Gate 4B modular algebraic certificates. |
+| `scripts/` | Benchmark harnesses, gate tools, and strict closure-summary validation for the completed research program. |
 | `benchmarks/` | Micro-benchmarks and BTOR2 test cases |
 | `bench_results/` | Experiment output (not in git) |
-| `artifacts/` | Frozen Phase 1+2/Gate 2 evidence, `representation_phase_v1/`, and `algebraic_certificate_v1/`; each canonical gate bundle has machine-readable decisions and integrity-bound inputs/results. |
+| `artifacts/` | Frozen gate evidence plus `final_research_summary_v1.json`, the hash-bound machine-readable closure index. |
 | `docs/` | Active docs; historical docs live under `archive/docs/` |
 | `diagnosis/` | Per-phase diagnosis notes |
 | `prompts/` | LLM prompt templates |
@@ -130,10 +130,16 @@
   machine-readable results; `scripts/hash_research_artifacts.py` regenerates
   the separate Phase 1+2 and Gate 2 SHA-256 manifests.
 - **Legacy reactive sidecar:** `llm_generalizer.cpp` / JSONL sidecar code still exists, but it is not the active arithmetic-invariant path and should not be restored as the primary workflow.
-- **Oracle-First capability ledger:**
+- **Final closure index:** `artifacts/final_research_summary_v1.json` binds the
+  frozen boundary, gate decisions, canonical evidence hashes, environment
+  limitations, and no-follow-on rules. `scripts/validate_final_research_summary.py`
+  strictly validates fields, commits, file hashes, decisive source-artifact
+  semantics, self-hash, zero closure API calls, and the closed Gate-6 boundary.
+- **Oracle-First capability ledger (post-boundary addendum):**
   `scripts/capability_gate_catalog_v1.json` freezes the cross-system studies;
   `scripts/build_capability_gate_ledger.py` verifies referenced bytes and
   builds the ledger; `scripts/validate_capability_gate_ledger.py` checks its
   schema, provenance classes, decisions, and self-hash. Canonical output and
   the external replication census live in
-  `artifacts/capability_gate_ledger_v1/`.
+  `artifacts/capability_gate_ledger_v1/`. It changes no final claim and is not
+  an active next project.

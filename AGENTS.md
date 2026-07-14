@@ -119,6 +119,8 @@ Expected `git status` after archiving:
 
 ## Project Docs
 
+- Final claim ledger: [docs/final_claim_ledger.md](docs/final_claim_ledger.md)
+- Final research narrative: [docs/final_research_narrative.md](docs/final_research_narrative.md)
 - Overview: [docs/overview.md](docs/overview.md)
 - Structure: [docs/structure.md](docs/structure.md)
 - Notes: [docs/notes.md](docs/notes.md)

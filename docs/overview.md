@@ -2,7 +2,7 @@
 
 ## What This Is
 
-**pono-llm** is a research fork of [Pono](https://github.com/stanford-centaur/pono), an SMT-based hardware model checker from Stanford.  The current research branch (`soundness-audit`) studies how to integrate LLM-generated formulas into IC3IA **soundly** for software-origin BTOR2 circuits.
+**pono-llm** is a research fork of [Pono](https://github.com/stanford-centaur/pono), an SMT-based hardware model checker from Stanford. The closed `soundness-audit` research program studied how to integrate LLM-generated formulas into IC3IA **soundly** for software-origin BTOR2 circuits and how their apparent utility changes under matched deterministic baselines.
 
 The current sound integration point is **IC3IA initial predicate injection**:
 
@@ -51,13 +51,13 @@ source C / target-derived lifted recurrence / raw BTOR2 cone
     -> direct C1/C2/C3, then sound IC3IA replay on original BTOR2
 ```
 
-That flow remains available as research infrastructure, but its H1/H2/H3
-scaling gates failed and it is not the active production pipeline.
+That flow remains available as frozen research infrastructure, but its
+H1/H2/H3 scaling gates failed and no further experiment is authorized here.
 
-## Current Results (as of 2026-07-13)
+## Final Results (closed 2026-07-14)
 
-Soundness is fixed; every tested LLM-specific utility claim has failed a
-matched deterministic baseline so far.
+Soundness is fixed; every tested LLM-specific utility claim in the completed
+program fails its matched deterministic baseline.
 
 - Old constraint-injected mutex proofs are invalid: 32/32 checkable proofs fail
   independent C1/C2/C3, and 30/32 tested hints are reachable false invariants.
@@ -90,12 +90,19 @@ matched deterministic baseline so far.
   update SCC, and the remaining seven all exceed the preregistered eight-branch
   cap. H5a is therefore not run, H5b is not authorized, and no LLM call was
   made for Gate 4B0.
+- Six frozen nonlinear candidates all fail C1 in an initial state; none is a
+  valid invariant blocked only by helpers, induction depth, or proof-graph
+  organization.
+- Gate 5A0 finds 11 certified bases and six T1-applicable bases, below its
+  frozen 12/8 population requirements. It stops before transformed variants,
+  map validation, utility measurement, or LLM/API calls.
 
-The project therefore has a reusable sound experimental kernel and a sequence
-of strong negative results, but not yet a positive algorithmic contribution of
-the scale needed for a coverage paper.
+The final scoped result is zero demonstrated LLM-specific solved-set or
+search-efficiency advantage on the evaluated populations. The project retains
+a reusable sound experimental kernel and a sequence of strong falsification
+results, but it does not support a coverage-improvement paper claim.
 
-## Current Research Plan
+## Closed Research Program
 
 The representation/phase/grammar gate and Gate 4B0 are closed. Do not scale
 their corpora, repair LLM routes, tune prompts on observed successes, widen the
@@ -117,27 +124,25 @@ the inherited finite hard address-space limit. No fallback binary was used,
 no transformed variant was generated, and no LLM/API call occurred.
 
 No transformation implementation or utility run is authorized because the
-population reaches 12 certified tasks, eight independent source families,
-three invariant classes, and at least eight applicable bases per primary
-family. Every concrete map must be independently proven, every transported
-candidate must pass C1/C2/C3 on the transformed original BTOR2, and map-
-validation cost is included in the primary comparison against the strongest
-current deterministic regeneration portfolio. No LLM/API call is permitted in
-Gate 5A0 or Gate 5A. Generic BVMul CEGAR, broad HWMCC mining, source
-decompilation, paid capture, and paper mode remain stopped.
+population **does not reach** 12 certified tasks or eight T1-applicable bases.
+Generic BVMul CEGAR, broad HWMCC mining, source decompilation, paid capture,
+candidate repair, threshold changes, and Gate 6 remain stopped.
 
-See [`docs/plan.md`](plan.md) for exact results/reproduction and
-[`docs/roadmap.md`](roadmap.md) for the next decision gate.
+The frozen research boundary is `soundness-audit-final-v1` at
+`6fdb7cfd7ddf2f50aff87a8658174bd4cfbb9b2c`. Commit `536a175` is a
+post-boundary Oracle-First methodology addendum; it adds no new Pono or LLM
+experiment, changes no final claim, and authorizes no follow-on work here.
 
-The active research product is now an Oracle-First Capability Audit rather
-than another proof backend. `docs/oracle_first_capability_gates.md` defines the
-G0--G6 stage taxonomy; `artifacts/capability_gate_ledger_v1/` binds the Pono and
-CPAchecker evidence to exact hashes and records the prospective external
-replication decision. This pivot does not reopen any earlier STOP.
+Use the final [claim ledger](final_claim_ledger.md),
+[research narrative](final_research_narrative.md), and
+[machine-readable summary](../artifacts/final_research_summary_v1.json) as the
+closure entry points. Any cross-tool audit, translation-validated proof reuse,
+or source-level repair study must begin as an independent project with a new
+population and preregistration.
 
 ## External Resources
 
 - Upstream Pono: https://github.com/stanford-centaur/pono
-- Active plan: [`docs/plan.md`](plan.md)
+- Closed plan: [`docs/plan.md`](plan.md)
 - Notes / gotchas: [`docs/notes.md`](notes.md)
 - Roadmap: [`docs/roadmap.md`](roadmap.md)

@@ -1,12 +1,12 @@
 # Documentation Index
 
-**Last updated:** 2026-07-13 (Gate 5A0 stopped population-insufficient)
+**Last updated:** 2026-07-14 (`soundness-audit` research program closed)
 
 Start here:
 
 - Project entry point: [`../AGENTS.md`](../AGENTS.md)
 - Overview: [`overview.md`](overview.md)
-- Active plan: [`plan.md`](plan.md)
+- Closed plan: [`plan.md`](plan.md)
 - Roadmap: [`roadmap.md`](roadmap.md)
 - Notes / gotchas: [`notes.md`](notes.md)
 - Structure: [`structure.md`](structure.md)
@@ -15,24 +15,29 @@ Start here:
 
 | File | Description |
 |------|-------------|
-| [`overview.md`](overview.md) | Current project scope, sound predicate-injection architecture, latest results |
-| [`plan.md`](plan.md) | Completed Gate 0--5 evidence and the final algorithm-expansion stop |
-| [`roadmap.md`](roadmap.md) | Closed prior gates plus Gate 5 census/transport sequencing and stop criteria |
+| [`final_claim_ledger.md`](final_claim_ledger.md) | Authoritative supported/rejected/threshold-failed/not-run claim boundary |
+| [`final_research_narrative.md`](final_research_narrative.md) | Complete causal research narrative and closure decision |
+| [`overview.md`](overview.md) | Closed project scope, sound predicate-injection architecture, and final results |
+| [`plan.md`](plan.md) | Completed Gate 0--5 evidence and immutable closure record |
+| [`roadmap.md`](roadmap.md) | Closed gate sequence, permanent stop criteria, and independent-future-work boundary |
 | [`notes.md`](notes.md) | Tacit knowledge, soundness gotchas, timing caveats, next-step decisions |
 | [`structure.md`](structure.md) | Directory map and module boundaries |
 | [`representation_phase_gate.md`](representation_phase_gate.md) | Completed source/lifted/raw phase-local grammar-routing contract and H1--H4 decisions |
 | [`algebraic_certificate_gate.md`](algebraic_certificate_gate.md) | Frozen Gate 4B0 contract plus official zero-eligible-population, solver, soundness, and stop decisions |
 | [`inductiveness_gap_gate.md`](inductiveness_gap_gate.md) | Gate 5A failure decomposition and 6/6 false-candidate decision |
 | [`certified_transport_gate.md`](certified_transport_gate.md) | Frozen Gate 5A0/5A contract plus official population-insufficient stop |
+| [`oracle_first_capability_gates.md`](oracle_first_capability_gates.md) | Frozen post-boundary methodology addendum; not an active next gate |
 
 ## Supporting references
 
 | File | Description |
 |------|-------------|
 | [`plans/openrouter_provider_policy.md`](plans/openrouter_provider_policy.md) | OpenRouter provider filtering policy |
-| [`../artifacts/README.md`](../artifacts/README.md) | Canonical Phase 1+2, Gate 2, representation/phase, and algebraic-certificate evidence |
+| [`../artifacts/README.md`](../artifacts/README.md) | Canonical closed research artifacts and reproduction entry points |
+| [`../artifacts/final_research_summary_v1.json`](../artifacts/final_research_summary_v1.json) | Hash-bound final gate, commit, limitation, and no-follow-on summary |
 | [`../artifacts/representation_phase_v1/README.md`](../artifacts/representation_phase_v1/README.md) | Paired population, prompts, capture, matrices, certificates, and recursive integrity manifest |
 | [`../artifacts/algebraic_certificate_v1/README.md`](../artifacts/algebraic_certificate_v1/README.md) | Gate 4B0 solver reconnaissance, strict certificates, population decision, negative suite, and recursive integrity manifest |
+| [`../artifacts/inductiveness_gap_v1/summary.json`](../artifacts/inductiveness_gap_v1/summary.json) | Six-case C1/Houdini inductiveness-gap decision |
 | [`../artifacts/certified_transport_v1/README.md`](../artifacts/certified_transport_v1/README.md) | Gate 5A0 source-certificate census, explicit runtime exclusions, and population-insufficient stop |
 
 ## Archived in this update

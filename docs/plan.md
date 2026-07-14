@@ -1,11 +1,12 @@
-# Active Plan
+# Closed Research Plan
 
-**Updated:** 2026-07-13
+**Updated:** 2026-07-14
 **Branch:** `soundness-audit`
-**Status:** Gate 5A0 stopped `population-insufficient`; algorithm expansion is
-closed; no transformation code, new mechanism gate, or LLM is authorized
+**Status:** research program closed at `soundness-audit-final-v1`; no Gate 6,
+replacement population, new mechanism, transformed variant, or LLM call is
+authorized on this branch
 
-## Current Research Position
+## Final Research Position
 
 The project has a sound trust boundary but still has no defensible
 LLM-specific solve or search-efficiency claim.
@@ -32,8 +33,10 @@ Completed evidence now has six layers:
 6. **Certified-transport census:** 11 certified bases and six T1-applicable
    bases miss the frozen 12/8 thresholds. Gate 5 stops before variants.
 
-This is not a coverage-improvement paper result, and the project must not enter
-paper mode by weakening the baseline or moving a failed threshold.
+This is not a coverage-improvement paper result. A closure report, thesis
+chapter, reproducibility artifact, or negative empirical study may report the
+frozen evidence, but no write-up may weaken a baseline, move a failed
+threshold, or relabel a not-run hypothesis as a negative utility result.
 
 ## Completed Representation/Phase Gate
 
@@ -345,15 +348,23 @@ criteria authorize deterministic hidden-map recovery. LLM map proposals remain
 last, require a new preregistration, and are forbidden in Gate 5A0/5A.
 
 Generic BVMul CEGAR, Gate 3 route repair, prompt tuning, broad HWMCC mining,
-post-hoc Gate 4B0 language expansion, and paper mode remain stopped.
+post-hoc Gate 4B0 language expansion, and coverage-paper framing remain
+stopped.
 
-## Active plan — Oracle-First Capability Auditing
+## Closure record
 
-No further proof mechanism is authorized. The active deliverable is the
-cross-system, immutable ledger specified by
-[`oracle_first_capability_gates.md`](oracle_first_capability_gates.md): freeze
-the G0--G6 taxonomy, bind CPAchecker and Pono studies to commits and artifact
-hashes, validate positive and negative controls, and make exactly one
-prospective external artifact-availability decision. Gate 4B0-v2, Gate 5A,
-proof graphs, stronger induction, transport mapping, corpus replacement, and
-new LLM capture remain forbidden.
+No further proof mechanism is authorized. The final closure entry points are:
+
+- [`final_claim_ledger.md`](final_claim_ledger.md), which separates supported,
+  rejected, threshold-failed, not-run, and prohibited claims;
+- [`final_research_narrative.md`](final_research_narrative.md), which records
+  the complete causal research trajectory;
+- [`../artifacts/final_research_summary_v1.json`](../artifacts/final_research_summary_v1.json),
+  which hash-binds every canonical gate, commit, limitation, and stopping rule.
+
+The frozen evidence boundary is tag `soundness-audit-final-v1` at
+`6fdb7cfd7ddf2f50aff87a8658174bd4cfbb9b2c`. The Oracle-First capability
+ledger at commit `536a175` is a post-boundary methodology addendum, not an
+active mechanism gate; it changes no final claim and authorizes no continuation.
+Gate 4B0-v2, Gate 5A, proof graphs, stronger induction, transport mapping,
+corpus replacement, and new LLM capture remain forbidden.

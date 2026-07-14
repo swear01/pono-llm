@@ -1,24 +1,28 @@
 # Roadmap
 
-**Updated:** 2026-07-13
+**Updated:** 2026-07-14
 **Branch:** `soundness-audit`
 
-## Current Decision
+## Final Decision
 
-The project has completed five empirical gates:
+The project has completed seven evidence stages:
 
 1. constraint-injection soundness audit;
 2. matched affine/quadratic formula baselines;
 3. broad HWMCC residual scan and compactness falsification;
 4. paired source/lifted/raw phase-local grammar-routing study;
-5. proof-carrying modular algebraic certificate feasibility.
+5. proof-carrying modular algebraic certificate feasibility;
+6. frozen nonlinear inductiveness-gap decomposition;
+7. known-map certified-transport population feasibility.
 
 The trust boundary is sound. The current LLM-specific research claim is still
 negative: no solved task or routed solved-set advantage survives the matched
 deterministic baselines. Gate 4B0 also found no v1-eligible natural primary
 population, so it supplies a sound development kernel but no evaluated H5a
-claim. The project is not ready for a coverage-improvement paper, and it must
-not enter paper mode merely because another gate completed.
+claim. The project does not support a coverage-improvement paper claim. Its
+frozen evidence may support a soundness-methodology, reproducibility, or
+negative empirical write-up without changing any baseline, population, or
+threshold.
 
 Gate 5A0 is complete and stopped `population-insufficient`: 11/12 certified
 bases and 6/8 T1-applicable bases failed the frozen thresholds. All other
@@ -138,6 +142,18 @@ the result. No LLM call was made.
 known-map certified-transport oracle. Do not relabel development controls or
 synthetic models as natural H5a evidence.
 
+### Frozen nonlinear inductiveness-gap diagnostic (complete)
+
+Six frozen nonlinear candidates were checked before authorizing helper search,
+k-induction, or proof-graph work. All six fail C1 in an initial state and exact
+Houdini removes them during initial filtering. The measured failure is therefore
+candidate falsity, not insufficient induction depth or proof organization.
+Repairing or replacing a candidate after observing its C1 witness is a new
+experiment and is not authorized here.
+
+**Decision:** reject the repair-gap hypothesis; do not open proof-graph,
+stronger-induction, or helper-search work for these six cases.
+
 ### Dormant C — Independently selected local-certificate corpus
 
 Question: is the one observed phase-only task representative in a population
@@ -197,21 +213,25 @@ deterministic structure, symbolic/SMT synthesis, graph matching, compiler
 metadata, then at most one newly preregistered frozen LLM proposal capture.
 Gate 5A0 and Gate 5A make no LLM/API calls.
 
-## Current research direction
+## Closure boundary
 
-The mechanism roadmap is closed. The active work is the Oracle-First
-Capability Gate ledger in
-[`oracle_first_capability_gates.md`](oracle_first_capability_gates.md). It
-orders population, representation, semantic validity, consumer capacity,
-property sufficiency, runtime utility, and LLM marginality, and preserves the
-earliest demonstrated failure without inferring later causes. A prospective
-Quokka/InvBench replication may proceed only if its frozen public-artifact
-eligibility contract passes; a missing-artifact STOP does not authorize a
-replacement population.
+The mechanism roadmap is closed with no Gate 6. Tag
+`soundness-audit-final-v1` points to
+`6fdb7cfd7ddf2f50aff87a8658174bd4cfbb9b2c`. The final
+[claim ledger](final_claim_ledger.md),
+[research narrative](final_research_narrative.md), and
+[machine-readable summary](../artifacts/final_research_summary_v1.json) are the
+authoritative closure records.
+
+[`oracle_first_capability_gates.md`](oracle_first_capability_gates.md) and its
+ledger are a frozen post-boundary methodology addendum. Their external
+artifact-availability STOP does not authorize a replacement corpus, another
+external target, or a mechanism extension on this branch.
 
 ## Bounded Nonlinear Work
 
-Predicate-aware BVMul CEGAR remains dormant. Start it only when a new natural
+Predicate-aware BVMul CEGAR remains outside this closed program. A future
+independent project could preregister it only when a newly selected natural
 case:
 
 1. survives affine/quadratic deterministic generation;

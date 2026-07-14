@@ -1,9 +1,29 @@
-# Phase 1+2, Gate 2, Representation/Phase, and Algebraic Research Artifacts
+# Closed Research Artifacts
 
-**Canonical bundles finalized through:** 2026-07-13
+**Canonical bundles finalized through:** 2026-07-14
 
 **Phase 1+2 experiment date:** 2026-07-11
 **Benchmark root:** HWMCC (paths are stored as dataset-relative benchmark IDs)
+
+## Final closure index
+
+[`final_research_summary_v1.json`](final_research_summary_v1.json) is the
+machine-readable closure entry point. It hash-binds the frozen research tag and
+commit, every canonical gate artifact, the final claim ledger and narrative,
+environment limitations, the post-boundary methodology addendum, and the rule
+that no Gate 6 or follow-on experiment is authorized on `soundness-audit`. Its
+validator also checks the decisive decision/count fields inside the referenced
+canonical source artifacts rather than trusting the closure prose alone.
+
+Validate it with:
+
+```bash
+python3 scripts/validate_final_research_summary.py
+```
+
+The human-readable counterparts are
+[`../docs/final_claim_ledger.md`](../docs/final_claim_ledger.md) and
+[`../docs/final_research_narrative.md`](../docs/final_research_narrative.md).
 
 ## Canonical result
 
@@ -189,3 +209,26 @@ Do not regenerate the canonical directory in place. Reproduction commands,
 exact commits, executable hashes, and the documented summary-stream assembly
 correction are frozen in
 [`algebraic_certificate_v1/provenance.json`](algebraic_certificate_v1/provenance.json).
+
+## Inductiveness-gap decomposition (complete)
+
+[`inductiveness_gap_v1/summary.json`](inductiveness_gap_v1/summary.json) is the
+canonical six-case diagnostic. Every frozen nonlinear candidate is false in an
+initial state and removed by exact Houdini during C1 filtering. The artifact
+therefore rejects the claim that these candidates merely need helpers, deeper
+induction, or proof-graph organization; it does not authorize post-hoc repair.
+
+## Certified transport Gate 5A0 (complete; stopped before variants)
+
+[`certified_transport_v1/population.json`](certified_transport_v1/population.json)
+is the canonical population census. It records 11 certified bases and six
+T1-applicable bases, below the frozen 12/8 requirements. No transformed model,
+map validation, utility matrix, or LLM/API call exists. The result is
+`population-insufficient`, not a transport-algorithm failure.
+
+## Post-boundary methodology addendum
+
+[`capability_gate_ledger_v1/`](capability_gate_ledger_v1/) contains the frozen
+Oracle-First capability ledger and external-artifact availability census from
+commit `536a175`. It adds no Pono mechanism or LLM experiment, changes no final
+claim, and authorizes no continuation on this branch.

@@ -188,11 +188,18 @@ all 12 routed UNSAT rows pass an independent original-model certificate and no
 unsafe control becomes UNSAT. Canonical evidence is in
 [`artifacts/representation_phase_v1/`](artifacts/representation_phase_v1/).
 
-This is not currently a coverage-improvement claim; see the active roadmap
-before extending the study.
+The `soundness-audit` research program is closed. Under original-model
+certification, matched deterministic expressiveness, frozen replay, and
+preregistered stopping rules, the evaluated populations retain zero defensible
+LLM-specific solved-set or search-efficiency advantage. This is a soundness and
+evaluation-methodology result, not a coverage-improvement claim. No Gate 6 or
+replacement population is authorized on this branch.
 
-Current status and claim boundaries:
+Final status and claim boundaries:
 
+- [`docs/final_claim_ledger.md`](docs/final_claim_ledger.md)
+- [`docs/final_research_narrative.md`](docs/final_research_narrative.md)
+- [`artifacts/final_research_summary_v1.json`](artifacts/final_research_summary_v1.json)
 - [`docs/overview.md`](docs/overview.md)
 - [`docs/plan.md`](docs/plan.md)
 - [`docs/roadmap.md`](docs/roadmap.md)

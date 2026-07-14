@@ -2,20 +2,36 @@
 
 > Tacit knowledge an agent can't infer from reading code.
 
-## Oracle-First capability audit (2026-07-14)
+## Research closure (2026-07-14)
+
+- `soundness-audit` is closed. Frozen boundary:
+  `soundness-audit-final-v1` →
+  `6fdb7cfd7ddf2f50aff87a8658174bd4cfbb9b2c`.
+- The authoritative closure entry points are `docs/final_claim_ledger.md`,
+  `docs/final_research_narrative.md`, and
+  `artifacts/final_research_summary_v1.json`.
+- Do not open Gate 6, lower Gate 5A0's 12/8 thresholds, repair the six false
+  candidates, refill a population with synthetic/width variants, or switch
+  provider/environment to backfill a canonical result.
+- New cross-tool, transport, or repair research must use a separate branch or
+  repository, independent population, and fresh preregistration.
+
+## Oracle-First capability audit (frozen post-boundary addendum)
 
 - Gate 5A's six frozen natural cases are all `INITIAL_FALSE`: this establishes
   a G2 semantic-candidate failure, not a consumer, induction-depth, or helper
   failure.
 - The certified-transport census is a G0 `NO_POPULATION` STOP and does not
   establish a transport-algorithm failure.
-- The active artifact is the cross-system capability ledger. CPAchecker shadow
-  utility evidence is explicitly `working-tree-only`; it is hash-bound but is
-  not represented as clean-checkout reproducible.
+- The supporting artifact is the cross-system capability ledger. CPAchecker
+  shadow utility evidence is explicitly `working-tree-only`; it is hash-bound
+  but is not represented as clean-checkout reproducible.
 - The prospective Quokka/InvBench release census stopped because a single
   immutable public release with exact predicates, insertion locations,
   verifier configuration, and content hashes could not be reconstructed. No
   replacement corpus is authorized.
+- This addendum changes no final Pono claim and authorizes no follow-on work on
+  `soundness-audit`.
 
 ## Modular algebraic certificate Gate 4B0 (2026-07-13)
 

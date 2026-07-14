@@ -2,7 +2,11 @@
 
 ## Status and scope
 
-This document freezes the Oracle-First Capability Auditing study. It does not
+This document is a **frozen post-boundary methodology addendum**, not the next
+research project on `soundness-audit`. It does not alter the final claim ledger
+or the `soundness-audit-final-v1` boundary and authorizes no further execution.
+
+It freezes the Oracle-First Capability Auditing study. It does not
 authorize a new verifier mechanism, candidate grammar, repair loop, transport
 mapper, benchmark hunt, or LLM call. Gate 3, Gate 4B0-v2, Gate 5A, and the
 certified-transport population decision remain closed.
