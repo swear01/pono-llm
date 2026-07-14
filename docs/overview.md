@@ -1,5 +1,14 @@
 # Overview
 
+## Active independent project
+
+Branch `cross-tool-audit` begins a new Cross-Tool Soundness and
+Matched-Baseline Audit. It does not reopen the closed Pono hypothesis tree.
+Only Gate X0 public-artifact availability is currently authorized; see
+[`cross_tool_audit_plan.md`](cross_tool_audit_plan.md) and the frozen
+[`cross_tool_audit_preregistration.md`](cross_tool_audit_preregistration.md).
+No verifier replay or LLM/API call may occur before X0 passes.
+
 ## What This Is
 
 **pono-llm** is a research fork of [Pono](https://github.com/stanford-centaur/pono), an SMT-based hardware model checker from Stanford. The closed `soundness-audit` research program studied how to integrate LLM-generated formulas into IC3IA **soundly** for software-origin BTOR2 circuits and how their apparent utility changes under matched deterministic baselines.

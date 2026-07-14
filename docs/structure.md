@@ -27,6 +27,11 @@
 
 ## Current Module Boundaries
 
+- **Independent cross-tool Gate X0:**
+  `scripts/cross_tool_candidate_catalog_v1.json` freezes five external systems,
+  three setting classes, fourteen artifact requirements, and a no-replacement
+  decision rule before local repository inspection. The active protocol is
+  `docs/cross_tool_audit_preregistration.md`; no old Pono gate is reopened.
 - **Final proof path:** original BTOR2 + predicate JSON → `pono -e ic3ia --initial-predicates <json> <btor2>`. Predicate JSON is untrusted abstraction vocabulary, not a model assumption.
 - **Stable experiment identity:** `scripts/experiment_manifest.py` maps
   dataset-relative benchmark IDs to local paths, preserves/validates benchmark

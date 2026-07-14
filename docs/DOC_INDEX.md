@@ -5,6 +5,8 @@
 Start here:
 
 - Project entry point: [`../AGENTS.md`](../AGENTS.md)
+- Active independent project: [`cross_tool_audit_plan.md`](cross_tool_audit_plan.md)
+- Gate X0 preregistration: [`cross_tool_audit_preregistration.md`](cross_tool_audit_preregistration.md)
 - Overview: [`overview.md`](overview.md)
 - Closed plan: [`plan.md`](plan.md)
 - Roadmap: [`roadmap.md`](roadmap.md)
@@ -15,6 +17,8 @@ Start here:
 
 | File | Description |
 |------|-------------|
+| [`cross_tool_audit_plan.md`](cross_tool_audit_plan.md) | Active independent cross-tool audit and ordered X0--X3 gates |
+| [`cross_tool_audit_preregistration.md`](cross_tool_audit_preregistration.md) | Frozen five-system X0 artifact-availability population and stop rules |
 | [`final_claim_ledger.md`](final_claim_ledger.md) | Authoritative supported/rejected/threshold-failed/not-run claim boundary |
 | [`final_research_narrative.md`](final_research_narrative.md) | Complete causal research narrative and closure decision |
 | [`overview.md`](overview.md) | Closed project scope, sound predicate-injection architecture, and final results |

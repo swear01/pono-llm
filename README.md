@@ -206,6 +206,12 @@ Final status and claim boundaries:
 - [`docs/notes.md`](docs/notes.md)
 - [`docs/DOC_INDEX.md`](docs/DOC_INDEX.md)
 
+Independent follow-on work is isolated on branch `cross-tool-audit`. It does
+not reopen Pono Gate 6. Its first and only authorized step is the preregistered
+public-artifact availability census in
+[`docs/cross_tool_audit_preregistration.md`](docs/cross_tool_audit_preregistration.md);
+no verifier replay or LLM call is authorized until that gate passes.
+
 ## Documentation
 
 To generate documentation from the C++ source files, install [Doxygen](https://www.doxygen.nl/index.html), configure with `./configure.sh --docs`, then build the `docs` target:

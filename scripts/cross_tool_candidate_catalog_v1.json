@@ -1,0 +1,96 @@
+{
+  "candidates": [
+    {
+      "artifact_discovery_urls": [
+        "https://arxiv.org/abs/2602.23389",
+        "https://gipsyh.github.io/files/CIll.pdf"
+      ],
+      "candidate_id": "cill",
+      "name": "CIll",
+      "paper_url": "https://arxiv.org/abs/2602.23389",
+      "reported_claim": "CTI-guided LLM invariant generation improves model-checking convergence through BMC, inductiveness checking, IC3, k-induction, and local proof.",
+      "setting": "transition-system-model-checking",
+      "setting_class": "model-checking"
+    },
+    {
+      "artifact_discovery_urls": [
+        "https://arxiv.org/abs/2605.17914",
+        "https://github.com/ltcRandomwalk/LORIS"
+      ],
+      "candidate_id": "loris",
+      "name": "LORIS",
+      "paper_url": "https://arxiv.org/abs/2605.17914",
+      "reported_claim": "Formal feedback on local reasoning errors improves LLM loop-invariant synthesis for C verification.",
+      "setting": "c-loop-invariant-synthesis",
+      "setting_class": "source-program-verification"
+    },
+    {
+      "artifact_discovery_urls": [
+        "https://arxiv.org/abs/2509.21629",
+        "https://github.com/Anjiang-Wei/Quokka"
+      ],
+      "candidate_id": "quokka",
+      "name": "Quokka / InvBench",
+      "paper_url": "https://arxiv.org/abs/2509.21629",
+      "reported_claim": "Verifier-checked LLM invariants can accelerate UAutomizer on a benchmark designed to measure invariant correctness and speedup.",
+      "setting": "c-invariant-acceleration",
+      "setting_class": "source-program-verification"
+    },
+    {
+      "artifact_discovery_urls": [
+        "https://arxiv.org/abs/2409.13082",
+        "https://github.com/microsoft/verus-proof-synthesis"
+      ],
+      "candidate_id": "autoverus",
+      "name": "AutoVerus",
+      "paper_url": "https://arxiv.org/abs/2409.13082",
+      "reported_claim": "A multi-phase LLM workflow synthesizes and repairs Verus proofs for algorithmic Rust tasks.",
+      "setting": "verus-proof-synthesis",
+      "setting_class": "deductive-proof-synthesis"
+    },
+    {
+      "artifact_discovery_urls": [
+        "https://arxiv.org/abs/2603.25810"
+      ],
+      "candidate_id": "exverus",
+      "name": "ExVerus",
+      "paper_url": "https://arxiv.org/abs/2603.25810",
+      "reported_claim": "Validated counterexamples guide LLM repair of failed Verus proofs with improved accuracy, robustness, and token efficiency.",
+      "setting": "verus-proof-repair",
+      "setting_class": "deductive-proof-synthesis"
+    }
+  ],
+  "catalog_sha256": "d8dfeaa65d6a34652f0018d9ac61a587ce884c208847094ee9750b0047a13fd3",
+  "freeze": {
+    "date": "2026-07-14",
+    "literature_cutoff": "2026-07-14",
+    "local_repository_clones_inspected": 0,
+    "new_llm_api_calls": 0,
+    "parent_commit": "8e5e050b6898f06a01e82108950925996eedcbcb",
+    "prior_quokka_artifact_limitation_known": true,
+    "replacement_candidates_authorized": false
+  },
+  "required_fields": [
+    "immutable_revision",
+    "license",
+    "implementation",
+    "benchmark_inputs",
+    "frozen_llm_outputs",
+    "binding_locations",
+    "expected_verdicts",
+    "verifier_identity",
+    "verifier_build",
+    "offline_replay",
+    "generation_config",
+    "per_instance_timing",
+    "result_provenance",
+    "no_manual_repair"
+  ],
+  "schema": "cross-tool-audit-candidate-catalog-v1",
+  "threshold": {
+    "eligible_candidates": 2,
+    "eligible_settings": 2,
+    "failure_decision": "STOP_X0_INSUFFICIENT_PUBLIC_ARTIFACTS",
+    "success_decision": "GO_X1"
+  }
+}
