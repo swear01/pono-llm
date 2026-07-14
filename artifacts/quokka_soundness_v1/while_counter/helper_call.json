@@ -1,0 +1,106 @@
+{
+  "aggregate": "TRUE",
+  "assert": {
+    "command": [
+      "taskset",
+      "-c",
+      "0",
+      "timeout",
+      "--signal=TERM",
+      "--kill-after=5s",
+      "60s",
+      "python3",
+      "-u",
+      "Ultimate.py",
+      "--spec",
+      "/home/swear01/quokka-r1/Dataset/properties/unreach-call.prp",
+      "--file",
+      "/home/swear01/pono-llm/artifacts/quokka_soundness_v1/while_counter/helper_call/assert.c",
+      "--architecture",
+      "64bit",
+      "--full-output"
+    ],
+    "exit_code": 0,
+    "result": "TRUE",
+    "source_sha256": "d640eb0b749dd13af17c07e8b29f2f259a96b546cf5f7b4e4b09d963139894e5",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stdout_sha256": "cf5802d2f38b65328a661e913f44c67980a408b2d00821f653559af1302e2902",
+    "verdict": "TRUE",
+    "wall_time_sec": 4.787032741005532
+  },
+  "assume": {
+    "command": [
+      "taskset",
+      "-c",
+      "0",
+      "timeout",
+      "--signal=TERM",
+      "--kill-after=5s",
+      "60s",
+      "python3",
+      "-u",
+      "Ultimate.py",
+      "--spec",
+      "/home/swear01/quokka-r1/Dataset/properties/unreach-call.prp",
+      "--file",
+      "/home/swear01/pono-llm/artifacts/quokka_soundness_v1/while_counter/helper_call/assume.c",
+      "--architecture",
+      "64bit",
+      "--full-output"
+    ],
+    "exit_code": 0,
+    "result": "TRUE",
+    "source_sha256": "4f3f567230d29d047397187174f091210258f2f76ea12c6e571444c6fbecf320",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stdout_sha256": "28ad247bbd72fac59b338a095bb7734ca8fc29b68d42380ad22cce75a126a5de",
+    "verdict": "TRUE",
+    "wall_time_sec": 5.271616276004352
+  },
+  "candidate_class": "side_effect_attack",
+  "candidate_id": "helper_call",
+  "condition": "prune_and_true()",
+  "extracted": [
+    {
+      "condition": "prune_and_true()",
+      "line_after": 17
+    }
+  ],
+  "fallback": false,
+  "false_safe": true,
+  "insertion_points": [
+    17
+  ],
+  "legacy_accept": true,
+  "llm_calls": 0,
+  "original": {
+    "command": [
+      "taskset",
+      "-c",
+      "0",
+      "timeout",
+      "--signal=TERM",
+      "--kill-after=5s",
+      "60s",
+      "python3",
+      "-u",
+      "Ultimate.py",
+      "--spec",
+      "/home/swear01/quokka-r1/Dataset/properties/unreach-call.prp",
+      "--file",
+      "/home/swear01/pono-llm/artifacts/quokka_soundness_v1/while_counter/original.c",
+      "--architecture",
+      "64bit",
+      "--full-output"
+    ],
+    "exit_code": 0,
+    "result": "FALSE",
+    "source_sha256": "e7ea4f4cb79af64a0bc6d2faa1a6cbc6ce657cd19baac44c7190efad1965deca",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stdout_sha256": "125135991acbf87825fb1036a27224ff9f5922fc6c6b62a8acec53fe8d3888ed",
+    "verdict": "FALSE",
+    "wall_time_sec": 5.028050530003384
+  },
+  "program_id": "while_counter",
+  "response_sha256": "0ffffd056c114cf42113fa60110f9838c1ad65182f9ce091cae6300d4c0594d3",
+  "strict_purity_accept": false
+}

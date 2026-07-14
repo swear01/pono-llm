@@ -1,11 +1,13 @@
 # Documentation Index
 
-**Last updated:** 2026-07-14 (independent cross-tool X0 stopped)
+**Last updated:** 2026-07-14 (Quokka candidate-purity audit complete)
 
 Start here:
 
 - Project entry point: [`../AGENTS.md`](../AGENTS.md)
-- Independent project decision: [`cross_tool_x0_results.md`](cross_tool_x0_results.md)
+- Completed independent audit: [`quokka_soundness_results.md`](quokka_soundness_results.md)
+- Frozen audit protocol: [`quokka_soundness_preregistration.md`](quokka_soundness_preregistration.md)
+- Prior independent project decision: [`cross_tool_x0_results.md`](cross_tool_x0_results.md)
 - Cross-tool plan and stop boundary: [`cross_tool_audit_plan.md`](cross_tool_audit_plan.md)
 - Gate X0 preregistration: [`cross_tool_audit_preregistration.md`](cross_tool_audit_preregistration.md)
 - Overview: [`overview.md`](overview.md)
@@ -18,6 +20,9 @@ Start here:
 
 | File | Description |
 |------|-------------|
+| [`quokka_soundness_results.md`](quokka_soundness_results.md) | Verified candidate-purity violation, mitigation control, and claim boundary |
+| [`quokka_soundness_plan.md`](quokka_soundness_plan.md) | Completed independent candidate-purity implementation audit plan |
+| [`quokka_soundness_preregistration.md`](quokka_soundness_preregistration.md) | Frozen Quokka source/input matrix, soundness hypotheses, and stop rules |
 | [`cross_tool_x0_results.md`](cross_tool_x0_results.md) | Canonical human-readable X0 census result, limitations, and reproduction contract |
 | [`cross_tool_audit_plan.md`](cross_tool_audit_plan.md) | Independent cross-tool plan, X0 STOP, and unauthorized X1--X3 boundary |
 | [`cross_tool_audit_preregistration.md`](cross_tool_audit_preregistration.md) | Frozen five-system X0 artifact-availability population and stop rules |

@@ -13,10 +13,10 @@
 | `smt/` | SMT utility wrappers |
 | `utils/` | Logging, timing, misc utilities |
 | `tests/` | C++ tests (googletest) + Python tests (`tests/python/`) |
-| `scripts/` | Benchmark harnesses, gate tools, strict closure-summary validation, and the independent cross-tool X0 census/validator. |
+| `scripts/` | Benchmark harnesses, gate tools, strict closure-summary validation, the independent cross-tool X0 census/validator, and the active pinned Quokka candidate-purity audit. |
 | `benchmarks/` | Micro-benchmarks and BTOR2 test cases |
 | `bench_results/` | Experiment output (not in git) |
-| `artifacts/` | Frozen gate evidence, the old project's hash-bound closure index, and the independent `cross_tool_x0_v1/` census bundle. |
+| `artifacts/` | Frozen gate evidence, the old project's hash-bound closure index, the independent `cross_tool_x0_v1/` census, and the completed `quokka_soundness_v1/` audit. |
 | `docs/` | Active docs; historical docs live under `archive/docs/` |
 | `diagnosis/` | Per-phase diagnosis notes |
 | `prompts/` | LLM prompt templates |
@@ -27,6 +27,15 @@
 
 ## Current Module Boundaries
 
+- **Completed Quokka candidate-purity audit:**
+  `scripts/quokka_soundness_inputs_v1.json` freezes the public source/verifier
+  identities, three unsafe source templates, seven candidate expressions, and
+  decision thresholds before verifier execution.
+  `scripts/run_quokka_soundness_audit.py` loads the exact pinned public
+  extractor/transformer/aggregator and retains raw UAutomizer evidence;
+  `scripts/validate_quokka_soundness_audit.py` independently recomputes the
+  decisions. `scripts/quokka_expression_purity.py` is the frozen conservative
+  mitigation control. Canonical output is `artifacts/quokka_soundness_v1/`.
 - **Completed independent cross-tool Gate X0:**
   `scripts/cross_tool_candidate_catalog_v1.json` freezes five external systems,
   three setting classes, fourteen artifact requirements, and a no-replacement

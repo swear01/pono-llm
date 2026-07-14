@@ -1,0 +1,22 @@
+{
+  "chronology": {
+    "limitation": "Git history alone cannot establish preregistration-before-result chronology.",
+    "preregistration_commit_before_execution": false,
+    "session_order": "The preregistration and input bytes were present before verifier execution, but were not committed first."
+  },
+  "fallback_verifier_used": false,
+  "initial_runner_failure": {
+    "command": "python3 scripts/run_quokka_soundness_audit.py --upstream /home/swear01/quokka-r1 --java /home/swear01/.local/bin/java11",
+    "error": "KeyError: result while calling pinned aggregate_verification_results",
+    "resolution": "The result record was corrected to expose the pinned API's result key, then the complete frozen matrix was rerun from the beginning."
+  },
+  "input_file_sha256": "cc7bbf2899d2fe5eb4e817b193ae795e66e7f34b7726c624ead18e7448e241bc",
+  "java_path": "/home/swear01/.local/bin/java11",
+  "java_runtime": "Temurin 11.0.31+11 user-local",
+  "llm_calls": 0,
+  "schema": "quokka-soundness-provenance-v1",
+  "threshold_changes": false,
+  "uautomizer_archive_sha256": "571fce4d2157836a7387c015d7a2c15cc93d4d738a1092f80531272dde690931",
+  "upstream_commit": "60301cb79ba594945f2049990421f5d5d4d95afc",
+  "upstream_repository": "https://github.com/Anjiang-Wei/Quokka"
+}

@@ -1,5 +1,21 @@
 # Overview
 
+## Completed independent Quokka soundness audit
+
+Branch `quokka-soundness-audit` completed an implementation-level audit of
+whether the pinned public Quokka two-query decision procedure enforces the
+side-effect-free candidate premise required by its proof composition. The exact
+public source hashes, unsafe controls, candidate strings, verifier configuration,
+and pass/stop rules were frozen before UAutomizer execution. All nine frozen
+side-effect candidates were false-safe across three mechanisms and three
+program templates; a conservative purity recognizer rejected the frozen class.
+This is neither
+Pono Gate 6 nor Cross-Tool X1; both prior decision boundaries remain immutable.
+See [`quokka_soundness_results.md`](quokka_soundness_results.md),
+[`quokka_soundness_plan.md`](quokka_soundness_plan.md), and
+[`quokka_soundness_preregistration.md`](quokka_soundness_preregistration.md).
+The audit makes no LLM/API call and makes no claim about historical paper outputs.
+
 ## Independent follow-on result
 
 Branch `cross-tool-audit` begins a new Cross-Tool Soundness and

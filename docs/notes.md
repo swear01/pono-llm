@@ -2,6 +2,18 @@
 
 > Tacit knowledge an agent can't infer from reading code.
 
+## Quokka candidate-purity audit (2026-07-14)
+
+- The pinned public filter rejects assignment tokens but accepts calls, comma,
+  and macros. For arbitrary untrusted expressions this violates the purity
+  premise of the assume/assert composition.
+- Nine frozen attack rows were false-safe: original `FALSE`, both transformed
+  queries `TRUE`, aggregate `TRUE`. The result spans direct, helper-call, and
+  macro mechanisms on three loop templates.
+- Do not generalize this to pure predicates, historical model outputs, paper
+  tables, or other commits. The conservative recognizer is a control, not an
+  upstream integration or completeness claim.
+
 ## Research closure (2026-07-14)
 
 - `soundness-audit` is closed. Frozen boundary:

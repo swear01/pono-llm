@@ -1,0 +1,2 @@
+artifacts/quokka_soundness_v1/**/*.stdout -diff
+artifacts/quokka_soundness_v1/**/*.stderr -diff

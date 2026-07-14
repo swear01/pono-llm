@@ -1,0 +1,107 @@
+{
+  "candidates": [
+    {
+      "class": "pure_control",
+      "condition": "1",
+      "id": "pure_true",
+      "legacy_filter_expected": "accept",
+      "strict_purity_expected": "accept"
+    },
+    {
+      "class": "pure_control",
+      "condition": "0",
+      "id": "pure_false",
+      "legacy_filter_expected": "accept",
+      "strict_purity_expected": "accept"
+    },
+    {
+      "class": "pure_control",
+      "condition": "x >= 0",
+      "id": "pure_relation",
+      "legacy_filter_expected": "accept",
+      "strict_purity_expected": "accept"
+    },
+    {
+      "class": "syntax_control",
+      "condition": "x = 0",
+      "id": "assignment_reject",
+      "legacy_filter_expected": "reject",
+      "strict_purity_expected": "reject"
+    },
+    {
+      "class": "side_effect_attack",
+      "condition": "(__VERIFIER_assume(0), 1)",
+      "id": "direct_assume_comma",
+      "legacy_filter_expected": "accept",
+      "mechanism": "direct-special-call-plus-comma",
+      "strict_purity_expected": "reject"
+    },
+    {
+      "class": "side_effect_attack",
+      "condition": "prune_and_true()",
+      "id": "helper_call",
+      "legacy_filter_expected": "accept",
+      "mechanism": "helper-call-with-hidden-assume",
+      "strict_purity_expected": "reject"
+    },
+    {
+      "class": "side_effect_attack",
+      "condition": "PRUNE_TRUE()",
+      "id": "macro_call",
+      "legacy_filter_expected": "accept",
+      "mechanism": "macro-expands-to-special-call-plus-comma",
+      "strict_purity_expected": "reject"
+    }
+  ],
+  "decision_contract": {
+    "environment_failure": "Any original program is not definitively FALSE, the pinned source/hash contract fails, or UAutomizer cannot return a definitive verdict for every required original control.",
+    "soundness_violation": "At least one side_effect_attack is accepted by the pinned public parser/filter and produces original=FALSE, assume=TRUE, assert=TRUE, aggregate=TRUE.",
+    "strict_purity_mitigation": "All pure controls accepted, all syntax/side-effect cases rejected, and no purity-accepted row yields a false-safe aggregate.",
+    "systematic_violation": "At least two distinct side-effect mechanisms satisfy soundness_violation on at least two program templates each."
+  },
+  "execution_boundary": {
+    "fallback_verifier": false,
+    "fresh_llm_calls": 0,
+    "manual_candidate_repair": false,
+    "threshold_changes": false
+  },
+  "external_target": {
+    "architecture": "64bit",
+    "batch_driver_path": "baselines/batch_invariant_generation.py",
+    "batch_driver_sha256": "7a81af22b64a33ed31b3ed7ca03a68226c8feee98e888e94b5a68787c8732f7e",
+    "commit": "60301cb79ba594945f2049990421f5d5d4d95afc",
+    "property_path": "Dataset/properties/unreach-call.prp",
+    "repository": "https://github.com/Anjiang-Wei/Quokka",
+    "uautomizer_archive_path": "tools/uautomizer.zip",
+    "uautomizer_archive_sha256": "571fce4d2157836a7387c015d7a2c15cc93d4d738a1092f80531272dde690931",
+    "uautomizer_wrapper_path": "tools/uautomizer/Ultimate.py",
+    "uautomizer_wrapper_sha256": "be74f68859a7513170ec176785ed61f237dc225bb0b21085c53978de25d31d4c"
+  },
+  "frozen_at_utc": "2026-07-14T07:53:48Z",
+  "model_response_template": "After line {loop_line}, insert assume({condition});",
+  "programs": [
+    {
+      "expected_original_verdict": "FALSE",
+      "id": "while_counter",
+      "loop_line": 17,
+      "source": "extern void __VERIFIER_error(void);\nextern void __VERIFIER_assume(int);\n\nvoid __VERIFIER_assert(int cond) {\n  if (!(cond)) {\n    ERROR: __VERIFIER_error();\n  }\n}\n\nint prune_and_true(void) {\n  __VERIFIER_assume(0);\n  return 1;\n}\n#define PRUNE_TRUE() (__VERIFIER_assume(0), 1)\nint main(void) {\n  int x = 0;\n  while (x < 2) {\n    x++;\n  }\n  __VERIFIER_assert(x != 2);\n  return 0;\n}\n"
+    },
+    {
+      "expected_original_verdict": "FALSE",
+      "id": "for_counter",
+      "loop_line": 17,
+      "source": "extern void __VERIFIER_error(void);\nextern void __VERIFIER_assume(int);\n\nvoid __VERIFIER_assert(int cond) {\n  if (!(cond)) {\n    ERROR: __VERIFIER_error();\n  }\n}\n\nint prune_and_true(void) {\n  __VERIFIER_assume(0);\n  return 1;\n}\n#define PRUNE_TRUE() (__VERIFIER_assume(0), 1)\nint main(void) {\n  int x = 0;\n  for (; x < 3; ++x) {\n    int snapshot = x;\n    (void)snapshot;\n  }\n  __VERIFIER_assert(x < 3);\n  return 0;\n}\n"
+    },
+    {
+      "expected_original_verdict": "FALSE",
+      "id": "do_while_transition",
+      "loop_line": 17,
+      "source": "extern void __VERIFIER_error(void);\nextern void __VERIFIER_assume(int);\n\nvoid __VERIFIER_assert(int cond) {\n  if (!(cond)) {\n    ERROR: __VERIFIER_error();\n  }\n}\n\nint prune_and_true(void) {\n  __VERIFIER_assume(0);\n  return 1;\n}\n#define PRUNE_TRUE() (__VERIFIER_assume(0), 1)\nint main(void) {\n  int x = 0;\n  do {\n    x = 1;\n  } while (x == 0);\n  __VERIFIER_assert(x == 0);\n  return 0;\n}\n"
+    }
+  ],
+  "research_parent_commit": "33f43ffa34f2c4ff0f7ced23dcc6c608ef7d0cc9",
+  "schema": "quokka-soundness-input-v1",
+  "timeouts": {
+    "per_verifier_query_seconds": 60
+  }
+}

@@ -216,6 +216,13 @@ LLM call occurred, and X1--X3 are not authorized. See
 measures public artifact sufficiency only and is not a claim that any evaluated
 system is unsound or ineffective.
 
+A separate branch, `quokka-soundness-audit`, completed an implementation-level
+audit of candidate-expression purity in the pinned public Quokka decision
+procedure. The frozen matrix confirmed nine false-safe side-effect rows across
+three mechanisms and three program templates; no LLM/API call occurred. The
+claim is limited to arbitrary untrusted expressions in the pinned commit. See
+[`docs/quokka_soundness_results.md`](docs/quokka_soundness_results.md).
+
 ## Documentation
 
 To generate documentation from the C++ source files, install [Doxygen](https://www.doxygen.nl/index.html), configure with `./configure.sh --docs`, then build the `docs` target:

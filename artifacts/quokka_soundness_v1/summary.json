@@ -1,0 +1,21 @@
+{
+  "decisions": {
+    "Q_H1": "VIOLATION_CONFIRMED",
+    "Q_H2": "SYSTEMATIC_REPRODUCTION",
+    "Q_H3": "MITIGATION_CONTROL_PASS"
+  },
+  "environment_failure": false,
+  "fallback_count": 0,
+  "llm_calls": 0,
+  "mechanism_program_counts": {
+    "direct-special-call-plus-comma": 3,
+    "helper-call-with-hidden-assume": 3,
+    "macro-expands-to-special-call-plus-comma": 3
+  },
+  "mitigation_control_pass": true,
+  "row_count": 21,
+  "schema": "quokka-soundness-summary-v1",
+  "systematic_reproduction": true,
+  "violation_confirmed": true,
+  "violation_count": 9
+}

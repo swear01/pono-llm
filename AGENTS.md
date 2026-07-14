@@ -119,6 +119,8 @@ Expected `git status` after archiving:
 
 ## Project Docs
 
+- Quokka candidate-purity result: [docs/quokka_soundness_results.md](docs/quokka_soundness_results.md)
+- Quokka candidate-purity protocol: [docs/quokka_soundness_preregistration.md](docs/quokka_soundness_preregistration.md)
 - Cross-tool audit plan: [docs/cross_tool_audit_plan.md](docs/cross_tool_audit_plan.md)
 - Cross-tool X0 preregistration: [docs/cross_tool_audit_preregistration.md](docs/cross_tool_audit_preregistration.md)
 - Cross-tool X0 result: [docs/cross_tool_x0_results.md](docs/cross_tool_x0_results.md)
