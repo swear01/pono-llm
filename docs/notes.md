@@ -461,3 +461,15 @@ Interpretation: Phase 1+2 infrastructure works end-to-end. This smoke result is 
   results use original-model predicate injection or direct certification.
 - **Python sidecar, not in-process**: LLM calls are async; out-of-process prevents blocking IC3's main loop.
 - **Formula-rich transition sketch**: Show `c' = (i>=n ? c : c+i)` not `c' depends on states: i, n` — LLM needs the actual formula to infer triangular number invariants.
+
+## External Oracle Replication R1 (2026-07-14)
+
+- Ledger v1's external artifact STOP is preserved. A new append-only transition
+  records that Quokka commit `60301cb79ba594945f2049990421f5d5d4d95afc`
+  now qualifies a prospective no-LLM ground-truth study.
+- Phase 0 found 866 timing records, 623 programs with GT invariants, 854 GT
+  entries, 854 eligible entries, and a 100% match to the pinned Quokka loop
+  insertion parser contract. UAutomizer `2329fc70` returned TRUE on the startup
+  control with the pinned SV-COMP 2023 archive.
+- The first 25 eligible entries are frozen by `(program_sha256, task_id)` before
+  any Q0/Q1/Q2 execution. Only raw arm results may determine the smoke decision.

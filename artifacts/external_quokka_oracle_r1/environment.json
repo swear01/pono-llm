@@ -1,0 +1,11 @@
+{
+  "apt_install_attempt": "failed: dpkg lock permission denied; no system package was changed",
+  "cpu_affinity": "0",
+  "java_archive_sha256": "a6af3d61851f57eb79ef0189837522329717458bf230ee284da2d26634f1ea3a",
+  "memory_limit_bytes": 16106127360,
+  "platform": "Linux-6.8.0-124-generic-x86_64-with-glibc2.35",
+  "python": "3.10.12",
+  "schema": "external-quokka-oracle-r1-environment-v1",
+  "timeout_seconds": 600,
+  "uautomizer_archive_sha256": "571fce4d2157836a7387c015d7a2c15cc93d4d738a1092f80531272dde690931"
+}

@@ -1,0 +1,34 @@
+{
+  "adapter_authorized": true,
+  "conditions": {
+    "eligible_entry_count": {
+      "actual": 854,
+      "pass": true,
+      "required": 50
+    },
+    "gt_program_count": {
+      "actual": 623,
+      "pass": true,
+      "required": 50
+    },
+    "insertion_match_ratio": {
+      "actual": 1.0,
+      "pass": true,
+      "required": 0.95
+    },
+    "uautomizer_startup": {
+      "actual": "TRUE on benchmark02_linear_1.c",
+      "pass": true,
+      "required": "runnable"
+    },
+    "upstream_files_pinned": {
+      "actual": 875,
+      "pass": true,
+      "required": 1
+    }
+  },
+  "decision": "GO_SMOKE",
+  "llm_calls": 0,
+  "schema": "external-quokka-oracle-r1-qualification-v1",
+  "wrong_verdict_count": 0
+}

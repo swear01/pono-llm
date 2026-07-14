@@ -1,0 +1,10 @@
+{
+  "files": {
+    "environment.json": "db6863f70ecc542f9283a37bde8d9ef27eca49246b79e60467457ef17727f337",
+    "preregistration.md": "57af440b3a459091c3597e82d8b6bb4bdeabd668cc2e4597e188fc5743139e0e",
+    "qualification.json": "c81ccd3c80f8c01842f1fffe0113fcb5a4287ff85e31f6b4563a07f7ace413eb",
+    "transition_event.json": "49e399d27b375faa2cc250c1ccad26799b15bfbada482667809507efe8d78d42",
+    "upstream_manifest.json": "7b63c4a3a8482faf596e4ec7addadb6e5e56a196344ffabe2bff358e3a740c13"
+  },
+  "schema": "external-quokka-oracle-r1-integrity-v1"
+}

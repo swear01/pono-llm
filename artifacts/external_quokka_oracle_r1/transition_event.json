@@ -1,0 +1,11 @@
+{
+  "schema": "oracle-first-ledger-transition-v1",
+  "study_id": "external_quokka_oracle_r1",
+  "prior_decision": "STOP_EXTERNAL_ARTIFACTS_UNAVAILABLE",
+  "prior_decision_time": "2026-07-13",
+  "prior_ledger_commit": "536a1753f5bb8c0be475dd5f7700045f11ab9f14",
+  "current_transition": "REOPENED_AFTER_PUBLIC_ARTIFACT_QUALIFICATION",
+  "reason": "Pinned public commit exposes programs, property, ground-truth invariants, insertion locations, baseline metadata, and a no-LLM GT path.",
+  "upstream_commit": "60301cb79ba594945f2049990421f5d5d4d95afc",
+  "historical_decision_modified": false
+}

@@ -368,3 +368,11 @@ ledger at commit `536a175` is a post-boundary methodology addendum, not an
 active mechanism gate; it changes no final claim and authorizes no continuation.
 Gate 4B0-v2, Gate 5A, proof graphs, stronger induction, transport mapping,
 corpus replacement, and new LLM capture remain forbidden.
+
+## Active external replication R1
+
+The only authorized execution is the preregistered Quokka/UAutomizer
+Ground-Truth R1 in `artifacts/external_quokka_oracle_r1/`. Phase 0 qualified the
+pinned public commit and froze the 25-entry smoke set. Run same-machine Q0
+original, Q1 assert, and Q2 assume arms without aggregate fallback. A smoke STOP
+does not authorize a replacement corpus or another internal mechanism.
