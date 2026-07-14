@@ -1,0 +1,9 @@
+{
+  "files": {
+    "README.md": "b214007a046efddc5d417ee3148a84d1e5f0c8cc7f820ada0e10df31851657e6",
+    "external_replication.json": "233865d0c02268e7ea31a6835d8189149f68b995e08e26b0388e67368272640b",
+    "ledger.json": "d98427ab818f5619f72b19d436341fbf02cc66c80a1f17bd7e9b7ffa5f6e22a2",
+    "reproducibility_audit.md": "4f38e8117be6304875ecdb15193c12036f59b1089668c5c64e357ce46e32cf4b"
+  },
+  "schema": "oracle-first-capability-integrity-v1"
+}

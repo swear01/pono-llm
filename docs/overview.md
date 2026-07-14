@@ -129,6 +129,12 @@ decompilation, paid capture, and paper mode remain stopped.
 See [`docs/plan.md`](plan.md) for exact results/reproduction and
 [`docs/roadmap.md`](roadmap.md) for the next decision gate.
 
+The active research product is now an Oracle-First Capability Audit rather
+than another proof backend. `docs/oracle_first_capability_gates.md` defines the
+G0--G6 stage taxonomy; `artifacts/capability_gate_ledger_v1/` binds the Pono and
+CPAchecker evidence to exact hashes and records the prospective external
+replication decision. This pivot does not reopen any earlier STOP.
+
 ## External Resources
 
 - Upstream Pono: https://github.com/stanford-centaur/pono

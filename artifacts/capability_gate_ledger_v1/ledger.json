@@ -1,0 +1,337 @@
+{
+  "builder_commit": "6fdb7cfd7ddf2f50aff87a8658174bd4cfbb9b2c",
+  "catalog_file_sha256": "7e5dfab0961b0d532250a77411343ec592e4fe4e03572eb2846ef0c947fcb1a0",
+  "ledger_sha256": "2d215cc28c140ba4255476638abc3dbb87d9b6ab1df434d8d778a7453c1668e0",
+  "prospective_external_replication": {
+    "decision": "STOP_EXTERNAL_ARTIFACTS_UNAVAILABLE",
+    "eligibility_contract": [
+      "programs",
+      "exact candidate predicates",
+      "candidate insertion locations",
+      "expected verifier outcomes",
+      "verifier and version configuration",
+      "per-instance timings",
+      "stable identifiers",
+      "content hashes"
+    ],
+    "interpretation": "Prospective replication is blocked by public artifact sufficiency; no claim is made about Quokka correctness or utility.",
+    "missing_required_fields": [
+      "one immutable release containing exact candidate predicates",
+      "candidate insertion locations tied to stable instance identifiers",
+      "reproducible verifier artifact and version configuration",
+      "release-level content hash manifest"
+    ],
+    "protocol_frozen_before_outcome_inspection": true,
+    "replacement_corpus_authorized": false,
+    "schema": "oracle-first-external-replication-v1",
+    "sources_checked": [
+      {
+        "finding": "Paper describes 866 SV-COMP-derived instances, location-bound predicates, verifier checking, and acceleration measurement.",
+        "status": "available",
+        "url": "https://arxiv.org/abs/2509.21629"
+      },
+      {
+        "finding": "Public release link redirected to the repository API and returned HTTP 401 not_connected on 2026-07-14.",
+        "status": "unavailable",
+        "url": "https://anonymous.4open.science/r/InvBench/"
+      },
+      {
+        "finding": "Public 219-row evaluation derivative exposes programs, decisions, and timings but not exact candidate predicates or insertion locations.",
+        "revision": "e3b2800d",
+        "status": "partial",
+        "url": "https://huggingface.co/datasets/idopinto/invbench-eval-uautomizer25-k3-full"
+      },
+      {
+        "finding": "Public metadata exposes text, grade, token length, and speedup; row service returned HTTP 503 during the frozen census, so exact location and verifier-artifact reconstruction could not be established.",
+        "status": "metadata-only",
+        "url": "https://huggingface.co/datasets/idopinto/invbench-train-uautomizer25-k1-v2.3"
+      }
+    ],
+    "target": "Quokka/InvBench"
+  },
+  "schema": "oracle-first-capability-ledger-v1",
+  "stages_covered": [
+    "G0",
+    "G1",
+    "G2",
+    "G3",
+    "G5"
+  ],
+  "studies": [
+    {
+      "artifact_type": "phase-conditioned invariant candidates",
+      "chronology": "commit-and-hash-bound",
+      "code_commit": "d7701be",
+      "decision": "STOP",
+      "evidence_status": "tracked-clean",
+      "failure_class": "UNSUPPORTED_REPRESENTATION",
+      "hypothesis": "Frozen phase/source representations add independent proof capacity.",
+      "negative_controls": [
+        "four unsafe controls"
+      ],
+      "next_actions_forbidden": [
+        "Gate 3.1",
+        "repair invalid routes",
+        "paid recapture",
+        "lower thresholds"
+      ],
+      "population_manifest": {
+        "path": "artifacts/representation_phase_v1/population.json",
+        "sha256": "01ec7bf8f0ba1c575b20b835e9431e251ace0686dcd5c388ddeee83885bc4ffe"
+      },
+      "positive_controls": [
+        "one phase-only natural solve",
+        "soundness boundary passed"
+      ],
+      "preregistered_threshold": "H1 requires at least 3 baseline-hard additions; H2 requires a source-unique solve; H3 must beat structural routing end to end.",
+      "result_artifact": {
+        "path": "artifacts/representation_phase_v1/summary.json",
+        "sha256": "0c177a3cfc780d43b8c4bc37b2d1d13ac85b7fb964a4088856fa829cdfd4c856"
+      },
+      "soundness_boundary": "exact C1/C2/C3; unsafe controls; invalid routes excluded",
+      "stage": "G1",
+      "study_id": "pono-representation-phase-v1",
+      "system": "Pono"
+    },
+    {
+      "artifact_type": "modular algebraic certificate",
+      "chronology": "commit-and-hash-bound",
+      "code_commit": "e45d6d1",
+      "decision": "STOP",
+      "evidence_status": "tracked-clean",
+      "failure_class": "NO_POPULATION",
+      "hypothesis": "The official population contains enough natural v1-eligible polynomial obligations.",
+      "negative_controls": [
+        "unsafe and malformed certificates"
+      ],
+      "next_actions_forbidden": [
+        "LLM certificate capture",
+        "claim control speedups as natural wins"
+      ],
+      "population_manifest": {
+        "path": "artifacts/algebraic_certificate_v1/population.json",
+        "sha256": "d4920ec6ffe1f5782ad2a26f430ec3cff63c10c446aa6cbe77d17d740cf85747"
+      },
+      "positive_controls": [
+        "fib_23",
+        "fib_30",
+        "negative certificate suite"
+      ],
+      "preregistered_threshold": "Natural primary population required before H5a; fib_23 and fib_30 controls never count.",
+      "result_artifact": {
+        "path": "artifacts/algebraic_certificate_v1/summary.json",
+        "sha256": "9374bb1aa25ce00f9aa695093dfaf6563d4ee76f729f0651abb072ffd5a2c1b0"
+      },
+      "soundness_boundary": "development controls cannot authorize H5a",
+      "stage": "G0",
+      "study_id": "pono-gate4b0-v1-population",
+      "system": "Pono"
+    },
+    {
+      "artifact_type": "natural nonlinear invariant conjunction",
+      "chronology": "commit-and-hash-bound",
+      "code_commit": "6fdb7cfd7ddf2f50aff87a8658174bd4cfbb9b2c",
+      "decision": "STOP",
+      "evidence_status": "tracked-clean",
+      "failure_class": "INITIAL_FALSE",
+      "hypothesis": "Frozen C2-SAT candidates may be valid but need induction structure.",
+      "negative_controls": [
+        "six initial-state counterexamples"
+      ],
+      "next_actions_forbidden": [
+        "proof graph",
+        "stronger induction",
+        "C1 repair on the six cases",
+        "algebraic kernel expansion"
+      ],
+      "population_manifest": {
+        "path": "artifacts/algebraic_baseline_v2/c2_queries/manifest.json",
+        "sha256": "bd821097952efbdbd74821f4b50f170efdf54f7a5931e5bb2088e8db6b64acc2"
+      },
+      "positive_controls": [
+        "exact bounded reachability harness"
+      ],
+      "preregistered_threshold": "Classify six frozen cases before choosing proof graph, stronger induction, or transport.",
+      "result_artifact": {
+        "path": "artifacts/inductiveness_gap_v1/summary.json",
+        "sha256": "0acf2b30f74697a8659fcf02aed9594f53a8e22ca3c3960b1c8f2b92f21d160c"
+      },
+      "soundness_boundary": "6/6 fail C1 at depth 0; zero false-safe",
+      "stage": "G2",
+      "study_id": "pono-gate5a-semantic-validity",
+      "system": "Pono"
+    },
+    {
+      "artifact_type": "certified proof-set transport",
+      "chronology": "commit-and-hash-bound",
+      "code_commit": "fa9f61f",
+      "decision": "STOP",
+      "evidence_status": "tracked-clean",
+      "failure_class": "NO_POPULATION",
+      "hypothesis": "A natural source population supports three preregistered transform families.",
+      "negative_controls": [
+        "T1 applicability and safe-base thresholds"
+      ],
+      "next_actions_forbidden": [
+        "transport mapper",
+        "LLM mapping inference",
+        "replacement corpus hunting"
+      ],
+      "population_manifest": {
+        "path": "artifacts/certified_transport_v1/population.json",
+        "sha256": "d3e91dbbbe09909d6dd4618ece4e2606b252b7991d6f2c4012d1a5f200e640d4"
+      },
+      "positive_controls": [
+        "11 certified safe bases",
+        "4 unsafe controls"
+      ],
+      "preregistered_threshold": "At least 12 safe bases, 8 families, 8 applicable bases per transform family, and 4 unsafe controls.",
+      "result_artifact": {
+        "path": "artifacts/certified_transport_v1/population.json",
+        "sha256": "d3e91dbbbe09909d6dd4618ece4e2606b252b7991d6f2c4012d1a5f200e640d4"
+      },
+      "soundness_boundary": "population census only; no transport claim",
+      "stage": "G0",
+      "study_id": "pono-certified-transport-census",
+      "system": "Pono"
+    },
+    {
+      "artifact_type": "reference nonlinear invariants",
+      "chronology": "commit-and-hash-bound",
+      "code_commit": "c0857160526833be3bb94ba5402301afae4a954d",
+      "decision": "STOP",
+      "evidence_status": "tracked-clean",
+      "failure_class": "CONSUMER_NO_CAPACITY",
+      "hypothesis": "Reference artifacts create capacity in ordinary k-induction or PDR consumers.",
+      "negative_controls": [
+        "12-task stock/oracle matrix"
+      ],
+      "next_actions_forbidden": [
+        "CTI helper system",
+        "new candidate generator for these consumers"
+      ],
+      "population_manifest": {
+        "path": "docs/vguided-cegar/reports/2026-07-11_nla_oracle_capacity_smoke.md",
+        "root": "/home/swear01/cpachecker",
+        "sha256": "5db3be8327ddd7650b3790299f19af6c0d4d324ad9d3c94f3d5b3b704bde0b9c"
+      },
+      "positive_controls": [
+        "reference artifacts parse and bind"
+      ],
+      "preregistered_threshold": "At least one oracle-only target delta among 12 frozen tasks under matched limits.",
+      "result_artifact": {
+        "path": "docs/vguided-cegar/reports/2026-07-11_pdr_oracle_capacity_matrix.md",
+        "root": "/home/swear01/cpachecker",
+        "sha256": "ac8c42879512d0204c074d75020069a78935e03f802d778554bbb62cf356ea2c"
+      },
+      "soundness_boundary": "0/12 delta and 0 wrong across tested consumer arms",
+      "stage": "G3",
+      "study_id": "cpachecker-nla-consumer",
+      "system": "CPAchecker"
+    },
+    {
+      "artifact_type": "predicate precision",
+      "chronology": "commit-and-hash-bound",
+      "code_commit": "aad49ef7e4babb210a2da946e4490926ec6dbb02",
+      "decision": "GO",
+      "evidence_status": "tracked-clean",
+      "failure_class": "PASS",
+      "hypothesis": "The methodology can retain a consumer-capacity positive control.",
+      "negative_controls": [
+        "0 wrong"
+      ],
+      "next_actions_forbidden": [],
+      "population_manifest": {
+        "path": "docs/vguided-cegar/reports/2026-06-20_reachsafety_exploration_summary.md",
+        "root": "/home/swear01/cpachecker",
+        "sha256": "9a02a2f2df759377afec9f91d0247e483d122c166b39066e65df6594d871b13e"
+      },
+      "positive_controls": [
+        "+22 solved"
+      ],
+      "preregistered_threshold": "Report target delta and wrong-result count under the frozen ReachSafety comparison.",
+      "result_artifact": {
+        "path": "docs/vguided-cegar/reports/2026-06-20_reachsafety_exploration_summary.md",
+        "root": "/home/swear01/cpachecker",
+        "sha256": "9a02a2f2df759377afec9f91d0247e483d122c166b39066e65df6594d871b13e"
+      },
+      "soundness_boundary": "empirical consumer control, not a general coverage claim",
+      "stage": "G3",
+      "study_id": "cpachecker-reachsafety-predicate-control",
+      "system": "CPAchecker"
+    },
+    {
+      "artifact_type": "termination ranking hook",
+      "chronology": "commit-and-hash-bound",
+      "code_commit": "83b91ee9e921d442f754f0806229e02a8f0b81f7",
+      "decision": "GO",
+      "evidence_status": "tracked-clean",
+      "failure_class": "PASS",
+      "hypothesis": "A second artifact class provides a positive control.",
+      "negative_controls": [
+        "0 lost",
+        "0 wrong"
+      ],
+      "next_actions_forbidden": [],
+      "population_manifest": {
+        "path": "docs/vguided-cegar/reports/2026-06-17_termination_ranking_hook.md",
+        "root": "/home/swear01/cpachecker",
+        "sha256": "7dc9e168c6577d59cad24da7cc95426f65351bc0ac9ec62083848c197713b250"
+      },
+      "positive_controls": [
+        "80 to 84 solved"
+      ],
+      "preregistered_threshold": "Measure stock versus hook at 300 seconds with zero wrong.",
+      "result_artifact": {
+        "path": "docs/vguided-cegar/reports/2026-06-17_termination_ranking_hook.md",
+        "root": "/home/swear01/cpachecker",
+        "sha256": "7dc9e168c6577d59cad24da7cc95426f65351bc0ac9ec62083848c197713b250"
+      },
+      "soundness_boundary": "small empirical positive control",
+      "stage": "G3",
+      "study_id": "cpachecker-termination-ranking-control",
+      "system": "CPAchecker"
+    },
+    {
+      "artifact_type": "shadow predicate utility signal",
+      "chronology": "threshold-tracked-result-working-tree",
+      "code_commit": "db031525020fb8d847c9e7450cc7305e82b27485",
+      "decision": "STOP",
+      "evidence_status": "working-tree-only",
+      "failure_class": "NEGATIVE_RUNTIME_UTILITY",
+      "hypothesis": "Offline cost discrimination transfers to online runtime utility.",
+      "negative_controls": [
+        "recovered 4/7 losses",
+        "preserved 1/2 controls",
+        "300-second AllSAT"
+      ],
+      "next_actions_forbidden": [
+        "online deployment",
+        "claim offline AUROC as utility"
+      ],
+      "population_manifest": {
+        "path": "docs/vguided-cegar/evaluation/predicate_usefulness_gate_frozen_20260711.json",
+        "root": "/home/swear01/cpachecker",
+        "sha256": "92c95e838f59ca6febde2448096cab0d46b322a93c6757df52b9b43cf5cca967"
+      },
+      "positive_controls": [
+        "offline AUROC approximately 0.966"
+      ],
+      "preregistered_threshold": "Recover losses and preserve controls under the frozen utility gate.",
+      "result_artifact": {
+        "path": "docs/vguided-cegar/evaluation/shadow_predicate_utility_probe_20260712.json",
+        "root": "/home/swear01/cpachecker",
+        "sha256": "a1d38611d89f8bedb7b45801d8555f659a70893a9b753e70245e1808f185a925"
+      },
+      "soundness_boundary": "working-tree evidence; no clean-checkout reproduction claim",
+      "stage": "G5",
+      "study_id": "cpachecker-shadow-runtime-utility",
+      "system": "CPAchecker"
+    }
+  ],
+  "study_count": 8,
+  "systems": [
+    "CPAchecker",
+    "Pono"
+  ]
+}

@@ -346,3 +346,14 @@ last, require a new preregistration, and are forbidden in Gate 5A0/5A.
 
 Generic BVMul CEGAR, Gate 3 route repair, prompt tuning, broad HWMCC mining,
 post-hoc Gate 4B0 language expansion, and paper mode remain stopped.
+
+## Active plan — Oracle-First Capability Auditing
+
+No further proof mechanism is authorized. The active deliverable is the
+cross-system, immutable ledger specified by
+[`oracle_first_capability_gates.md`](oracle_first_capability_gates.md): freeze
+the G0--G6 taxonomy, bind CPAchecker and Pono studies to commits and artifact
+hashes, validate positive and negative controls, and make exactly one
+prospective external artifact-availability decision. Gate 4B0-v2, Gate 5A,
+proof graphs, stronger induction, transport mapping, corpus replacement, and
+new LLM capture remain forbidden.

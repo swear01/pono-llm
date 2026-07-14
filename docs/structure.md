@@ -130,3 +130,10 @@
   machine-readable results; `scripts/hash_research_artifacts.py` regenerates
   the separate Phase 1+2 and Gate 2 SHA-256 manifests.
 - **Legacy reactive sidecar:** `llm_generalizer.cpp` / JSONL sidecar code still exists, but it is not the active arithmetic-invariant path and should not be restored as the primary workflow.
+- **Oracle-First capability ledger:**
+  `scripts/capability_gate_catalog_v1.json` freezes the cross-system studies;
+  `scripts/build_capability_gate_ledger.py` verifies referenced bytes and
+  builds the ledger; `scripts/validate_capability_gate_ledger.py` checks its
+  schema, provenance classes, decisions, and self-hash. Canonical output and
+  the external replication census live in
+  `artifacts/capability_gate_ledger_v1/`.

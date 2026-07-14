@@ -197,6 +197,18 @@ deterministic structure, symbolic/SMT synthesis, graph matching, compiler
 metadata, then at most one newly preregistered frozen LLM proposal capture.
 Gate 5A0 and Gate 5A make no LLM/API calls.
 
+## Current research direction
+
+The mechanism roadmap is closed. The active work is the Oracle-First
+Capability Gate ledger in
+[`oracle_first_capability_gates.md`](oracle_first_capability_gates.md). It
+orders population, representation, semantic validity, consumer capacity,
+property sufficiency, runtime utility, and LLM marginality, and preserves the
+earliest demonstrated failure without inferring later causes. A prospective
+Quokka/InvBench replication may proceed only if its frozen public-artifact
+eligibility contract passes; a missing-artifact STOP does not authorize a
+replacement population.
+
 ## Bounded Nonlinear Work
 
 Predicate-aware BVMul CEGAR remains dormant. Start it only when a new natural

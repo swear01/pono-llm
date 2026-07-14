@@ -2,6 +2,21 @@
 
 > Tacit knowledge an agent can't infer from reading code.
 
+## Oracle-First capability audit (2026-07-14)
+
+- Gate 5A's six frozen natural cases are all `INITIAL_FALSE`: this establishes
+  a G2 semantic-candidate failure, not a consumer, induction-depth, or helper
+  failure.
+- The certified-transport census is a G0 `NO_POPULATION` STOP and does not
+  establish a transport-algorithm failure.
+- The active artifact is the cross-system capability ledger. CPAchecker shadow
+  utility evidence is explicitly `working-tree-only`; it is hash-bound but is
+  not represented as clean-checkout reproducible.
+- The prospective Quokka/InvBench release census stopped because a single
+  immutable public release with exact predicates, insertion locations,
+  verifier configuration, and content hashes could not be reconstructed. No
+  replacement corpus is authorized.
+
 ## Modular algebraic certificate Gate 4B0 (2026-07-13)
 
 - Gate 4B0 is complete and stopped. The frozen 267-task official population

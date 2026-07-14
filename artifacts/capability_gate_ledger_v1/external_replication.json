@@ -1,0 +1,47 @@
+{
+  "schema": "oracle-first-external-replication-v1",
+  "target": "Quokka/InvBench",
+  "protocol_frozen_before_outcome_inspection": true,
+  "eligibility_contract": [
+    "programs",
+    "exact candidate predicates",
+    "candidate insertion locations",
+    "expected verifier outcomes",
+    "verifier and version configuration",
+    "per-instance timings",
+    "stable identifiers",
+    "content hashes"
+  ],
+  "sources_checked": [
+    {
+      "url": "https://arxiv.org/abs/2509.21629",
+      "status": "available",
+      "finding": "Paper describes 866 SV-COMP-derived instances, location-bound predicates, verifier checking, and acceleration measurement."
+    },
+    {
+      "url": "https://anonymous.4open.science/r/InvBench/",
+      "status": "unavailable",
+      "finding": "Public release link redirected to the repository API and returned HTTP 401 not_connected on 2026-07-14."
+    },
+    {
+      "url": "https://huggingface.co/datasets/idopinto/invbench-eval-uautomizer25-k3-full",
+      "revision": "e3b2800d",
+      "status": "partial",
+      "finding": "Public 219-row evaluation derivative exposes programs, decisions, and timings but not exact candidate predicates or insertion locations."
+    },
+    {
+      "url": "https://huggingface.co/datasets/idopinto/invbench-train-uautomizer25-k1-v2.3",
+      "status": "metadata-only",
+      "finding": "Public metadata exposes text, grade, token length, and speedup; row service returned HTTP 503 during the frozen census, so exact location and verifier-artifact reconstruction could not be established."
+    }
+  ],
+  "missing_required_fields": [
+    "one immutable release containing exact candidate predicates",
+    "candidate insertion locations tied to stable instance identifiers",
+    "reproducible verifier artifact and version configuration",
+    "release-level content hash manifest"
+  ],
+  "decision": "STOP_EXTERNAL_ARTIFACTS_UNAVAILABLE",
+  "interpretation": "Prospective replication is blocked by public artifact sufficiency; no claim is made about Quokka correctness or utility.",
+  "replacement_corpus_authorized": false
+}
