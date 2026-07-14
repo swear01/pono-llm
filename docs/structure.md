@@ -143,3 +143,10 @@
   the external replication census live in
   `artifacts/capability_gate_ledger_v1/`. It changes no final claim and is not
   an active next project.
+- **External Oracle Replication R1:**
+  `scripts/build_quokka_oracle_r1.py` freezes upstream bytes and the smoke set;
+  `scripts/run_quokka_oracle_replication.py` runs raw Q0/Q1/Q2 UAutomizer arms;
+  `scripts/summarize_quokka_oracle_r1.py` applies fail-closed stage classes;
+  `scripts/validate_quokka_oracle_r1.py` checks the recursive artifact. The
+  transition, preregistration, raw logs, and STOP decision live in
+  `artifacts/external_quokka_oracle_r1/`.

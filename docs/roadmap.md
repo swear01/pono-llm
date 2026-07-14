@@ -225,8 +225,11 @@ authoritative closure records.
 
 [`oracle_first_capability_gates.md`](oracle_first_capability_gates.md) and its
 ledger are a frozen post-boundary methodology addendum. Their external
-artifact-availability STOP does not authorize a replacement corpus, another
-external target, or a mechanism extension on this branch.
+artifact-availability STOP did not authorize a replacement corpus, another
+external target, or a mechanism extension. A later explicitly authorized
+append-only R1 event qualified newly public bytes at a pinned Quokka commit
+without modifying that STOP. R1 stopped at the frozen smoke because
+classification stability was 72% rather than 90%; it authorizes no full run.
 
 ## Bounded Nonlinear Work
 

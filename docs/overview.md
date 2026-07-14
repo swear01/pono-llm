@@ -140,6 +140,12 @@ closure entry points. Any cross-tool audit, translation-validated proof reuse,
 or source-level repair study must begin as an independent project with a new
 population and preregistration.
 
+External Oracle Replication R1 is the sole explicitly authorized append-only
+event after closure. It used a new pinned Quokka population and fresh
+preregistration, changed no Pono result, and stopped after its 25-entry
+UAutomizer smoke failed the 90% stability threshold. Evidence is under
+`artifacts/external_quokka_oracle_r1/`.
+
 ## External Resources
 
 - Upstream Pono: https://github.com/stanford-centaur/pono

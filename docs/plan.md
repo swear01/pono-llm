@@ -376,3 +376,9 @@ Ground-Truth R1 in `artifacts/external_quokka_oracle_r1/`. Phase 0 qualified the
 pinned public commit and froze the 25-entry smoke set. Run same-machine Q0
 original, Q1 assert, and Q2 assume arms without aggregate fallback. A smoke STOP
 does not authorize a replacement corpus or another internal mechanism.
+
+R1 smoke is now complete and stopped. Although transformations, fail-closed
+raw results, and the 20/25 classifiability threshold passed, exact task-level
+classification agreement was 72% rather than the required 90%. Do not run the
+full population or reinterpret unstable single-run wall-time wins as G5
+capacity.

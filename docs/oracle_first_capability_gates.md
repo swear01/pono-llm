@@ -72,6 +72,16 @@ it is `STOP_EXTERNAL_ARTIFACTS_UNAVAILABLE`, with the exact missing fields and
 retrieval failures recorded. A STOP is an external-replication blocker, not a
 claim about Quokka correctness or utility.
 
+### Append-only R1 transition
+
+The v1 STOP remains historical truth. On 2026-07-14, newly public evidence at
+Quokka commit `60301cb79ba594945f2049990421f5d5d4d95afc` satisfied a new R1
+artifact contract. `artifacts/external_quokka_oracle_r1/transition_event.json`
+records `STOP(t0) -> new evidence -> REOPEN(t1)` without editing `ledger.json`.
+The preregistered 25-entry UAutomizer smoke subsequently stopped on 72%
+classification stability (90% required); full-population execution is not
+authorized.
+
 ## Explicit exclusions
 
 - no CPAchecker or Pono proof-engine changes;

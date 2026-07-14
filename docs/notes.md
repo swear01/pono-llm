@@ -30,8 +30,9 @@
   immutable public release with exact predicates, insertion locations,
   verifier configuration, and content hashes could not be reconstructed. No
   replacement corpus is authorized.
-- This addendum changes no final Pono claim and authorizes no follow-on work on
-  `soundness-audit`.
+- This addendum changes no final Pono claim. The explicitly authorized R1 event
+  is append-only and recorded separately below; its STOP authorizes no
+  follow-on work.
 
 ## Modular algebraic certificate Gate 4B0 (2026-07-13)
 
@@ -473,3 +474,9 @@ Interpretation: Phase 1+2 infrastructure works end-to-end. This smoke result is 
   control with the pinned SV-COMP 2023 archive.
 - The first 25 eligible entries are frozen by `(program_sha256, task_id)` before
   any Q0/Q1/Q2 execution. Only raw arm results may determine the smoke decision.
+- R1 smoke stopped: 150 raw invocations produced 24/25 classifiable tasks and
+  zero wrong verdicts, but only 18/25 (72%) primary classifications agreed
+  across two trials, below the frozen 90% threshold. The sole infrastructure
+  task reproducibly hit UAutomizer frontend exit 7 on an unrepresentable
+  unsigned constant. Full-population execution and corpus replacement are not
+  authorized.

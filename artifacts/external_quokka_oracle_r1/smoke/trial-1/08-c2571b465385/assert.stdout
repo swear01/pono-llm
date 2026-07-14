@@ -1,0 +1,460 @@
+Checking for ERROR reachability
+Using default analysis
+Version 2329fc70
+Calling Ultimate with: /home/swear01/quokka-r1/tools/uautomizer/java -Dosgi.configuration.area=/home/swear01/quokka-r1/tools/uautomizer/data/config -Xmx15G -Xms4m -jar /home/swear01/quokka-r1/tools/uautomizer/plugins/org.eclipse.equinox.launcher_1.5.800.v20200727-1323.jar -data @noDefault -ultimatedata /home/swear01/quokka-r1/tools/uautomizer/data -tc /home/swear01/quokka-r1/tools/uautomizer/config/AutomizerReach.xml -i /home/swear01/pono-llm/artifacts/external_quokka_oracle_r1/smoke/trial-1/08-c2571b465385/assert.c -s /home/swear01/quokka-r1/tools/uautomizer/config/svcomp-Reach-64bit-Automizer_Default.epf --cacsl2boogietranslator.entry.function main --witnessprinter.witness.directory /home/swear01/quokka-r1/tools/uautomizer --witnessprinter.witness.filename witness.graphml --witnessprinter.write.witness.besides.input.file false --witnessprinter.graph.data.specification CHECK( init(main()), LTL(G ! call(reach_error())) )
+
+ --witnessprinter.graph.data.producer Automizer --witnessprinter.graph.data.architecture 64bit --witnessprinter.graph.data.programhash a4224e6d4224da2a0c73244ae4c1c982e2cc33afd9ec9ba48ab4101d599ecfb9
+--- Real Ultimate output ---
+This is Ultimate 0.2.2-dev-2329fc7
+[2026-07-14 13:05:15,789 INFO  L177        SettingsManager]: Resetting all preferences to default values...
+[2026-07-14 13:05:15,795 INFO  L181        SettingsManager]: Resetting UltimateCore preferences to default values
+[2026-07-14 13:05:15,826 INFO  L184        SettingsManager]: Ultimate Commandline Interface provides no preferences, ignoring...
+[2026-07-14 13:05:15,827 INFO  L181        SettingsManager]: Resetting Boogie Preprocessor preferences to default values
+[2026-07-14 13:05:15,830 INFO  L181        SettingsManager]: Resetting Boogie Procedure Inliner preferences to default values
+[2026-07-14 13:05:15,877 INFO  L181        SettingsManager]: Resetting Abstract Interpretation preferences to default values
+[2026-07-14 13:05:15,907 INFO  L181        SettingsManager]: Resetting LassoRanker preferences to default values
+[2026-07-14 13:05:15,912 INFO  L181        SettingsManager]: Resetting Reaching Definitions preferences to default values
+[2026-07-14 13:05:15,914 INFO  L181        SettingsManager]: Resetting SyntaxChecker preferences to default values
+[2026-07-14 13:05:15,916 INFO  L181        SettingsManager]: Resetting Sifa preferences to default values
+[2026-07-14 13:05:15,922 INFO  L184        SettingsManager]: Büchi Program Product provides no preferences, ignoring...
+[2026-07-14 13:05:15,922 INFO  L181        SettingsManager]: Resetting LTL2Aut preferences to default values
+[2026-07-14 13:05:15,926 INFO  L181        SettingsManager]: Resetting PEA to Boogie preferences to default values
+[2026-07-14 13:05:15,928 INFO  L181        SettingsManager]: Resetting BlockEncodingV2 preferences to default values
+[2026-07-14 13:05:15,936 INFO  L181        SettingsManager]: Resetting ChcToBoogie preferences to default values
+[2026-07-14 13:05:15,938 INFO  L181        SettingsManager]: Resetting AutomataScriptInterpreter preferences to default values
+[2026-07-14 13:05:15,943 INFO  L181        SettingsManager]: Resetting BuchiAutomizer preferences to default values
+[2026-07-14 13:05:15,949 INFO  L181        SettingsManager]: Resetting CACSL2BoogieTranslator preferences to default values
+[2026-07-14 13:05:15,953 INFO  L181        SettingsManager]: Resetting CodeCheck preferences to default values
+[2026-07-14 13:05:15,960 INFO  L181        SettingsManager]: Resetting InvariantSynthesis preferences to default values
+[2026-07-14 13:05:15,963 INFO  L181        SettingsManager]: Resetting RCFGBuilder preferences to default values
+[2026-07-14 13:05:15,968 INFO  L181        SettingsManager]: Resetting Referee preferences to default values
+[2026-07-14 13:05:15,970 INFO  L181        SettingsManager]: Resetting TraceAbstraction preferences to default values
+[2026-07-14 13:05:15,975 INFO  L184        SettingsManager]: TraceAbstractionConcurrent provides no preferences, ignoring...
+[2026-07-14 13:05:15,977 INFO  L184        SettingsManager]: TraceAbstractionWithAFAs provides no preferences, ignoring...
+[2026-07-14 13:05:15,977 INFO  L181        SettingsManager]: Resetting TreeAutomizer preferences to default values
+[2026-07-14 13:05:15,983 INFO  L181        SettingsManager]: Resetting IcfgToChc preferences to default values
+[2026-07-14 13:05:15,984 INFO  L181        SettingsManager]: Resetting IcfgTransformer preferences to default values
+[2026-07-14 13:05:15,987 INFO  L184        SettingsManager]: ReqToTest provides no preferences, ignoring...
+[2026-07-14 13:05:15,988 INFO  L181        SettingsManager]: Resetting Boogie Printer preferences to default values
+[2026-07-14 13:05:15,990 INFO  L181        SettingsManager]: Resetting ChcSmtPrinter preferences to default values
+[2026-07-14 13:05:15,995 INFO  L181        SettingsManager]: Resetting ReqPrinter preferences to default values
+[2026-07-14 13:05:15,998 INFO  L181        SettingsManager]: Resetting Witness Printer preferences to default values
+[2026-07-14 13:05:16,000 INFO  L184        SettingsManager]: Boogie PL CUP Parser provides no preferences, ignoring...
+[2026-07-14 13:05:16,000 INFO  L181        SettingsManager]: Resetting CDTParser preferences to default values
+[2026-07-14 13:05:16,003 INFO  L184        SettingsManager]: AutomataScriptParser provides no preferences, ignoring...
+[2026-07-14 13:05:16,003 INFO  L184        SettingsManager]: ReqParser provides no preferences, ignoring...
+[2026-07-14 13:05:16,004 INFO  L181        SettingsManager]: Resetting SmtParser preferences to default values
+[2026-07-14 13:05:16,010 INFO  L181        SettingsManager]: Resetting Witness Parser preferences to default values
+[2026-07-14 13:05:16,011 INFO  L188        SettingsManager]: Finished resetting all preferences to default values...
+[2026-07-14 13:05:16,018 INFO  L101        SettingsManager]: Beginning loading settings from /home/swear01/quokka-r1/tools/uautomizer/config/svcomp-Reach-64bit-Automizer_Default.epf
+[2026-07-14 13:05:16,054 INFO  L113        SettingsManager]: Loading preferences was successful
+[2026-07-14 13:05:16,054 INFO  L115        SettingsManager]: Preferences different from defaults after loading the file:
+[2026-07-14 13:05:16,054 INFO  L136        SettingsManager]: Preferences of UltimateCore differ from their defaults:
+[2026-07-14 13:05:16,055 INFO  L138        SettingsManager]:  * Log level for class=de.uni_freiburg.informatik.ultimate.lib.smtlibutils.quantifier.QuantifierPusher=ERROR;
+[2026-07-14 13:05:16,057 INFO  L136        SettingsManager]: Preferences of Boogie Procedure Inliner differ from their defaults:
+[2026-07-14 13:05:16,058 INFO  L138        SettingsManager]:  * Ignore calls to procedures called more than once=ONLY_FOR_SEQUENTIAL_PROGRAMS
+[2026-07-14 13:05:16,061 INFO  L136        SettingsManager]: Preferences of BlockEncodingV2 differ from their defaults:
+[2026-07-14 13:05:16,062 INFO  L138        SettingsManager]:  * Create parallel compositions if possible=false
+[2026-07-14 13:05:16,062 INFO  L138        SettingsManager]:  * Use SBE=true
+[2026-07-14 13:05:16,062 INFO  L136        SettingsManager]: Preferences of CACSL2BoogieTranslator differ from their defaults:
+[2026-07-14 13:05:16,062 INFO  L138        SettingsManager]:  * Overapproximate operations on floating types=true
+[2026-07-14 13:05:16,062 INFO  L138        SettingsManager]:  * Check division by zero=IGNORE
+[2026-07-14 13:05:16,062 INFO  L138        SettingsManager]:  * Pointer to allocated memory at dereference=IGNORE
+[2026-07-14 13:05:16,062 INFO  L138        SettingsManager]:  * If two pointers are subtracted or compared they have the same base address=IGNORE
+[2026-07-14 13:05:16,062 INFO  L138        SettingsManager]:  * Check array bounds for arrays that are off heap=IGNORE
+[2026-07-14 13:05:16,062 INFO  L138        SettingsManager]:  * Check if freed pointer was valid=false
+[2026-07-14 13:05:16,062 INFO  L138        SettingsManager]:  * Use constant arrays=true
+[2026-07-14 13:05:16,062 INFO  L138        SettingsManager]:  * Pointer base address is valid at dereference=IGNORE
+[2026-07-14 13:05:16,062 INFO  L136        SettingsManager]: Preferences of RCFGBuilder differ from their defaults:
+[2026-07-14 13:05:16,062 INFO  L138        SettingsManager]:  * Size of a code block=SequenceOfStatements
+[2026-07-14 13:05:16,062 INFO  L138        SettingsManager]:  * SMT solver=External_DefaultMode
+[2026-07-14 13:05:16,062 INFO  L138        SettingsManager]:  * Command for external solver=z3 SMTLIB2_COMPLIANT=true -memory:2024 -smt2 -in -t:2000
+[2026-07-14 13:05:16,062 INFO  L136        SettingsManager]: Preferences of TraceAbstraction differ from their defaults:
+[2026-07-14 13:05:16,062 INFO  L138        SettingsManager]:  * Compute Interpolants along a Counterexample=FPandBP
+[2026-07-14 13:05:16,063 INFO  L138        SettingsManager]:  * Positions where we compute the Hoare Annotation=LoopsAndPotentialCycles
+[2026-07-14 13:05:16,063 INFO  L138        SettingsManager]:  * Trace refinement strategy=CAMEL
+[2026-07-14 13:05:16,063 INFO  L138        SettingsManager]:  * Command for external solver=z3 SMTLIB2_COMPLIANT=true -memory:2024 -smt2 -in
+[2026-07-14 13:05:16,063 INFO  L138        SettingsManager]:  * Automaton type used in concurrency analysis=PETRI_NET
+[2026-07-14 13:05:16,063 INFO  L138        SettingsManager]:  * Compute Hoare Annotation of negated interpolant automaton, abstraction and CFG=true
+[2026-07-14 13:05:16,063 INFO  L138        SettingsManager]:  * Order on configurations for Petri net unfoldings=DBO
+[2026-07-14 13:05:16,063 INFO  L138        SettingsManager]:  * SMT solver=External_ModelsAndUnsatCoreMode
+[2026-07-14 13:05:16,063 INFO  L138        SettingsManager]:  * Independence relation used for large block encoding in concurrent analysis=SYNTACTIC
+[2026-07-14 13:05:16,063 INFO  L138        SettingsManager]:  * Looper check in Petri net analysis=SEMANTIC
+WARNING: An illegal reflective access operation has occurred
+WARNING: Illegal reflective access by com.sun.xml.bind.v2.runtime.reflect.opt.Injector$1 (file:/home/swear01/quokka-r1/tools/uautomizer/plugins/com.sun.xml.bind_2.2.0.v201505121915.jar) to method java.lang.ClassLoader.defineClass(java.lang.String,byte[],int,int)
+WARNING: Please consider reporting this to the maintainers of com.sun.xml.bind.v2.runtime.reflect.opt.Injector$1
+WARNING: Use --illegal-access=warn to enable warnings of further illegal reflective access operations
+WARNING: All illegal access operations will be denied in a future release
+Applying setting for plugin de.uni_freiburg.informatik.ultimate.plugins.generator.cacsl2boogietranslator: Entry function -> main
+Applying setting for plugin de.uni_freiburg.informatik.ultimate.witnessprinter: Witness directory -> /home/swear01/quokka-r1/tools/uautomizer
+Applying setting for plugin de.uni_freiburg.informatik.ultimate.witnessprinter: Witness filename -> witness.graphml
+Applying setting for plugin de.uni_freiburg.informatik.ultimate.witnessprinter: Write witness besides input file -> false
+Applying setting for plugin de.uni_freiburg.informatik.ultimate.witnessprinter: Graph data specification -> CHECK( init(main()), LTL(G ! call(reach_error())) )
+
+
+Applying setting for plugin de.uni_freiburg.informatik.ultimate.witnessprinter: Graph data producer -> Automizer
+Applying setting for plugin de.uni_freiburg.informatik.ultimate.witnessprinter: Graph data architecture -> 64bit
+Applying setting for plugin de.uni_freiburg.informatik.ultimate.witnessprinter: Graph data programhash -> a4224e6d4224da2a0c73244ae4c1c982e2cc33afd9ec9ba48ab4101d599ecfb9
+[2026-07-14 13:05:16,351 INFO  L75    nceAwareModelManager]: Repository-Root is: /tmp
+[2026-07-14 13:05:16,367 INFO  L261   ainManager$Toolchain]: [Toolchain 1]: Applicable parser(s) successfully (re)initialized
+[2026-07-14 13:05:16,370 INFO  L217   ainManager$Toolchain]: [Toolchain 1]: Toolchain selected.
+[2026-07-14 13:05:16,370 INFO  L271        PluginConnector]: Initializing CDTParser...
+[2026-07-14 13:05:16,371 INFO  L275        PluginConnector]: CDTParser initialized
+[2026-07-14 13:05:16,371 INFO  L432   ainManager$Toolchain]: [Toolchain 1]: Parsing single file: /home/swear01/pono-llm/artifacts/external_quokka_oracle_r1/smoke/trial-1/08-c2571b465385/assert.c
+[2026-07-14 13:05:17,586 INFO  L500              CDTParser]: Created temporary CDT project at NULL
+[2026-07-14 13:05:17,798 INFO  L351              CDTParser]: Found 1 translation units.
+[2026-07-14 13:05:17,802 INFO  L172              CDTParser]: Scanning /home/swear01/pono-llm/artifacts/external_quokka_oracle_r1/smoke/trial-1/08-c2571b465385/assert.c
+[2026-07-14 13:05:17,817 INFO  L394              CDTParser]: About to delete temporary CDT project at /home/swear01/quokka-r1/tools/uautomizer/data/759a8da0e/304c34adf2dd41e28355f72a26052767/FLAG62d557752
+[2026-07-14 13:05:18,208 INFO  L402              CDTParser]: Successfully deleted /home/swear01/quokka-r1/tools/uautomizer/data/759a8da0e/304c34adf2dd41e28355f72a26052767
+[2026-07-14 13:05:18,210 INFO  L299   ainManager$Toolchain]: ####################### [Toolchain 1] #######################
+[2026-07-14 13:05:18,213 INFO  L131        ToolchainWalker]: Walking toolchain with 6 elements.
+[2026-07-14 13:05:18,214 INFO  L113        PluginConnector]: ------------------------CACSL2BoogieTranslator----------------------------
+[2026-07-14 13:05:18,214 INFO  L271        PluginConnector]: Initializing CACSL2BoogieTranslator...
+[2026-07-14 13:05:18,215 INFO  L275        PluginConnector]: CACSL2BoogieTranslator initialized
+[2026-07-14 13:05:18,216 INFO  L185        PluginConnector]: Executing the observer ACSLObjectContainerObserver from plugin CACSL2BoogieTranslator for "CDTParser AST 14.07 01:05:18" (1/1) ...
+[2026-07-14 13:05:18,216 INFO  L205        PluginConnector]: Invalid model from CACSL2BoogieTranslator for observer de.uni_freiburg.informatik.ultimate.plugins.generator.cacsl2boogietranslator.ACSLObjectContainerObserver@5b725a9f and model type de.uni_freiburg.informatik.ultimate.plugins.generator.cacsl2boogietranslator AST 14.07 01:05:18, skipping insertion in model container
+[2026-07-14 13:05:18,216 INFO  L185        PluginConnector]: Executing the observer CACSL2BoogieTranslatorObserver from plugin CACSL2BoogieTranslator for "CDTParser AST 14.07 01:05:18" (1/1) ...
+[2026-07-14 13:05:18,222 INFO  L145         MainTranslator]: Starting translation in SV-COMP mode 
+[2026-07-14 13:05:18,267 INFO  L178         MainTranslator]: Built tables and reachable declarations
+[2026-07-14 13:05:18,357 WARN  L237   ndardFunctionHandler]: Function reach_error is already implemented but we override the implementation for the call at /home/swear01/pono-llm/artifacts/external_quokka_oracle_r1/smoke/trial-1/08-c2571b465385/assert.c[532,545]
+[2026-07-14 13:05:18,367 FATAL L?                        ?]: The Plugin de.uni_freiburg.informatik.ultimate.plugins.generator.cacsl2boogietranslator has thrown an exception:
+java.lang.IllegalArgumentException: Unable to represent 18446744073709551615 using any of the given types. This is probably undefined or we need extended integer types. See 6.4.4.1 in the C standard
+	at de.uni_freiburg.informatik.ultimate.cdt.translation.implementation.util.ISOIEC9899TC3.determineCType(ISOIEC9899TC3.java:575)
+	at de.uni_freiburg.informatik.ultimate.cdt.translation.implementation.util.ISOIEC9899TC3.handleIntegerConstant(ISOIEC9899TC3.java:452)
+	at de.uni_freiburg.informatik.ultimate.cdt.translation.implementation.base.expressiontranslation.IntegerTranslation.translateIntegerLiteral(IntegerTranslation.java:104)
+	at de.uni_freiburg.informatik.ultimate.cdt.translation.implementation.base.CHandler.visit(CHandler.java:1924)
+	at de.uni_freiburg.informatik.ultimate.cdt.translation.implementation.base.PRDispatcher.dispatch(PRDispatcher.java:261)
+	at de.uni_freiburg.informatik.ultimate.cdt.translation.implementation.base.CHandler.visit(CHandler.java:727)
+	at de.uni_freiburg.informatik.ultimate.cdt.translation.implementation.base.PRDispatcher.dispatch(PRDispatcher.java:282)
+	at de.uni_freiburg.informatik.ultimate.cdt.translation.implementation.base.CHandler.visit(CHandler.java:728)
+	at de.uni_freiburg.informatik.ultimate.cdt.translation.implementation.base.PRDispatcher.dispatch(PRDispatcher.java:282)
+	at de.uni_freiburg.informatik.ultimate.cdt.translation.implementation.base.CHandler.visit(CHandler.java:727)
+	at de.uni_freiburg.informatik.ultimate.cdt.translation.implementation.base.PRDispatcher.dispatch(PRDispatcher.java:282)
+	at de.uni_freiburg.informatik.ultimate.cdt.translation.implementation.base.CHandler.visit(CHandler.java:727)
+	at de.uni_freiburg.informatik.ultimate.cdt.translation.implementation.base.PRDispatcher.dispatch(PRDispatcher.java:282)
+	at de.uni_freiburg.informatik.ultimate.cdt.translation.implementation.base.CHandler.visit(CHandler.java:2453)
+	at de.uni_freiburg.informatik.ultimate.cdt.translation.implementation.base.PRDispatcher.dispatch(PRDispatcher.java:303)
+	at de.uni_freiburg.informatik.ultimate.cdt.translation.implementation.base.CHandler.visit(CHandler.java:727)
+	at de.uni_freiburg.informatik.ultimate.cdt.translation.implementation.base.PRDispatcher.dispatch(PRDispatcher.java:282)
+	at de.uni_freiburg.informatik.ultimate.cdt.translation.implementation.base.CHandler.visit(CHandler.java:727)
+	at de.uni_freiburg.informatik.ultimate.cdt.translation.implementation.base.PRDispatcher.dispatch(PRDispatcher.java:282)
+	at de.uni_freiburg.informatik.ultimate.cdt.translation.implementation.base.CHandler.visit(CHandler.java:727)
+	at de.uni_freiburg.informatik.ultimate.cdt.translation.implementation.base.PRDispatcher.dispatch(PRDispatcher.java:282)
+	at de.uni_freiburg.informatik.ultimate.cdt.translation.implementation.base.CHandler.visit(CHandler.java:2453)
+	at de.uni_freiburg.informatik.ultimate.cdt.translation.implementation.base.PRDispatcher.dispatch(PRDispatcher.java:303)
+	at de.uni_freiburg.informatik.ultimate.cdt.translation.implementation.base.CHandler.visit(CHandler.java:727)
+	at de.uni_freiburg.informatik.ultimate.cdt.translation.implementation.base.PRDispatcher.dispatch(PRDispatcher.java:282)
+	at de.uni_freiburg.informatik.ultimate.cdt.translation.implementation.base.CHandler.visit(CHandler.java:2453)
+	at de.uni_freiburg.informatik.ultimate.cdt.translation.implementation.base.PRDispatcher.dispatch(PRDispatcher.java:303)
+	at de.uni_freiburg.informatik.ultimate.cdt.translation.implementation.base.CHandler.visit(CHandler.java:727)
+	at de.uni_freiburg.informatik.ultimate.cdt.translation.implementation.base.PRDispatcher.dispatch(PRDispatcher.java:282)
+	at de.uni_freiburg.informatik.ultimate.cdt.translation.implementation.base.CHandler.visit(CHandler.java:2453)
+	at de.uni_freiburg.informatik.ultimate.cdt.translation.implementation.base.PRDispatcher.dispatch(PRDispatcher.java:303)
+	at de.uni_freiburg.informatik.ultimate.cdt.translation.implementation.base.CHandler.visit(CHandler.java:727)
+	at de.uni_freiburg.informatik.ultimate.cdt.translation.implementation.base.PRDispatcher.dispatch(PRDispatcher.java:282)
+	at de.uni_freiburg.informatik.ultimate.cdt.translation.implementation.base.CHandler.visit(CHandler.java:2453)
+	at de.uni_freiburg.informatik.ultimate.cdt.translation.implementation.base.PRDispatcher.dispatch(PRDispatcher.java:303)
+	at de.uni_freiburg.informatik.ultimate.cdt.translation.implementation.base.CHandler.visit(CHandler.java:727)
+	at de.uni_freiburg.informatik.ultimate.cdt.translation.implementation.base.PRDispatcher.dispatch(PRDispatcher.java:282)
+	at de.uni_freiburg.informatik.ultimate.cdt.translation.implementation.base.CHandler.visit(CHandler.java:2453)
+	at de.uni_freiburg.informatik.ultimate.cdt.translation.implementation.base.PRDispatcher.dispatch(PRDispatcher.java:303)
+	at de.uni_freiburg.informatik.ultimate.cdt.translation.implementation.base.CHandler.visit(CHandler.java:727)
+	at de.uni_freiburg.informatik.ultimate.cdt.translation.implementation.base.PRDispatcher.dispatch(PRDispatcher.java:282)
+	at de.uni_freiburg.informatik.ultimate.cdt.translation.implementation.base.CHandler.visit(CHandler.java:2453)
+	at de.uni_freiburg.informatik.ultimate.cdt.translation.implementation.base.PRDispatcher.dispatch(PRDispatcher.java:303)
+	at de.uni_freiburg.informatik.ultimate.cdt.translation.implementation.base.CHandler.visit(CHandler.java:727)
+	at de.uni_freiburg.informatik.ultimate.cdt.translation.implementation.base.PRDispatcher.dispatch(PRDispatcher.java:282)
+	at de.uni_freiburg.informatik.ultimate.cdt.translation.implementation.base.CHandler.visit(CHandler.java:2453)
+	at de.uni_freiburg.informatik.ultimate.cdt.translation.implementation.base.PRDispatcher.dispatch(PRDispatcher.java:303)
+	at de.uni_freiburg.informatik.ultimate.cdt.translation.implementation.base.CHandler.visit(CHandler.java:727)
+	at de.uni_freiburg.informatik.ultimate.cdt.translation.implementation.base.PRDispatcher.dispatch(PRDispatcher.java:282)
+	at de.uni_freiburg.informatik.ultimate.cdt.translation.implementation.base.CHandler.visit(CHandler.java:2453)
+	at de.uni_freiburg.informatik.ultimate.cdt.translation.implementation.base.PRDispatcher.dispatch(PRDispatcher.java:303)
+	at de.uni_freiburg.informatik.ultimate.cdt.translation.implementation.base.CHandler.visit(CHandler.java:727)
+	at de.uni_freiburg.informatik.ultimate.cdt.translation.implementation.base.PRDispatcher.dispatch(PRDispatcher.java:282)
+	at de.uni_freiburg.informatik.ultimate.cdt.translation.implementation.result.ExpressionResultTransformer.transformDispatchDecaySwitchRexBoolToInt(ExpressionResultTransformer.java:177)
+	at de.uni_freiburg.informatik.ultimate.cdt.translation.implementation.base.chandler.FunctionHandler.handleFunctionCallGivenNameAndArguments(FunctionHandler.java:678)
+	at de.uni_freiburg.informatik.ultimate.cdt.translation.implementation.base.chandler.FunctionHandler.handleFunctionCallExpression(FunctionHandler.java:509)
+	at de.uni_freiburg.informatik.ultimate.cdt.translation.implementation.base.CHandler.visit(CHandler.java:1476)
+	at de.uni_freiburg.informatik.ultimate.cdt.translation.implementation.base.PRDispatcher.dispatch(PRDispatcher.java:267)
+	at de.uni_freiburg.informatik.ultimate.cdt.translation.implementation.base.CHandler.visit(CHandler.java:1420)
+	at de.uni_freiburg.informatik.ultimate.cdt.translation.implementation.base.PRDispatcher.dispatch(PRDispatcher.java:220)
+	at de.uni_freiburg.informatik.ultimate.cdt.translation.implementation.base.CHandler.visit(CHandler.java:1094)
+	at de.uni_freiburg.informatik.ultimate.cdt.translation.implementation.base.PRDispatcher.dispatch(PRDispatcher.java:232)
+	at de.uni_freiburg.informatik.ultimate.cdt.translation.implementation.base.CHandler.visit(CHandler.java:2499)
+	at de.uni_freiburg.informatik.ultimate.cdt.translation.implementation.base.PRDispatcher.dispatch(PRDispatcher.java:199)
+	at de.uni_freiburg.informatik.ultimate.cdt.translation.implementation.base.CHandler.visit(CHandler.java:1094)
+	at de.uni_freiburg.informatik.ultimate.cdt.translation.implementation.base.PRDispatcher.dispatch(PRDispatcher.java:232)
+	at de.uni_freiburg.informatik.ultimate.cdt.translation.implementation.base.chandler.FunctionHandler.handleFunctionDefinition(FunctionHandler.java:371)
+	at de.uni_freiburg.informatik.ultimate.cdt.translation.implementation.base.CHandler.visit(CHandler.java:1496)
+	at de.uni_freiburg.informatik.ultimate.cdt.translation.implementation.base.PRDispatcher.dispatch(PRDispatcher.java:155)
+	at de.uni_freiburg.informatik.ultimate.cdt.translation.implementation.base.CHandler.processTUchild(CHandler.java:3320)
+	at de.uni_freiburg.informatik.ultimate.cdt.translation.implementation.base.CHandler.visit(CHandler.java:2395)
+	at de.uni_freiburg.informatik.ultimate.cdt.translation.implementation.base.CHandler.visit(CHandler.java:600)
+	at de.uni_freiburg.informatik.ultimate.cdt.translation.implementation.base.PRDispatcher.dispatch(PRDispatcher.java:134)
+	at de.uni_freiburg.informatik.ultimate.cdt.translation.implementation.base.MainTranslator.translate(MainTranslator.java:192)
+	at de.uni_freiburg.informatik.ultimate.cdt.translation.implementation.base.MainTranslator.run(MainTranslator.java:115)
+	at de.uni_freiburg.informatik.ultimate.cdt.translation.implementation.base.MainTranslator.<init>(MainTranslator.java:93)
+	at de.uni_freiburg.informatik.ultimate.plugins.generator.cacsl2boogietranslator.CACSL2BoogieTranslatorObserver.finish(CACSL2BoogieTranslatorObserver.java:128)
+	at de.uni_freiburg.informatik.ultimate.core.coreplugin.PluginConnector.runObserver(PluginConnector.java:168)
+	at de.uni_freiburg.informatik.ultimate.core.coreplugin.PluginConnector.runTool(PluginConnector.java:151)
+	at de.uni_freiburg.informatik.ultimate.core.coreplugin.PluginConnector.run(PluginConnector.java:128)
+	at de.uni_freiburg.informatik.ultimate.core.coreplugin.ToolchainWalker.executePluginConnector(ToolchainWalker.java:232)
+	at de.uni_freiburg.informatik.ultimate.core.coreplugin.ToolchainWalker.processPlugin(ToolchainWalker.java:226)
+	at de.uni_freiburg.informatik.ultimate.core.coreplugin.ToolchainWalker.walkUnprotected(ToolchainWalker.java:142)
+	at de.uni_freiburg.informatik.ultimate.core.coreplugin.ToolchainWalker.walk(ToolchainWalker.java:104)
+	at de.uni_freiburg.informatik.ultimate.core.coreplugin.ToolchainManager$Toolchain.processToolchain(ToolchainManager.java:320)
+	at de.uni_freiburg.informatik.ultimate.core.coreplugin.toolchain.DefaultToolchainJob.run(DefaultToolchainJob.java:145)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:63)
+[2026-07-14 13:05:18,372 INFO  L158              Benchmark]: Toolchain (without parser) took 161.45ms. Allocated memory was 31.5MB in the beginning and 40.2MB in the end (delta: 8.7MB). Free memory was 8.3MB in the beginning and 15.8MB in the end (delta: -7.5MB). Peak memory consumption was 2.3MB. Max. memory is 15.6GB.
+[2026-07-14 13:05:18,376 INFO  L158              Benchmark]: CDTParser took 0.43ms. Allocated memory is still 31.5MB. Free memory is still 8.4MB. There was no memory consumed. Max. memory is 15.6GB.
+[2026-07-14 13:05:18,378 INFO  L158              Benchmark]: CACSL2BoogieTranslator took 157.64ms. Allocated memory was 31.5MB in the beginning and 40.2MB in the end (delta: 8.7MB). Free memory was 7.9MB in the beginning and 15.8MB in the end (delta: -7.9MB). Peak memory consumption was 1.9MB. Max. memory is 15.6GB.
+[2026-07-14 13:05:18,379 INFO  L339   ainManager$Toolchain]: #######################  End [Toolchain 1] #######################
+ --- Results ---
+ * Results from de.uni_freiburg.informatik.ultimate.core:
+  - StatisticsResult: Toolchain Benchmarks
+    Benchmark results are:
+ * CDTParser took 0.43ms. Allocated memory is still 31.5MB. Free memory is still 8.4MB. There was no memory consumed. Max. memory is 15.6GB.
+ * CACSL2BoogieTranslator took 157.64ms. Allocated memory was 31.5MB in the beginning and 40.2MB in the end (delta: 8.7MB). Free memory was 7.9MB in the beginning and 15.8MB in the end (delta: -7.9MB). Peak memory consumption was 1.9MB. Max. memory is 15.6GB.
+ * Results from de.uni_freiburg.informatik.ultimate.plugins.generator.cacsl2boogietranslator:
+  - ExceptionOrErrorResult: IllegalArgumentException: Unable to represent 18446744073709551615 using any of the given types. This is probably undefined or we need extended integer types. See 6.4.4.1 in the C standard
+    de.uni_freiburg.informatik.ultimate.plugins.generator.cacsl2boogietranslator: IllegalArgumentException: Unable to represent 18446744073709551615 using any of the given types. This is probably undefined or we need extended integer types. See 6.4.4.1 in the C standard: de.uni_freiburg.informatik.ultimate.cdt.translation.implementation.util.ISOIEC9899TC3.determineCType(ISOIEC9899TC3.java:575)
+RESULT: Ultimate could not prove your program: Toolchain returned no result.
+Received shutdown request...
+--- End real Ultimate output ---
+
+Execution finished normally
+Using bit-precise analysis
+Retrying with bit-precise analysis
+
+### Bit-precise run ###
+Calling Ultimate with: /home/swear01/quokka-r1/tools/uautomizer/java -Dosgi.configuration.area=/home/swear01/quokka-r1/tools/uautomizer/data/config -Xmx15G -Xms4m -jar /home/swear01/quokka-r1/tools/uautomizer/plugins/org.eclipse.equinox.launcher_1.5.800.v20200727-1323.jar -data @noDefault -ultimatedata /home/swear01/quokka-r1/tools/uautomizer/data -tc /home/swear01/quokka-r1/tools/uautomizer/config/AutomizerReach.xml -i /home/swear01/pono-llm/artifacts/external_quokka_oracle_r1/smoke/trial-1/08-c2571b465385/assert.c -s /home/swear01/quokka-r1/tools/uautomizer/config/svcomp-Reach-64bit-Automizer_Bitvector.epf --cacsl2boogietranslator.entry.function main --witnessprinter.witness.directory /home/swear01/quokka-r1/tools/uautomizer --witnessprinter.witness.filename witness.graphml --witnessprinter.write.witness.besides.input.file false --witnessprinter.graph.data.specification CHECK( init(main()), LTL(G ! call(reach_error())) )
+
+ --witnessprinter.graph.data.producer Automizer --witnessprinter.graph.data.architecture 64bit --witnessprinter.graph.data.programhash a4224e6d4224da2a0c73244ae4c1c982e2cc33afd9ec9ba48ab4101d599ecfb9
+--- Real Ultimate output ---
+This is Ultimate 0.2.2-dev-2329fc7
+[2026-07-14 13:05:20,054 INFO  L177        SettingsManager]: Resetting all preferences to default values...
+[2026-07-14 13:05:20,055 INFO  L181        SettingsManager]: Resetting UltimateCore preferences to default values
+[2026-07-14 13:05:20,089 INFO  L184        SettingsManager]: Ultimate Commandline Interface provides no preferences, ignoring...
+[2026-07-14 13:05:20,092 INFO  L181        SettingsManager]: Resetting Boogie Preprocessor preferences to default values
+[2026-07-14 13:05:20,095 INFO  L181        SettingsManager]: Resetting Boogie Procedure Inliner preferences to default values
+[2026-07-14 13:05:20,100 INFO  L181        SettingsManager]: Resetting Abstract Interpretation preferences to default values
+[2026-07-14 13:05:20,104 INFO  L181        SettingsManager]: Resetting LassoRanker preferences to default values
+[2026-07-14 13:05:20,110 INFO  L181        SettingsManager]: Resetting Reaching Definitions preferences to default values
+[2026-07-14 13:05:20,113 INFO  L181        SettingsManager]: Resetting SyntaxChecker preferences to default values
+[2026-07-14 13:05:20,115 INFO  L181        SettingsManager]: Resetting Sifa preferences to default values
+[2026-07-14 13:05:20,120 INFO  L184        SettingsManager]: Büchi Program Product provides no preferences, ignoring...
+[2026-07-14 13:05:20,120 INFO  L181        SettingsManager]: Resetting LTL2Aut preferences to default values
+[2026-07-14 13:05:20,152 INFO  L181        SettingsManager]: Resetting PEA to Boogie preferences to default values
+[2026-07-14 13:05:20,155 INFO  L181        SettingsManager]: Resetting BlockEncodingV2 preferences to default values
+[2026-07-14 13:05:20,160 INFO  L181        SettingsManager]: Resetting ChcToBoogie preferences to default values
+[2026-07-14 13:05:20,162 INFO  L181        SettingsManager]: Resetting AutomataScriptInterpreter preferences to default values
+[2026-07-14 13:05:20,167 INFO  L181        SettingsManager]: Resetting BuchiAutomizer preferences to default values
+[2026-07-14 13:05:20,171 INFO  L181        SettingsManager]: Resetting CACSL2BoogieTranslator preferences to default values
+[2026-07-14 13:05:20,177 INFO  L181        SettingsManager]: Resetting CodeCheck preferences to default values
+[2026-07-14 13:05:20,181 INFO  L181        SettingsManager]: Resetting InvariantSynthesis preferences to default values
+[2026-07-14 13:05:20,187 INFO  L181        SettingsManager]: Resetting RCFGBuilder preferences to default values
+[2026-07-14 13:05:20,189 INFO  L181        SettingsManager]: Resetting Referee preferences to default values
+[2026-07-14 13:05:20,191 INFO  L181        SettingsManager]: Resetting TraceAbstraction preferences to default values
+[2026-07-14 13:05:20,197 INFO  L184        SettingsManager]: TraceAbstractionConcurrent provides no preferences, ignoring...
+[2026-07-14 13:05:20,197 INFO  L184        SettingsManager]: TraceAbstractionWithAFAs provides no preferences, ignoring...
+[2026-07-14 13:05:20,197 INFO  L181        SettingsManager]: Resetting TreeAutomizer preferences to default values
+[2026-07-14 13:05:20,202 INFO  L181        SettingsManager]: Resetting IcfgToChc preferences to default values
+[2026-07-14 13:05:20,203 INFO  L181        SettingsManager]: Resetting IcfgTransformer preferences to default values
+[2026-07-14 13:05:20,207 INFO  L184        SettingsManager]: ReqToTest provides no preferences, ignoring...
+[2026-07-14 13:05:20,207 INFO  L181        SettingsManager]: Resetting Boogie Printer preferences to default values
+[2026-07-14 13:05:20,209 INFO  L181        SettingsManager]: Resetting ChcSmtPrinter preferences to default values
+[2026-07-14 13:05:20,213 INFO  L181        SettingsManager]: Resetting ReqPrinter preferences to default values
+[2026-07-14 13:05:20,215 INFO  L181        SettingsManager]: Resetting Witness Printer preferences to default values
+[2026-07-14 13:05:20,220 INFO  L184        SettingsManager]: Boogie PL CUP Parser provides no preferences, ignoring...
+[2026-07-14 13:05:20,220 INFO  L181        SettingsManager]: Resetting CDTParser preferences to default values
+[2026-07-14 13:05:20,222 INFO  L184        SettingsManager]: AutomataScriptParser provides no preferences, ignoring...
+[2026-07-14 13:05:20,222 INFO  L184        SettingsManager]: ReqParser provides no preferences, ignoring...
+[2026-07-14 13:05:20,222 INFO  L181        SettingsManager]: Resetting SmtParser preferences to default values
+[2026-07-14 13:05:20,224 INFO  L181        SettingsManager]: Resetting Witness Parser preferences to default values
+[2026-07-14 13:05:20,229 INFO  L188        SettingsManager]: Finished resetting all preferences to default values...
+[2026-07-14 13:05:20,230 INFO  L101        SettingsManager]: Beginning loading settings from /home/swear01/quokka-r1/tools/uautomizer/config/svcomp-Reach-64bit-Automizer_Bitvector.epf
+[2026-07-14 13:05:20,288 INFO  L113        SettingsManager]: Loading preferences was successful
+[2026-07-14 13:05:20,293 INFO  L115        SettingsManager]: Preferences different from defaults after loading the file:
+[2026-07-14 13:05:20,293 INFO  L136        SettingsManager]: Preferences of UltimateCore differ from their defaults:
+[2026-07-14 13:05:20,293 INFO  L138        SettingsManager]:  * Log level for class=de.uni_freiburg.informatik.ultimate.lib.smtlibutils.quantifier.QuantifierPusher=ERROR;
+[2026-07-14 13:05:20,295 INFO  L136        SettingsManager]: Preferences of Boogie Procedure Inliner differ from their defaults:
+[2026-07-14 13:05:20,295 INFO  L138        SettingsManager]:  * Ignore calls to procedures called more than once=ONLY_FOR_SEQUENTIAL_PROGRAMS
+[2026-07-14 13:05:20,299 INFO  L136        SettingsManager]: Preferences of BlockEncodingV2 differ from their defaults:
+[2026-07-14 13:05:20,299 INFO  L138        SettingsManager]:  * Create parallel compositions if possible=false
+[2026-07-14 13:05:20,299 INFO  L138        SettingsManager]:  * Use SBE=true
+[2026-07-14 13:05:20,299 INFO  L136        SettingsManager]: Preferences of CACSL2BoogieTranslator differ from their defaults:
+[2026-07-14 13:05:20,299 INFO  L138        SettingsManager]:  * Check division by zero=IGNORE
+[2026-07-14 13:05:20,299 INFO  L138        SettingsManager]:  * Pointer to allocated memory at dereference=IGNORE
+[2026-07-14 13:05:20,299 INFO  L138        SettingsManager]:  * If two pointers are subtracted or compared they have the same base address=IGNORE
+[2026-07-14 13:05:20,299 INFO  L138        SettingsManager]:  * Check array bounds for arrays that are off heap=IGNORE
+[2026-07-14 13:05:20,299 INFO  L138        SettingsManager]:  * Adapt memory model on pointer casts if necessary=true
+[2026-07-14 13:05:20,299 INFO  L138        SettingsManager]:  * Use bitvectors instead of ints=true
+[2026-07-14 13:05:20,299 INFO  L138        SettingsManager]:  * Memory model=HoenickeLindenmann_4ByteResolution
+[2026-07-14 13:05:20,299 INFO  L138        SettingsManager]:  * Check if freed pointer was valid=false
+[2026-07-14 13:05:20,299 INFO  L138        SettingsManager]:  * Use constant arrays=true
+[2026-07-14 13:05:20,299 INFO  L138        SettingsManager]:  * Pointer base address is valid at dereference=IGNORE
+[2026-07-14 13:05:20,299 INFO  L136        SettingsManager]: Preferences of RCFGBuilder differ from their defaults:
+[2026-07-14 13:05:20,299 INFO  L138        SettingsManager]:  * Size of a code block=SequenceOfStatements
+[2026-07-14 13:05:20,299 INFO  L138        SettingsManager]:  * SMT solver=External_DefaultMode
+[2026-07-14 13:05:20,299 INFO  L138        SettingsManager]:  * Command for external solver=z3 SMTLIB2_COMPLIANT=true -memory:2024 -smt2 -in -t:2000
+[2026-07-14 13:05:20,300 INFO  L136        SettingsManager]: Preferences of TraceAbstraction differ from their defaults:
+[2026-07-14 13:05:20,300 INFO  L138        SettingsManager]:  * Compute Interpolants along a Counterexample=FPandBP
+[2026-07-14 13:05:20,300 INFO  L138        SettingsManager]:  * Positions where we compute the Hoare Annotation=LoopsAndPotentialCycles
+[2026-07-14 13:05:20,300 INFO  L138        SettingsManager]:  * Trace refinement strategy=WOLF
+[2026-07-14 13:05:20,300 INFO  L138        SettingsManager]:  * Command for external solver=cvc4 --incremental --print-success --lang smt 
+[2026-07-14 13:05:20,300 INFO  L138        SettingsManager]:  * Automaton type used in concurrency analysis=PETRI_NET
+[2026-07-14 13:05:20,300 INFO  L138        SettingsManager]:  * Compute Hoare Annotation of negated interpolant automaton, abstraction and CFG=true
+[2026-07-14 13:05:20,300 INFO  L138        SettingsManager]:  * Order on configurations for Petri net unfoldings=DBO
+[2026-07-14 13:05:20,300 INFO  L138        SettingsManager]:  * SMT solver=External_ModelsAndUnsatCoreMode
+[2026-07-14 13:05:20,300 INFO  L138        SettingsManager]:  * Logic for external solver=AUFBV
+[2026-07-14 13:05:20,300 INFO  L138        SettingsManager]:  * Independence relation used for large block encoding in concurrent analysis=SYNTACTIC
+[2026-07-14 13:05:20,300 INFO  L138        SettingsManager]:  * Looper check in Petri net analysis=SEMANTIC
+WARNING: An illegal reflective access operation has occurred
+WARNING: Illegal reflective access by com.sun.xml.bind.v2.runtime.reflect.opt.Injector$1 (file:/home/swear01/quokka-r1/tools/uautomizer/plugins/com.sun.xml.bind_2.2.0.v201505121915.jar) to method java.lang.ClassLoader.defineClass(java.lang.String,byte[],int,int)
+WARNING: Please consider reporting this to the maintainers of com.sun.xml.bind.v2.runtime.reflect.opt.Injector$1
+WARNING: Use --illegal-access=warn to enable warnings of further illegal reflective access operations
+WARNING: All illegal access operations will be denied in a future release
+Applying setting for plugin de.uni_freiburg.informatik.ultimate.plugins.generator.cacsl2boogietranslator: Entry function -> main
+Applying setting for plugin de.uni_freiburg.informatik.ultimate.witnessprinter: Witness directory -> /home/swear01/quokka-r1/tools/uautomizer
+Applying setting for plugin de.uni_freiburg.informatik.ultimate.witnessprinter: Witness filename -> witness.graphml
+Applying setting for plugin de.uni_freiburg.informatik.ultimate.witnessprinter: Write witness besides input file -> false
+Applying setting for plugin de.uni_freiburg.informatik.ultimate.witnessprinter: Graph data specification -> CHECK( init(main()), LTL(G ! call(reach_error())) )
+
+
+Applying setting for plugin de.uni_freiburg.informatik.ultimate.witnessprinter: Graph data producer -> Automizer
+Applying setting for plugin de.uni_freiburg.informatik.ultimate.witnessprinter: Graph data architecture -> 64bit
+Applying setting for plugin de.uni_freiburg.informatik.ultimate.witnessprinter: Graph data programhash -> a4224e6d4224da2a0c73244ae4c1c982e2cc33afd9ec9ba48ab4101d599ecfb9
+[2026-07-14 13:05:20,597 INFO  L75    nceAwareModelManager]: Repository-Root is: /tmp
+[2026-07-14 13:05:20,613 INFO  L261   ainManager$Toolchain]: [Toolchain 1]: Applicable parser(s) successfully (re)initialized
+[2026-07-14 13:05:20,615 INFO  L217   ainManager$Toolchain]: [Toolchain 1]: Toolchain selected.
+[2026-07-14 13:05:20,615 INFO  L271        PluginConnector]: Initializing CDTParser...
+[2026-07-14 13:05:20,616 INFO  L275        PluginConnector]: CDTParser initialized
+[2026-07-14 13:05:20,616 INFO  L432   ainManager$Toolchain]: [Toolchain 1]: Parsing single file: /home/swear01/pono-llm/artifacts/external_quokka_oracle_r1/smoke/trial-1/08-c2571b465385/assert.c
+[2026-07-14 13:05:21,990 INFO  L500              CDTParser]: Created temporary CDT project at NULL
+[2026-07-14 13:05:22,163 INFO  L351              CDTParser]: Found 1 translation units.
+[2026-07-14 13:05:22,163 INFO  L172              CDTParser]: Scanning /home/swear01/pono-llm/artifacts/external_quokka_oracle_r1/smoke/trial-1/08-c2571b465385/assert.c
+[2026-07-14 13:05:22,179 INFO  L394              CDTParser]: About to delete temporary CDT project at /home/swear01/quokka-r1/tools/uautomizer/data/4fc26d205/d7166d0b51404f9f87f49f39a63bd182/FLAGaf8b0a644
+[2026-07-14 13:05:22,572 INFO  L402              CDTParser]: Successfully deleted /home/swear01/quokka-r1/tools/uautomizer/data/4fc26d205/d7166d0b51404f9f87f49f39a63bd182
+[2026-07-14 13:05:22,573 INFO  L299   ainManager$Toolchain]: ####################### [Toolchain 1] #######################
+[2026-07-14 13:05:22,575 INFO  L131        ToolchainWalker]: Walking toolchain with 6 elements.
+[2026-07-14 13:05:22,576 INFO  L113        PluginConnector]: ------------------------CACSL2BoogieTranslator----------------------------
+[2026-07-14 13:05:22,577 INFO  L271        PluginConnector]: Initializing CACSL2BoogieTranslator...
+[2026-07-14 13:05:22,578 INFO  L275        PluginConnector]: CACSL2BoogieTranslator initialized
+[2026-07-14 13:05:22,579 INFO  L185        PluginConnector]: Executing the observer ACSLObjectContainerObserver from plugin CACSL2BoogieTranslator for "CDTParser AST 14.07 01:05:22" (1/1) ...
+[2026-07-14 13:05:22,579 INFO  L205        PluginConnector]: Invalid model from CACSL2BoogieTranslator for observer de.uni_freiburg.informatik.ultimate.plugins.generator.cacsl2boogietranslator.ACSLObjectContainerObserver@200e3056 and model type de.uni_freiburg.informatik.ultimate.plugins.generator.cacsl2boogietranslator AST 14.07 01:05:22, skipping insertion in model container
+[2026-07-14 13:05:22,582 INFO  L185        PluginConnector]: Executing the observer CACSL2BoogieTranslatorObserver from plugin CACSL2BoogieTranslator for "CDTParser AST 14.07 01:05:22" (1/1) ...
+[2026-07-14 13:05:22,586 INFO  L145         MainTranslator]: Starting translation in SV-COMP mode 
+[2026-07-14 13:05:22,599 INFO  L178         MainTranslator]: Built tables and reachable declarations
+[2026-07-14 13:05:22,709 WARN  L237   ndardFunctionHandler]: Function reach_error is already implemented but we override the implementation for the call at /home/swear01/pono-llm/artifacts/external_quokka_oracle_r1/smoke/trial-1/08-c2571b465385/assert.c[532,545]
+[2026-07-14 13:05:22,723 FATAL L?                        ?]: The Plugin de.uni_freiburg.informatik.ultimate.plugins.generator.cacsl2boogietranslator has thrown an exception:
+java.lang.IllegalArgumentException: Unable to represent 18446744073709551615 using any of the given types. This is probably undefined or we need extended integer types. See 6.4.4.1 in the C standard
+	at de.uni_freiburg.informatik.ultimate.cdt.translation.implementation.util.ISOIEC9899TC3.determineCType(ISOIEC9899TC3.java:575)
+	at de.uni_freiburg.informatik.ultimate.cdt.translation.implementation.util.ISOIEC9899TC3.handleIntegerConstant(ISOIEC9899TC3.java:452)
+	at de.uni_freiburg.informatik.ultimate.cdt.translation.implementation.base.expressiontranslation.BitvectorTranslation.translateIntegerLiteral(BitvectorTranslation.java:215)
+	at de.uni_freiburg.informatik.ultimate.cdt.translation.implementation.base.CHandler.visit(CHandler.java:1924)
+	at de.uni_freiburg.informatik.ultimate.cdt.translation.implementation.base.PRDispatcher.dispatch(PRDispatcher.java:261)
+	at de.uni_freiburg.informatik.ultimate.cdt.translation.implementation.base.CHandler.visit(CHandler.java:727)
+	at de.uni_freiburg.informatik.ultimate.cdt.translation.implementation.base.PRDispatcher.dispatch(PRDispatcher.java:282)
+	at de.uni_freiburg.informatik.ultimate.cdt.translation.implementation.base.CHandler.visit(CHandler.java:728)
+	at de.uni_freiburg.informatik.ultimate.cdt.translation.implementation.base.PRDispatcher.dispatch(PRDispatcher.java:282)
+	at de.uni_freiburg.informatik.ultimate.cdt.translation.implementation.base.CHandler.visit(CHandler.java:727)
+	at de.uni_freiburg.informatik.ultimate.cdt.translation.implementation.base.PRDispatcher.dispatch(PRDispatcher.java:282)
+	at de.uni_freiburg.informatik.ultimate.cdt.translation.implementation.base.CHandler.visit(CHandler.java:727)
+	at de.uni_freiburg.informatik.ultimate.cdt.translation.implementation.base.PRDispatcher.dispatch(PRDispatcher.java:282)
+	at de.uni_freiburg.informatik.ultimate.cdt.translation.implementation.base.CHandler.visit(CHandler.java:2453)
+	at de.uni_freiburg.informatik.ultimate.cdt.translation.implementation.base.PRDispatcher.dispatch(PRDispatcher.java:303)
+	at de.uni_freiburg.informatik.ultimate.cdt.translation.implementation.base.CHandler.visit(CHandler.java:727)
+	at de.uni_freiburg.informatik.ultimate.cdt.translation.implementation.base.PRDispatcher.dispatch(PRDispatcher.java:282)
+	at de.uni_freiburg.informatik.ultimate.cdt.translation.implementation.base.CHandler.visit(CHandler.java:727)
+	at de.uni_freiburg.informatik.ultimate.cdt.translation.implementation.base.PRDispatcher.dispatch(PRDispatcher.java:282)
+	at de.uni_freiburg.informatik.ultimate.cdt.translation.implementation.base.CHandler.visit(CHandler.java:727)
+	at de.uni_freiburg.informatik.ultimate.cdt.translation.implementation.base.PRDispatcher.dispatch(PRDispatcher.java:282)
+	at de.uni_freiburg.informatik.ultimate.cdt.translation.implementation.base.CHandler.visit(CHandler.java:2453)
+	at de.uni_freiburg.informatik.ultimate.cdt.translation.implementation.base.PRDispatcher.dispatch(PRDispatcher.java:303)
+	at de.uni_freiburg.informatik.ultimate.cdt.translation.implementation.base.CHandler.visit(CHandler.java:727)
+	at de.uni_freiburg.informatik.ultimate.cdt.translation.implementation.base.PRDispatcher.dispatch(PRDispatcher.java:282)
+	at de.uni_freiburg.informatik.ultimate.cdt.translation.implementation.base.CHandler.visit(CHandler.java:2453)
+	at de.uni_freiburg.informatik.ultimate.cdt.translation.implementation.base.PRDispatcher.dispatch(PRDispatcher.java:303)
+	at de.uni_freiburg.informatik.ultimate.cdt.translation.implementation.base.CHandler.visit(CHandler.java:727)
+	at de.uni_freiburg.informatik.ultimate.cdt.translation.implementation.base.PRDispatcher.dispatch(PRDispatcher.java:282)
+	at de.uni_freiburg.informatik.ultimate.cdt.translation.implementation.base.CHandler.visit(CHandler.java:2453)
+	at de.uni_freiburg.informatik.ultimate.cdt.translation.implementation.base.PRDispatcher.dispatch(PRDispatcher.java:303)
+	at de.uni_freiburg.informatik.ultimate.cdt.translation.implementation.base.CHandler.visit(CHandler.java:727)
+	at de.uni_freiburg.informatik.ultimate.cdt.translation.implementation.base.PRDispatcher.dispatch(PRDispatcher.java:282)
+	at de.uni_freiburg.informatik.ultimate.cdt.translation.implementation.base.CHandler.visit(CHandler.java:2453)
+	at de.uni_freiburg.informatik.ultimate.cdt.translation.implementation.base.PRDispatcher.dispatch(PRDispatcher.java:303)
+	at de.uni_freiburg.informatik.ultimate.cdt.translation.implementation.base.CHandler.visit(CHandler.java:727)
+	at de.uni_freiburg.informatik.ultimate.cdt.translation.implementation.base.PRDispatcher.dispatch(PRDispatcher.java:282)
+	at de.uni_freiburg.informatik.ultimate.cdt.translation.implementation.base.CHandler.visit(CHandler.java:2453)
+	at de.uni_freiburg.informatik.ultimate.cdt.translation.implementation.base.PRDispatcher.dispatch(PRDispatcher.java:303)
+	at de.uni_freiburg.informatik.ultimate.cdt.translation.implementation.base.CHandler.visit(CHandler.java:727)
+	at de.uni_freiburg.informatik.ultimate.cdt.translation.implementation.base.PRDispatcher.dispatch(PRDispatcher.java:282)
+	at de.uni_freiburg.informatik.ultimate.cdt.translation.implementation.base.CHandler.visit(CHandler.java:2453)
+	at de.uni_freiburg.informatik.ultimate.cdt.translation.implementation.base.PRDispatcher.dispatch(PRDispatcher.java:303)
+	at de.uni_freiburg.informatik.ultimate.cdt.translation.implementation.base.CHandler.visit(CHandler.java:727)
+	at de.uni_freiburg.informatik.ultimate.cdt.translation.implementation.base.PRDispatcher.dispatch(PRDispatcher.java:282)
+	at de.uni_freiburg.informatik.ultimate.cdt.translation.implementation.base.CHandler.visit(CHandler.java:2453)
+	at de.uni_freiburg.informatik.ultimate.cdt.translation.implementation.base.PRDispatcher.dispatch(PRDispatcher.java:303)
+	at de.uni_freiburg.informatik.ultimate.cdt.translation.implementation.base.CHandler.visit(CHandler.java:727)
+	at de.uni_freiburg.informatik.ultimate.cdt.translation.implementation.base.PRDispatcher.dispatch(PRDispatcher.java:282)
+	at de.uni_freiburg.informatik.ultimate.cdt.translation.implementation.base.CHandler.visit(CHandler.java:2453)
+	at de.uni_freiburg.informatik.ultimate.cdt.translation.implementation.base.PRDispatcher.dispatch(PRDispatcher.java:303)
+	at de.uni_freiburg.informatik.ultimate.cdt.translation.implementation.base.CHandler.visit(CHandler.java:727)
+	at de.uni_freiburg.informatik.ultimate.cdt.translation.implementation.base.PRDispatcher.dispatch(PRDispatcher.java:282)
+	at de.uni_freiburg.informatik.ultimate.cdt.translation.implementation.result.ExpressionResultTransformer.transformDispatchDecaySwitchRexBoolToInt(ExpressionResultTransformer.java:177)
+	at de.uni_freiburg.informatik.ultimate.cdt.translation.implementation.base.chandler.FunctionHandler.handleFunctionCallGivenNameAndArguments(FunctionHandler.java:678)
+	at de.uni_freiburg.informatik.ultimate.cdt.translation.implementation.base.chandler.FunctionHandler.handleFunctionCallExpression(FunctionHandler.java:509)
+	at de.uni_freiburg.informatik.ultimate.cdt.translation.implementation.base.CHandler.visit(CHandler.java:1476)
+	at de.uni_freiburg.informatik.ultimate.cdt.translation.implementation.base.PRDispatcher.dispatch(PRDispatcher.java:267)
+	at de.uni_freiburg.informatik.ultimate.cdt.translation.implementation.base.CHandler.visit(CHandler.java:1420)
+	at de.uni_freiburg.informatik.ultimate.cdt.translation.implementation.base.PRDispatcher.dispatch(PRDispatcher.java:220)
+	at de.uni_freiburg.informatik.ultimate.cdt.translation.implementation.base.CHandler.visit(CHandler.java:1094)
+	at de.uni_freiburg.informatik.ultimate.cdt.translation.implementation.base.PRDispatcher.dispatch(PRDispatcher.java:232)
+	at de.uni_freiburg.informatik.ultimate.cdt.translation.implementation.base.CHandler.visit(CHandler.java:2499)
+	at de.uni_freiburg.informatik.ultimate.cdt.translation.implementation.base.PRDispatcher.dispatch(PRDispatcher.java:199)
+	at de.uni_freiburg.informatik.ultimate.cdt.translation.implementation.base.CHandler.visit(CHandler.java:1094)
+	at de.uni_freiburg.informatik.ultimate.cdt.translation.implementation.base.PRDispatcher.dispatch(PRDispatcher.java:232)
+	at de.uni_freiburg.informatik.ultimate.cdt.translation.implementation.base.chandler.FunctionHandler.handleFunctionDefinition(FunctionHandler.java:371)
+	at de.uni_freiburg.informatik.ultimate.cdt.translation.implementation.base.CHandler.visit(CHandler.java:1496)
+	at de.uni_freiburg.informatik.ultimate.cdt.translation.implementation.base.PRDispatcher.dispatch(PRDispatcher.java:155)
+	at de.uni_freiburg.informatik.ultimate.cdt.translation.implementation.base.CHandler.processTUchild(CHandler.java:3320)
+	at de.uni_freiburg.informatik.ultimate.cdt.translation.implementation.base.CHandler.visit(CHandler.java:2395)
+	at de.uni_freiburg.informatik.ultimate.cdt.translation.implementation.base.CHandler.visit(CHandler.java:600)
+	at de.uni_freiburg.informatik.ultimate.cdt.translation.implementation.base.PRDispatcher.dispatch(PRDispatcher.java:134)
+	at de.uni_freiburg.informatik.ultimate.cdt.translation.implementation.base.MainTranslator.translate(MainTranslator.java:192)
+	at de.uni_freiburg.informatik.ultimate.cdt.translation.implementation.base.MainTranslator.run(MainTranslator.java:115)
+	at de.uni_freiburg.informatik.ultimate.cdt.translation.implementation.base.MainTranslator.<init>(MainTranslator.java:93)
+	at de.uni_freiburg.informatik.ultimate.plugins.generator.cacsl2boogietranslator.CACSL2BoogieTranslatorObserver.finish(CACSL2BoogieTranslatorObserver.java:128)
+	at de.uni_freiburg.informatik.ultimate.core.coreplugin.PluginConnector.runObserver(PluginConnector.java:168)
+	at de.uni_freiburg.informatik.ultimate.core.coreplugin.PluginConnector.runTool(PluginConnector.java:151)
+	at de.uni_freiburg.informatik.ultimate.core.coreplugin.PluginConnector.run(PluginConnector.java:128)
+	at de.uni_freiburg.informatik.ultimate.core.coreplugin.ToolchainWalker.executePluginConnector(ToolchainWalker.java:232)
+	at de.uni_freiburg.informatik.ultimate.core.coreplugin.ToolchainWalker.processPlugin(ToolchainWalker.java:226)
+	at de.uni_freiburg.informatik.ultimate.core.coreplugin.ToolchainWalker.walkUnprotected(ToolchainWalker.java:142)
+	at de.uni_freiburg.informatik.ultimate.core.coreplugin.ToolchainWalker.walk(ToolchainWalker.java:104)
+	at de.uni_freiburg.informatik.ultimate.core.coreplugin.ToolchainManager$Toolchain.processToolchain(ToolchainManager.java:320)
+	at de.uni_freiburg.informatik.ultimate.core.coreplugin.toolchain.DefaultToolchainJob.run(DefaultToolchainJob.java:145)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:63)
+[2026-07-14 13:05:22,730 INFO  L158              Benchmark]: Toolchain (without parser) took 155.69ms. Allocated memory was 31.5MB in the beginning and 40.3MB in the end (delta: 8.9MB). Free memory was 9.4MB in the beginning and 16.4MB in the end (delta: -6.9MB). Peak memory consumption was 3.1MB. Max. memory is 15.6GB.
+[2026-07-14 13:05:22,731 INFO  L158              Benchmark]: CDTParser took 0.11ms. Allocated memory is still 31.5MB. Free memory is still 8.9MB. There was no memory consumed. Max. memory is 15.6GB.
+[2026-07-14 13:05:22,731 INFO  L158              Benchmark]: CACSL2BoogieTranslator took 152.97ms. Allocated memory was 31.5MB in the beginning and 40.3MB in the end (delta: 8.9MB). Free memory was 9.0MB in the beginning and 16.4MB in the end (delta: -7.3MB). Peak memory consumption was 2.7MB. Max. memory is 15.6GB.
+[2026-07-14 13:05:22,731 INFO  L339   ainManager$Toolchain]: #######################  End [Toolchain 1] #######################
+ --- Results ---
+ * Results from de.uni_freiburg.informatik.ultimate.core:
+  - StatisticsResult: Toolchain Benchmarks
+    Benchmark results are:
+ * CDTParser took 0.11ms. Allocated memory is still 31.5MB. Free memory is still 8.9MB. There was no memory consumed. Max. memory is 15.6GB.
+ * CACSL2BoogieTranslator took 152.97ms. Allocated memory was 31.5MB in the beginning and 40.3MB in the end (delta: 8.9MB). Free memory was 9.0MB in the beginning and 16.4MB in the end (delta: -7.3MB). Peak memory consumption was 2.7MB. Max. memory is 15.6GB.
+ * Results from de.uni_freiburg.informatik.ultimate.plugins.generator.cacsl2boogietranslator:
+  - ExceptionOrErrorResult: IllegalArgumentException: Unable to represent 18446744073709551615 using any of the given types. This is probably undefined or we need extended integer types. See 6.4.4.1 in the C standard
+    de.uni_freiburg.informatik.ultimate.plugins.generator.cacsl2boogietranslator: IllegalArgumentException: Unable to represent 18446744073709551615 using any of the given types. This is probably undefined or we need extended integer types. See 6.4.4.1 in the C standard: de.uni_freiburg.informatik.ultimate.cdt.translation.implementation.util.ISOIEC9899TC3.determineCType(ISOIEC9899TC3.java:575)
+RESULT: Ultimate could not prove your program: Toolchain returned no result.
+Received shutdown request...
+--- End real Ultimate output ---
+
+Execution finished normally
+Writing output log to file Ultimate.log
+Result:
+ERROR: ExceptionOrErrorResult: IllegalArgumentException: Unable to represent 18446744073709551615 using any of the given types. This is probably undefined or we need extended integer types. See 6.4.4.1 in the C standard
+

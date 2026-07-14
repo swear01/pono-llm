@@ -1,0 +1,23 @@
+	Command being timed: "taskset -c 0 timeout --signal=TERM --kill-after=5s 600s python3 -u Ultimate.py --spec /home/swear01/quokka-r1/Dataset/properties/unreach-call.prp --file /home/swear01/pono-llm/artifacts/external_quokka_oracle_r1/smoke/trial-2/23-3f2606a51c6f/assert.c --architecture 64bit --full-output"
+	User time (seconds): 5.38
+	System time (seconds): 0.34
+	Percent of CPU this job got: 86%
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 0:06.62
+	Average shared text size (kbytes): 0
+	Average unshared data size (kbytes): 0
+	Average stack size (kbytes): 0
+	Average total size (kbytes): 0
+	Maximum resident set size (kbytes): 203080
+	Average resident set size (kbytes): 0
+	Major (requiring I/O) page faults: 0
+	Minor (reclaiming a frame) page faults: 111195
+	Voluntary context switches: 38256
+	Involuntary context switches: 17452
+	Swaps: 0
+	File system inputs: 0
+	File system outputs: 1768
+	Socket messages sent: 0
+	Socket messages received: 0
+	Signals delivered: 0
+	Page size (bytes): 4096
+	Exit status: 0

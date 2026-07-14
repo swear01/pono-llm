@@ -1,0 +1,102 @@
+{
+  "classification_agreement": 0.72,
+  "classification_changed_task_ids": [
+    "045724f443cdae4e88d500228ddff5cd7b36068f06751357cb716ea2fd87b229",
+    "3f2606a51c6f8df4831156dbf8b3b9b4781e3f77aa5b22190e9cb613162616cb",
+    "5ca6cd16d59af3eac0f56cac59a901beb7b812c4c5724d1f7cb638981cc51231",
+    "8519d72474b2909d13c852b0134640819011b8ca9d25beac9b4ccac56731ccb7",
+    "a3e3fd0605dc91d1d76dedba233da8460fa0ead0c8c9f5541f63fa29afb77e5a",
+    "cb6afe1d028f11e2141cb42ad99ccbaf227136d89e93ab27f2b901a3c87e5905",
+    "dcd3b95fb18c58caa3045433168f39773f5bb402f8061517435e48d1885da323"
+  ],
+  "classification_counts_by_trial": {
+    "1": {
+      "G5_NEGATIVE_RUNTIME_UTILITY": 14,
+      "INFRASTRUCTURE_FAILURE": 1,
+      "PASS": 10
+    },
+    "2": {
+      "G5_NEGATIVE_RUNTIME_UTILITY": 13,
+      "INFRASTRUCTURE_FAILURE": 1,
+      "PASS": 11
+    }
+  },
+  "conditions": {
+    "classification_agreement": {
+      "actual": 0.72,
+      "pass": false,
+      "required": 0.9
+    },
+    "property_mismatch_count": {
+      "actual": 0,
+      "pass": true,
+      "required": 0
+    },
+    "raw_classifiable_task_count": {
+      "actual": 24,
+      "pass": true,
+      "required": 20
+    },
+    "silent_fallback_count": {
+      "actual": 0,
+      "pass": true,
+      "required": 0
+    },
+    "transformation_success_ratio": {
+      "actual": 1.0,
+      "pass": true,
+      "required": 0.95
+    },
+    "two_clean_checkout_runs": {
+      "actual": false,
+      "pass": false,
+      "required": true
+    },
+    "wrong_verdict_count": {
+      "actual": 0,
+      "pass": true,
+      "required": 0
+    }
+  },
+  "decision": "STOP",
+  "full_population_authorized": false,
+  "interpretation": "Raw arm verdicts were reclassified with the fail-closed R1 taxonomy; provisional runner classifications are not used. The two trials regenerated sources in one pinned checkout, not two clean checkouts.",
+  "invocation_count": 150,
+  "llm_calls": 0,
+  "metrics_file_count_parsed": 150,
+  "raw_results_file_sha256": "ad622b8c09dfdc6aa2195ee3670fe6d337e722a253461464dcacc684084108d3",
+  "schema": "external-quokka-oracle-r1-smoke-summary-v1",
+  "stable_task_count": 18,
+  "task_count": 25,
+  "trial_count": 2,
+  "unexpected_raw_results": [
+    {
+      "arm": "assert",
+      "exit_code": 7,
+      "task_id": "c2571b46538594d041131464a3ab0b93c21798b443edc86c6f314d2cfff97c18",
+      "trial": 1,
+      "verdict": "ERROR"
+    },
+    {
+      "arm": "assume",
+      "exit_code": 7,
+      "task_id": "c2571b46538594d041131464a3ab0b93c21798b443edc86c6f314d2cfff97c18",
+      "trial": 1,
+      "verdict": "ERROR"
+    },
+    {
+      "arm": "assert",
+      "exit_code": 7,
+      "task_id": "c2571b46538594d041131464a3ab0b93c21798b443edc86c6f314d2cfff97c18",
+      "trial": 2,
+      "verdict": "ERROR"
+    },
+    {
+      "arm": "assume",
+      "exit_code": 7,
+      "task_id": "c2571b46538594d041131464a3ab0b93c21798b443edc86c6f314d2cfff97c18",
+      "trial": 2,
+      "verdict": "ERROR"
+    }
+  ]
+}
