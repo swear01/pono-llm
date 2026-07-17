@@ -1,6 +1,6 @@
 # Documentation Index
 
-**Last updated:** 2026-07-14 (`soundness-audit` research program closed)
+**Last updated:** 2026-07-18 (repository archived)
 
 Start here:
 
@@ -10,6 +10,8 @@ Start here:
 - Roadmap: [`roadmap.md`](roadmap.md)
 - Notes / gotchas: [`notes.md`](notes.md)
 - Structure: [`structure.md`](structure.md)
+- Archive boundary: [`../ARCHIVED.md`](../ARCHIVED.md)
+- Final paper: [`../paper/pono_llm_final_report.pdf`](../paper/pono_llm_final_report.pdf)
 
 ## Canonical active docs
 
@@ -22,6 +24,8 @@ Start here:
 | [`roadmap.md`](roadmap.md) | Closed gate sequence, permanent stop criteria, and independent-future-work boundary |
 | [`notes.md`](notes.md) | Tacit knowledge, soundness gotchas, timing caveats, next-step decisions |
 | [`structure.md`](structure.md) | Directory map and module boundaries |
+| [`../ARCHIVED.md`](../ARCHIVED.md) | Repository-level immutable archive boundary and final entry points |
+| [`../paper/README.md`](../paper/README.md) | Final technical-report source, PDF, bibliography, and build command |
 | [`representation_phase_gate.md`](representation_phase_gate.md) | Completed source/lifted/raw phase-local grammar-routing contract and H1--H4 decisions |
 | [`algebraic_certificate_gate.md`](algebraic_certificate_gate.md) | Frozen Gate 4B0 contract plus official zero-eligible-population, solver, soundness, and stop decisions |
 | [`inductiveness_gap_gate.md`](inductiveness_gap_gate.md) | Gate 5A failure decomposition and 6/6 false-candidate decision |

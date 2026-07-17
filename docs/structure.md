@@ -18,6 +18,8 @@
 | `bench_results/` | Experiment output (not in git) |
 | `artifacts/` | Frozen gate evidence plus `final_research_summary_v1.json`, the hash-bound machine-readable closure index. |
 | `docs/` | Active docs; historical docs live under `archive/docs/` |
+| `paper/` | Final archival technical report, BibTeX references, compiled PDF, and build instructions. |
+| `ARCHIVED.md` | Repository-level archive status, evidence boundary, and prohibited continuation rules. |
 | `diagnosis/` | Per-phase diagnosis notes |
 | `prompts/` | LLM prompt templates |
 | `samples/` | Example BTOR2 designs |

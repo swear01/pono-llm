@@ -24,6 +24,9 @@ python3 scripts/validate_final_research_summary.py
 The human-readable counterparts are
 [`../docs/final_claim_ledger.md`](../docs/final_claim_ledger.md) and
 [`../docs/final_research_narrative.md`](../docs/final_research_narrative.md).
+The publication-style archival report is
+[*Predicates, Not Assumptions*](../paper/pono_llm_final_report.pdf); it packages
+the frozen evidence and adds no experiment, threshold change, or LLM/API call.
 
 ## Canonical result
 

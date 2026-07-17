@@ -1,5 +1,10 @@
 # Overview
 
+> **Archived 2026-07-18.** The research program is closed. The final report is
+> [*Predicates, Not Assumptions*](../paper/pono_llm_final_report.pdf); see
+> [`ARCHIVED.md`](../ARCHIVED.md) for the immutable evidence and continuation
+> boundary.
+
 ## What This Is
 
 **pono-llm** is a research fork of [Pono](https://github.com/stanford-centaur/pono), an SMT-based hardware model checker from Stanford. The closed `soundness-audit` research program studied how to integrate LLM-generated formulas into IC3IA **soundly** for software-origin BTOR2 circuits and how their apparent utility changes under matched deterministic baselines.

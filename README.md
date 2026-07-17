@@ -1,6 +1,13 @@
 [![CI](https://github.com/stanford-centaur/pono/actions/workflows/ci.yml/badge.svg)](https://github.com/stanford-centaur/pono/actions/workflows/ci.yml)
 [![License](https://img.shields.io/badge/License-BSD_3--Clause-blue.svg)](https://github.com/stanford-centaur/pono/blob/main/LICENSE)
 
+> [!IMPORTANT]
+> **This research repository is archived.** The Pono-LLM `soundness-audit`
+> program is complete and no follow-on Gate 6 is authorized here. Read the
+> [final technical report](paper/pono_llm_final_report.pdf), the
+> [archival boundary](ARCHIVED.md), and the
+> [final claim ledger](docs/final_claim_ledger.md) before interpreting results.
+
 # Pono: A Flexible and Extensible SMT-Based Model Checker
 
 Pono is a performant, adaptable, and extensible SMT-based model checker implemented in C++. It leverages [Smt-Switch](https://github.com/stanford-centaur/smt-switch), a generic C++ API for SMT solving. Pono was developed as the next
